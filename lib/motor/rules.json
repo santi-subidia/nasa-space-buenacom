@@ -170,13 +170,52 @@
     "radiation_msv": {
       "zone": "dna",
       "unit": "mSv",
-      "green": [0, 150],
-      "yellow": [[150.01, 400]],
-      "orange": [[400.01, 1000]],
+      "green": [0, 300],
+      "yellow": [[300.01, 480]],
+      "orange": [[480.01, 599.99]],
+      "red_gte": 600,
       "actions": [
-        "Registrar dosis acumulada y verificar blindaje en alerta solar"
+        "Registrar dosis acumulada y verificar blindaje en alerta solar",
+        "Planificar EVA y salidas en rover según la dosis que queda hasta el límite de 600 mSv"
       ],
-      "source": "doc/fuentes/02-riesgos/risk-of-radiation-induced-cancers.md"
+      "source": "doc/04-sintesis/cabina-y-radiacion.md"
+    },
+    "co2_mmhg": {
+      "zone": "lungs",
+      "unit": "mmHg",
+      "green": [0, 2.5],
+      "yellow": [[2.51, 3.0]],
+      "orange": [[3.01, 5.3]],
+      "red_gt": 5.3,
+      "actions": [
+        "Revisar el depurador de CO₂ y la ventilación del módulo",
+        "Si hay dolor de cabeza, avisar y repetir oximetría"
+      ],
+      "source": "doc/04-sintesis/cabina-y-radiacion.md"
+    },
+    "o2_pct": {
+      "zone": "lungs",
+      "unit": "%",
+      "green": [19.5, 23.5],
+      "yellow": [[18.5, 19.49], [23.51, 25]],
+      "red_lt": 18.5,
+      "red_gt": 25,
+      "actions": [
+        "Verificar el sistema de generación de O₂ y la presión de cabina"
+      ],
+      "source": "doc/04-sintesis/cabina-y-radiacion.md"
+    },
+    "noise_dba": {
+      "zone": "inner_ear",
+      "unit": "dBA",
+      "green": [0, 55],
+      "yellow": [[55.01, 60]],
+      "orange": [[60.01, 200]],
+      "actions": [
+        "Usar protección auditiva y alejarse de la fuente de ruido",
+        "Reportar el equipo ruidoso para mantenimiento"
+      ],
+      "source": "doc/04-sintesis/cabina-y-radiacion.md"
     }
   },
   "baselineDelta": {

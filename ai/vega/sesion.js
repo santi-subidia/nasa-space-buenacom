@@ -137,6 +137,14 @@ export function crearSesionVega({
     emitir({ sugerirAviso: false });
   }
 
+  function terminarEscucha() {
+    if (estado.fase === 'escuchando' && voz?.finalizarEscucha) {
+      voz.finalizarEscucha();
+      return;
+    }
+    cancelar();
+  }
+
   function cancelar() {
     ++numero;
     controlador?.abort();
@@ -155,6 +163,7 @@ export function crearSesionVega({
     ponerParcial: (parcial) => emitir({ parcial }),
     preguntar,
     preguntarPorVoz,
+    terminarEscucha,
     avisarOficial,
     cancelar,
   };

@@ -7,6 +7,7 @@ import { crearVoz } from '@/ai/vega/voz.js';
 import { extraerCierreBlendshapes } from '@/lib/cara/blendshapes';
 import { guardarAviso } from '@/lib/datos/avisos';
 import { cargarFotoBase, capturarImagenJpeg, guardarFotoBase } from '@/lib/datos/cara';
+import { silenciarLogsMediaPipe } from '@/lib/mediapipe/silenciarLogs';
 
 const WASM = '/mediapipe/wasm';
 const MODELO_CARA =
@@ -127,6 +128,7 @@ export function useCara() {
     setErrorAccion('');
     setCamaraEstado('cargando');
     try {
+      silenciarLogsMediaPipe();
       const { FilesetResolver, FaceLandmarker } = await import('@mediapipe/tasks-vision');
       const vision = await FilesetResolver.forVisionTasks(WASM);
       const opciones = (delegate) => ({

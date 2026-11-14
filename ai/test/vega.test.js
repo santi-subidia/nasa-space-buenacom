@@ -299,3 +299,38 @@ test('sesión: ante una señal alta, consulta a la IA mientras todavía lee el a
   await hecho;
   assert.equal(eventos.at(-1), 'habla: Avisá al ofi');
 });
+
+test('voz continua: conserva palabras parciales, reanuda micro-pausas y permite finalizar al instante', async () => {
+  class ReconocimientoContinuo {
+    start() {
+      ReconocimientoContinuo.instancias.push(this);
+      const turno = ReconocimientoContinuo.instancias.length;
+      if (turno === 1) {
+        setTimeout(() => {
+          this.onresult({ resultIndex: 0, results: [Object.assign([{ transcript: 'por qué' }], { isFinal: false })] });
+          // Simula que Chrome corta tras una breve pausa mientras aún no pasó pausaSilencioMs.
+          this.onend();
+        }, 0);
+      } else {
+        setTimeout(() => {
+          this.onresult({ resultIndex: 0, results: [Object.assign([{ transcript: 'me salió herpes' }], { isFinal: false })] });
+        }, 0);
+      }
+    }
+    stop() {
+      setTimeout(() => this.onend(), 0);
+    }
+    abort() {}
+  }
+  ReconocimientoContinuo.instancias = [];
+
+  const voz = crearVoz({ ventana: { SpeechRecognition: ReconocimientoContinuo }, pausaSilencioMs: 500 });
+  const escucha = voz.escuchar();
+  await new Promise((r) => setTimeout(r, 25));
+  voz.finalizarEscucha();
+
+  const texto = await escucha;
+  assert.equal(texto, 'por qué me salió herpes');
+  assert.equal(ReconocimientoContinuo.instancias[0].continuous, true);
+  assert.equal(ReconocimientoContinuo.instancias[0].maxAlternatives, 3);
+});

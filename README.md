@@ -11,7 +11,7 @@ AstroVitals acompaña al astronauta en el día a día de una misión en Marte (s
 ## Stack implementado
 
 - **Framework y UI:** Next.js 16 (App Router), React 19, JavaScript ESM, Sass Modules (`@use 'tokens' as *;`), Recharts.
-- **Almacenamiento local:** IndexedDB mediante **Dexie** (`lib/db.js`) para funcionar sin conexión en el navegador (lecturas, síntomas, tareas, blobs de fotos y respuestas de IA).
+- **Almacenamiento local y nube:** IndexedDB mediante **Dexie** (`lib/db.js`) offline-first sincronizado con **Supabase PostgreSQL + Auth + `pgvector`** (`supabase/migrations/` y `lib/supabase/`).
 - **Visión por computadora en el navegador:** **MediaPipe** (`@mediapipe/tasks-vision`) — *Pose Landmarker* en `/entrenador` y *Face Landmarker* (parpadeo / PERCLOS) en `/cara`.
 - **Voz en el navegador:** **Web Speech API** (`SpeechRecognition` en `es-AR` y `speechSynthesis`) en `/vega` y `/registrar`.
 - **IA en el servidor:** **Claude Haiku 5.5** (`claude-haiku-5-5`) con `@anthropic-ai/sdk`, *prompt caching*, salidas estructuradas (`output_config.format`) y *tool use* (`strict: true`), expuesto vía `POST /api/claude`.
@@ -37,6 +37,9 @@ Copiar `.env.example` a `.env.local` (archivo ignorado por Git):
 | Variable | Uso |
 |---|---|
 | `ANTHROPIC_API_KEY` | Clave de Anthropic para `claude-haiku-5-5` (solo usada en el servidor `app/api/**`). |
+| `NEXT_PUBLIC_SUPABASE_URL` | URL del proyecto Supabase (PostgreSQL, Auth y `pgvector`). |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Clave pública `anon` de Supabase para el cliente navegador/servidor. |
+| `SUPABASE_SERVICE_ROLE_KEY` | Clave privada para sembrar base de datos, usuarios demo y vectores (`scripts/sembrar-supabase.mjs`). |
 | `IA_APAGADA` | Con `IA_APAGADA=1`, desactiva llamadas externas a la API y responde con el respaldo guardado (ideal para demo pública). |
 | `NEXT_PUBLIC_POSE_MODEL_URL` | Opcional. URL o ruta local (ej. `/mediapipe/pose_landmarker_lite.task`) para el modelo de pose sin conexión al CDN de Google. |
 
@@ -67,7 +70,7 @@ Para demostraciones públicas, evaluaciones sin conexión o entornos sin clave d
 
 ---
 
-## Las 11 pantallas de AstroVitals
+## Las 13 pantallas de AstroVitals (+ `/login` y `/causas`)
 
 Definidas en [`lib/rutas.js`](lib/rutas.js):
 
@@ -78,14 +81,16 @@ Definidas en [`lib/rutas.js`](lib/rutas.js):
 | `/mapa` | **Mapa corporal** | Silueta SVG con 9 zonas clicables, función fisiológica, riesgos, indicadores del día y fuentes de la NASA. |
 | `/registrar` | **Registrar** | Formulario del chequeo matutino, escala de ánimo, foto de piel, test de reacción y dictado por voz. |
 | `/tendencias` | **Tendencias** | Gráficos de sueño, estrés, temperatura y ánimo con bandas de referencia y línea base personal. |
+| `/cabina` | **Cabina y radiación** | Dosímetro personal contra el límite de carrera de 600 mSv (NASA-STD-3001), simulación de tormenta solar con checklist de refugio, y CO₂, O₂, presión y ruido del hábitat (sensores simulados). |
 | `/entrenador` | **Entrenador** | Webcam con esqueleto MediaPipe Pose, contador de repeticiones, correcciones en vivo y plan adaptado por IA. |
 | `/cara` | **¿Cómo me ves hoy?** | Comparación facial con foto base y medición local de fatiga por parpadeo (PERCLOS) con MediaPipe Face. |
 | `/junta` | **Junta médica** | 5 especialistas en una sola consulta estructurada, desacuerdos resueltos e informes para tripulante y médicos. |
 | `/enlace` | **Enlace con Tierra** | Simulación del retraso de comunicación Marte–Tierra (14 min solo ida), respuesta del médico de vuelo y traducción de Vega. |
+| `/houston` | **Consola Houston** | Bandeja de la médica de vuelo en Tierra (Supabase PostgreSQL), búsqueda RAG vectorial `pgvector` y envío de dictamen a Marte. |
 | `/vega` | **Hablar con Vega** | Conversación por voz y texto con citas de la NASA, sugerencias rápidas y red de seguridad local ante urgencias. |
 | `/tripulacion` | **Tripulación** | Selector de tripulante (Ana Ríos / Marcos Silva), control de consentimiento y vista confidencial del oficial médico (CMO). |
 
-Vista de detalle (sin entrada en la barra lateral): **`/causas` · ¿Por qué pasó?**, a la que se llega desde la alerta de Inicio. Muestra el grafo causal oficial del riesgo inmune de la NASA (HSRB, 12 de 49 nodos) y enciende el camino según lo medido: sueño → estrés → defensas alteradas → herpes labial.
+Vistas complementarias: **`/login`** (cambio de rol tripulante / CMO / Médica de Vuelo con Supabase Auth) y **`/causas` · ¿Por qué pasó?** (grafo causal oficial del riesgo inmune de la NASA, HSRB).
 
 ---
 

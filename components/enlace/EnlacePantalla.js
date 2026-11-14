@@ -55,7 +55,8 @@ export default function EnlacePantalla() {
       voz.callar();
       return;
     }
-    voz.hablar(TRADUCCION_VEGA_SOL42.textoVoz);
+    const trad = enlace.traduccionVega ?? TRADUCCION_VEGA_SOL42;
+    voz.hablar(trad.textoVoz ?? trad.resumenSimple);
   }
 
   function manejarReiniciar() {
@@ -82,6 +83,8 @@ export default function EnlacePantalla() {
   }
 
   const { informe } = enlace;
+  const respuestaMedica = enlace.respuestaMedica ?? RESPUESTA_MEDICA_SOL42;
+  const traduccionVega = enlace.traduccionVega ?? TRADUCCION_VEGA_SOL42;
   const hablando = estadoVoz === 'hablando';
 
   return (
@@ -239,23 +242,23 @@ export default function EnlacePantalla() {
         <div className={styles.respuestasGrid}>
           <Card
             titulo="Bandeja de respuesta de Houston"
-            acento={RESPUESTA_MEDICA_SOL42.nivelRecomendado}
+            acento={respuestaMedica.nivelRecomendado}
             className={styles.bandejaCard}
           >
             <div className={styles.bandejaTop}>
               <div>
-                <p className={styles.remitente}>{RESPUESTA_MEDICA_SOL42.remitente}</p>
-                <h3 className={styles.asunto}>{RESPUESTA_MEDICA_SOL42.asunto}</h3>
+                <p className={styles.remitente}>{respuestaMedica.remitente}</p>
+                <h3 className={styles.asunto}>{respuestaMedica.asunto}</h3>
               </div>
-              <TrafficLight nivel={RESPUESTA_MEDICA_SOL42.nivelRecomendado} />
+              <TrafficLight nivel={respuestaMedica.nivelRecomendado} />
             </div>
 
-            <p className={styles.resumenClinico}>{RESPUESTA_MEDICA_SOL42.resumenTecnico}</p>
+            <p className={styles.resumenClinico}>{respuestaMedica.resumenTecnico}</p>
 
             <div>
               <h4 className={styles.subtituloBloque}>Indicaciones clínicas</h4>
               <ul className={styles.lista}>
-                {RESPUESTA_MEDICA_SOL42.indicaciones.map((ind, i) => (
+                {(respuestaMedica.indicaciones ?? []).map((ind, i) => (
                   <li key={`${i}-${ind.slice(0, 20)}`}>{ind}</li>
                 ))}
               </ul>
@@ -267,13 +270,13 @@ export default function EnlacePantalla() {
             acento="ia"
             className={styles.vegaCard}
           >
-            <h3 className={styles.vegaTitulo}>{TRADUCCION_VEGA_SOL42.titulo}</h3>
-            <p className={styles.resumenClinico}>{TRADUCCION_VEGA_SOL42.resumenSimple}</p>
+            <h3 className={styles.vegaTitulo}>{traduccionVega.titulo}</h3>
+            <p className={styles.resumenClinico}>{traduccionVega.resumenSimple}</p>
 
             <div>
               <h4 className={styles.subtituloBloque}>Qué hacer paso a paso</h4>
               <ul className={styles.lista}>
-                {TRADUCCION_VEGA_SOL42.pasos.map((paso, i) => (
+                {(traduccionVega.pasos ?? []).map((paso, i) => (
                   <li key={`${i}-${paso.slice(0, 20)}`}>{paso}</li>
                 ))}
               </ul>

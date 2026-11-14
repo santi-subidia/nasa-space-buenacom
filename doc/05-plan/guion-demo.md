@@ -24,7 +24,7 @@ Ideal para el video de entrega de NASA Space Apps (≤ 30 s) o apertura del pitc
 
 ## Parte 2 · Recorrido guiado en vivo (2–3 minutos)
 
-Secuencia recomendada pantalla por pantalla sobre las **11 rutas** de la app (`/`, `/mapa`, `/jornada`, `/registrar`, `/tendencias`, `/vega`, `/entrenador`, `/cara`, `/junta`, `/enlace`, `/tripulacion`):
+Secuencia recomendada pantalla por pantalla sobre las **13 rutas** de la app (`/`, `/mapa`, `/jornada`, `/registrar`, `/tendencias`, `/cabina`, `/vega`, `/entrenador`, `/cara`, `/junta`, `/enlace`, `/houston`, `/tripulacion`) más `/login`:
 
 ### 1. Inicio (`/`) — El cuadro del Sol 42 (20 s)
 - **Frase sugerida:** *"Estamos en el Sol 42 de la misión Ares IV en Marte con la comandante Ana Ríos. AstroVitals evalúa sus últimos días con reglas deterministas basadas en el Human Research Program de la NASA y marca nivel naranja: posible reactivación viral."*
@@ -38,6 +38,7 @@ Secuencia recomendada pantalla por pantalla sobre las **11 rutas** de la app (`/
 - **Qué verificar en pantalla:**
   - Silueta SVG con marcas por forma y color; al hacer clic en **Inmunidad**, muestra indicadores, síntoma del Sol 41 y enlace a la fuente NASA.
   - En `/tendencias`, bandas de referencia (7–9 h de sueño) y comparación sueño vs. estrés.
+  - Desde **Pulmones**, botón **Ver cabina** (`/cabina`): *"La radiación no se ve ni se siente. Ana ya lleva 355 mSv, el 59 % de su límite de carrera de 600; con el viaje de regreso la misión lo supera, como advierte la NASA. Si llega una tormenta solar, la app dispara la alerta roja y el checklist para ir al refugio."* Tocar **Simular tormenta solar** y marcar "Ir al refugio".
 
 ### 3. Jornada y notificaciones (`/jornada`) — Reloj marciano y sueño protegido (20 s)
 - **Frase sugerida:** *"En Marte el día dura veinticuatro horas y treinta y siete minutos. La jornada ordena chequeos, hidratación y ejercicio con reloj acelerado para la demo, y respeta el descanso protegido nocturno: de diez de la noche a seis y media solo interrumpe una alerta roja."*
@@ -62,10 +63,11 @@ Secuencia recomendada pantalla por pantalla sobre las **11 rutas** de la app (`/
 - **Qué verificar en pantalla:**
   - Tarjetas de los 5 especialistas con sus citas NASA, bloque de desacuerdo resuelto y las dos pestañas de informe: **Para Ana** (lenguaje claro) y **Para médicos de vuelo** (resumen clínico y recordatorios para los soles 43–45).
 
-### 7. Enlace con Tierra (`/enlace`) y Tripulación / Vista CMO (`/tripulacion`) — Cierre (25 s)
-- **Frase sugerida:** *"El informe sale hacia Tierra con catorce minutos de retraso por ida. Al llegar la respuesta del médico de vuelo, Vega la traduce y agenda el seguimiento. Por último, en Tripulación cambiamos a Marcos Silva, el oficial médico: por privacidad, Marcos ve el semáforo y la alerta activa de Ana para poder actuar, pero no sus mediciones numéricas privadas hasta que Ana decida compartirlas."*
+### 7. Enlace con Tierra (`/enlace`), Consola Houston (`/houston`) y Tripulación (`/tripulacion`) — Cierre (25 s)
+- **Frase sugerida:** *"El informe sale hacia Tierra con catorce minutos de retraso por ida y llega a PostgreSQL en la consola de la médica de vuelo en Houston (`/houston`), donde consulta protocolos NASA en `pgvector` y devuelve su dictamen hacia Base Marte. Al llegar a `/enlace`, Vega lo traduce y agenda el seguimiento. Por último, en `/tripulacion` cambiamos a Marcos Silva, el oficial médico."*
 - **Qué verificar en pantalla:**
   - En `/enlace`: línea de tiempo con retraso de 14 min, respuesta del médico de vuelo, traducción de Vega y botón para agendar recordatorios en la jornada.
+  - En `/houston`: bandeja en vivo desde Supabase PostgreSQL, buscador RAG `pgvector` y envío del dictamen médico de vuelta a Marte (ingresando desde `/login` como Dra. Elena Vance).
   - En `/tripulacion`: cambio de tripulante activo entre Ana Ríos y Marcos Silva, tarjeta del CMO mostrando semáforo + alerta de Ana con nota de privacidad, y el switch para habilitar/deshabilitar compartir mediciones.
 
 ---

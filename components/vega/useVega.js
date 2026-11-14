@@ -78,6 +78,7 @@ export function useVega() {
     soportaLectura: motor ? motor.voz.soportaSintesis : true,
     preguntar: (texto) => motor?.sesion.preguntar(texto),
     preguntarPorVoz: () => motor?.sesion.preguntarPorVoz(),
+    terminarEscucha: () => motor?.sesion.terminarEscucha(),
     avisarOficial: () => motor?.sesion.avisarOficial(),
     cancelar: () => motor?.sesion.cancelar(),
   };

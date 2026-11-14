@@ -69,6 +69,52 @@
 .ia .icono { color: $color-ia; }
 .ia.activo { border-left-color: $color-ia; }
 
+.cuentaCard {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: $espacio-2 $espacio-3;
+  border-radius: $radio-s;
+  border: 1px solid $color-borde;
+  background: $color-superficie-2;
+  color: $color-texto;
+  font-size: 12px;
+
+  &:hover {
+    border-color: $color-acento;
+  }
+}
+
+.cuentaActiva {
+  border-color: $color-acento;
+}
+
+.cuentaTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $espacio-2;
+}
+
+.cuentaNombre {
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.cuentaMeta {
+  color: $color-texto-suave;
+  font-size: 11px;
+}
+
+.nubeDot {
+  font-size: 10px;
+  color: $color-texto-suave;
+}
+
+.nubeOk {
+  color: $color-verde;
+}
+
 .aviso {
   margin: auto 0 0;
   padding: 0 $espacio-3;

@@ -1,0 +1,204 @@
+@use 'tokens' as *;
+
+.pantalla {
+  display: flex;
+  flex-direction: column;
+  gap: $espacio-5;
+  min-width: 0;
+  padding-top: $espacio-6;
+}
+
+.encabezado {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: $espacio-3;
+
+  h1 {
+    margin: 0;
+    font-family: $fuente-titulo;
+    font-size: 28px;
+  }
+}
+
+.sub {
+  margin: $espacio-1 0 0;
+  color: $color-texto-suave;
+  font-size: 14px;
+}
+
+.estadoPill {
+  padding: $espacio-2 $espacio-3;
+  border-radius: 999px;
+  border: 1px solid $color-borde;
+  background: $color-superficie-2;
+  color: $color-texto-suave;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.estadoOk {
+  border-color: rgba($color-verde, 0.45);
+  color: $color-verde;
+}
+
+.sesionActual {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: $espacio-4;
+}
+
+.rolBadge {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 600;
+  color: $color-acento;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.nombreActual {
+  margin: $espacio-1 0 0;
+  font-family: $fuente-titulo;
+  font-size: 22px;
+}
+
+.metaActual {
+  margin: $espacio-1 0 0;
+  color: $color-texto-suave;
+  font-size: 13px;
+}
+
+.sesionAcciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $espacio-2;
+}
+
+.seccionTitulo {
+  margin: 0 0 $espacio-3;
+  font-family: $fuente-titulo;
+  font-size: 18px;
+}
+
+.perfilesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: $espacio-4;
+}
+
+.perfilCard {
+  display: flex;
+  flex-direction: column;
+  gap: $espacio-2;
+}
+
+.perfilActivo {
+  border-color: rgba($color-acento, 0.65);
+}
+
+.perfilNombre {
+  margin: 0;
+  font-family: $fuente-titulo;
+  font-size: 18px;
+}
+
+.perfilRol {
+  margin: 0;
+  font-size: 13px;
+  color: $color-acento;
+  font-weight: 600;
+}
+
+.perfilDesc {
+  margin: $espacio-1 0;
+  font-size: 13px;
+  color: $color-texto-suave;
+  line-height: 1.5;
+}
+
+.credenciales {
+  margin: auto 0 $espacio-2;
+  font-size: 12px;
+  color: $color-texto-suave;
+
+  code {
+    background: $color-superficie-2;
+    padding: 2px 6px;
+    border-radius: 6px;
+    color: $color-texto;
+  }
+}
+
+.formulario {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: $espacio-3;
+  align-items: end;
+}
+
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: $espacio-1;
+  font-size: 13px;
+  color: $color-texto-suave;
+
+  input {
+    padding: $espacio-2 $espacio-3;
+    border-radius: $radio-s;
+    border: 1px solid $color-borde;
+    background: $color-fondo;
+    color: $color-texto;
+    font-size: 14px;
+  }
+}
+
+.boton,
+.botonAcento,
+.botonHouston {
+  padding: $espacio-2 $espacio-4;
+  border-radius: $radio-s;
+  border: 1px solid $color-borde;
+  background: $color-superficie-2;
+  color: $color-texto;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+
+  &:hover:not(:disabled) {
+    filter: brightness(1.1);
+  }
+
+  &:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+}
+
+.botonAcento {
+  background: rgba($color-acento, 0.16);
+  border-color: rgba($color-acento, 0.5);
+  color: $color-acento;
+}
+
+.botonHouston {
+  background: rgba($color-naranja, 0.16);
+  border-color: rgba($color-naranja, 0.5);
+  color: $color-naranja;
+}
+
+.feedbackOk {
+  margin: $espacio-3 0 0;
+  color: $color-verde;
+  font-size: 13px;
+}
+
+.feedbackError {
+  margin: $espacio-3 0 0;
+  color: $color-rojo;
+  font-size: 13px;
+}

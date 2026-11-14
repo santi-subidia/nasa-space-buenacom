@@ -13,7 +13,7 @@ import styles from './VegaPantalla.module.scss';
 
 const ESTADOS = {
   inactivo: 'Tocá el micrófono para hablar',
-  escuchando: 'Escuchando…',
+  escuchando: 'Escuchando… hablá corrido; tocá de nuevo para enviar o esperá 2 s',
   pensando: 'Pensando…',
   hablando: 'Hablando… tocá para callarme',
 };
@@ -85,9 +85,14 @@ export default function VegaPantalla({ modoInicial = 'conversar' }) {
 
   function tocarMicrofono() {
     if (enChequeo) {
-      if (chequeoEnCurso) chequeo.cancelar();
-      else chequeo.iniciar();
+      if (chequeoEnCurso) {
+        if (chequeo.fase === 'escuchando' && vega.voz?.finalizarEscucha) vega.voz.finalizarEscucha();
+        else chequeo.cancelar();
+      } else {
+        chequeo.iniciar();
+      }
     } else if (vega.fase === 'inactivo') vega.preguntarPorVoz();
+    else if (vega.fase === 'escuchando') vega.terminarEscucha();
     else vega.cancelar();
   }
 
@@ -161,7 +166,7 @@ export default function VegaPantalla({ modoInicial = 'conversar' }) {
             <p className={styles.estado} role="status">
               {enChequeo && !chequeoEnCurso ? (chequeo.fase === 'completo' ? 'Chequeo terminado' : 'Tocá el micrófono para empezar') : ESTADOS[fase]}
             </p>
-            {!enChequeo && vega.parcial && <p className={styles.parcial}>“{vega.parcial}”</p>}
+            {fase === 'escuchando' && vega.parcial && <p className={styles.parcial}>“{vega.parcial}”</p>}
             {error && <p className={styles.error} role="alert">{error}</p>}
             {!soportaVoz && (
               <p className={styles.nota}>

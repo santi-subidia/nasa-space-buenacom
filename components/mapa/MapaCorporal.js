@@ -9,6 +9,7 @@ import { NIVELES, maxNivel } from '@/lib/niveles';
 import { SOL_ACTUAL, useEstadoMision } from '@/lib/datos/demo';
 import { EVALUAR, META, valoresDelDia } from '@/lib/mock/indicadores';
 import { ZONAS, PELIGROS } from '@/lib/content/zones';
+import { panelCabina } from '@/lib/cabina/simulador';
 import styles from './MapaCorporal.module.scss';
 
 const COLOR = { green: 'var(--color-verde)', yellow: 'var(--color-amarillo)', orange: 'var(--color-naranja)', red: 'var(--color-rojo)' };
@@ -49,6 +50,7 @@ export default function MapaCorporal() {
   const vals = valoresDelDia(lecturas, SOL_ACTUAL);
   const parametro = useSearchParams().get('zona');
   const herpeSol = sintomas.find((s) => s.code === 'cold_sore' || s.code === 'rash');
+  const cabina = panelCabina({ sol: SOL_ACTUAL });
   const borrosa = [...sintomas].reverse().find((s) => s.code === 'blurred_vision' && (s.sol == null || s.sol >= SOL_ACTUAL - 6));
 
   // Zona con indicadores resueltos y nivel = máximo entre sus indicadores y el motor de reglas (#3).
@@ -60,6 +62,11 @@ export default function MapaCorporal() {
           valor: `Herpes labial · sol ${herpeSol.sol ?? 41}`,
           nivel: evaluacion.zoneLevels?.immune || 'orange',
         };
+      }
+      if (i.cabina) {
+        const s = cabina.atmosfera.find((a) => a.id === i.cabina);
+        const dec = s.unidad === 'mmHg' ? 2 : 0;
+        return { nombre: i.nombre, valor: `${s.valor.toFixed(dec).replace('.', ',')} ${s.unidad}`, nivel: s.nivel, ambiental: true };
       }
       if (z.id === 'eyes' && !i.clave && borrosa) {
         return { nombre: 'Visión borrosa', valor: `Sí · sol ${borrosa.sol ?? SOL_ACTUAL}`, nivel: 'yellow' };
@@ -73,7 +80,8 @@ export default function MapaCorporal() {
         nivel: dato && EVALUAR[i.clave] ? EVALUAR[i.clave](dato.valor) : 'green',
       };
     });
-    const nivel = maxNivel(indicadores.map((i) => i.nivel), evaluacion.zoneLevels?.[z.id] ?? 'green');
+    // Los datos de cabina son ambientales: se ven en la lista pero no suben el nivel personal de la zona.
+    const nivel = maxNivel(indicadores.filter((i) => !i.ambiental).map((i) => i.nivel), evaluacion.zoneLevels?.[z.id] ?? 'green');
     return { ...z, indicadores, nivel };
   });
 
@@ -208,9 +216,9 @@ export default function MapaCorporal() {
             </p>
 
             <div className={styles.botones}>
-              {zona.test && (
-                <Link className={styles.boton} href={zona.test.href}>
-                  {zona.test.etiqueta}
+              {zona.enlace && (
+                <Link className={styles.boton} href={zona.enlace.href}>
+                  {zona.enlace.etiqueta}
                 </Link>
               )}
               <Link className={styles.boton} href="/tendencias">Ver tendencias</Link>

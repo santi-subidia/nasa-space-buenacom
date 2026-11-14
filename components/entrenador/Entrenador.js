@@ -9,6 +9,7 @@ import { EJERCICIOS, crearEntrenamiento } from '@/lib/entrenador/ejercicios';
 import { armarPayloadSerie } from '@/lib/entrenador/resumen';
 import { guardarLecturas, leerLecturas, useLecturas } from '@/lib/datos/lecturas';
 import { leerSintomas } from '@/lib/datos/sintomas';
+import { silenciarLogsMediaPipe } from '@/lib/mediapipe/silenciarLogs';
 import { evaluate } from '@/lib/motor/evaluar';
 import { maxNivel } from '@/lib/niveles';
 import { LINEA_BASE, TARJETAS, nivelDeTarjeta, valoresDelDia } from '@/lib/mock/indicadores';
@@ -186,6 +187,7 @@ export default function Entrenador() {
     setError(null);
     setPantalla('cargando');
     try {
+      silenciarLogsMediaPipe();
       const { FilesetResolver, PoseLandmarker } = await import('@mediapipe/tasks-vision');
       const vision = await FilesetResolver.forVisionTasks(WASM);
       const opciones = (delegate) => ({ baseOptions: { modelAssetPath: MODELO, delegate }, runningMode: 'VIDEO', numPoses: 1 });

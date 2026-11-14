@@ -1,0 +1,375 @@
+@use 'tokens' as *;
+
+.pantalla {
+  display: flex;
+  flex-direction: column;
+  gap: $espacio-5;
+  min-width: 0;
+  padding-top: $espacio-6;
+}
+
+.encabezado {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: $espacio-3;
+
+  h1 {
+    margin: 0;
+    font-family: $fuente-titulo;
+    font-size: 28px;
+  }
+}
+
+.sub {
+  margin: $espacio-1 0 0;
+  color: $color-texto-suave;
+  font-size: 14px;
+}
+
+.badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $espacio-2;
+}
+
+.pill,
+.pillLink {
+  padding: $espacio-2 $espacio-3;
+  border-radius: 999px;
+  border: 1px solid $color-borde;
+  background: $color-superficie-2;
+  color: $color-texto-suave;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.pillLink {
+  color: $color-acento;
+  &:hover {
+    border-color: $color-acento;
+  }
+}
+
+.pillOk {
+  border-color: rgba($color-verde, 0.45);
+  color: $color-verde;
+}
+
+.gridPrincipal {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  gap: $espacio-4;
+  align-items: start;
+
+  @media (max-width: 1024px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.columnaIzquierda,
+.columnaDerecha {
+  display: flex;
+  flex-direction: column;
+  gap: $espacio-4;
+}
+
+.bandejaHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: $espacio-2;
+  margin-bottom: $espacio-3;
+}
+
+.contador {
+  font-size: 13px;
+  color: $color-texto-suave;
+}
+
+.listaTransmisiones {
+  display: flex;
+  flex-direction: column;
+  gap: $espacio-2;
+  margin-bottom: $espacio-4;
+}
+
+.txItem {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: $espacio-2;
+  padding: $espacio-2 $espacio-3;
+  border-radius: $radio-s;
+  border: 1px solid $color-borde;
+  background: $color-fondo;
+  color: $color-texto;
+  cursor: pointer;
+  text-align: left;
+
+  &:hover {
+    border-color: $color-acento;
+  }
+}
+
+.txActiva {
+  border-color: $color-acento;
+  background: rgba($color-acento, 0.1);
+}
+
+.txTop {
+  display: flex;
+  align-items: center;
+  gap: $espacio-2;
+}
+
+.txTitulo {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.txEstado {
+  font-size: 12px;
+  color: $color-texto-suave;
+}
+
+.detalleTx {
+  border-top: 1px solid $color-borde;
+  padding-top: $espacio-3;
+
+  h3 {
+    margin: 0 0 $espacio-2;
+    font-family: $fuente-titulo;
+    font-size: 17px;
+  }
+}
+
+.resumen {
+  margin: 0 0 $espacio-3;
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.dobleLista {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: $espacio-3;
+
+  h4 {
+    margin: 0 0 $espacio-1;
+    font-size: 13px;
+    color: $color-texto-suave;
+  }
+
+  ul {
+    margin: 0;
+    padding-left: 18px;
+    font-size: 13px;
+    line-height: 1.45;
+  }
+}
+
+.telemetria {
+  margin-top: $espacio-3;
+  padding-top: $espacio-3;
+  border-top: 1px solid $color-borde;
+
+  h4 {
+    margin: 0 0 $espacio-2;
+    font-size: 13px;
+    color: $color-texto-suave;
+  }
+}
+
+.chipsTelemetria {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $espacio-2;
+}
+
+.metricaChip {
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: $color-superficie-2;
+  border: 1px solid $color-borde;
+  font-size: 12px;
+}
+
+.ragForm {
+  display: flex;
+  gap: $espacio-2;
+
+  input {
+    flex: 1;
+    padding: $espacio-2 $espacio-3;
+    border-radius: $radio-s;
+    border: 1px solid $color-borde;
+    background: $color-fondo;
+    color: $color-texto;
+    font-size: 14px;
+  }
+}
+
+.sugerencias {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $espacio-2;
+  margin-top: $espacio-2;
+}
+
+.chipSugerencia {
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid $color-borde;
+  background: $color-superficie-2;
+  color: $color-texto-suave;
+  font-size: 12px;
+  cursor: pointer;
+
+  &:hover {
+    color: $color-texto;
+    border-color: $color-ia;
+  }
+}
+
+.ragMeta {
+  margin: $espacio-2 0;
+  font-size: 12px;
+  color: $color-texto-suave;
+}
+
+.ragResultados {
+  display: flex;
+  flex-direction: column;
+  gap: $espacio-3;
+  margin-top: $espacio-2;
+}
+
+.ragDoc {
+  padding: $espacio-3;
+  border-radius: $radio-s;
+  border: 1px solid $color-borde;
+  background: $color-fondo;
+
+  h4 {
+    margin: $espacio-1 0;
+    font-size: 15px;
+    font-family: $fuente-titulo;
+  }
+
+  p {
+    margin: 0;
+    font-size: 13px;
+    color: $color-texto-suave;
+    line-height: 1.45;
+  }
+}
+
+.ragDocTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+}
+
+.ragCat {
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: $color-ia;
+  font-weight: 600;
+}
+
+.ragSim {
+  color: $color-verde;
+  font-weight: 600;
+}
+
+.ragFuentes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $espacio-2;
+  margin-top: $espacio-2;
+
+  a {
+    font-size: 12px;
+    color: $color-acento;
+  }
+}
+
+.editorForm {
+  display: flex;
+  flex-direction: column;
+  gap: $espacio-3;
+}
+
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: $espacio-1;
+  font-size: 13px;
+  color: $color-texto-suave;
+
+  input,
+  select,
+  textarea {
+    padding: $espacio-2 $espacio-3;
+    border-radius: $radio-s;
+    border: 1px solid $color-borde;
+    background: $color-fondo;
+    color: $color-texto;
+    font-family: $fuente-texto;
+    font-size: 13px;
+    line-height: 1.45;
+  }
+}
+
+.editorAcciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $espacio-2;
+}
+
+.boton,
+.botonAcento,
+.botonIa {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: $espacio-2 $espacio-4;
+  border-radius: $radio-s;
+  border: 1px solid $color-borde;
+  background: $color-superficie-2;
+  color: $color-texto;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+
+  &:hover:not(:disabled) {
+    filter: brightness(1.1);
+  }
+
+  &:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+}
+
+.botonAcento {
+  background: rgba($color-acento, 0.16);
+  border-color: rgba($color-acento, 0.5);
+  color: $color-acento;
+}
+
+.botonIa {
+  background: rgba($color-ia, 0.16);
+  border-color: rgba($color-ia, 0.5);
+  color: $color-ia;
+}
+
+.feedbackOk {
+  margin: 0;
+  color: $color-verde;
+  font-size: 13px;
+}

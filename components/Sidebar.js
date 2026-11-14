@@ -3,11 +3,15 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { SelectorTripulanteBarra } from '@/components/tripulacion/TripulacionPantalla';
+import { useSesion } from '@/lib/auth/sesion';
+import { estaSupabaseConfigurado } from '@/lib/supabase/cliente';
 import { RUTAS } from '@/lib/rutas';
 import styles from './Sidebar.module.scss';
 
 export default function Sidebar() {
   const pathname = usePathname();
+  const sesion = useSesion();
+  const supabaseOk = estaSupabaseConfigurado();
 
   return (
     <aside className={styles.lateral}>
@@ -39,6 +43,17 @@ export default function Sidebar() {
       </nav>
 
       <SelectorTripulanteBarra />
+
+      <Link
+        href="/login"
+        className={`${styles.cuentaCard} ${pathname.startsWith('/login') ? styles.cuentaActiva : ''}`}
+      >
+        <div className={styles.cuentaTop}>
+          <span className={styles.cuentaNombre}>{sesion.nombre}</span>
+          <span className={`${styles.nubeDot} ${supabaseOk ? styles.nubeOk : ''}`} title={supabaseOk ? 'Supabase PostgreSQL conectado' : 'Modo local'}>●</span>
+        </div>
+        <span className={styles.cuentaMeta}>{sesion.entorno} · Cambiar rol</span>
+      </Link>
 
       <p className={styles.aviso}>Prototipo educativo. No es un dispositivo médico.</p>
     </aside>

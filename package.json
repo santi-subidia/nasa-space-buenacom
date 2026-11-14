@@ -13,6 +13,7 @@
   "dependencies": {
     "@anthropic-ai/sdk": "^1.8.0",
     "@mediapipe/tasks-vision": "^1.2.3",
+    "@supabase/supabase-js": "^2.119.0",
     "dexie": "^4.4.7",
     "next": "^16.4.6",
     "react": "^19.3.1",
@@ -21,6 +22,7 @@
     "sass": "^1.108.2"
   },
   "devDependencies": {
-    "fake-indexeddb": "^6.2.8"
+    "fake-indexeddb": "^6.2.8",
+    "supabase": "^3.1.0"
   }
 }

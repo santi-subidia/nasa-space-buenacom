@@ -31,13 +31,21 @@ export const ERRORES_DE_MICROFONO = {
  * @param {object} [opciones.ventana=globalThis]  donde viven SpeechRecognition y speechSynthesis
  * @param {(estado:'inactivo'|'escuchando'|'hablando', datos?:object)=>void} [opciones.alCambiar]
  * @param {(texto:string)=>void} [opciones.alOirParcial]  texto parcial mientras se habla (ondas / subtítulo)
+ * @param {number} [opciones.pausaSilencioMs=2200]  silencio tras la última palabra antes de enviar
  */
-export function crearVoz({ ventana = globalThis, alCambiar = () => {}, alOirParcial = () => {} } = {}) {
+export function crearVoz({
+  ventana = globalThis,
+  alCambiar = () => {},
+  alOirParcial = () => {},
+  pausaSilencioMs = 2200,
+} = {}) {
   const Reconocimiento = ventana.SpeechRecognition ?? ventana.webkitSpeechRecognition ?? null;
   const sintesis = ventana.speechSynthesis ?? null;
   const Enunciado = ventana.SpeechSynthesisUtterance ?? null;
 
   let reconocimiento = null;
+  let cancelarActual = null;
+  let finalizarActual = null;
   let hablando = null; // { enunciado, resolver }
 
   const soportaReconocimiento = Boolean(Reconocimiento);
@@ -55,40 +63,124 @@ export function crearVoz({ ventana = globalThis, alCambiar = () => {}, alOirParc
       reconocimiento = r;
       r.lang = 'es-AR';
       r.interimResults = true;
-      r.continuous = false;
-      r.maxAlternatives = 1;
+      r.continuous = true;
+      r.maxAlternatives = 3;
 
-      let final = '';
+      const esContinuoReal = typeof r.stop === 'function';
+      let prefijoAcumulado = '';
+      const segmentos = [];
+      let ultimoTexto = '';
       let error = null;
+      let listoParaCerrar = false;
+      let abortado = false;
+      let temporizadorSilencio = null;
+
+      function reconstruirTexto() {
+        const actual = segmentos.map((s) => s?.texto).filter(Boolean).join(' ').trim();
+        return [prefijoAcumulado, actual].filter(Boolean).join(' ').trim();
+      }
+
+      function programarCierrePorSilencio() {
+        if (!esContinuoReal) return;
+        clearTimeout(temporizadorSilencio);
+        temporizadorSilencio = setTimeout(() => {
+          if (reconocimiento !== r || abortado) return;
+          listoParaCerrar = true;
+          try {
+            r.stop();
+          } catch {
+            r.onend?.();
+          }
+        }, pausaSilencioMs);
+      }
+
+      finalizarActual = () => {
+        if (reconocimiento !== r || abortado) return;
+        if (!ultimoTexto.trim()) {
+          detenerEscucha();
+          return;
+        }
+        listoParaCerrar = true;
+        clearTimeout(temporizadorSilencio);
+        try {
+          if (typeof r.stop === 'function') r.stop();
+          else r.onend?.();
+        } catch {
+          r.onend?.();
+        }
+      };
+
+      cancelarActual = () => {
+        abortado = true;
+        clearTimeout(temporizadorSilencio);
+        try {
+          r.abort?.();
+        } catch {
+          /* ya estaba detenido */
+        }
+        if (reconocimiento === r) {
+          reconocimiento = null;
+          finalizarActual = null;
+          cancelarActual = null;
+          alCambiar('inactivo');
+        }
+        rechazar({ codigo: 'aborted', mensaje: '' });
+      };
+
       r.onresult = (evento) => {
-        let parcial = '';
         for (let i = evento.resultIndex ?? 0; i < evento.results.length; i++) {
           const resultado = evento.results[i];
-          const texto = resultado[0]?.transcript ?? '';
-          if (resultado.isFinal) final += texto;
-          else parcial += texto;
+          const texto = (resultado?.[0]?.transcript ?? '').trim();
+          if (texto) {
+            segmentos[i] = { texto, esFinal: Boolean(resultado.isFinal) };
+          }
         }
-        alOirParcial((final + parcial).trim());
+        const unido = reconstruirTexto();
+        if (unido) {
+          ultimoTexto = unido;
+          alOirParcial(unido);
+          programarCierrePorSilencio();
+        }
       };
       r.onerror = (evento) => {
         error = evento.error;
+        if (error === 'aborted') abortado = true;
       };
       r.onend = () => {
+        // Si Chrome cerró tras una micro-pausa antes de cumplirse el silencio completo, reanudamos y acumulamos.
+        if (!abortado && !listoParaCerrar && esContinuoReal && ultimoTexto.trim() && (!error || error === 'no-speech')) {
+          prefijoAcumulado = ultimoTexto.trim();
+          segmentos.length = 0;
+          error = null;
+          try {
+            r.start();
+            return;
+          } catch {
+            /* si no se puede reanudar, cerramos con lo capturado */
+          }
+        }
+
+        clearTimeout(temporizadorSilencio);
         // Un reconocimiento viejo (cortado con abort) no debe pisar el estado del nuevo.
         if (reconocimiento === r) {
           reconocimiento = null;
+          finalizarActual = null;
+          cancelarActual = null;
           alCambiar('inactivo');
         }
-        if (error === 'aborted') rechazar({ codigo: 'aborted', mensaje: '' });
+        if (abortado || error === 'aborted') rechazar({ codigo: 'aborted', mensaje: '' });
+        else if (ultimoTexto.trim() && (!error || error === 'no-speech')) resolver(ultimoTexto.trim());
         else if (error) rechazar({ codigo: error, mensaje: ERRORES_DE_MICROFONO[error] ?? 'No pude usar el micrófono.' });
-        else if (final.trim()) resolver(final.trim());
         else rechazar({ codigo: 'no-speech', mensaje: ERRORES_DE_MICROFONO['no-speech'] });
       };
       alCambiar('escuchando');
       try {
         r.start();
       } catch (e) {
+        clearTimeout(temporizadorSilencio);
         reconocimiento = null;
+        finalizarActual = null;
+        cancelarActual = null;
         alCambiar('inactivo');
         rechazar({ codigo: 'start', mensaje: 'No pude empezar a escuchar.' });
       }
@@ -96,12 +188,17 @@ export function crearVoz({ ventana = globalThis, alCambiar = () => {}, alOirParc
   }
 
   function detenerEscucha() {
+    if (cancelarActual) {
+      cancelarActual();
+      return;
+    }
     try {
       reconocimiento?.abort?.();
     } catch {
       /* ya estaba detenido */
     }
     reconocimiento = null;
+    finalizarActual = null;
   }
 
   /** Lee el texto en voz alta. Resuelve cuando termina (o al cortarla). Sin síntesis, resuelve al instante. */
@@ -147,6 +244,7 @@ export function crearVoz({ ventana = globalThis, alCambiar = () => {}, alOirParc
     soportaReconocimiento,
     soportaSintesis,
     escuchar,
+    finalizarEscucha: () => finalizarActual?.(),
     pararDeEscuchar: detenerEscucha,
     hablar,
     callar,
