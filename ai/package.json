@@ -7,7 +7,8 @@
     "indice": "node scripts/generar-indice.js",
     "test": "node --test \"test/*.test.js\"",
     "probar": "node --env-file-if-exists=.env scripts/probar-claude.js",
-    "probar:sin-clave": "node scripts/probar-claude.js"
+    "probar:sin-clave": "node scripts/probar-claude.js",
+    "probar:junta": "node --env-file-if-exists=.env scripts/probar-junta.js"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^1.8.0"
