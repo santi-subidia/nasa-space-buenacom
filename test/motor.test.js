@@ -90,6 +90,65 @@ test('reglas compuestas adicionales: mareo pre-aterrizaje y trombo yugular', () 
   assert.deepEqual(vte.commDelayMin, [4, 20]);
 });
 
+test('toda regla compuesta que dispara el motor está definida en rules.json', async () => {
+  const fuente = await import('node:fs').then((fs) => fs.readFileSync(new URL('../lib/motor/evaluar.js', import.meta.url), 'utf8'));
+  const usadas = [...fuente.matchAll(/defs\.(\w+)/g)].map((m) => m[1]);
+  const definidas = new Set((await import('../lib/motor/rules.json', { with: { type: 'json' } })).default.composite.map((r) => r.id));
+  for (const id of usadas) assert.ok(definidas.has(id), `Falta "${id}" en rules.json`);
+});
+
+test('déficit de ejercicio: promedio semanal < 45 min (50 % del plan) da amarillo en músculos sin romper el motor', () => {
+  const bajo = evaluate(
+    [1, 2, 3, 4, 5, 6, 7].map((sol) => ({ indicator: 'exercise_min', value: 30, sol })),
+    {},
+    'mars_base',
+    { sol: 7 },
+  );
+  const alerta = bajo.alerts.find((a) => a.ruleId === 'exercise_deficit_week');
+  assert.ok(alerta);
+  assert.equal(alerta.level, 'yellow');
+  assert.equal(alerta.zone, 'muscles');
+  assert.equal(alerta.escalate, 'self');
+  assert.match(alerta.why, /30 min\/día/);
+
+  const cumple = evaluate(
+    [1, 2, 3, 4, 5, 6, 7].map((sol) => ({ indicator: 'exercise_min', value: 80, sol })),
+    {},
+    'mars_base',
+    { sol: 7 },
+  );
+  assert.ok(!cumple.alerts.some((a) => a.ruleId === 'exercise_deficit_week'));
+});
+
+test('SANS: visión borrosa + agudeza 10 puntos peor que la base da naranja en ojos y avisa al oficial médico', () => {
+  const borrosa = [{ astronautId: 'ana', bodyZone: 'eyes', code: 'blurred_vision', severity: 2, sol: 10 }];
+  const sans = evaluate([{ indicator: 'visual_acuity', value: 80, sol: 10 }], { visual_acuity: 92 }, 'mars_base', {
+    sol: 10,
+    symptoms: borrosa,
+  });
+  const alerta = sans.alerts.find((a) => a.ruleId === 'sans_visual_change');
+  assert.ok(alerta);
+  assert.equal(alerta.level, 'orange');
+  assert.equal(alerta.escalate, 'cmo');
+  assert.equal(sans.zoneLevels.eyes, 'orange');
+  assert.match(alerta.why, /-12 respecto a tu base de 92/);
+
+  // Sin síntoma no dispara la compuesta (queda el aviso por línea base).
+  const sinSintoma = evaluate([{ indicator: 'visual_acuity', value: 80, sol: 10 }], { visual_acuity: 92 }, 'mars_base', { sol: 10 });
+  assert.ok(!sinSintoma.alerts.some((a) => a.ruleId === 'sans_visual_change'));
+
+  // Con síntoma pero agudeza igual a la base, tampoco.
+  const estable = evaluate([{ indicator: 'visual_acuity', value: 90, sol: 10 }], { visual_acuity: 92 }, 'mars_base', {
+    sol: 10,
+    symptoms: borrosa,
+  });
+  assert.ok(!estable.alerts.some((a) => a.ruleId === 'sans_visual_change'));
+
+  // Sin línea base, usa el piso del rango verde (80).
+  const sinBase = evaluate([{ indicator: 'visual_acuity', value: 70, sol: 10 }], {}, 'mars_base', { sol: 10, symptoms: borrosa });
+  assert.ok(sinBase.alerts.some((a) => a.ruleId === 'sans_visual_change'));
+});
+
 test('mergeLevel: la IA puede subir el nivel, nunca bajarlo', () => {
   assert.equal(mergeLevel('orange', 'yellow'), 'orange');
   assert.equal(mergeLevel('orange', 'green'), 'orange');

@@ -64,7 +64,7 @@ test('generarTareasJornada genera las 12 tareas diarias y las semanales según e
       (t) =>
         t.recurrence === 'weekly' &&
         t.title === 'Test visual SANS' &&
-        t.ruta === '/mapa?zona=eyes',
+        t.ruta === '/registrar#vision',
     ),
   );
 

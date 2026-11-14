@@ -45,7 +45,7 @@ const ETIQUETA_RUTA = {
   '/entrenador': 'Entrenador',
   '/enlace': 'Enlace Tierra',
   '/vega': 'Vega',
-  '/mapa?zona=eyes': 'Mapa (Ojos)',
+  '/registrar#vision': 'Test visual',
 };
 
 function claseEstado(estado) {

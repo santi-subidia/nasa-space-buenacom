@@ -42,6 +42,7 @@ desafio-health-monitoring/
 │  ├─ plan-final.md                   ← ⭐ DECISIONES FINALES: solo notebook, jornada, notificaciones, Claude Haiku 5.5, cámara, reparto
 │  ├─ plan-proyecto.md                ← problema, propuesta de valor, alcance MVP, cronograma de 48 h
 │  ├─ prototipo.md                    ← stack, modelo de datos, motor de reglas, pantallas, demo
+│  ├─ trazabilidad.md                 ← funcionalidad ↔ desafío ↔ documentación NASA ↔ código, y huecos
 │  └─ dispositivos-y-sensores.md      ← hardware disponible (iPhone, Android, Watch, AirPods, notebook) y qué medir
 └─ fuentes/                           ← 76 páginas originales de nasa.gov (EN) + índice de PDFs
    ├─ INDICE.md                       ← todas las URL + Evidence Reports + Risk Records + DAGs

@@ -115,4 +115,18 @@ select.campo { width: auto; text-align: left; }
   user-select: none;
 }
 .padRojo { background: $color-rojo; }
+
+// ── Test visual (E direccional) ────────────────────────
+.check { display: flex; align-items: center; gap: $espacio-2; margin: 0 0 $espacio-3; font-size: 14px; input { accent-color: $color-acento; } }
+.lienzoVision {
+  height: 150px;
+  display: grid;
+  place-items: center;
+  background: #fff;
+  border-radius: $radio-m;
+  svg { fill: #000; display: block; }
+}
+.flechas { display: flex; justify-content: center; gap: $espacio-2; .boton { font-size: 20px; min-width: 56px; } }
+.enlace { align-self: center; background: none; border: 0; color: $color-texto-suave; font: inherit; font-size: 13px; text-decoration: underline; cursor: pointer; }
+.resultado + .nota, .boton + .nota { display: block; margin-top: $espacio-3; }
 .padVerde { background: $color-verde; }

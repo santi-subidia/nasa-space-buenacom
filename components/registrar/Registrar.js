@@ -11,6 +11,7 @@ import { SOL_ACTUAL } from '@/lib/mock/mision';
 import { WATCH, valoresDelDia } from '@/lib/mock/indicadores';
 import FotoPiel from './FotoPiel';
 import TestReaccion from './TestReaccion';
+import TestVision from './TestVision';
 import styles from './Registrar.module.scss';
 
 // Rango válido de cada campo editable.
@@ -35,6 +36,7 @@ export default function Registrar() {
   const [edit, setEdit] = useState({}); // solo lo que se tocó: { clave: texto }
   const [foto, setFoto] = useState(null); // { blob, code, severity }
   const [reaccion, setReaccion] = useState(null); // { ms, intentos }
+  const [vision, setVision] = useState(null); // { puntos, niveles, borrosa }
   const [guardando, setGuardando] = useState(false);
   const [errorGuardado, setErrorGuardado] = useState(null);
 
@@ -53,7 +55,9 @@ export default function Registrar() {
   const cambios = Object.keys(LIMITES).filter(
     (k) => edit[k] !== undefined && edit[k] !== '' && !error(k) && num(edit[k]) !== base[k]?.valor,
   );
-  const nada = cambios.length === 0 && !foto && !reaccion;
+  const nada = cambios.length === 0 && !foto && !reaccion && !vision;
+  const lecturasExtra = (reaccion ? 1 : 0) + (vision ? 1 : 0);
+  const sintomasExtra = (foto ? 1 : 0) + (vision?.borrosa ? 1 : 0);
 
   async function guardar(e) {
     e.preventDefault();
@@ -62,9 +66,13 @@ export default function Registrar() {
 
     const nuevas = cambios.map((k) => ({ indicator: k, value: num(edit[k]), sol: SOL_ACTUAL }));
     if (reaccion) nuevas.push({ indicator: 'reaction_ms', value: reaccion.ms, sol: SOL_ACTUAL });
+    if (vision) nuevas.push({ indicator: 'visual_acuity', value: vision.puntos, sol: SOL_ACTUAL });
 
     try {
       if (nuevas.length) await guardarLecturas(nuevas);
+      if (vision?.borrosa) {
+        await guardarSintoma({ bodyZone: 'eyes', code: 'blurred_vision', severity: 2, sol: SOL_ACTUAL });
+      }
       if (foto) {
         const photoBlobId = await guardarFoto(foto.blob);
         await guardarSintoma({ bodyZone: 'immune', code: foto.code, severity: foto.severity, sol: SOL_ACTUAL, photoBlobId });
@@ -190,7 +198,9 @@ export default function Registrar() {
                 ? 'Revisá los valores marcados.'
                 : nada
                   ? 'No hay cambios para guardar.'
-                  : `Se guardarán ${cambios.length + (reaccion ? 1 : 0)} lecturas${foto ? ' y 1 foto' : ''}.`}
+                  : `Se ${cambios.length + lecturasExtra === 1 ? 'guardará 1 lectura' : `guardarán ${cambios.length + lecturasExtra} lecturas`}${foto ? ' y 1 foto' : ''}${
+                      vision?.borrosa ? ' y el síntoma "visión borrosa"' : ''
+                    }.`}
             </span>
           </div>
         </form>
@@ -198,6 +208,7 @@ export default function Registrar() {
         <div className={styles.lateral}>
           <FotoPiel valor={foto} onChange={setFoto} />
           <TestReaccion resultado={reaccion} onTerminar={setReaccion} />
+          <TestVision resultado={vision} onTerminar={setVision} />
         </div>
       </div>
     </div>

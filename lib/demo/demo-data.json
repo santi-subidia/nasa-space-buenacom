@@ -25,7 +25,8 @@
         "spo2": 98,
         "water_ml": 2150,
         "exercise_min": 90,
-        "stress": 3
+        "stress": 3,
+        "visual_acuity": 92
       }
     },
     {
@@ -44,7 +45,8 @@
         "spo2": 98,
         "water_ml": 2200,
         "exercise_min": 90,
-        "stress": 2
+        "stress": 2,
+        "visual_acuity": 94
       }
     }
   ],

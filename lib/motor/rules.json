@@ -290,6 +290,31 @@
       "source": "doc/fuentes/02-riesgos/risk-of-behavioral-conditions-and-psychiatric-disorders.md"
     },
     {
+      "id": "exercise_deficit_week",
+      "level": "yellow",
+      "zone": "muscles",
+      "escalate": "self",
+      "title": "Ejercicio por debajo del plan",
+      "actions": [
+        "Retomar la meta de 90 min diarios con fuerza y aeróbico: el Entrenador te guía",
+        "Sin carga de ejercicio se pierde hueso (1–1,5 % por mes) y músculo (10–12 %)"
+      ],
+      "source": "doc/fuentes/02-riesgos/risk-of-reduced-cardiorespiratory-and-musculoskeletal-fitness.md"
+    },
+    {
+      "id": "sans_visual_change",
+      "level": "orange",
+      "zone": "eyes",
+      "escalate": "cmo",
+      "title": "Posible cambio visual por SANS",
+      "actions": [
+        "Avisar al oficial médico de la tripulación y programar fondo de ojo / OCT",
+        "Repetir el test de agudeza visual mañana a la misma distancia y con la misma luz",
+        "Evitar tareas de precisión visual hasta la evaluación"
+      ],
+      "source": "doc/fuentes/02-riesgos/risk-of-spaceflight-associated-neuro-ocular-syndrome-sans.md"
+    },
+    {
       "id": "renal_stone_risk",
       "level": "red",
       "zone": "kidneys",

@@ -49,6 +49,7 @@ export default function MapaCorporal() {
   const vals = valoresDelDia(lecturas, SOL_ACTUAL);
   const parametro = useSearchParams().get('zona');
   const herpeSol = sintomas.find((s) => s.code === 'cold_sore' || s.code === 'rash');
+  const borrosa = [...sintomas].reverse().find((s) => s.code === 'blurred_vision' && (s.sol == null || s.sol >= SOL_ACTUAL - 6));
 
   // Zona con indicadores resueltos y nivel = máximo entre sus indicadores y el motor de reglas (#3).
   const zonas = ZONAS.map((z) => {
@@ -59,6 +60,9 @@ export default function MapaCorporal() {
           valor: `Herpes labial · sol ${herpeSol.sol ?? 41}`,
           nivel: evaluacion.zoneLevels?.immune || 'orange',
         };
+      }
+      if (z.id === 'eyes' && !i.clave && borrosa) {
+        return { nombre: 'Visión borrosa', valor: `Sí · sol ${borrosa.sol ?? SOL_ACTUAL}`, nivel: 'yellow' };
       }
       if (!i.clave) return i;
       const dato = vals[i.clave];
@@ -204,6 +208,11 @@ export default function MapaCorporal() {
             </p>
 
             <div className={styles.botones}>
+              {zona.test && (
+                <Link className={styles.boton} href={zona.test.href}>
+                  {zona.test.etiqueta}
+                </Link>
+              )}
               <Link className={styles.boton} href="/tendencias">Ver tendencias</Link>
               <Link className={`${styles.boton} ${styles.ia}`} href={`/vega?zona=${zona.id}`}>
                 ✦ Preguntar a Vega
