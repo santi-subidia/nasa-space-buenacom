@@ -1,0 +1,263 @@
+[
+  {
+    "id": "demo-answer-eva-sol42",
+    "kind": "answer",
+    "clave": "c7f70efa7a87aba0",
+    "input": {
+      "pregunta": "¿Puedo hacer la EVA de mañana?",
+      "riesgos": [
+        "eva",
+        "descompresion",
+        "capacidad-fisica"
+      ]
+    },
+    "output": {
+      "texto": "Hoy no conviene confirmar la EVA porque estás en nivel naranja: dormiste cinco horas y tres décimas, tenés treinta y siete con seis grados y estrés alto, factores que aumentan la fatiga y el riesgo dentro del traje [F1][F2]. Avisá hoy al oficial médico para evaluar si corresponde reprogramar la salida [F2].",
+      "json": null,
+      "llamadas": []
+    },
+    "ts": "2026-11-14T14:20:00.000Z"
+  },
+  {
+    "id": "demo-answer-sueno-sol42",
+    "kind": "answer",
+    "clave": "39b97285bd374a9a",
+    "input": {
+      "pregunta": "Explicame mi sueño",
+      "riesgos": [
+        "sueno-horarios"
+      ]
+    },
+    "output": {
+      "texto": "En los últimos tres soles promediaste unas cinco horas y dos décimas de sueño, por debajo del rango óptimo de siete a nueve horas [F1]. En Marte el sol dura veinticuatro horas con treinta y siete minutos y la sobrecarga desajusta el reloj biológico, afectando tu alerta y tus defensas [F2]. Priorizá el sueño protegido esta noche.",
+      "json": null,
+      "llamadas": []
+    },
+    "ts": "2026-11-14T14:20:05.000Z"
+  },
+  {
+    "id": "15ff565e-6e4b-4545-812e-22a48fdc66c6",
+    "kind": "answer",
+    "clave": "46e6050216683f10",
+    "input": {
+      "pregunta": "¿Por qué me salió herpes?",
+      "riesgos": [
+        "inmunidad"
+      ]
+    },
+    "output": {
+      "texto": "Puede ser una reactivación de un virus que ya tenías latente en el cuerpo. El estrés, el mal sueño y los cambios del entorno en el espacio pueden despertarlo [F1]. En tu caso se juntan dormir unas cinco horas y media, estrés alto y treinta y siete con seis grados, por eso la alerta está en naranja [F2]. Avisá hoy al oficial médico y, mientras tanto, no compartas utensilios.",
+      "json": null,
+      "llamadas": []
+    },
+    "ts": "2026-11-14T14:13:59.129Z"
+  },
+  {
+    "id": "demo-answer-deshidratado-sol42",
+    "kind": "answer",
+    "clave": "08a85ae7a00ab0ec",
+    "input": {
+      "pregunta": "¿Cómo sé si estoy deshidratado?",
+      "riesgos": [
+        "nutricion"
+      ]
+    },
+    "output": {
+      "texto": "Fijate en la sed, el color de la orina, el cansancio y cuánto líquido venís sumando frente a tu meta diaria [F1]. Hoy llevás mil novecientos mililitros de agua, por debajo de tu base habitual, y una hidratación baja junto con menos ejercicio eleva el riesgo de cálculos renales [F2]. Tomá agua de a poco durante el sol.",
+      "json": null,
+      "llamadas": []
+    },
+    "ts": "2026-11-14T14:20:10.000Z"
+  },
+  {
+    "id": "demo-answer-herpes-labial-sol42",
+    "kind": "answer",
+    "clave": "18eab395ba07b882",
+    "input": {
+      "pregunta": "¿Por qué me salió herpes labial?",
+      "riesgos": [
+        "inmunidad"
+      ]
+    },
+    "output": {
+      "texto": "Puede deberse a la reactivación de un virus latente favorecida por el estrés sostenido, la falta de sueño y el entorno cerrado de la misión [F1]. Como además tenés treinta y siete con seis grados, el motor marcó nivel naranja [F2]. Avisá hoy al oficial médico y no compartas vasos ni cubiertos mientras tanto.",
+      "json": null,
+      "llamadas": []
+    },
+    "ts": "2026-11-14T14:20:15.000Z"
+  },
+  {
+    "id": "bf80be70-d4e7-4a02-970a-fa195940864e",
+    "kind": "board",
+    "clave": "d1181284ff960daf",
+    "input": {
+      "astronauta": "ana",
+      "sol": 42,
+      "nivelMotor": "orange",
+      "alertas": [
+        "viral_reactivation"
+      ]
+    },
+    "output": {
+      "texto": "{\"especialistas\":[{\"id\":\"cardiovascular\",\"nivel\":\"yellow\",\"opinion\":\"La frecuencia cardíaca en reposo subió de 62 a 70 lpm en 7 soles, mientras la presión se mantiene estable (121/78 mmHg), sin síntomas cardiovasculares. Conviene vigilar la tendencia a diario, porque puede reflejar desacondicionamiento, estrés o infección.\",\"fuentes\":[\"F5\",\"F6\"]},{\"id\":\"inmunidad\",\"nivel\":\"orange\",\"opinion\":\"Herpes labial reportado (gravedad 2), temperatura en ascenso de 36,8 a 37,6 °C y estrés de 8/10 sostenido sugieren una posible reactivación viral. Podría haber contagio a la tripulación, por lo que hay que evaluar con el oficial médico. Todavía no hay fiebre (≥ 38 °C).\",\"fuentes\":[\"F1\",\"F2\"]},{\"id\":\"conducta-y-sueno\",\"nivel\":\"orange\",\"opinion\":\"El sueño promedió 5,2 h en los últimos 3 soles, con ánimo de 2/5 durante 3 días seguidos y estrés de 8. Esta combinación cumple la regla de riesgo de sueño y de ánimo, y puede estar debilitando las defensas. Hace falta un plan de descanso y de apoyo confidencial.\",\"fuentes\":[\"F8\",\"F9\",\"F16\",\"F17\"]},{\"id\":\"hueso-y-musculo\",\"nivel\":\"yellow\",\"opinion\":\"El ejercicio de resistencia bajó de 90 a 40 min por día y el consumo de agua bajó de 2400 a 1900 ml. Esa combinación aumenta el riesgo de cálculo renal por el calcio liberado del hueso, así que hay que reforzar la hidratación y revisar la dieta con calcio y vitamina D.\",\"fuentes\":[\"F10\",\"F12\"]},{\"id\":\"ambiente\",\"nivel\":\"orange\",\"opinion\":\"Las lesiones de herpes labial pueden transmitirse por utensilios compartidos. Conviene mantener la higiene, usar utensilios individuales y limpiar superficies comunes hasta aclarar el cuadro.\",\"fuentes\":[\"F3\",\"F4\"]}],\"desacuerdos\":[{\"tema\":\"Causa del cuadro: reactivación viral o efecto del sueño insuficiente\",\"posiciones\":[{\"especialista\":\"inmunidad\",\"postura\":\"El herpes labial y el aumento de temperatura sugieren una reactivación viral que podría contagiarse, y hay que descartar infección.\"},{\"especialista\":\"conducta-y-sueno\",\"postura\":\"El sueño de 5,2 h y el estrés alto pueden estar debilitando la inmunidad y explicar parte del malestar.\"}],\"resolucion\":\"Las dos lecturas son compatibles y se suman. Se trata como orange con dos frentes: higiene y no compartir utensilios por el posible contagio, y plan de sueño de 7 a 8 h. No se diagnostica; el oficial médico decide si corresponde hisopado u otros estudios.\"}],\"sintesis\":{\"nivel\":\"orange\",\"accion\":\"avisar_oficial_medico\",\"decision\":\"Avisar hoy al oficial médico, mantener higiene estricta con utensilios individuales y priorizar entre 7 y 8 h de sueño, sin señales rojas presentes.\",\"razones\":[\"El piso del motor es orange y la evidencia lo sostiene: herpes labial, temperatura en ascenso y 3 días de sueño menor a 6 h con estrés 8.\",\"Posible reactivación viral con riesgo de contagio a la tripulación.\",\"Ánimo en 2/5 durante 3 días seguidos, que requiere seguimiento confidencial.\",\"No hay dolor de pecho, falta de aire, hinchazón de cuello o brazo ni ideas de autolesión, así que no corresponde escalar a red.\"]},\"informe_astronauta\":{\"titulo\":\"Cuidándote esta semana\",\"resumen\":\"Ana, esta semana tu cuerpo viene con más carga: dormiste poco, el estrés está alto y apareció el herpes labial. Por eso te pedimos que avises hoy al oficial médico. No es una emergencia, pero queremos cuidarte y evitar que se contagie alguien más. También vemos que tomás menos agua y hacés menos ejercicio, así que vamos a ajustar eso con calma.\",\"que_hacer\":[\"Avisá hoy al oficial médico y contale cómo te sentís.\",\"Usá tus propios utensilios y no compartas vasos, cubiertos ni toallas.\",\"Intentá dormir entre 7 y 8 horas, con horarios parecidos cada día.\",\"Tomá agua de a poco durante el día y medí tu temperatura cada mañana.\"]},\"informe_tecnico\":{\"resumen_clinico\":\"Tripulante Ana, sol 42, mars_base. Herpes labial reportado S41 07:10 (gravedad 2). Temperatura 37,6 °C (S42 06:45), en ascenso desde 36,8 °C (S36). Sueño promedio 5,2 h en S40-S42. Estrés 8/10 y ánimo 2/5 durante 3 días. FC en reposo 70 lpm (S42), en ascenso desde 62 lpm (S36). TA 121/78 mmHg, estable. Ejercicio 40 min/día (desde 90). Agua 1900 ml/día (desde 2400). Sin fiebre ni señales rojas. Nivel del motor orange, mantenido.\",\"hallazgos\":[\"Posible reactivación viral (herpes labial) con riesgo de contagio a la tripulación.\",\"Temperatura 37,6 °C, sin fiebre, con tendencia ascendente en 7 soles.\",\"Privación crónica de sueño (5,2 h promedio) con estrés 8/10 y ánimo 2/5 sostenidos.\",\"FC en reposo en aumento de 8 lpm en 7 soles, con TA normal.\",\"Descenso de ingesta hídrica (-500 ml/día) y de ejercicio de resistencia, factores de riesgo para cálculo renal.\"],\"plan\":[\"Aviso al oficial médico en el día para evaluación.\",\"Considerar hisopado o estudio de lesión según criterio médico.\",\"Aislamiento de utensilios y limpieza de superficies compartidas.\",\"Plan de sueño de 7 a 8 h y registro diario de horas de sueño.\",\"Recuperar hidratación (objetivo a definir por médico) y registrar ingesta diaria.\",\"Monitoreo diario de temperatura, FC en reposo y checklist de síntomas, con reevaluación si T ≥ 38 °C o aparecen síntomas nuevos.\"],\"recordatorios\":[{\"titulo\":\"Control de temperatura y síntomas\",\"sol\":43,\"detalle\":\"Medir temperatura, revisar lesiones y completar checklist de síntomas.\"},{\"titulo\":\"Revisión de sueño y ánimo\",\"sol\":43,\"detalle\":\"Revisar horas de sueño de las últimas 3 noches y la escala de ánimo con el oficial médico.\"},{\"titulo\":\"Hisopado de lesión si el médico lo indica\",\"sol\":44,\"detalle\":\"Hisopado dentro de 2 soles, según criterio del oficial médico.\"},{\"titulo\":\"Reevaluación de tendencias\",\"sol\":45,\"detalle\":\"Revisar FC en reposo, TA, hidratación y ejercicio, y decidir si se mantiene o baja el nivel.\"}]}}",
+      "json": {
+        "especialistas": [
+          {
+            "id": "cardiovascular",
+            "nivel": "yellow",
+            "opinion": "La frecuencia cardíaca en reposo subió de 62 a 70 lpm en 7 soles, mientras la presión se mantiene estable (121/78 mmHg), sin síntomas cardiovasculares. Conviene vigilar la tendencia a diario, porque puede reflejar desacondicionamiento, estrés o infección.",
+            "fuentes": [
+              "F5",
+              "F6"
+            ]
+          },
+          {
+            "id": "inmunidad",
+            "nivel": "orange",
+            "opinion": "Herpes labial reportado (gravedad 2), temperatura en ascenso de 36,8 a 37,6 °C y estrés de 8/10 sostenido sugieren una posible reactivación viral. Podría haber contagio a la tripulación, por lo que hay que evaluar con el oficial médico. Todavía no hay fiebre (≥ 38 °C).",
+            "fuentes": [
+              "F1",
+              "F2"
+            ]
+          },
+          {
+            "id": "conducta-y-sueno",
+            "nivel": "orange",
+            "opinion": "El sueño promedió 5,2 h en los últimos 3 soles, con ánimo de 2/5 durante 3 días seguidos y estrés de 8. Esta combinación cumple la regla de riesgo de sueño y de ánimo, y puede estar debilitando las defensas. Hace falta un plan de descanso y de apoyo confidencial.",
+            "fuentes": [
+              "F8",
+              "F9",
+              "F16",
+              "F17"
+            ]
+          },
+          {
+            "id": "hueso-y-musculo",
+            "nivel": "yellow",
+            "opinion": "El ejercicio de resistencia bajó de 90 a 40 min por día y el consumo de agua bajó de 2400 a 1900 ml. Esa combinación aumenta el riesgo de cálculo renal por el calcio liberado del hueso, así que hay que reforzar la hidratación y revisar la dieta con calcio y vitamina D.",
+            "fuentes": [
+              "F10",
+              "F12"
+            ]
+          },
+          {
+            "id": "ambiente",
+            "nivel": "orange",
+            "opinion": "Las lesiones de herpes labial pueden transmitirse por utensilios compartidos. Conviene mantener la higiene, usar utensilios individuales y limpiar superficies comunes hasta aclarar el cuadro.",
+            "fuentes": [
+              "F3",
+              "F4"
+            ]
+          }
+        ],
+        "desacuerdos": [
+          {
+            "tema": "Causa del cuadro: reactivación viral o efecto del sueño insuficiente",
+            "posiciones": [
+              {
+                "especialista": "inmunidad",
+                "postura": "El herpes labial y el aumento de temperatura sugieren una reactivación viral que podría contagiarse, y hay que descartar infección."
+              },
+              {
+                "especialista": "conducta-y-sueno",
+                "postura": "El sueño de 5,2 h y el estrés alto pueden estar debilitando la inmunidad y explicar parte del malestar."
+              }
+            ],
+            "resolucion": "Las dos lecturas son compatibles y se suman. Se trata como orange con dos frentes: higiene y no compartir utensilios por el posible contagio, y plan de sueño de 7 a 8 h. No se diagnostica; el oficial médico decide si corresponde hisopado u otros estudios."
+          }
+        ],
+        "sintesis": {
+          "nivel": "orange",
+          "accion": "avisar_oficial_medico",
+          "decision": "Avisar hoy al oficial médico, mantener higiene estricta con utensilios individuales y priorizar entre 7 y 8 h de sueño, sin señales rojas presentes.",
+          "razones": [
+            "El piso del motor es orange y la evidencia lo sostiene: herpes labial, temperatura en ascenso y 3 días de sueño menor a 6 h con estrés 8.",
+            "Posible reactivación viral con riesgo de contagio a la tripulación.",
+            "Ánimo en 2/5 durante 3 días seguidos, que requiere seguimiento confidencial.",
+            "No hay dolor de pecho, falta de aire, hinchazón de cuello o brazo ni ideas de autolesión, así que no corresponde escalar a red."
+          ]
+        },
+        "informe_astronauta": {
+          "titulo": "Cuidándote esta semana",
+          "resumen": "Ana, esta semana tu cuerpo viene con más carga: dormiste poco, el estrés está alto y apareció el herpes labial. Por eso te pedimos que avises hoy al oficial médico. No es una emergencia, pero queremos cuidarte y evitar que se contagie alguien más. También vemos que tomás menos agua y hacés menos ejercicio, así que vamos a ajustar eso con calma.",
+          "que_hacer": [
+            "Avisá hoy al oficial médico y contale cómo te sentís.",
+            "Usá tus propios utensilios y no compartas vasos, cubiertos ni toallas.",
+            "Intentá dormir entre 7 y 8 horas, con horarios parecidos cada día.",
+            "Tomá agua de a poco durante el día y medí tu temperatura cada mañana."
+          ]
+        },
+        "informe_tecnico": {
+          "resumen_clinico": "Tripulante Ana, sol 42, mars_base. Herpes labial reportado S41 07:10 (gravedad 2). Temperatura 37,6 °C (S42 06:45), en ascenso desde 36,8 °C (S36). Sueño promedio 5,2 h en S40-S42. Estrés 8/10 y ánimo 2/5 durante 3 días. FC en reposo 70 lpm (S42), en ascenso desde 62 lpm (S36). TA 121/78 mmHg, estable. Ejercicio 40 min/día (desde 90). Agua 1900 ml/día (desde 2400). Sin fiebre ni señales rojas. Nivel del motor orange, mantenido.",
+          "hallazgos": [
+            "Posible reactivación viral (herpes labial) con riesgo de contagio a la tripulación.",
+            "Temperatura 37,6 °C, sin fiebre, con tendencia ascendente en 7 soles.",
+            "Privación crónica de sueño (5,2 h promedio) con estrés 8/10 y ánimo 2/5 sostenidos.",
+            "FC en reposo en aumento de 8 lpm en 7 soles, con TA normal.",
+            "Descenso de ingesta hídrica (-500 ml/día) y de ejercicio de resistencia, factores de riesgo para cálculo renal."
+          ],
+          "plan": [
+            "Aviso al oficial médico en el día para evaluación.",
+            "Considerar hisopado o estudio de lesión según criterio médico.",
+            "Aislamiento de utensilios y limpieza de superficies compartidas.",
+            "Plan de sueño de 7 a 8 h y registro diario de horas de sueño.",
+            "Recuperar hidratación (objetivo a definir por médico) y registrar ingesta diaria.",
+            "Monitoreo diario de temperatura, FC en reposo y checklist de síntomas, con reevaluación si T ≥ 38 °C o aparecen síntomas nuevos."
+          ],
+          "recordatorios": [
+            {
+              "titulo": "Control de temperatura y síntomas",
+              "sol": 43,
+              "detalle": "Medir temperatura, revisar lesiones y completar checklist de síntomas."
+            },
+            {
+              "titulo": "Revisión de sueño y ánimo",
+              "sol": 43,
+              "detalle": "Revisar horas de sueño de las últimas 3 noches y la escala de ánimo con el oficial médico."
+            },
+            {
+              "titulo": "Hisopado de lesión si el médico lo indica",
+              "sol": 44,
+              "detalle": "Hisopado dentro de 2 soles, según criterio del oficial médico."
+            },
+            {
+              "titulo": "Reevaluación de tendencias",
+              "sol": 45,
+              "detalle": "Revisar FC en reposo, TA, hidratación y ejercicio, y decidir si se mantiene o baja el nivel."
+            }
+          ]
+        }
+      },
+      "llamadas": []
+    },
+    "ts": "2026-11-14T13:31:28.047Z"
+  },
+  {
+    "id": "demo-exercise-sentadilla-sol42",
+    "kind": "exercise",
+    "clave": "c8dcd786ec6d2a75",
+    "input": {
+      "ejercicio": "sentadilla",
+      "metricas": {
+        "repeticiones": 12,
+        "anguloRodillaMin": 88,
+        "correccionesEnVivo": 2
+      },
+      "nivelMotor": "orange"
+    },
+    "output": {
+      "texto": "{\"comentario\":\"Muy bien, completaste doce repeticiones de sentadilla con buena profundidad. Como hoy estás con febrícula y nivel naranja, ajustamos el resto del entrenamiento a veinte minutos de intensidad liviana.\",\"correccion\":\"Mantené la espalda recta al subir para proteger la zona lumbar.\",\"plan\":{\"minutos\":20,\"intensidad\":\"liviana\",\"motivo\":\"Febrícula de 37,6 °C y poco sueño en Sol 42: hoy 20 minutos de intensidad liviana.\"}}",
+      "json": {
+        "comentario": "Muy bien, completaste doce repeticiones de sentadilla con buena profundidad. Como hoy estás con febrícula y nivel naranja, ajustamos el resto del entrenamiento a veinte minutos de intensidad liviana.",
+        "correccion": "Mantené la espalda recta al subir para proteger la zona lumbar.",
+        "plan": {
+          "minutos": 20,
+          "intensidad": "liviana",
+          "motivo": "Febrícula de 37,6 °C y poco sueño en Sol 42: hoy 20 minutos de intensidad liviana."
+        }
+      },
+      "llamadas": []
+    },
+    "ts": "2026-11-14T14:20:20.000Z"
+  }
+]

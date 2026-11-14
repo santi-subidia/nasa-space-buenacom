@@ -75,16 +75,36 @@ export const RUTA_POR_DEFECTO = process.env.AI_RESULTS_FILE
   ? resolve(process.env.AI_RESULTS_FILE)
   : join(dirname(fileURLToPath(import.meta.url)), '.data', 'ai-results.json');
 
-export function crearAlmacenEnArchivo(ruta = RUTA_POR_DEFECTO) {
-  let inicial = [];
-  if (existsSync(ruta)) {
-    try {
-      const leido = JSON.parse(readFileSync(ruta, 'utf8'));
-      if (Array.isArray(leido)) inicial = leido;
-    } catch {
-      // Archivo dañado: se empieza de cero antes que romper la app.
-    }
+/** Respaldo versionado en el repo para demo pública / sin red (`IA_APAGADA=1`). */
+export const RUTA_RESPALDO_DEMO = join(dirname(fileURLToPath(import.meta.url)), 'respaldo-demo.json');
+
+function leerArregloJson(archivo) {
+  if (!existsSync(archivo)) return [];
+  try {
+    const leido = JSON.parse(readFileSync(archivo, 'utf8'));
+    return Array.isArray(leido) ? leido : [];
+  } catch {
+    // Archivo dañado: se ignora antes que romper la app.
+    return [];
   }
+}
+
+export function crearAlmacenEnArchivo(ruta = RUTA_POR_DEFECTO) {
+  const inicial = [];
+  const ids = new Set();
+  const agregarSinDuplicar = (lista) => {
+    for (const item of lista) {
+      if (item && item.id && ids.has(item.id)) continue;
+      if (item?.id) ids.add(item.id);
+      inicial.push(item);
+    }
+  };
+
+  if (ruta === RUTA_POR_DEFECTO && existsSync(RUTA_RESPALDO_DEMO)) {
+    agregarSinDuplicar(leerArregloJson(RUTA_RESPALDO_DEMO));
+  }
+  agregarSinDuplicar(leerArregloJson(ruta));
+
   return crearAlmacen(inicial, (items) => {
     mkdirSync(dirname(ruta), { recursive: true });
     const temporal = `${ruta}.${process.pid}.tmp`;

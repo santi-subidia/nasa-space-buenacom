@@ -75,7 +75,7 @@ export default function JornadaPantalla() {
     progresoPct,
     alternarTarea,
     cambiarDiaSemana,
-  } = useJornada('ana');
+  } = useJornada();
 
   const conteos = {
     all: tareas.length,

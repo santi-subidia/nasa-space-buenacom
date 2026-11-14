@@ -1,6 +1,7 @@
 import { Inter, Space_Grotesk } from 'next/font/google';
 import Sidebar from '@/components/Sidebar';
 import ConsolaDev from '@/components/ConsolaDev';
+import CentroNotificaciones from '@/components/notificaciones/CentroNotificaciones';
 import '@/styles/globals.scss';
 import styles from './layout.module.scss';
 
@@ -24,6 +25,7 @@ export default function RootLayout({ children }) {
           <Sidebar />
           <main className={styles.contenido}>{children}</main>
         </div>
+        <CentroNotificaciones />
         <ConsolaDev />
       </body>
     </html>

@@ -1,0 +1,352 @@
+@use 'tokens' as *;
+
+.contenedor {
+  position: fixed;
+  top: $espacio-4;
+  right: $espacio-5;
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: $espacio-2;
+  pointer-events: none;
+}
+
+.barraSuperior {
+  display: flex;
+  align-items: center;
+  gap: $espacio-2;
+  pointer-events: auto;
+}
+
+.indicadorSueno {
+  display: inline-flex;
+  align-items: center;
+  gap: $espacio-1;
+  padding: 6px $espacio-3;
+  border-radius: 999px;
+  background: rgba(167, 139, 250, 0.16);
+  border: 1px solid rgba(167, 139, 250, 0.45);
+  color: $color-ia;
+  font-size: 12px;
+  font-weight: 600;
+  backdrop-filter: blur(8px);
+}
+
+.pastilla {
+  display: inline-flex;
+  align-items: center;
+  gap: $espacio-2;
+  padding: 7px $espacio-3;
+  border-radius: 999px;
+  background: $color-superficie;
+  border: 1px solid $color-borde;
+  color: $color-texto;
+  font-family: $fuente-texto;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  transition: background 0.15s ease, border-color 0.15s ease;
+
+  &:hover,
+  &.pastillaActiva {
+    background: $color-superficie-2;
+    border-color: $color-acento;
+  }
+}
+
+.contador {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: 999px;
+  background: rgba(91, 200, 245, 0.18);
+  color: $color-acento;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.toasts {
+  display: flex;
+  flex-direction: column;
+  gap: $espacio-2;
+  width: 340px;
+  max-width: calc(100vw - 32px);
+  pointer-events: auto;
+}
+
+.toast {
+  background: rgba(18, 26, 46, 0.96);
+  border: 1px solid $color-borde;
+  border-left-width: 4px;
+  border-radius: $radio-m;
+  padding: $espacio-3;
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.48);
+  backdrop-filter: blur(10px);
+}
+
+.toastCabecera,
+.itemCabecera {
+  display: flex;
+  align-items: center;
+  gap: $espacio-2;
+  margin-bottom: $espacio-1;
+}
+
+.tipoBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.simbolo {
+  font-size: 12px;
+  line-height: 1;
+}
+
+.hora {
+  margin-left: auto;
+  font-size: 12px;
+  color: $color-texto-suave;
+  font-variant-numeric: tabular-nums;
+}
+
+.btnCerrar {
+  border: none;
+  background: transparent;
+  color: $color-texto-suave;
+  font-size: 16px;
+  line-height: 1;
+  padding: 2px 6px;
+  border-radius: $radio-s;
+  cursor: pointer;
+
+  &:hover {
+    background: $color-superficie-2;
+    color: $color-texto;
+  }
+}
+
+.toastTitulo,
+.itemTitulo {
+  margin: 0;
+  font-family: $fuente-titulo;
+  font-size: 14px;
+  font-weight: 600;
+  color: $color-texto;
+}
+
+.toastMensaje,
+.itemMensaje {
+  margin: $espacio-1 0 0;
+  font-size: 13px;
+  color: $color-texto-suave;
+  line-height: 1.4;
+}
+
+.enlaceRuta {
+  display: inline-block;
+  margin-top: $espacio-2;
+  font-size: 12px;
+  font-weight: 600;
+  color: $color-acento;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.panel {
+  width: 390px;
+  max-width: calc(100vw - 32px);
+  max-height: calc(100vh - 88px);
+  display: flex;
+  flex-direction: column;
+  gap: $espacio-3;
+  padding: $espacio-4;
+  background: $color-superficie;
+  border: 1px solid $color-borde;
+  border-radius: $radio-l;
+  box-shadow: 0 20px 44px rgba(0, 0, 0, 0.55);
+  pointer-events: auto;
+}
+
+.panelHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: $espacio-2;
+}
+
+.panelTitulo {
+  font-size: 16px;
+  font-weight: 700;
+  color: $color-texto;
+}
+
+.panelSub {
+  margin: 2px 0 0;
+  font-size: 12px;
+  color: $color-texto-suave;
+}
+
+.controles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $espacio-2;
+}
+
+.btnControl,
+.btnLimpiar {
+  padding: 6px 10px;
+  border-radius: $radio-s;
+  border: 1px solid $color-borde;
+  background: $color-superficie-2;
+  color: $color-texto;
+  font-family: $fuente-texto;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+
+  &:hover:not(:disabled) {
+    border-color: $color-acento;
+  }
+
+  &:disabled {
+    opacity: 0.65;
+    cursor: default;
+  }
+}
+
+.controlActivo {
+  border-color: rgba(91, 200, 245, 0.55);
+  background: rgba(91, 200, 245, 0.12);
+}
+
+.btnLimpiar {
+  margin-left: auto;
+  color: $color-texto-suave;
+}
+
+.estadoSueno {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: $espacio-2 $espacio-3;
+  border-radius: $radio-s;
+  background: $color-superficie-2;
+  border: 1px solid $color-borde;
+  font-size: 12px;
+  color: $color-texto-suave;
+}
+
+.silenciadasValor {
+  color: $color-ia;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+
+.pruebasBloque {
+  display: flex;
+  flex-direction: column;
+  gap: $espacio-2;
+}
+
+.pruebasTitulo {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: $color-texto-suave;
+}
+
+.pruebasGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.btnPrueba {
+  padding: 5px 10px;
+  border-radius: 999px;
+  border: 1px solid $color-borde;
+  background: $color-superficie-2;
+  color: $color-texto;
+  font-family: $fuente-texto;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+
+  &:hover {
+    filter: brightness(1.12);
+  }
+}
+
+.lista {
+  display: flex;
+  flex-direction: column;
+  gap: $espacio-2;
+  overflow-y: auto;
+  padding-right: 2px;
+}
+
+.vacio {
+  margin: 0;
+  padding: $espacio-4;
+  border-radius: $radio-m;
+  background: $color-superficie-2;
+  color: $color-texto-suave;
+  font-size: 13px;
+  text-align: center;
+}
+
+.item {
+  padding: $espacio-3;
+  border-radius: $radio-m;
+  background: $color-superficie-2;
+  border: 1px solid $color-borde;
+  border-left-width: 4px;
+}
+
+.colorBlue {
+  border-left-color: $color-acento;
+  .tipoBadge {
+    color: $color-acento;
+  }
+}
+
+.colorOrange {
+  border-left-color: $color-naranja;
+  .tipoBadge {
+    color: $color-naranja;
+  }
+}
+
+.colorRed {
+  border-left-color: $color-rojo;
+  .tipoBadge {
+    color: $color-rojo;
+  }
+}
+
+.colorViolet {
+  border-left-color: $color-ia;
+  .tipoBadge {
+    color: $color-ia;
+  }
+}
+
+.colorGreen {
+  border-left-color: $color-verde;
+  .tipoBadge {
+    color: $color-verde;
+  }
+}
