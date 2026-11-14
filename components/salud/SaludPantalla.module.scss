@@ -1,0 +1,175 @@
+.pantalla {
+  color: #f3f6ff;
+  width: 100%;
+  font-family: var(--font-inter), sans-serif;
+  h2, h3 { font-family: inherit; }
+  --nivel: #93a8c4;
+  [data-nivel='green'] { --nivel: #16e8c3; }
+  [data-nivel='yellow'] { --nivel: #ffc54a; }
+  [data-nivel='orange'] { --nivel: #ff9d5c; }
+  [data-nivel='red'] { --nivel: #ff577f; }
+  [data-nivel='sin-datos'] { --nivel: #93a8c4; }
+}
+.paneles { display: grid; grid-template-columns: minmax(0, 906fr) minmax(0, 449fr); gap: 17px; margin-top: 49px; }
+.principal, .lateral { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.lateral { gap: 13px; }
+.panel { border: 1px solid #294766; border-radius: 16px; background: linear-gradient(120deg, #0a1426, #051724); min-width: 0; }
+.tituloSeccion { text-transform: uppercase; letter-spacing: 2px; color: #b9cbe2; font-size: 14px; font-weight: 500; line-height: 1.25; }
+.estado { height: 226px; padding: 12px 22px 15px; border-color: #6e48ad; background: linear-gradient(120deg, #10152d, #061825); }
+.estadoCuerpo { display: flex; align-items: center; height: calc(100% - 18px); gap: 20px; }
+.resumenEstado { flex: 1; min-width: 0; padding-left: 3px; }
+.pulso { width: 40px; height: 32px; display: block; }
+.resumenEstado h3 { font-size: 31px; font-weight: 700; line-height: 1.1; margin: 3px 0 10px; }
+.resumenEstado p { max-width: 470px; color: #b9cbe2; font-size: 14px; line-height: 1.4; margin: 0 0 13px; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden; }
+.etiqueta { display: inline-flex; align-items: center; justify-content: center; gap: 7px; white-space: nowrap; color: var(--nivel); font-size: 11px; font-weight: 500; background: color-mix(in srgb, var(--nivel) 7%, #071a27); border: 1px solid color-mix(in srgb, var(--nivel) 32%, #163342); border-radius: 99px; padding: 4px 10px; line-height: 1.3; }
+.etiqueta i, .estadoVital i, .punto { display: inline-block; flex-shrink: 0; width: 8px; height: 8px; border-radius: 50%; background: var(--nivel); box-shadow: 0 0 8px color-mix(in srgb, var(--nivel) 35%, transparent); }
+.estados { flex: 0 0 309px; list-style: none; padding: 0; margin: 0 3px 0 0; display: flex; flex-direction: column; gap: 6px; }
+.estados li { display: flex; align-items: center; gap: 12px; padding: 5px 10px; height: 38px; border: 1px solid #19354b; border-radius: 9px; background: linear-gradient(110deg, #111d34, #081f2b); font-size: 13px; }
+.estados li > img { width: 24px; height: 24px; }
+.estados li > span:nth-child(2) { flex: 1; }
+.estados .etiqueta { font-size: 10px; padding: 4px 8px; gap: 5px; }
+.vitales { height: 204px; padding: 10px 14px 12px; }
+.vitales .tituloSeccion { margin-left: 7px; margin-bottom: 10px; }
+.grillaVitales { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 7px 10px; }
+.vital { display: flex; gap: 16px; height: 74px; padding: 6px 10px; border-radius: 12px; border: 1px solid #19354b; background: linear-gradient(110deg, #111d34, #081f2b); min-width: 0; }
+.iconoRedondo { width: 43px; height: 43px; border-radius: 50%; background: #22254a; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.vital .iconoRedondo { margin-top: 1px; background: #0a3545; }
+.vital:first-child .iconoRedondo { background: #312036; }
+.vital:nth-child(3) .iconoRedondo { background: #211e42; }
+.vital > div { min-width: 0; }
+.vital h3 { color: #b9cbe2; font-size: 12px; line-height: 1.3; font-weight: 500; }
+.valor { margin: 1px 0 0; font-size: 22px; font-weight: 600; line-height: 1.2; white-space: nowrap; }
+.valor small { color: #b9cbe2; font-size: 12px; font-weight: 400; }
+.estadoVital { display: flex; align-items: center; gap: 8px; color: #b9cbe2; font-size: 10px; margin-top: 4px; line-height: 1.2; }
+.estadoVital i { width: 7px; height: 7px; }
+.indicadoresFisicos { padding: 10px 14px 13px; height: 282px; }
+.indicadoresFisicos .tituloSeccion { margin: 0 0 10px 7px; }
+.grillaFisicos { display: grid; grid-template-columns: minmax(0, 207fr) minmax(0, 322fr) minmax(0, 315fr); grid-template-rows: 109px 109px; gap: 12px; }
+.indicador { display: flex; align-items: flex-start; gap: 15px; position: relative; padding: 13px 10px 29px; min-width: 0; border-radius: 12px; border: 1px solid #19354b; background: linear-gradient(110deg, #111d34, #081f2b); }
+.datoIndicador { min-width: 0; }
+.indicador h3 { font-size: 13px; font-weight: 500; line-height: 1.15; min-height: 28px; }
+.indicador .valor { margin-top: 1px; font-size: 24px; }
+.notaIndicador { position: absolute; left: 15px; right: 15px; bottom: 9px; font-size: 10px; color: #93a8c4; }
+.barra { position: absolute; bottom: 12px; left: 14px; right: 14px; height: 8px; border-radius: 4px; background: #22394f; overflow: hidden; }
+.barra span { display: block; height: 100%; background: #17e7f6; box-shadow: 0 0 10px #17e7f66b; border-radius: inherit; }
+.grillaFisicos > :nth-child(3) { grid-row: 2; grid-column: 1; }
+.grillaFisicos > :nth-child(4) { grid-row: 2; grid-column: 2; }
+.vozFisica { grid-row: 1 / 3; grid-column: 3; }
+.pantalla[data-salud='mental'] .estado { height: 246px; }
+.pantalla[data-salud='mental'] .resumenEstado h3 { font-size: 36px; }
+.pantalla[data-salud='mental'] .estadoCuerpo { gap: 25px; }
+.indicadoresMentales { height: 165px; padding: 10px 14px 16px; margin-top: 4px; }
+.indicadoresMentales .tituloSeccion { margin: 0 0 17px 7px; }
+.grillaMental { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px; }
+.grillaMental .indicador { height: 104px; }
+.grillaMental .valor { font-size: 25px; }
+.grillaMental .indicador h3 { font-size: 14px; min-height: 24px; }
+.grillaMental .iconoRedondo { width: 43px; height: 43px; }
+.inferior { display: grid; gap: 12px; min-width: 0; }
+.inferiorMental { grid-template-columns: minmax(0, 579fr) minmax(0, 315fr); height: 230px; margin-top: 3px; }
+.inferiorRiesgos { grid-template-columns: minmax(0, 557fr) minmax(0, 335fr); height: 211px; gap: 14px; }
+.tendencia { padding: 12px 24px 6px; }
+.tendencia .tituloSeccion { font-size: 15px; letter-spacing: 1.8px; white-space: nowrap; }
+.tendencia > p { font-size: 12px; color: #b9cbe2; margin: 4px 0 6px; }
+.grafico { width: 100%; height: calc(100% - 44px); min-height: 100px; }
+.sinDatos { color: #93a8c4; font-size: 12px; padding: 18px 10px; margin: 0; }
+.medidor { position: relative; flex: 0 0 211px; height: 190px; color: var(--nivel); border-right: 1px solid #416080; padding-right: 20px; }
+.medidor > div { position: absolute; top: 34px; left: 0; width: 190px; display: flex; flex-direction: column; align-items: center; }
+.medidor strong { font-size: 39px; color: #f3f6ff; line-height: 1.2; }
+.medidor small { color: #b9cbe2; font-size: 12px; margin-bottom: 10px; }
+.pantalla[data-salud='riesgos'] {
+  .estado { height: 224px; }
+  .estadoCuerpo { gap: 20px; }
+  .resumenEstado { padding-left: 0; }
+  .resumenEstado p { font-size: 14px; margin-top: 10px; -webkit-line-clamp: 5; }
+  .estados { flex-basis: 337px; }
+  .estados li { height: 36px; }
+}
+.riesgos { height: 235px; padding: 12px 21px 20px; }
+.riesgos .tituloSeccion { margin-bottom: 11px; }
+.listaRiesgos { list-style: none; margin: 0; padding: 0; }
+.listaRiesgos a { display: flex; align-items: center; gap: 12px; min-height: 35px; padding: 3px 14px 3px 20px; border: 1px solid #19354b; border-radius: 10px; background: linear-gradient(110deg, #111d34, #081f2b); }
+.listaRiesgos a:hover { border-color: #6577b2; }
+.listaRiesgos a > img:first-child { width: 27px; height: 27px; margin-right: 16px; }
+.listaRiesgos strong { width: 207px; flex-shrink: 0; font-size: 13px; font-weight: 600; }
+.descripcionRiesgo { flex: 1; color: #b9cbe2; font-size: 12px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.listaRiesgos .etiqueta { padding: 4px 9px; font-size: 10px; }
+.flecha { width: 18px; height: 18px; flex-shrink: 0; }
+.alertas { min-height: 340px; padding: 11px 15px 12px; background: linear-gradient(120deg, #11192d, #06232e); border-color: #315a75; }
+.tituloPanel { display: flex; align-items: center; gap: 13px; min-height: 38px; }
+.tituloPanel > .iconoRedondo { width: 38px; height: 38px; background: #342039; }
+.tituloPanel > .iconoRedondo img { width: 22px; height: 22px; }
+.tituloPanel h2 { font-size: 17px; font-weight: 600; flex: 1; }
+.tituloPanel button { font-family: inherit; flex-shrink: 0; font-size: 10px; color: #b9cbe2; background: #0c2031; border: 1px solid #19354b; border-radius: 8px; padding: 6px 9px; cursor: pointer; }
+.tituloPanel button:hover { border-color: #17e7f6; }
+.listaAlertas { list-style: none; margin: 9px 0 0; padding: 0 0 0 9px; }
+.listaAlertas > li { padding: 9px 0; position: relative; }
+.listaAlertas > li + li::before { content: ''; position: absolute; height: 1px; background: #294357; left: 30px; right: 0; top: 0; }
+.listaAlertas summary { display: flex; align-items: flex-start; gap: 20px; cursor: pointer; list-style: none; }
+.listaAlertas summary::-webkit-details-marker { display: none; }
+.punto { margin-top: 5px; width: 10px; height: 10px; }
+.listaAlertas summary > span { flex: 1; min-width: 0; }
+.listaAlertas summary strong { color: var(--nivel); display: block; font-size: 13px; font-weight: 600; line-height: 1.3; }
+.listaAlertas summary > span > span { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; font-size: 12px; line-height: 1.35; color: #b9cbe2; margin-top: 3px; }
+.listaAlertas summary small { flex-shrink: 0; font-size: 10px; color: #b9cbe2; }
+.detalleAlerta { color: #b9cbe2; font-size: 12px; margin-left: 30px; p { margin: 10px 0; } ul { padding-left: 15px; } li { margin-bottom: 6px; } }
+.fuente { font-size: 10px; overflow-wrap: anywhere; color: #93a8c4; }
+.accionesAlerta { display: flex; flex-direction: column; gap: 9px; padding-block: 10px; color: #9cdfff; a:hover { text-decoration: underline; } }
+.protocolos { min-height: 381px; padding: 11px 18px 20px; background: linear-gradient(120deg, #0e1a2c, #05232d); border-color: #315a75; }
+.protocolos .tituloPanel { gap: 13px; margin-bottom: 9px; }
+.protocolos .tituloPanel h2 { font-size: 19px; }
+.protocolos .tituloPanel .iconoRedondo { background: #0c3748; width: 36px; height: 36px; }
+.protocolos > ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 11px; }
+.protocolos li a { display: flex; align-items: center; gap: 19px; min-height: 70px; padding: 9px 10px; border: 1px solid #29536a; border-radius: 12px; background: linear-gradient(110deg, #0e2032, #0a2a37); }
+.protocolos li a:hover { border-color: #17e7f6; }
+.protocolos li .iconoRedondo { width: 50px; height: 50px; background: #0a3c4b; }
+.protocolos li > a > span:nth-child(2) { flex: 1; min-width: 0; }
+.protocolos strong { display: block; font-size: 14px; font-weight: 600; line-height: 1.2; }
+.protocolos small { display: block; font-size: 11px; color: #b9cbe2; line-height: 1.4; margin-top: 4px; }
+.pantalla[data-salud='mental'] { .alertas { min-height: 281px; } .protocolos { min-height: 378px; } }
+.pantalla[data-salud='riesgos'] { .alertas { min-height: 327px; } .protocolos { min-height: 352px; } }
+.oculto { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
+
+@media (max-width: 1279px) {
+  .paneles { grid-template-columns: minmax(0, 1fr); margin-top: 25px; }
+  .lateral { display: grid; grid-template-columns: 1fr 1fr; }
+  .protocolos, .alertas { min-height: 0 !important; }
+  .grillaMental { gap: 10px; }
+  .indicador { gap: 10px; }
+  .grillaMental .valor { font-size: 21px; }
+  .tituloPanel h2 { font-size: 15px; }
+}
+@media (max-width: 900px) {
+  .estado, .pantalla[data-salud='mental'] .estado, .pantalla[data-salud='riesgos'] .estado { height: auto; min-height: 226px; }
+  .estadoCuerpo { flex-wrap: wrap; padding-top: 15px; }
+  .resumenEstado { flex-basis: calc(100% - 240px); }
+  .estados, .pantalla[data-salud='riesgos'] .estados { flex: 1 1 100%; display: grid; grid-template-columns: 1fr 1fr; }
+  .grillaMental { grid-template-columns: 1fr 1fr; }
+  .indicadoresMentales { height: auto; }
+  .grillaVitales { grid-template-columns: 1fr 1fr; }
+  .vitales { height: auto; }
+  .grillaFisicos { grid-template-columns: 1fr 1fr; grid-template-rows: 109px 109px 190px; }
+  .vozFisica { grid-column: 1 / 3; grid-row: 3; }
+  .indicadoresFisicos { height: auto; }
+  .inferiorMental, .inferiorRiesgos { grid-template-columns: minmax(0, 1fr); height: auto; }
+  .tendencia { height: 230px; }
+  .inferior > button { min-height: 190px !important; }
+  .lateral { grid-template-columns: 1fr; }
+  .riesgos { height: auto; }
+  .listaRiesgos a { flex-wrap: wrap; padding: 10px; }
+  .listaRiesgos strong { width: auto; flex: 1; }
+  .listaRiesgos a > img:first-child { margin-right: 0; }
+  .descripcionRiesgo { flex-basis: calc(100% - 50px); order: 2; margin-left: 40px; }
+}
+@media (max-width: 500px) {
+  .estado { padding: 13px; }
+  .estados, .pantalla[data-salud='riesgos'] .estados { grid-template-columns: 1fr; }
+  .grillaVitales, .grillaMental { grid-template-columns: 1fr; }
+  .grillaFisicos { gap: 8px; }
+  .grillaFisicos .indicador { padding: 10px 8px 25px; gap: 8px; .iconoRedondo { width: 32px; height: 32px; } h3 { font-size: 11px; } .valor { font-size: 21px; } }
+  .resumenEstado { flex-basis: 100%; }
+  .medidor { border-right: 0; margin-inline: auto; flex-basis: 190px; padding: 0; }
+  .tituloSeccion { font-size: 12px; letter-spacing: 1px; }
+  .tendencia { padding-inline: 13px; .tituloSeccion { font-size: 12px; letter-spacing: 1px; } }
+  .protocolos strong { font-size: 13px; }
+}

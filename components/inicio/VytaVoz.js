@@ -17,7 +17,7 @@ const ETIQUETAS = {
   hablando: 'VYTA está hablando. Tocá para interrumpir y hablar de nuevo.',
 };
 
-export default function VytaVoz() {
+export default function VytaVoz({ resumen, className = '' }) {
   const [sesion, setSesion] = useState(null);
   useEffect(() => {
     const motor = crearSesionVoz({ entorno: window });
@@ -28,10 +28,13 @@ export default function VytaVoz() {
   }, []);
   const { fase, error } = useSyncExternalStore(sesion?.suscribir || sinSuscripcion, sesion?.obtener || inicial, inicial);
   return (
-    <button type="button" className={styles.vega} onClick={() => sesion?.tocar()} disabled={!sesion}
+    <button type="button" className={`${styles.vega} ${resumen ? styles.compacta : ''} ${className}`} onClick={() => sesion?.tocar()} disabled={!sesion}
       data-fase={fase} aria-label={ETIQUETAS[fase]} aria-pressed={fase !== 'inactivo'} title={error || ETIQUETAS[fase]}>
       <span className={styles.vegaEncabezado}><span aria-hidden="true">✦</span> VYTA AI</span>
-      <Image src="/figma/esfera-vyta.png" width={213} height={213} sizes="213px" alt="" className={styles.esfera} />
+      <span className={resumen ? styles.cuerpoVoz : undefined}>
+        <Image src="/figma/esfera-vyta.png" width={213} height={213} sizes={resumen ? '106px' : '213px'} alt="" className={styles.esfera} />
+        {resumen && <span className={styles.resumenVoz}>{resumen}</span>}
+      </span>
       <span className={styles.oculto} role="status">{ETIQUETAS[fase]}</span>
       {error && <span className={styles.errorVoz} role="alert">{error}</span>}
     </button>

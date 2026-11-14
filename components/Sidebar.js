@@ -13,12 +13,14 @@ export default function Sidebar() {
   const sesion = useSesion();
   const supabaseOk = estaSupabaseConfigurado();
   const esInicio = pathname === '/';
+  const esSalud = pathname.startsWith('/salud');
+  const esActividad = pathname.startsWith('/actividad') || pathname === '/entrenador';
 
-  if (esInicio) {
+  if (esInicio || esSalud || esActividad) {
     const menu = [
       { href: '/', etiqueta: 'Vista General', icono: 'inicio' },
-      { href: '/mapa', etiqueta: 'Salud', icono: 'salud' },
-      { href: '/entrenador', etiqueta: 'Actividad', icono: 'actividad' },
+      { href: '/salud/fisica', etiqueta: 'Salud', icono: 'salud' },
+      { href: '/actividad', etiqueta: 'Actividad', icono: 'actividad' },
       { href: '/tendencias', etiqueta: 'Analítica', icono: 'analitica' },
       { href: '/enlace', etiqueta: 'Informes', icono: 'informes' },
     ];
@@ -29,14 +31,30 @@ export default function Sidebar() {
         </Link>
         <nav aria-label="Pantallas principales">
           <ul className={styles.lista}>
-            {menu.map((ruta) => (
-              <li key={ruta.href}>
-                <Link href={ruta.href} aria-current={ruta.href === '/' ? 'page' : undefined} className={`${styles.enlace} ${ruta.href === '/' ? styles.activo : ''}`}>
+            {menu.map((ruta) => {
+              const activa = (ruta.icono === 'inicio' && esInicio) || (ruta.icono === 'salud' && esSalud) || (ruta.icono === 'actividad' && esActividad);
+              return (
+              <li key={ruta.href} className={esSalud && ruta.icono === 'salud' ? styles.grupoSalud : undefined}>
+                <Link href={ruta.href} aria-current={activa ? 'page' : undefined} className={`${styles.enlace} ${activa ? styles.activo : ''}`}>
                   <img src={`/figma/nav-${ruta.icono}.svg`} width="24" height="24" alt="" />
                   {ruta.etiqueta}
                 </Link>
+                {esSalud && ruta.icono === 'salud' && (
+                  <ul className={styles.submenu} aria-label="Secciones de salud">
+                    {[
+                      { href: '/salud/fisica', nombre: 'Física' },
+                      { href: '/salud/mental', nombre: 'Mental' },
+                      { href: '/salud/riesgos', nombre: 'Riesgos' },
+                    ].map((subruta) => (
+                      <li key={subruta.href}>
+                        <Link href={subruta.href} aria-current={pathname === subruta.href ? 'page' : undefined}>{subruta.nombre}</Link>
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </li>
-            ))}
+              );
+            })}
           </ul>
         </nav>
       </aside>

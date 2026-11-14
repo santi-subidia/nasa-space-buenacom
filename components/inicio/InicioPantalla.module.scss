@@ -264,6 +264,19 @@
 .vegaEncabezado > span { font-size: 30px; color: #b896ff; line-height: 1; filter: drop-shadow(0 0 9px #a078ff99); }
 .esfera { object-fit: contain; margin-top: 12px; transform-origin: center; transition: filter 0.25s; }
 .errorVoz { position: absolute; bottom: 12px; left: 16px; right: 16px; color: #efbfd1; font-size: 11px; line-height: 1.35; text-align: center; }
+.vega.compacta {
+  height: 100%;
+  min-height: 0;
+  border-radius: 16px;
+  border-color: #6e48ad;
+  padding: 13px 18px 18px;
+  background: linear-gradient(125deg, #10152d, #061825);
+  .vegaEncabezado { font-size: 18px; gap: 12px; }
+  .esfera { width: 106px; height: 106px; margin: 0; flex-shrink: 0; }
+  .errorVoz { background: #0a1329ed; padding: 5px; border-radius: 5px; }
+}
+.cuerpoVoz { display: flex; align-items: center; gap: 16px; width: 100%; flex: 1; padding-top: 17px; }
+.resumenVoz { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 6; overflow: hidden; border-left: 1px solid #4f6788; padding-left: 16px; color: #f3f6ff; font-size: 14px; line-height: 1.5; }
 @keyframes esferaInvitar {
   0%, 100% { transform: scale(1); filter: drop-shadow(0 0 5px #a078ff33); }
   50% { transform: scale(1.055); filter: drop-shadow(0 0 15px #a078ff88); }

@@ -5,6 +5,9 @@ import Link from 'next/link';
 import { crearComentarioDeSerie } from '@/ai/entrenador/serie.js';
 import { crearVoz } from '@/ai/vega/voz.js';
 import Card from '@/components/Card';
+import CabeceraMision from '@/components/layout/CabeceraMision';
+import EjerciciosPendientes from '@/components/actividad/EjerciciosPendientes';
+import { useJornada } from '@/lib/datos/jornada';
 import { EJERCICIOS, crearEntrenamiento } from '@/lib/entrenador/ejercicios';
 import { armarPayloadSerie } from '@/lib/entrenador/resumen';
 import { guardarLecturas, leerLecturas, useLecturas } from '@/lib/datos/lecturas';
@@ -56,6 +59,7 @@ export default function Entrenador() {
   const comentarioIdRef = useRef(0);
 
   const lecturas = useLecturas();
+  const { astronauta, tareas, cargando: cargandoMision } = useJornada(null, SOL_ACTUAL);
   const lecturasRef = useRef(lecturas);
   lecturasRef.current = lecturas;
 
@@ -313,34 +317,15 @@ export default function Entrenador() {
   const e = EJERCICIOS[ejercicio];
   const esPlancha = ejercicio === 'plancha';
   const activo = pantalla === 'activo';
+  const ejercicios = Object.values(EJERCICIOS);
+  const indiceEjercicio = ejercicios.findIndex((x) => x.id === ejercicio);
+  // Meta visual del prototipo. El contador y el cierre de cada serie siguen siendo los del entrenador.
+  const metaRepeticiones = esPlancha ? null : 15;
 
   return (
-    <div className={styles.pantalla}>
-      <header className={styles.encabezado}>
-        <div>
-          <h1>Entrenador</h1>
-          <p className={styles.sub}>Contá repeticiones y corregí la postura con la cámara de la notebook · {MISION.rachaEjercicio} días de racha</p>
-        </div>
-        <label className={styles.voz}>
-          <input type="checkbox" checked={voz} onChange={(ev) => setVoz(ev.target.checked)} /> Voz
-        </label>
-      </header>
-
-      <div className={styles.ejercicios} role="radiogroup" aria-label="Ejercicio">
-        {Object.values(EJERCICIOS).map((x) => (
-          <button
-            key={x.id}
-            type="button"
-            role="radio"
-            aria-checked={ejercicio === x.id}
-            className={ejercicio === x.id ? styles.activo : ''}
-            onClick={() => cambiar(x.id)}
-            disabled={pantalla === 'cargando'}
-          >
-            <span aria-hidden="true">{x.icono}</span> {x.nombre}
-          </button>
-        ))}
-      </div>
+    <div className={styles.pantalla} data-dashboard>
+      <CabeceraMision nombre={astronauta?.name || MISION.astronauta.nombre} titulo={astronauta?.titulo || 'Tripulante de misión'} />
+      <h1 className={styles.oculto}>Actividad / Ejercicios físicos</h1>
 
       {pantalla !== 'resumen' && (
         <div className={styles.cuerpo}>
@@ -368,22 +353,30 @@ export default function Entrenador() {
             )}
           </div>
 
-          <div className={styles.lado}>
-            <Card titulo={e.nombre}>
-              <p className={styles.contador} aria-live="polite">
-                {esPlancha ? estado.segundos : estado.reps}
-                <small> {e.unidad}</small>
-              </p>
-              <p className={styles.fase}>{activo ? TEXTO_FASE[estado.fase] ?? estado.fase : 'Esperando la cámara'}</p>
-              {activo && estado.angulo !== null && <p className={styles.dato}>Ángulo: {estado.angulo}°</p>}
-              {activo && !estado.valido && <p className={styles.dato}>No te veo bien: ubicate de costado.</p>}
-            </Card>
-
-            <button type="button" className={`${styles.boton} ${styles.primario}`} onClick={terminar} disabled={!activo}>
-              Terminar y guardar
-            </button>
-            <p className={styles.nota}>Se guardan los minutos de ejercicio y se suma a tu racha.</p>
-          </div>
+          <aside className={styles.lado} aria-label="Entrenamiento actual">
+            <div className={styles.pasoCabecera}><p>Ejercicio {indiceEjercicio + 1} de {ejercicios.length}</p><Link href="/actividad" aria-label="Volver a elegir actividad" title="Volver a Actividad">↩</Link></div>
+            <div className={styles.ejercicios} role="radiogroup" aria-label="Elegir ejercicio">
+              {ejercicios.map((x, i) => <button key={x.id} type="button" role="radio" aria-checked={ejercicio === x.id}
+                aria-label={`${i + 1}. ${x.nombre}`} title={x.nombre} className={ejercicio === x.id ? styles.activo : ''}
+                onClick={() => cambiar(x.id)} disabled={pantalla === 'cargando'}><span className={styles.oculto}>{x.nombre}</span></button>)}
+            </div>
+            <h2 className={styles.nombreEjercicio}>{e.nombre}</h2>
+            <section className={styles.panelContador} aria-label={`Contador de ${e.nombre.toLowerCase()}`}>
+              <p className={styles.contador} aria-live="polite" aria-atomic="true">{esPlancha ? estado.segundos : estado.reps}{metaRepeticiones && <span> / {metaRepeticiones}</span>}</p>
+              <p className={styles.unidadContador}>{esPlancha ? 'Segundos' : 'Repeticiones'}</p>
+              <div className={styles.progresoContador} aria-hidden="true"><span style={{ width: metaRepeticiones ? `${Math.min(100, estado.reps / metaRepeticiones * 100)}%` : '0%' }} /></div>
+            </section>
+            <EjerciciosPendientes tareas={tareas} cargando={cargandoMision} entrenamiento>
+              <div className={styles.controles}>
+                <p className={styles.fase} role="status">{activo ? TEXTO_FASE[estado.fase] ?? estado.fase : pantalla === 'cargando' ? 'Preparando la cámara…' : 'Esperando la cámara'}</p>
+                {activo && estado.angulo !== null && <p className={styles.dato}>Ángulo: {estado.angulo}°</p>}
+                {activo && !estado.valido && <p className={styles.dato}>No te veo bien: ubicate de costado.</p>}
+                <label className={styles.voz}><input type="checkbox" checked={voz} onChange={(ev) => setVoz(ev.target.checked)} /> Indicaciones por voz</label>
+                <button type="button" className={`${styles.boton} ${styles.primario}`} onClick={terminar} disabled={!activo}>Terminar y guardar</button>
+                <p className={styles.nota}>Se guardan los minutos de ejercicio de esta sesión.</p>
+              </div>
+            </EjerciciosPendientes>
+          </aside>
         </div>
       )}
 
@@ -422,6 +415,7 @@ export default function Entrenador() {
               <Link href="/" className={styles.boton}>
                 Volver al inicio
               </Link>
+              <label className={styles.voz}><input type="checkbox" checked={voz} onChange={(ev) => setVoz(ev.target.checked)} /> Voz</label>
             </div>
           </Card>
 
