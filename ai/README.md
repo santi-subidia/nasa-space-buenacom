@@ -170,3 +170,22 @@ const { comentario, correccion, plan, origen } = await entrenador.comentar({
 - **La IA solo baja la carga:** `entrenador/plan.js` aplica el techo del nivel del motor (verde: plan completo · amarillo: moderada, ≤ 60 min · naranja: liviana, ≤ 30 min · rojo: reposo). Aunque Claude proponga más, el servidor lo corta y marca `limitadoPorMotor`.
 - **Sin IA igual comenta:** si no hay red o la respuesta guardada es de otra serie, se usa un comentario local con las métricas de ESTA serie y el mismo techo (`origen: 'local'`).
 - **Fotos:** solo jpeg/png/webp en base64, máximo 3 y ~1,8 MB cada una (`validarImagenes`). Van como bloques de imagen y no entran en la clave de lo guardado. Claude describe la técnica, no el cuerpo ni quién es.
+
+## ¿Cómo me ves hoy? (issue #20)
+
+La foto de hoy se compara con la foto base del inicio de la misión; Claude describe **observaciones** (ojeras, palidez, hinchazón, lesión en la piel, fatiga en los ojos) y cierra con una acción concreta. Vive en `ai/cara/`.
+
+```js
+import { crearComoMeVes } from '…/ai/cara/cliente.js';
+const r = await crearComoMeVes({ voz }).observar({
+  fotoBase, fotoHoy,                       // { media_type: 'image/jpeg', data: base64 }
+  consentimiento: true,                    // obligatorio: sin esto no sale ninguna foto
+  muestrasParpadeo,                        // [{ t, cierre }] ≥ 10 s de blendshapes eyeBlink de MediaPipe (opcional)
+});   // → { aviso, resumen, observaciones: [{ aspecto, intensidad, descripcion }], accion, zonas, sugerirAvisoAlOficial, fatiga }
+```
+
+- **Es una observación, no un diagnóstico:** `aviso` lo agrega el servidor SIEMPRE (no depende de lo que diga la IA) y el cliente lo lee en voz alta. El prompt prohíbe diagnosticar y comentar identidad, edad, sexo, etnia o apariencia: solo cambios entre las dos fotos.
+- **Consentimiento y privacidad:** sin `consentimiento: true` el servidor responde 400 y no llama a la IA. Las fotos no se guardan (lo guardado no las incluye, solo una huella para reconocer las mismas dos fotos).
+- **Fatiga con la cámara** (`cara/parpadeo.js`): convierte la serie de MediaPipe en parpadeos por minuto y % de tiempo con los ojos cerrados (PERCLOS), y `clasificarFatiga` da `normal | atencion | alto`. Los umbrales son orientativos y configurables. Sin red igual se devuelve esa lectura.
+- **Zonas del mapa:** `ojeras` / `fatiga_ojos` → cerebro, `hinchazon` → ojos, `palidez` / `lesion_piel` → inmunidad. Una observación `notable` activa `sugerirAvisoAlOficial`.
+- **Sin red:** solo se muestra una comparación guardada si son exactamente las mismas fotos; si no, no se presenta la observación de otras.
