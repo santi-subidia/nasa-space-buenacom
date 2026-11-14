@@ -220,3 +220,20 @@ test('POST check con la red caída NO devuelve la medición vieja de otra frase'
   assert.deepEqual(cuerpo.mediciones, []);
   assert.equal(almacen.listar('answer').length, 1); // no guardó nada nuevo
 });
+
+test('mientras Vega habla, la fase es "preguntando" (no "pensando"), y al final queda "completo"', async () => {
+  const fases = [];
+  let chequeo;
+  const voz = {
+    soportaReconocimiento: true,
+    escuchar: async () => '37 con 6',
+    hablar: async () => { fases.push(chequeo.obtener().fase); },
+    callar() {},
+    pararDeEscuchar() {},
+  };
+  chequeo = crearChequeoPorVoz({ voz, pasos: [PASOS_MATUTINOS[1]], alRegistrar: () => {}, fetchFn: sinServidor });
+  await chequeo.iniciar();
+  // pregunta, "Anoté…" y el cierre
+  assert.deepEqual(fases, ['preguntando', 'preguntando', 'completo']);
+  assert.equal(chequeo.obtener().fase, 'completo');
+});

@@ -63,6 +63,7 @@ export function useVega() {
   return {
     ...estado,
     listo: Boolean(motor),
+    voz: motor?.voz ?? null,
     soportaVoz: motor ? motor.voz.soportaReconocimiento : true,
     soportaLectura: motor ? motor.voz.soportaSintesis : true,
     preguntar: (texto) => motor?.sesion.preguntar(texto),
