@@ -151,3 +151,22 @@ const vista = armarVistaJunta(r, 'Ana');   // ai/junta/vista.js → lo que dibuj
 - **Tamaño:** ≈ 29K tokens de entrada medidos con la API (fichas de ≤ 8 riesgos con sus fuentes principales, cacheables) y ≈ 4,5K de salida: ≈ US$ 0,006 por junta y ~25 s. Presupuesto de contexto de 45K; el total nunca llega a 100K.
 - **Resultado guardado:** cada junta válida se guarda como `AiResult` (`kind: 'board'`); una salida incompleta no se guarda ni se muestra (cae en la última guardada).
 - **Probarla de verdad:** `npm run probar:junta` (necesita `ai/.env`).
+
+## Comentario del entrenador (issue #19)
+
+Al terminar una serie (#18) se manda `tipo: 'exercise'` con las métricas de MediaPipe, 2–3 fotos clave y el estado de salud de hoy. Vega lo comenta en voz alta y ajusta el plan ("tenés febrícula, hoy 20 min livianos"). Vive en `ai/entrenador/`.
+
+```js
+import { crearComentarioDeSerie } from '…/ai/entrenador/serie.js';
+const entrenador = crearComentarioDeSerie({ voz });          // el mismo crearVoz() de Vega
+const { comentario, correccion, plan, origen } = await entrenador.comentar({
+  ejercicio: 'sentadilla',
+  metricas: { repeticiones: 12, anguloRodillaMin: 88, correccionesEnVivo: 2 },
+  fotos: [{ media_type: 'image/jpeg', data: base64 }, …],   // 2–3 fotos clave, sin el prefijo data:
+  estado: { nivelMotor: 'orange', resumen: 'Febrícula de 37,6 °C; sueño 5,3 h' },
+});   // plan → { minutos, intensidad, motivo, limitadoPorMotor }
+```
+
+- **La IA solo baja la carga:** `entrenador/plan.js` aplica el techo del nivel del motor (verde: plan completo · amarillo: moderada, ≤ 60 min · naranja: liviana, ≤ 30 min · rojo: reposo). Aunque Claude proponga más, el servidor lo corta y marca `limitadoPorMotor`.
+- **Sin IA igual comenta:** si no hay red o la respuesta guardada es de otra serie, se usa un comentario local con las métricas de ESTA serie y el mismo techo (`origen: 'local'`).
+- **Fotos:** solo jpeg/png/webp en base64, máximo 3 y ~1,8 MB cada una (`validarImagenes`). Van como bloques de imagen y no entran en la clave de lo guardado. Claude describe la técnica, no el cuerpo ni quién es.

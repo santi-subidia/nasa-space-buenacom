@@ -32,3 +32,22 @@ export function datosComoTexto(datos) {
   if (texto.length > MAX_DATOS) throw new ErrorDePeticion(`"datosDelDia" pasa de ${MAX_DATOS} caracteres`);
   return texto;
 }
+
+const TIPOS_DE_IMAGEN = ['image/jpeg', 'image/png', 'image/webp'];
+const MAX_CARACTERES_IMAGEN = 2_500_000; // ~1,8 MB de imagen en base64
+const BASE64 = /^[A-Za-z0-9+/]+={0,2}$/;
+
+/**
+ * Fotos que manda el navegador: [{ media_type, data }] con `data` en base64 (sin el prefijo data:).
+ * Solo se aceptan jpeg/png/webp y un máximo de fotos por consulta.
+ */
+export function validarImagenes(imagenes = [], { max = 3, campo = 'fotos' } = {}) {
+  if (!Array.isArray(imagenes) || imagenes.length > max) throw new ErrorDePeticion(`"${campo}" debe ser una lista de hasta ${max} imágenes`);
+  return imagenes.map((img, i) => {
+    if (!TIPOS_DE_IMAGEN.includes(img?.media_type)) throw new ErrorDePeticion(`"${campo}[${i}]": el tipo debe ser ${TIPOS_DE_IMAGEN.join(', ')}`);
+    if (typeof img.data !== 'string' || !img.data || img.data.length > MAX_CARACTERES_IMAGEN || !BASE64.test(img.data)) {
+      throw new ErrorDePeticion(`"${campo}[${i}]": la imagen debe venir en base64 y pesar menos de ~1,8 MB`);
+    }
+    return { media_type: img.media_type, data: img.data };
+  });
+}

@@ -4,6 +4,7 @@ import { getContext } from './contexto.js';
 import { HERRAMIENTA_REGISTRAR_MEDICION, IDS_DE_VOZ, INSTRUCCIONES_CHEQUEO, validarMedicion } from './chequeo/indicadores.js';
 import { INSTRUCCIONES_VEGA } from './vega.js';
 import { elegirRiesgos } from './vega/riesgos.js';
+import { tareaEntrenador } from './entrenador/tarea.js';
 import { tareaJunta } from './junta/tarea.js';
 import { datosComoTexto, ErrorDePeticion, validarEsfuerzo, validarRiesgos, validarTexto } from './validar.js';
 
@@ -69,7 +70,7 @@ function tareaCheck(body) {
   };
 }
 
-export const TAREAS = { answer: tareaAnswer, check: tareaCheck, board: tareaJunta };
+export const TAREAS = { answer: tareaAnswer, check: tareaCheck, board: tareaJunta, exercise: tareaEntrenador };
 
 export function construirTarea(body) {
   if (!body || typeof body !== 'object' || Array.isArray(body)) throw new ErrorDePeticion('El cuerpo debe ser un objeto JSON');
