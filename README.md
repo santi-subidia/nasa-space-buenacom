@@ -17,7 +17,7 @@ Abrir <http://localhost:3000>. Otros comandos: `npm run build`, `npm start` y `n
 
 `npm install` también copia el WASM de MediaPipe a `public/mediapipe/` (lo usa el Entrenador, no se sube al repo). El modelo de pose se baja del CDN de Google la primera vez; para trabajar sin conexión ver `.env.example`.
 
-Para la IA: copiar `.env.example` a `.env.local` y completar la clave. `.env` y `.env.local` están en `.gitignore`.
+Para la IA: copiar `.env.example` a `.env.local` y completar la clave. `.env` y `.env.local` están en `.gitignore`. La IA vive en `ai/` (ver `ai/README.md`) y se expone en `POST /api/claude`; con `IA_APAGADA=1` nunca llama a la API y responde solo con lo guardado.
 
 ## Estructura
 

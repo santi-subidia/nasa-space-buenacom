@@ -48,7 +48,12 @@ function crearAlmacen(inicial, persistir) {
         const sobran = new Set(delKind.slice(0, delKind.length - MAX_POR_KIND).map((r) => r.id));
         items = items.filter((r) => !sobran.has(r.id));
       }
-      persistir?.(items);
+      // Si no se puede escribir (disco de solo lectura en un despliegue), la respuesta igual se devuelve.
+      try {
+        persistir?.(items);
+      } catch {
+        /* se queda solo en memoria */
+      }
       return resultado;
     },
     /** La respuesta de la misma entrada si existe; si no, la última de ese tipo; si no, null. */

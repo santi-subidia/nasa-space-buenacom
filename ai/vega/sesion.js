@@ -25,6 +25,7 @@ export function crearSesionVega({
   let estado = { fase: 'inactivo', mensajes: [], parcial: '', error: '', sugerirAviso: false };
   let numero = 0; // identifica la consulta vigente: las respuestas viejas se descartan
   let controlador = null;
+  let consultando = false;
   const oyentes = new Set();
 
   const emitir = (cambios) => {
@@ -37,7 +38,8 @@ export function crearSesionVega({
     if (!voz?.soportaSintesis || !texto) return;
     emitir({ fase: 'hablando' });
     await voz.hablar(texto);
-    if (vigente()) emitir({ fase: 'inactivo' });
+    // Si mientras hablaba se está consultando a la IA, sigue "pensando" en vez de quedar inactiva.
+    if (vigente()) emitir({ fase: consultando ? 'pensando' : 'inactivo' });
   }
 
   async function consultar(pregunta) {
@@ -71,6 +73,8 @@ export function crearSesionVega({
     emitir({ error: '', parcial: '', sugerirAviso: false });
     agregar({ rol: 'usuario', texto: pregunta });
 
+    let lectura = Promise.resolve(); // la lectura del aviso local, si la hay, para no pisarla con la respuesta
+
     // Red de seguridad local: no depende de la IA ni de la red.
     const urgencia = detectarUrgencia(pregunta);
     if (urgencia) {
@@ -82,11 +86,14 @@ export function crearSesionVega({
         emitir({ fase: 'inactivo' });
         return;
       }
-      if (hablar) await leerEnVoz(urgencia.mensaje, vigente);
+      // Señal alta: se lee el aviso Y se consulta a la IA a la vez (no se espera a que termine de hablar).
+      if (hablar) lectura = leerEnVoz(urgencia.mensaje, vigente);
     }
 
+    consultando = true;
     emitir({ fase: 'pensando' });
     const cuerpo = await consultar(pregunta);
+    consultando = false;
     if (!vigente()) return; // llegó otra pregunta mientras tanto
 
     if (!cuerpo) {
@@ -98,7 +105,10 @@ export function crearSesionVega({
     const textoVoz = cuerpo.textoVoz ?? textoParaVoz(cuerpo.texto);
     agregar({ rol: 'vega', texto: textoVoz, citas: cuerpo.citasUsadas ?? [], origen: cuerpo.origen, motivo: cuerpo.motivo });
     emitir({ fase: 'inactivo', sugerirAviso: normalizar(textoVoz).includes('oficial medico') || Boolean(urgencia) });
-    if (hablar) await leerEnVoz(textoVoz, vigente);
+    if (hablar) {
+      await lectura; // primero termina el aviso, después la respuesta
+      if (vigente()) await leerEnVoz(textoVoz, vigente);
+    }
   }
 
   /** Botón del micrófono: escucha una frase y la pregunta. */
