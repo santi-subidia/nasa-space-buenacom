@@ -96,3 +96,30 @@ const vega = crearSesionVega({
 - **Seguridad:** `autolesion` (crítica) no espera a la IA: mensaje local + aviso al oficial. Las señales `alta` (dolor de pecho, falta de aire, cuello o brazo hinchados…) avisan y además consultan a Claude. Claude también recibe en `INSTRUCCIONES_VEGA` la regla de escalar.
 - **Web Speech:** el reconocimiento de Chrome necesita internet; sin soporte (Firefox) `preguntar(texto)` sigue funcionando.
 - **Aviso al oficial:** `alAvisarOficial({ nivel, categoria, motivo, origen: 'vega', ts })` es el contrato con las notificaciones (#12).
+
+## Chequeo por voz (issue #15)
+
+Vega llena el chequeo matutino de a un paso: pregunta, escucha, anota y sigue. Vive en `ai/chequeo/`.
+
+```js
+import { crearChequeoPorVoz } from '…/ai/chequeo/sesion.js';
+const chequeo = crearChequeoPorVoz({
+  voz,                                   // el mismo crearVoz() de Vega
+  astronautId: 'ana',
+  alRegistrar: (reading) => db.readings.add(reading),   // Reading con source: 'voice' (lo conecta #2/#8)
+});
+await chequeo.iniciar();                 // "Completar por voz" en Registrar
+await chequeo.anotar('Anotá 37 con 6 de temperatura');  // frase suelta
+// React: useSyncExternalStore(chequeo.suscribir, chequeo.obtener) → { fase, pasoActual, hechos, omitidos, mensajes, error }
+```
+
+| Archivo | Qué hace |
+|---|---|
+| `chequeo/indicadores.js` | Indicadores dictables (unidad y rango plausible), la herramienta `registrar_medicion` (`strict: true`) y `validarMedicion` |
+| `chequeo/local.js` | Intérprete sin red de frases con dígitos ("37 con 6", "118 sobre 76", "5 horas y media") |
+| `chequeo/sesion.js` | Los pasos (`PASOS_MATUTINOS`, configurables), reintentos, "después" para omitir y `anotar()` |
+
+- **Primero local, después Claude:** si la frase trae dígitos se resuelve en el navegador (gratis, sin latencia, sin red); si viene en palabras ("treinta y siete con seis") va a `POST /api/claude` con `tipo: 'check'`, esfuerzo `low` y la herramienta `registrar_medicion` → `{ mediciones, rechazadas }`.
+- **Nunca se guarda un valor absurdo:** cada medición se valida contra un rango plausible (temperatura 33–42,5 °C, ánimo 1–5…); si no pasa, Vega pide repetir. Solo se aceptan los indicadores que el paso esperaba.
+- **Sin respaldo guardado:** `check` usa `sinRespaldo` — con la red caída nunca devuelve la medición de otra frase (registraría un valor ajeno). Sin red, igual funcionan las frases con dígitos.
+- **Pasos por defecto:** presión (alta y baja, preguntando la que falte), temperatura, ánimo (1–5) y estrés (1–10). El sueño llega del Watch simulado y el test de reacción lo hace la pantalla.

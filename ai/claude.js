@@ -112,6 +112,7 @@ const resumirUso = (u = {}) => ({
  * @param {object[]} [peticion.herramientas] herramientas con strict: true
  * @param {*}       [peticion.entrada]      lo que identifica la consulta (para elegir la respuesta guardada)
  * @param {boolean} [peticion.guardar=true]
+ * @param {boolean} [peticion.sinRespaldo=false]  no devolver nunca una respuesta guardada (mediciones)
  * @param {object}  [dependencias]  { cliente, almacen, modelo, env } (para pruebas)
  */
 export async function consultarClaude(peticion, dependencias = {}) {
@@ -121,7 +122,8 @@ export async function consultarClaude(peticion, dependencias = {}) {
   const clave = claveDeEntrada(entrada);
 
   const respaldo = (motivo, extra = {}) => {
-    const guardada = almacen.buscar(kind, clave);
+    // Hay respuestas que NUNCA se reemplazan por otra vieja (p. ej. una medición: registraría un valor ajeno).
+    const guardada = peticion.sinRespaldo ? null : almacen.buscar(kind, clave);
     if (!guardada) return { ok: false, origen: 'ninguna', kind, motivo, ...extra };
     return {
       ok: true,
