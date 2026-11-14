@@ -1,6 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { angulo, crearEntrenamiento } from '../lib/entrenador/ejercicios.js';
+import { armarPayloadSerie } from '../lib/entrenador/resumen.js';
 
 // Esqueleto de perfil, con la rodilla flexionada `grados`. Cadera fija, tobillo en el suelo.
 function sentadillaConRodilla(grados, { tronco = 0 } = {}) {
@@ -84,4 +85,31 @@ test('plancha: suma segundos con el cuerpo en línea y corrige cuando la cadera 
   estado = e.procesar(cuerpo(0.08), { t: 3200 });
   assert.equal(estado.correccion, 'Subí la cadera, espalda recta.');
   assert.equal(estado.segundos, 3);
+});
+
+test('armarPayloadSerie: resume las series, limita a 3 fotos e incluye el estado de salud', () => {
+  const fotos = [1, 2, 3, 4].map((i) => ({ media_type: 'image/jpeg', data: `FOTO${i}` }));
+  const payload = armarPayloadSerie({
+    series: [
+      { ejercicio: 'sentadilla', reps: 10, segundos: 0, correcciones: [{ texto: 'Bajá más.', veces: 2 }] },
+      { ejercicio: 'plancha', reps: 0, segundos: 25, correcciones: [] },
+    ],
+    ejercicioActual: 'plancha',
+    minutos: 2.5,
+    anguloMin: 86,
+    fotos,
+    vals: { temp: { valor: 37.6 }, sleep_h: { valor: 5.5 }, hr_rest: { valor: 74 } },
+    nivelMotor: 'orange',
+    alertaTitulo: 'Posible reactivación viral',
+  });
+  assert.equal(payload.ejercicio, 'plancha');
+  assert.equal(payload.fotos.length, 3);
+  assert.equal(payload.metricas.repeticiones, 10);
+  assert.equal(payload.metricas.tiempoPlanchaSeg, 25);
+  assert.equal(payload.metricas.correccionesEnVivo, 2);
+  assert.equal(payload.metricas.anguloMinimo, 86);
+  assert.equal(payload.metricas.series.length, 2);
+  assert.equal(payload.estado.nivelMotor, 'orange');
+  assert.match(payload.estado.resumen, /37,6 °C/);
+  assert.match(payload.estado.resumen, /Posible reactivación viral/);
 });
