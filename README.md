@@ -13,7 +13,9 @@ npm install
 npm run dev
 ```
 
-Abrir <http://localhost:3000>. Otros comandos: `npm run build` y `npm start`.
+Abrir <http://localhost:3000>. Otros comandos: `npm run build`, `npm start` y `npm test` (pruebas de la lógica del entrenador).
+
+`npm install` también copia el WASM de MediaPipe a `public/mediapipe/` (lo usa el Entrenador, no se sube al repo). El modelo de pose se baja del CDN de Google la primera vez; para trabajar sin conexión ver `.env.example`.
 
 Para la IA: copiar `.env.example` a `.env.local` y completar la clave. `.env` y `.env.local` están en `.gitignore`.
 
