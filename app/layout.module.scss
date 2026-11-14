@@ -1,0 +1,15 @@
+@use 'tokens' as *;
+
+// Diseñado para notebook: 1280×800 (el prototipo se ve tal cual).
+.app {
+  display: flex;
+  min-width: $ancho-pantalla;
+  min-height: 100vh;
+}
+
+.contenido {
+  flex: 1;
+  min-width: 0;
+  min-height: 100vh;
+  padding: $espacio-6;
+}

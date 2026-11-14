@@ -1,9 +1,22 @@
-# Secretos: la API key vive solo en ANTHROPIC_API_KEY (.env), nunca en el repo
+# dependencias
+node_modules/
+
+# Next.js
+.next/
+out/
+
+# secretos: nunca se suben (la API key vive solo en ANTHROPIC_API_KEY)
 .env
 .env.*
 !.env.example
 
-node_modules/
-.next/
+# respuestas guardadas de la IA (se generan en local)
 .data/
+
+# varios
+.DS_Store
 *.log
+.vercel
+
+# WASM de MediaPipe (lo copia scripts/copiar-mediapipe.mjs al instalar)
+public/mediapipe/

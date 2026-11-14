@@ -1,0 +1,118 @@
+@use 'tokens' as *;
+
+.pantalla { display: flex; flex-direction: column; gap: $espacio-4; h1 { font-size: 30px; } }
+.encabezado { display: flex; justify-content: space-between; align-items: flex-end; }
+.sub { margin: 2px 0 0; color: $color-texto-suave; font-size: 14px; }
+
+.cuerpo { display: grid; grid-template-columns: 1.5fr 1fr; gap: $espacio-4; align-items: start; }
+.form { display: flex; flex-direction: column; gap: $espacio-3; }
+.lateral { display: flex; flex-direction: column; gap: $espacio-4; }
+
+// ── Botones y campos ───────────────────────────────────
+.boton {
+  display: inline-block;
+  background: transparent;
+  border: 1px solid $color-borde;
+  color: $color-texto;
+  border-radius: $radio-s;
+  padding: 9px 16px;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  &:hover:not(:disabled) { background: $color-superficie-2; }
+  &:disabled { opacity: 0.45; cursor: not-allowed; }
+}
+.primario { background: $color-acento; color: $color-fondo; border-color: $color-acento; &:hover:not(:disabled) { background: $color-acento; filter: brightness(1.1); } }
+.ia { border-color: $color-ia; color: $color-ia; }
+
+.campo {
+  width: 84px;
+  background: $color-fondo;
+  border: 1px solid $color-borde;
+  border-radius: $radio-s;
+  color: $color-texto;
+  padding: 8px 10px;
+  font: inherit;
+  text-align: right;
+  &[readonly] { background: transparent; border-style: dashed; color: $color-texto-suave; }
+}
+select.campo { width: auto; text-align: left; }
+.invalido { border-color: $color-rojo; }
+.error { color: $color-rojo; font-size: 12px; }
+
+.numero { display: inline-flex; flex-direction: column; gap: 2px; }
+.par { display: flex; align-items: center; gap: $espacio-2; }
+.unidad { color: $color-texto-suave; font-size: 13px; min-width: 44px; }
+.watch { font-size: 12px; background: rgba($color-acento, 0.15); color: $color-acento; border-radius: 999px; padding: 2px 10px; }
+
+// ── Filas del formulario ───────────────────────────────
+.fila { padding: $espacio-3 0; border-bottom: 1px solid $color-borde; &:last-child { border-bottom: 0; } }
+.filaTop { display: grid; grid-template-columns: 150px 1fr 32px; align-items: center; gap: $espacio-3; }
+.etiqueta { font-weight: 600; }
+.controles { display: flex; align-items: center; gap: $espacio-2; flex-wrap: wrap; }
+
+.info {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1px solid $color-borde;
+  background: transparent;
+  color: $color-acento;
+  cursor: pointer;
+  font-size: 15px;
+  &:hover, &[aria-expanded='true'] { background: $color-superficie-2; }
+}
+
+.ficha {
+  margin: $espacio-3 0 0;
+  padding: $espacio-3 $espacio-4;
+  background: $color-superficie-2;
+  border-radius: $radio-s;
+  font-size: 13px;
+  dt { font-weight: 700; color: $color-acento; margin-top: $espacio-2; &:first-child { margin-top: 0; } }
+  dd { margin: 0; }
+}
+
+.rango { flex: 1; min-width: 160px; accent-color: $color-acento; }
+.valorRango { min-width: 70px; text-align: right; }
+
+.caras { display: flex; gap: $espacio-2; }
+.cara {
+  font-size: 26px;
+  line-height: 1;
+  padding: 6px 8px;
+  border-radius: $radio-s;
+  border: 2px solid transparent;
+  background: transparent;
+  cursor: pointer;
+  filter: grayscale(0.7);
+  &:hover { filter: none; }
+}
+.elegida { border-color: $color-acento; background: $color-superficie-2; filter: none; }
+
+.pie { display: flex; align-items: center; gap: $espacio-4; }
+.nota { color: $color-texto-suave; font-size: 13px; }
+
+// ── Lateral ────────────────────────────────────────────
+.texto { margin: 0 0 $espacio-3; font-size: 14px; color: $color-texto-suave; strong { color: $color-texto; } }
+.resultado { margin: $espacio-3 0 0; font-size: 14px; }
+
+.camara { display: flex; flex-direction: column; gap: $espacio-3; }
+.video { width: 100%; border-radius: $radio-s; background: #000; aspect-ratio: 4 / 3; object-fit: cover; }
+.acciones { display: flex; gap: $espacio-2; flex-wrap: wrap; align-items: center; }
+
+.test { display: flex; flex-direction: column; gap: $espacio-3; }
+.pad {
+  height: 150px;
+  border: 0;
+  border-radius: $radio-m;
+  font: inherit;
+  font-size: 26px;
+  font-weight: 700;
+  color: $color-fondo;
+  cursor: pointer;
+  user-select: none;
+}
+.padRojo { background: $color-rojo; }
+.padVerde { background: $color-verde; }
