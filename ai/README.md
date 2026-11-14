@@ -148,6 +148,6 @@ const vista = armarVistaJunta(r, 'Ana');   // ai/junta/vista.js → lo que dibuj
 | `junta/ejemplo-sol42.js` | Datos de ejemplo del sol 42 (herpes + 37,6 °C + poco sueño) para pruebas y demo |
 
 - **El motor manda:** la respuesta trae `nivelMotor`, `nivelJunta`, `nivelFinal = mergeLevel(...)`, `subioPorMotor` y `accionFinal` (si el nivel final es naranja, la acción mínima es avisar al oficial médico; si es rojo, contactar a los médicos de vuelo). Una junta guardada se vuelve a cruzar con el motor de hoy.
-- **Tamaño:** ≈ 15K tokens de entrada (fichas de ≤ 8 riesgos con sus fuentes principales) y ≈ 2K de salida: unas milésimas de dólar. Presupuesto de contexto de 45K; el total nunca llega a 100K.
+- **Tamaño:** ≈ 29K tokens de entrada medidos con la API (fichas de ≤ 8 riesgos con sus fuentes principales, cacheables) y ≈ 4,5K de salida: ≈ US$ 0,006 por junta y ~25 s. Presupuesto de contexto de 45K; el total nunca llega a 100K.
 - **Resultado guardado:** cada junta válida se guarda como `AiResult` (`kind: 'board'`); una salida incompleta no se guarda ni se muestra (cae en la última guardada).
 - **Probarla de verdad:** `npm run probar:junta` (necesita `ai/.env`).
