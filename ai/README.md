@@ -65,3 +65,34 @@ npm run probar:sin-clave   # comprueba que sin clave no se rompe nada
 - El conteo de tokens es una estimación. En #5 se puede contrastar con `client.messages.countTokens` y ajustar `CARACTERES_POR_TOKEN`.
 - Las zonas de `fichas/mapa.js` son las 12 de `doc/04-sintesis/matriz-peligro-riesgo-indicador.md`; #7 define las 9 del mapa corporal y habrá que alinear los ids.
 - Si la demo se publica con la IA apagada (#21), `getContext` no hace falta en ese entorno: solo se leen las respuestas guardadas.
+
+## Vega: compañero de voz (issue #14)
+
+La lógica de la pantalla Vega vive en `ai/vega/`, sin depender de React; la pantalla (botón del micrófono, ondas, conversación y citas) la arma P1 sobre este contrato cuando exista #1.
+
+```js
+import { crearVoz } from '…/ai/vega/voz.js';
+import { crearSesionVega, SUGERENCIAS } from '…/ai/vega/sesion.js';
+
+const vega = crearSesionVega({
+  voz: crearVoz({ alCambiar: (fase) => …, alOirParcial: (t) => vega.ponerParcial(t) }),
+  obtenerDatosDelDia: () => ({ sol: 42, sueno_horas: 5.3 }),
+  alAvisarOficial: (aviso) => notificaciones.enviar(aviso),   // lo conecta #12
+});
+// React: useSyncExternalStore(vega.suscribir, vega.obtener)
+```
+
+`vega.obtener()` → `{ fase: 'inactivo'|'escuchando'|'pensando'|'hablando', mensajes: [{ rol, texto, citas: [{ id, titulo, url }], origen, urgente }], parcial, error, sugerirAviso }`. Acciones: `preguntarPorVoz()` (botón del micrófono), `preguntar(texto)` (sugerencias y texto escrito), `avisarOficial()`, `cancelar()`.
+
+| Archivo | Qué hace |
+|---|---|
+| `vega/voz.js` | Web Speech API: `SpeechRecognition` (es-AR) y `speechSynthesis` con la mejor voz en español; errores de micrófono con mensajes claros |
+| `vega/sesion.js` | Orquesta micrófono → `/api/claude` → lectura en voz; descarta respuestas viejas; mensaje local si no hay conexión |
+| `vega/riesgos.js` | Elige las fichas por la pregunta (máx. 3 riesgos, miles de tokens, no el corpus) |
+| `vega/urgencia.js` | Detecta señales rojas y autolesión **en el navegador, sin IA**: avisa al oficial al instante |
+| `vega/texto.js` | Citas `[F1]` usadas, y texto limpio para leer en voz alta |
+
+- **Citas:** el servidor responde `citasUsadas` (solo las que Claude citó, normalmente 1–2, con título y URL de la NASA) y `textoVoz` (sin marcas). Si Claude está caído, la respuesta guardada trae lo mismo.
+- **Seguridad:** `autolesion` (crítica) no espera a la IA: mensaje local + aviso al oficial. Las señales `alta` (dolor de pecho, falta de aire, cuello o brazo hinchados…) avisan y además consultan a Claude. Claude también recibe en `INSTRUCCIONES_VEGA` la regla de escalar.
+- **Web Speech:** el reconocimiento de Chrome necesita internet; sin soporte (Firefox) `preguntar(texto)` sigue funcionando.
+- **Aviso al oficial:** `alAvisarOficial({ nivel, categoria, motivo, origen: 'vega', ts })` es el contrato con las notificaciones (#12).

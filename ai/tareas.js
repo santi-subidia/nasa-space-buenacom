@@ -3,6 +3,7 @@
 import { getContext, listarRiesgos } from './contexto.js';
 import { ESFUERZOS } from './claude.js';
 import { INSTRUCCIONES_VEGA } from './vega.js';
+import { elegirRiesgos } from './vega/riesgos.js';
 
 export class ErrorDePeticion extends Error {}
 
@@ -42,7 +43,8 @@ export function datosComoTexto(datos) {
  */
 function tareaAnswer(body) {
   const pregunta = validarTexto(body.pregunta, 'pregunta', MAX_PREGUNTA);
-  const riesgos = validarRiesgos(body.riesgos);
+  // Si el navegador no dice qué riesgos tocan, se eligen por la pregunta (solo esas fichas, no el corpus entero).
+  const riesgos = body.riesgos === undefined ? elegirRiesgos(pregunta) : validarRiesgos(body.riesgos);
   const datos = datosComoTexto(body.datosDelDia);
   const ctx = riesgos.length ? getContext(riesgos) : null;
 

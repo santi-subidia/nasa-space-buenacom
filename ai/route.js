@@ -7,6 +7,7 @@
 // válida: que falle la red o la IA no debe romper la pantalla. Solo hay 4xx por peticiones mal formadas.
 import { consultarClaude } from './claude.js';
 import { construirTarea, ErrorDePeticion } from './tareas.js';
+import { citasUsadas, textoParaVoz } from './vega/texto.js';
 
 const MAX_BYTES = 8 * 1024 * 1024; // fotos en base64 (#19, #20)
 
@@ -35,7 +36,11 @@ export function crearManejador({ consultar = consultarClaude, construir = constr
 
     const { citas = [], ...paraClaude } = peticion;
     const resultado = await consultar(paraClaude);
-    return json({ ...resultado, citas });
+    // Para Vega: las citas que Claude realmente usó (1–2) y el texto limpio para leer en voz alta.
+    const extra = resultado.texto
+      ? { citasUsadas: citasUsadas(resultado.texto, citas), textoVoz: textoParaVoz(resultado.texto) }
+      : {};
+    return json({ ...resultado, citas, ...extra });
   };
 }
 
