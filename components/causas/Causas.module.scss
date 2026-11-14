@@ -1,0 +1,78 @@
+@use 'tokens' as *;
+
+.pantalla { display: flex; flex-direction: column; gap: $espacio-4; h1 { font-size: 28px; } }
+.encabezado { display: flex; justify-content: space-between; align-items: flex-end; gap: $espacio-4; }
+.sub { margin: 2px 0 0; color: $color-texto-suave; font-size: 14px; }
+.resumen { margin: 0 0 $espacio-3; font-size: 15px; }
+.aviso { margin: 0 0 $espacio-3; color: $color-texto-suave; font-size: 14px; }
+.texto { margin: 0 0 $espacio-3; font-size: 14px; color: $color-texto-suave; }
+.fila { display: grid; grid-template-columns: 1fr 1fr; gap: $espacio-4; align-items: start; }
+.pasos { margin: 0 0 $espacio-3; padding-left: 20px; font-size: 14px; li + li { margin-top: 4px; } }
+.fuente { margin: 0; font-size: 13px; color: $color-texto-suave; a { color: $color-acento; } }
+
+// ── Grafo ──────────────────────────────────────────────
+.figura { margin: 0; }
+.svg { width: 100%; height: auto; display: block; overflow: visible; }
+.columna { fill: $color-texto-suave; font-size: 13px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+.caption { margin-top: $espacio-2; font-size: 13px; color: $color-texto-suave; }
+
+.aristaInactiva { fill: none; stroke: $color-borde; stroke-width: 1.5; }
+.aristaActiva { fill: none; stroke: $color-naranja; stroke-width: 2.5; }
+.puntaInactiva { fill: $color-borde; }
+.puntaActiva { fill: $color-naranja; }
+
+.nodo {
+  box-sizing: border-box;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 3px;
+  padding: 6px 9px;
+  border: 2px solid $color-borde;
+  border-radius: $radio-s;
+  background: $color-superficie-2;
+  color: $color-texto;
+  font-size: 14.5px;
+  line-height: 1.18;
+  overflow: hidden;
+}
+.nodoTop { display: flex; align-items: flex-start; gap: 5px; strong { font-weight: 700; } }
+.forma { flex: none; margin-top: 2px; }
+.valor { font-size: 13px; color: $color-texto-suave; line-height: 1.15; }
+
+.peligro { border-style: dashed; background: transparent; }
+.letra {
+  flex: none;
+  font-size: 10px;
+  font-weight: 800;
+  padding: 1px 5px;
+  border-radius: 999px;
+  background: rgba($color-acento, 0.18);
+  color: $color-acento;
+}
+.inferido { border-style: dashed; }
+.inferido.activo { border-color: $color-texto-suave; }
+.app { border-color: $color-ia; }
+.inactivo { opacity: 0.45; }
+.oculto { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+
+// ── Leyenda ────────────────────────────────────────────
+.leyenda { display: flex; flex-wrap: wrap; gap: $espacio-2 $espacio-4; margin: $espacio-3 0 0; padding: 0; list-style: none; font-size: 12.5px; color: $color-texto-suave; li { display: flex; align-items: center; gap: 6px; } }
+.muestra { display: inline-block; width: 22px; height: 14px; border: 2px solid $color-borde; border-radius: 3px; &.medido { border-color: $color-naranja; } }
+.lineaActiva { display: inline-block; width: 22px; height: 3px; background: $color-naranja; border-radius: 2px; }
+
+// ── Botones (mismo estilo que Inicio) ──────────────────
+.botones { display: flex; gap: $espacio-2; flex-wrap: wrap; }
+.boton {
+  display: inline-block;
+  border: 1px solid $color-borde;
+  color: $color-texto;
+  border-radius: $radio-s;
+  padding: 9px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  &:hover { background: $color-superficie-2; }
+}
+.ia { border-color: $color-ia; color: $color-ia; }

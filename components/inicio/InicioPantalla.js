@@ -13,6 +13,7 @@ import {
 import { usePermisosCompartir } from '@/lib/datos/tripulante';
 import { armarVistaOficialMedico } from '@/lib/tripulacion/logicaTripulante';
 import { minutosHoy } from '@/lib/entrenador/racha';
+import { tieneGrafo } from '@/lib/causas/grafos';
 import { MISION } from '@/lib/mock/mision';
 import { TARJETAS, CHEQUEO, valoresDelDia, nivelDeTarjeta } from '@/lib/mock/indicadores';
 import styles from './InicioPantalla.module.scss';
@@ -205,6 +206,11 @@ function EstadoGeneral({ nivel, alertas, vistaCmo }) {
       )}
 
       <div className={styles.botones}>
+        {tieneGrafo(principal?.ruleId) && (
+          <Link className={`${styles.boton} ${styles.botonAcento}`} href={`/causas?alerta=${principal.ruleId}`}>
+            ¿Por qué pasó?
+          </Link>
+        )}
         <Link className={styles.boton} href={`/mapa?zona=${principal?.zone || 'immune'}`}>
           Ver guía
         </Link>

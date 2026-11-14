@@ -31,6 +31,7 @@ Secuencia recomendada pantalla por pantalla sobre las **11 rutas** de la app (`/
 - **Qué verificar en pantalla:**
   - Semáforo general con forma + color (`◆ orange`), alerta activa (`Posible reactivación viral`) y chequeo diario.
   - Botón **Sincronizar Watch** (`watch_sim`) para simular la carga nocturna de sueño, FC, SpO₂ y temperatura.
+  - Botón **¿Por qué pasó?** (`/causas`): *"Esta cadena no la inventamos: es el grafo causal oficial del riesgo inmune de la NASA. AstroVitals enciende el camino con lo que midió hoy: sueño, estrés, temperatura y herpes. Y nuestra app ocupa el nodo 'Detectar cambios inmunes'."*
 
 ### 2. Mapa corporal (`/mapa`) y Tendencias (`/tendencias`) — Trazabilidad y evolución (20 s)
 - **Frase sugerida:** *"En el mapa corporal vemos nueve zonas clicables. Inmunidad está en naranja por el herpes labial y la temperatura en treinta y siete con seis; cerebro y ojos reflejan el poco sueño. Si entramos a Tendencias vemos cómo en los últimos diez soles bajó el sueño y subió el estrés."*

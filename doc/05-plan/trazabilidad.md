@@ -1,7 +1,7 @@
 # Trazabilidad · funcionalidad ↔ desafío ↔ documentación NASA ↔ código
 
 > Para qué sirve: responder al criterio **Validez** de Space Apps ("cada regla y texto enlaza a su fuente", [plan-proyecto §7](plan-proyecto.md)). Cada fila dice **qué pide el desafío**, **qué documento lo justifica** y **dónde está en el código**.
-> Estado al 14-11-2026 (antes del congelamiento de código del domingo 17:00). Pruebas: `npm test` 47/47 y `npm --prefix ai test` 106/106.
+> Estado al 14-11-2026 (antes del congelamiento de código del domingo 17:00). Pruebas: `npm test` 51/51 y `npm --prefix ai test` 106/106.
 
 Leyenda: ✅ implementado con datos del motor · 🟡 parcial o con datos fijos (mock) · ❌ documentado pero no implementado.
 
@@ -28,6 +28,7 @@ Leyenda: ✅ implementado con datos del motor · 🟡 parcial o con datos fijos 
 | **Enlace con Tierra** (`/enlace`): retraso de 14 min | Escalar a *flight surgeons* | [distancia-tierra](../01-peligros/distancia-tierra.md) · [communicating-with-missions](../fuentes/04-articulos-profundizacion/communicating-with-missions.md) · [HERA y retrasos](../fuentes/04-articulos-profundizacion/houston-do-you-copy-hera-crew-navigates-communication-delays.md) | `lib/enlace/`, `components/enlace/` | ✅ |
 | **Tripulación / vista CMO** (`/tripulacion`) con consentimiento | Oficial médico de la tripulación | [ideas-ux §Principios 5](../04-sintesis/ideas-ux-gamificacion.md) (privacidad por capas) · [trabajo-en-equipo](../02-riesgos/conducta/trabajo-en-equipo.md) | `lib/tripulacion/`, `components/tripulacion/` | ✅ |
 | **Modo demo pública** (`IA_APAGADA=1`) | — (robustez) | [plan-final §5 reglas 8 y 9](plan-final.md) · [soporte-sistemas](../02-riesgos/conducta/soporte-sistemas.md) (funcionar sin conexión) | `ai/almacen.js`, `ai/respaldo-demo.json` | ✅ |
+| **¿Por qué pasó?** (`/causas`): grafo causal de la alerta con el camino encendido según lo medido | "¿Cómo afectan los peligros a estos indicadores?" (pregunta guía); explicaciones simples | [02-riesgos §Idea de valor diferencial](../02-riesgos/README.md) · [DAG oficial Immune Risk del HSRB](../fuentes/05-human-system-risk-board/dag-immune-risk.md) (12 de 49 nodos, cada arista verificada en `test/causas.test.js`) | `lib/causas/grafos.js`, `components/causas/`, botón en la alerta de Inicio | ✅ (solo `viral_reactivation`) |
 | **Racha de ejercicio** | Gamificación | [ideas-ux §Gamificación](../04-sintesis/ideas-ux-gamificacion.md) | `lib/entrenador/racha.js` | 🟡 solo racha; sin medallas ni meta de tripulación |
 
 ## 2. Cobertura de los 17 riesgos del HRP ([tabla maestra](../02-riesgos/README.md))
@@ -59,7 +60,7 @@ Leyenda: ✅ implementado con datos del motor · 🟡 parcial o con datos fijos 
 | Qué | Dónde está documentado | Observación |
 |---|---|---|
 | Selector de entorno (nave / estación / rover / Luna / Marte) | [plan-proyecto §4 MVP 6](plan-proyecto.md) · [catalogo §Ajustes por entorno](../04-sintesis/catalogo-indicadores.md) · desafío "varios entornos" | `ENTORNOS` y `envModifiers` ya existen; todas las pantallas fijan `'mars_base'` |
-| Grafo causal del riesgo (DAG del HSRB) | [02-riesgos §Idea de valor diferencial](../02-riesgos/README.md) | Ej.: poco sueño → estrés → inmunidad baja → herpes |
+| Grafo causal para otras alertas (sueño, cardiovascular, hipoxia/CO₂) | [02-riesgos §Idea de valor diferencial](../02-riesgos/README.md) · DAGs de cada ficha en `doc/fuentes/05-human-system-risk-board/` | Hecho para `viral_reactivation`; para sumar otra alerta se transcribe su DAG y se agrega una entrada a `GRAFOS` |
 | Panel de cabina (CO₂, O₂, ruido, dosis) | [ideas-ux §Pantallas 8](../04-sintesis/ideas-ux-gamificacion.md) | — |
 | Medallas y meta cooperativa de tripulación | [ideas-ux §Gamificación](../04-sintesis/ideas-ux-gamificacion.md) | — |
 | Checklist pre-EVA y pre-aterrizaje | [plan-final §3 "Por evento"](plan-final.md) · [ideas-ux §Recordatorios](../04-sintesis/ideas-ux-gamificacion.md) | — |

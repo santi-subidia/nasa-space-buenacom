@@ -85,6 +85,8 @@ Definidas en [`lib/rutas.js`](lib/rutas.js):
 | `/vega` | **Hablar con Vega** | Conversación por voz y texto con citas de la NASA, sugerencias rápidas y red de seguridad local ante urgencias. |
 | `/tripulacion` | **Tripulación** | Selector de tripulante (Ana Ríos / Marcos Silva), control de consentimiento y vista confidencial del oficial médico (CMO). |
 
+Vista de detalle (sin entrada en la barra lateral): **`/causas` · ¿Por qué pasó?**, a la que se llega desde la alerta de Inicio. Muestra el grafo causal oficial del riesgo inmune de la NASA (HSRB, 12 de 49 nodos) y enciende el camino según lo medido: sueño → estrés → defensas alteradas → herpes labial.
+
 ---
 
 ## Arquitectura clínica y seguridad
