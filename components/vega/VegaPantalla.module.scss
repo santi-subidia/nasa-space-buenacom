@@ -8,7 +8,70 @@
   min-height: 560px;
 }
 
-.encabezado h1 { font-size: 30px; }
+.encabezado {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: $espacio-4;
+  h1 { font-size: 30px; }
+}
+
+// Selector de modo: Conversar / Chequeo por voz
+.modos {
+  display: flex;
+  border: 1px solid $color-borde;
+  border-radius: $radio-s;
+  overflow: hidden;
+  button {
+    padding: 8px 16px;
+    background: transparent;
+    border: 0;
+    color: $color-texto-suave;
+    font: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    &:hover { background: $color-superficie-2; }
+    &[aria-pressed='true'] { background: rgba($color-ia, 0.25); color: $color-texto; box-shadow: inset 0 -2px 0 $color-ia; }
+  }
+}
+
+// ── Pasos del chequeo por voz ──────────────────────────
+.pasos {
+  list-style: none;
+  margin: 0 0 $espacio-2;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: $espacio-2;
+}
+
+.paso {
+  display: grid;
+  grid-template-columns: 22px 1fr auto;
+  align-items: center;
+  gap: $espacio-2;
+  padding: 8px 10px;
+  border: 1px solid $color-borde;
+  border-radius: $radio-s;
+  font-size: 14px;
+  background: $color-superficie-2;
+}
+.iconoPaso { text-align: center; font-weight: 700; }
+.valorPaso { font-weight: 700; }
+.paso_hecho { border-color: $color-verde; .iconoPaso { color: $color-verde; } }
+.paso_actual { border-color: $color-ia; background: rgba($color-ia, 0.18); .iconoPaso { color: $color-ia; } }
+.paso_omitido { color: $color-texto-suave; border-style: dashed; }
+.paso_pendiente { color: $color-texto-suave; }
+
+.enlace {
+  display: inline-block;
+  margin-top: $espacio-2;
+  color: $color-acento;
+  font-size: 14px;
+  font-weight: 600;
+  &:hover { text-decoration: underline; }
+}
 
 .sub {
   margin: 2px 0 0;

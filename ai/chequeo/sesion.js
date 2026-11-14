@@ -52,7 +52,8 @@ export function crearChequeoPorVoz({
   };
 
   async function decir(texto) {
-    emitir({ mensajes: [...estado.mensajes, { rol: 'vega', texto }] });
+    // Mientras Vega habla la fase es "preguntando" (en pantalla, "hablando"); al terminar queda "completo" si ya se terminó.
+    emitir({ fase: estado.fase === 'completo' ? 'completo' : 'preguntando', mensajes: [...estado.mensajes, { rol: 'vega', texto }] });
     await voz?.hablar?.(texto);
   }
 
