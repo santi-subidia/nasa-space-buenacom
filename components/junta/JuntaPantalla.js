@@ -4,8 +4,9 @@ import { useState } from 'react';
 import Link from 'next/link';
 import Card from '@/components/Card';
 import TrafficLight from '@/components/TrafficLight';
+import { useTripulanteActivo } from '@/lib/datos/tripulante';
+import { SOL_ACTUAL, TRIPULANTES } from '@/lib/demo/generador';
 import { NIVELES } from '@/lib/niveles';
-import { MISION, SOL_ACTUAL } from '@/lib/mock/mision';
 import { useJunta } from './useJunta';
 import styles from './JuntaPantalla.module.scss';
 
@@ -38,6 +39,8 @@ function formatearFecha(iso) {
 }
 
 export default function JuntaPantalla() {
+  const activoId = useTripulanteActivo();
+  const nombreTripulante = TRIPULANTES.find((t) => t.id === activoId)?.name || 'Ana Ríos';
   const { fase, vista, motivo, error, nivelMotorActual, segundos, avisoEnviado, convocar, avisarOficial } = useJunta();
   const [pestana, setPestana] = useState('astronauta');
   const pensando = fase === 'pensando';
@@ -48,7 +51,7 @@ export default function JuntaPantalla() {
         <div>
           <h1>Junta médica</h1>
           <p className={styles.sub}>
-            5 especialistas analizan la última semana · Sol {SOL_ACTUAL} · {MISION.astronauta.nombre}
+            5 especialistas analizan la última semana · Sol {SOL_ACTUAL} · {nombreTripulante}
           </p>
         </div>
         <button

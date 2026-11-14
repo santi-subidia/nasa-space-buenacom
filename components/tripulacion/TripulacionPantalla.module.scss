@@ -1,0 +1,396 @@
+@use 'tokens' as *;
+
+.pantalla {
+  display: flex;
+  flex-direction: column;
+  gap: $espacio-4;
+}
+
+.encabezado {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: $espacio-4;
+  flex-wrap: wrap;
+
+  h1 {
+    font-size: 30px;
+  }
+}
+
+.sub {
+  margin: 2px 0 0;
+  color: $color-texto-suave;
+  font-size: 14px;
+}
+
+.chips {
+  display: flex;
+  gap: $espacio-2;
+  flex-wrap: wrap;
+}
+
+.chip {
+  background: $color-superficie-2;
+  border: 1px solid $color-borde;
+  border-radius: 999px;
+  padding: 6px 14px;
+  font-size: 13px;
+  color: $color-texto-suave;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  strong {
+    color: $color-texto;
+  }
+}
+
+.filaSuperior {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: $espacio-4;
+}
+
+// ── Selector de tripulante activo ──────────────────────────────────────────
+.selectorGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: $espacio-3;
+  margin-top: $espacio-2;
+}
+
+.opcionTripulante {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: $espacio-1;
+  padding: $espacio-3 $espacio-4;
+  background: $color-superficie-2;
+  border: 1px solid $color-borde;
+  border-radius: $radio-m;
+  color: $color-texto;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+
+  &:hover {
+    border-color: rgba($color-acento, 0.55);
+  }
+}
+
+.opcionActiva {
+  border-color: $color-acento;
+  background: rgba($color-acento, 0.12);
+}
+
+.opcionTop {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: $espacio-2;
+}
+
+.opcionNombre {
+  font-family: $fuente-titulo;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.opcionRol {
+  font-size: 13px;
+  color: $color-texto-suave;
+}
+
+.insigniaActiva {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: $color-acento;
+}
+
+// ── Control de privacidad ──────────────────────────────────────────────────
+.privacidadDesc {
+  margin: 0 0 $espacio-3;
+  font-size: 14px;
+  color: $color-texto-suave;
+  line-height: 1.45;
+}
+
+.interruptor {
+  display: flex;
+  align-items: flex-start;
+  gap: $espacio-3;
+  padding: $espacio-3 $espacio-4;
+  background: $color-superficie-2;
+  border: 1px solid $color-borde;
+  border-radius: $radio-s;
+  cursor: pointer;
+
+  input {
+    margin-top: 3px;
+    width: 18px;
+    height: 18px;
+    accent-color: $color-acento;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+}
+
+.interruptorTexto {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+
+  strong {
+    font-size: 14px;
+    color: $color-texto;
+  }
+
+  span {
+    font-size: 12px;
+    color: $color-texto-suave;
+  }
+}
+
+// ── Vista del oficial médico (CMO) ─────────────────────────────────────────
+.cmoSeccion {
+  display: flex;
+  flex-direction: column;
+  gap: $espacio-3;
+}
+
+.cmoEncabezado {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: $espacio-3;
+  flex-wrap: wrap;
+
+  h2 {
+    font-size: 20px;
+  }
+}
+
+.cmoNotaRol {
+  font-size: 13px;
+  color: $color-texto-suave;
+}
+
+.cmoGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: $espacio-4;
+}
+
+.tarjetaHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: $espacio-3;
+  margin-bottom: $espacio-3;
+
+  h3 {
+    font-size: 18px;
+  }
+}
+
+.tarjetaRol {
+  margin: 2px 0 0;
+  font-size: 13px;
+  color: $color-texto-suave;
+}
+
+.alerta {
+  background: $color-superficie-2;
+  border-radius: $radio-s;
+  padding: $espacio-3 $espacio-4;
+  margin-bottom: $espacio-3;
+
+  h4 {
+    margin: 0;
+    font-size: 15px;
+    display: flex;
+    align-items: center;
+    gap: $espacio-2;
+  }
+
+  p {
+    margin: $espacio-2 0;
+    font-size: 14px;
+  }
+
+  ul {
+    margin: $espacio-2 0;
+    padding-left: 20px;
+    font-size: 13px;
+    color: $color-texto;
+  }
+}
+
+.escalamiento {
+  margin: $espacio-2 0 0 !important;
+  font-size: 12px !important;
+  color: $color-texto-suave;
+
+  strong {
+    color: $color-texto;
+  }
+}
+
+.privacidadCaja {
+  padding: $espacio-3 $espacio-4;
+  border-radius: $radio-s;
+  border: 1px dashed $color-borde;
+  background: rgba($color-superficie-2, 0.55);
+  color: $color-texto-suave;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.detallesTitulo {
+  margin: 0 0 $espacio-2;
+  font-size: 13px;
+  font-weight: 600;
+  color: $color-texto-suave;
+}
+
+.indicadoresGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: $espacio-2;
+}
+
+.indicadorItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: $espacio-2;
+  padding: $espacio-2 $espacio-3;
+  background: $color-superficie-2;
+  border: 1px solid $color-borde;
+  border-radius: $radio-s;
+}
+
+.indicadorMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.indicadorNombre {
+  font-size: 12px;
+  color: $color-texto-suave;
+}
+
+.indicadorValor {
+  font-family: $fuente-titulo;
+  font-size: 15px;
+  font-weight: 700;
+  color: $color-texto;
+
+  small {
+    font-size: 11px;
+    font-weight: 400;
+    color: $color-texto-suave;
+  }
+}
+
+.accionesCmo {
+  display: flex;
+  gap: $espacio-2;
+  margin-top: $espacio-3;
+  flex-wrap: wrap;
+}
+
+.boton {
+  display: inline-block;
+  padding: 8px 14px;
+  border: 1px solid $color-borde;
+  border-radius: $radio-s;
+  font-size: 13px;
+  font-weight: 600;
+  color: $color-texto;
+
+  &:hover {
+    background: $color-superficie-2;
+  }
+}
+
+.botonIa {
+  border-color: $color-ia;
+  color: $color-ia;
+}
+
+// ── Selector compacto para Sidebar ─────────────────────────────────────────
+.barraSidebar {
+  display: flex;
+  flex-direction: column;
+  gap: $espacio-2;
+  padding: $espacio-3;
+  background: $color-superficie-2;
+  border: 1px solid $color-borde;
+  border-radius: $radio-s;
+}
+
+.barraEncabezado {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+  color: $color-texto-suave;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.barraEnlace {
+  color: $color-acento;
+  font-weight: 600;
+  text-transform: none;
+  letter-spacing: 0;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.barraBotones {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: $espacio-1;
+}
+
+.barraBoton {
+  padding: 6px 8px;
+  border-radius: 6px;
+  border: 1px solid $color-borde;
+  background: $color-superficie;
+  color: $color-texto-suave;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  &:hover {
+    color: $color-texto;
+  }
+}
+
+.barraBotonActivo {
+  border-color: $color-acento;
+  background: rgba($color-acento, 0.16);
+  color: $color-texto;
+}
+
+@media (max-width: 980px) {
+  .filaSuperior,
+  .cmoGrid {
+    grid-template-columns: 1fr;
+  }
+}

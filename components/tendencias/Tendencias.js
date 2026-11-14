@@ -86,7 +86,7 @@ function construirSerie(lecturas, hoy) {
 }
 
 export default function Tendencias() {
-  const { astronauta, lecturas } = useEstadoMision('ana', SOL_ACTUAL);
+  const { astronauta, lecturas } = useEstadoMision(null, SOL_ACTUAL);
   const [periodo, setPeriodo] = useState('mision');
   const rango = PERIODOS.find((p) => p.id === periodo);
   const sleepBase = astronauta?.baseline?.sleep_h ?? LINEA_BASE.sleep_h;

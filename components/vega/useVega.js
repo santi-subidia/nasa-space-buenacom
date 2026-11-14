@@ -15,7 +15,7 @@ const sinSuscripcion = () => () => {};
 const estadoInicial = () => INICIAL;
 
 /** Los datos del día que Vega ve junto a la pregunta (poco texto: el servidor los manda al modelo). */
-export function datosDelDia(lecturas, sintomas = [], baseline = LINEA_BASE) {
+export function datosDelDia(lecturas, sintomas = [], baseline = LINEA_BASE, nombre = MISION.astronauta.nombre) {
   const vals = valoresDelDia(lecturas, SOL_ACTUAL);
   const ev = evaluate(lecturas, baseline, 'mars_base', { symptoms: sintomas, sol: SOL_ACTUAL });
   const alerta = ev.alerts[0];
@@ -25,7 +25,7 @@ export function datosDelDia(lecturas, sintomas = [], baseline = LINEA_BASE) {
     indicadores[def?.etiqueta ?? id] = `${valor} ${def?.unidad ?? ''}${hoy ? '' : ' (último dato, no es de hoy)'}`.trim();
   }
   return {
-    tripulante: MISION.astronauta.nombre,
+    tripulante: nombre,
     sol: SOL_ACTUAL,
     alerta_activa: alerta
       ? { nivel: alerta.level, titulo: alerta.title, por_que: alerta.why }
@@ -39,12 +39,17 @@ export function datosDelDia(lecturas, sintomas = [], baseline = LINEA_BASE) {
  * El micrófono y la voz solo existen en el navegador, así que se crean después de montar.
  */
 export function useVega() {
-  const { astronauta, lecturas, sintomas } = useEstadoMision('ana', SOL_ACTUAL);
+  const { astronauta, lecturas, sintomas } = useEstadoMision(null, SOL_ACTUAL);
   const datosRef = useRef(null);
   const [motor, setMotor] = useState(null);
 
   useEffect(() => {
-    datosRef.current = datosDelDia(lecturas, sintomas, astronauta?.baseline || LINEA_BASE);
+    datosRef.current = datosDelDia(
+      lecturas,
+      sintomas,
+      astronauta?.baseline || LINEA_BASE,
+      astronauta?.name || MISION.astronauta.nombre,
+    );
   }, [astronauta, lecturas, sintomas]);
 
   useEffect(() => {

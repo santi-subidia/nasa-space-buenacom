@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { SelectorTripulanteBarra } from '@/components/tripulacion/TripulacionPantalla';
 import { RUTAS } from '@/lib/rutas';
 import styles from './Sidebar.module.scss';
 
@@ -36,6 +37,8 @@ export default function Sidebar() {
           })}
         </ul>
       </nav>
+
+      <SelectorTripulanteBarra />
 
       <p className={styles.aviso}>Prototipo educativo. No es un dispositivo médico.</p>
     </aside>

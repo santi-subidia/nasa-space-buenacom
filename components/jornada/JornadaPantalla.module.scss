@@ -1,0 +1,451 @@
+@use 'tokens' as *;
+
+.pantalla {
+  display: flex;
+  flex-direction: column;
+  gap: $espacio-4;
+}
+
+.encabezado {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: $espacio-4;
+  flex-wrap: wrap;
+
+  h1 {
+    font-size: 30px;
+    margin: 0;
+  }
+}
+
+.sub {
+  margin: 4px 0 0;
+  color: $color-texto-suave;
+  font-size: 14px;
+}
+
+.relojCaja {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: $espacio-2;
+}
+
+.relojLectura {
+  display: inline-flex;
+  align-items: baseline;
+  gap: $espacio-2;
+  background: $color-superficie-2;
+  border: 1px solid $color-borde;
+  border-radius: $radio-m;
+  padding: 10px 16px;
+  font-family: $fuente-titulo;
+  font-variant-numeric: tabular-nums;
+}
+
+.relojSol {
+  font-size: 14px;
+  font-weight: 600;
+  color: $color-acento;
+}
+
+.relojHora {
+  font-size: 28px;
+  font-weight: 700;
+  color: $color-texto;
+  line-height: 1;
+}
+
+.relojTotal {
+  font-size: 13px;
+  color: $color-texto-suave;
+}
+
+.badgesReloj {
+  display: flex;
+  gap: $espacio-2;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.badgeSueno {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  background: rgba($color-ia, 0.18);
+  border: 1px solid $color-ia;
+  color: $color-texto;
+}
+
+.badgeActivo {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  color: $color-texto-suave;
+  background: $color-superficie-2;
+  border: 1px solid $color-borde;
+}
+
+// ── Controles del reloj ───────────────────────────────────
+.controlesCard {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: $espacio-3;
+}
+
+.botonesReloj {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $espacio-2;
+  align-items: center;
+}
+
+.boton {
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: $radio-s;
+  border: 1px solid $color-borde;
+  background: $color-superficie-2;
+  color: $color-texto;
+  font-size: 13px;
+  font-weight: 600;
+
+  &:hover {
+    border-color: $color-acento;
+  }
+}
+
+.botonPrimario {
+  background: $color-acento;
+  border-color: $color-acento;
+  color: $color-fondo;
+
+  &:hover {
+    filter: brightness(1.08);
+  }
+}
+
+.botonAceleradoActivo {
+  border-color: $color-amarillo;
+  background: rgba($color-amarillo, 0.12);
+  color: $color-texto;
+}
+
+.selectorDia {
+  display: flex;
+  align-items: center;
+  gap: $espacio-2;
+  font-size: 13px;
+  color: $color-texto-suave;
+
+  select {
+    background: $color-superficie-2;
+    color: $color-texto;
+    border: 1px solid $color-borde;
+    border-radius: $radio-s;
+    padding: 7px 12px;
+    font-size: 13px;
+    cursor: pointer;
+  }
+}
+
+// ── Progreso y filtros ────────────────────────────────────
+.filaResumen {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: $espacio-4;
+}
+
+.progresoHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: $espacio-2;
+  gap: $espacio-2;
+
+  strong {
+    font-size: 18px;
+  }
+
+  span {
+    font-size: 13px;
+    color: $color-texto-suave;
+  }
+}
+
+.barra {
+  height: 10px;
+  background: $color-superficie-2;
+  border-radius: 999px;
+  overflow: hidden;
+
+  span {
+    display: block;
+    height: 100%;
+    background: $color-acento;
+    border-radius: 999px;
+    transition: width 0.25s ease;
+  }
+}
+
+.estadoClinico {
+  display: flex;
+  flex-direction: column;
+  gap: $espacio-2;
+  justify-content: center;
+}
+
+.estadoFila {
+  display: flex;
+  align-items: center;
+  gap: $espacio-2;
+  flex-wrap: wrap;
+}
+
+.notaEvento {
+  margin: 0;
+  font-size: 13px;
+  color: $color-naranja;
+}
+
+.notaNormal {
+  margin: 0;
+  font-size: 13px;
+  color: $color-texto-suave;
+}
+
+.barraFiltros {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: $espacio-3;
+  flex-wrap: wrap;
+}
+
+.filtros {
+  display: flex;
+  gap: $espacio-2;
+  flex-wrap: wrap;
+}
+
+.filtro {
+  cursor: pointer;
+  padding: 7px 14px;
+  border-radius: 999px;
+  border: 1px solid $color-borde;
+  background: $color-superficie;
+  color: $color-texto-suave;
+  font-size: 13px;
+  font-weight: 600;
+
+  &:hover {
+    color: $color-texto;
+    border-color: $color-acento;
+  }
+}
+
+.filtroActivo {
+  background: rgba($color-acento, 0.16);
+  border-color: $color-acento;
+  color: $color-texto;
+}
+
+// ── Línea de tiempo ───────────────────────────────────────
+.timeline {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: $espacio-2;
+}
+
+.marcadorAhora {
+  display: flex;
+  align-items: center;
+  gap: $espacio-3;
+  padding: 6px 12px;
+  border-radius: $radio-s;
+  background: rgba($color-acento, 0.12);
+  border: 1px dashed $color-acento;
+  color: $color-acento;
+  font-size: 13px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.puntoAhora {
+  width: 9px;
+  height: 9px;
+  border-radius: 999px;
+  background: $color-acento;
+  flex-shrink: 0;
+}
+
+.item {
+  display: grid;
+  grid-template-columns: 64px 28px 1fr auto;
+  align-items: center;
+  gap: $espacio-3;
+  padding: $espacio-3 $espacio-4;
+  border-radius: $radio-s;
+  background: $color-superficie-2;
+  border: 1px solid $color-borde;
+  transition: border-color 0.2s, opacity 0.2s;
+}
+
+.itemAhora {
+  border-color: $color-acento;
+  background: rgba($color-acento, 0.08);
+}
+
+.itemHecha {
+  opacity: 0.72;
+}
+
+.hora {
+  font-family: $fuente-titulo;
+  font-size: 15px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: $color-texto;
+}
+
+.check {
+  width: 18px;
+  height: 18px;
+  accent-color: $color-acento;
+  cursor: pointer;
+}
+
+.detalle {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.tituloFila {
+  display: flex;
+  align-items: center;
+  gap: $espacio-2;
+  flex-wrap: wrap;
+}
+
+.tituloTarea {
+  font-size: 15px;
+  font-weight: 600;
+  color: $color-texto;
+}
+
+.tituloTachado {
+  text-decoration: line-through;
+  color: $color-texto-suave;
+}
+
+.recurrencia {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 999px;
+  border: 1px solid $color-borde;
+  color: $color-texto-suave;
+  background: $color-superficie;
+}
+
+.recurrenciaEvent {
+  border-color: rgba($color-naranja, 0.6);
+  color: $color-naranja;
+}
+
+.recurrenciaWeekly {
+  border-color: rgba($color-ia, 0.6);
+  color: $color-ia;
+}
+
+.accionesItem {
+  display: flex;
+  align-items: center;
+  gap: $espacio-2;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.estadoBadge {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 999px;
+}
+
+.estadoHecha {
+  background: rgba($color-verde, 0.15);
+  color: $color-verde;
+}
+
+.estadoAhora {
+  background: rgba($color-acento, 0.18);
+  color: $color-acento;
+}
+
+.estadoPendiente {
+  background: $color-superficie;
+  color: $color-texto-suave;
+  border: 1px solid $color-borde;
+}
+
+.estadoPasada {
+  background: rgba($color-amarillo, 0.15);
+  color: $color-amarillo;
+}
+
+.enlaceRuta {
+  padding: 5px 11px;
+  border-radius: $radio-s;
+  border: 1px solid $color-borde;
+  font-size: 12px;
+  font-weight: 600;
+  color: $color-texto;
+  background: $color-superficie;
+
+  &:hover {
+    border-color: $color-acento;
+    color: $color-acento;
+  }
+}
+
+.vacio {
+  margin: 0;
+  padding: $espacio-4;
+  text-align: center;
+  color: $color-texto-suave;
+  font-size: 14px;
+}
+
+@media (max-width: 900px) {
+  .filaResumen {
+    grid-template-columns: 1fr;
+  }
+
+  .item {
+    grid-template-columns: 56px 24px 1fr;
+  }
+
+  .accionesItem {
+    grid-column: 1 / -1;
+    justify-content: flex-start;
+  }
+}

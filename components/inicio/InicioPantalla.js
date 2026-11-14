@@ -10,6 +10,8 @@ import {
   accionSincronizarWatch,
   useEstadoMision,
 } from '@/lib/datos/demo';
+import { usePermisosCompartir } from '@/lib/datos/tripulante';
+import { armarVistaOficialMedico } from '@/lib/tripulacion/logicaTripulante';
 import { minutosHoy } from '@/lib/entrenador/racha';
 import { MISION } from '@/lib/mock/mision';
 import { TARJETAS, CHEQUEO, valoresDelDia, nivelDeTarjeta } from '@/lib/mock/indicadores';
@@ -17,12 +19,16 @@ import styles from './InicioPantalla.module.scss';
 
 export default function InicioPantalla() {
   const {
+    activoId,
     astronauta,
+    tripulacion,
     lecturas,
     watchSincronizadoHoy,
     evaluacion,
+    evaluacionAna,
     evaluacionMarcos,
-  } = useEstadoMision('ana', SOL_ACTUAL);
+  } = useEstadoMision(null, SOL_ACTUAL);
+  const permisos = usePermisosCompartir();
 
   const [ocupado, setOcupado] = useState(false);
   const [avisoDemo, setAvisoDemo] = useState('');
@@ -35,13 +41,20 @@ export default function InicioPantalla() {
   const nivelGeneral = evaluacion.globalLevel || 'green';
   const chequeo = CHEQUEO.map((c) => ({ ...c, hecho: c.claves.every((k) => vals[k]?.hoy) }));
   const hechos = chequeo.filter((c) => c.hecho).length;
+  const vistaCmo = activoId === 'marcos'
+    ? armarVistaOficialMedico({
+        tripulacion,
+        evaluacionesPorId: { ana: evaluacionAna, marcos: evaluacionMarcos },
+        permisosPorId: permisos,
+      })
+    : null;
 
   async function manejarSyncWatch() {
     setOcupado(true);
     setAvisoDemo('');
     try {
-      await accionSincronizarWatch(SOL_ACTUAL, 'ana');
-      setAvisoDemo('Watch sincronizado: sueño 5,5 h · FC 74 lpm (HRV 34 ms) · SpO₂ 97 % · muñeca 37,6 °C.');
+      await accionSincronizarWatch(SOL_ACTUAL, activoId);
+      setAvisoDemo(`Watch sincronizado para ${astronauta?.name || activoId} (watch_sim · sol ${SOL_ACTUAL}).`);
     } catch (err) {
       console.error(err);
       setAvisoDemo('No se pudo sincronizar el Watch.');
@@ -77,7 +90,7 @@ export default function InicioPantalla() {
       />
 
       <div className={styles.fila}>
-        <EstadoGeneral nivel={nivelGeneral} alertas={evaluacion.alerts || []} />
+        <EstadoGeneral nivel={nivelGeneral} alertas={evaluacion.alerts || []} vistaCmo={vistaCmo} />
         <Chequeo items={chequeo} hechos={hechos} />
       </div>
 
@@ -141,7 +154,7 @@ function Encabezado({
   );
 }
 
-function EstadoGeneral({ nivel, alertas }) {
+function EstadoGeneral({ nivel, alertas, vistaCmo }) {
   const principal = alertas[0] || null;
   const extras = Math.max(0, alertas.length - 1);
 
@@ -176,6 +189,21 @@ function EstadoGeneral({ nivel, alertas }) {
         </div>
       )}
 
+      {vistaCmo && (
+        <div className={styles.alerta} style={{ marginTop: 12 }}>
+          <h3>Vista del oficial médico (CMO)</h3>
+          <ul>
+            {vistaCmo.map((c) => (
+              <li key={c.id}>
+                <TrafficLight nivel={c.level} conTexto={false} /> <strong>{c.name}:</strong>{' '}
+                {c.alertaActiva ? c.alertaActiva.title : 'Todo en verde'}
+                {!c.compartioDetalles ? ' · mediciones detalladas privadas' : ''}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
       <div className={styles.botones}>
         <Link className={styles.boton} href={`/mapa?zona=${principal?.zone || 'immune'}`}>
           Ver guía
@@ -186,6 +214,11 @@ function EstadoGeneral({ nivel, alertas }) {
         <Link className={`${styles.boton} ${styles.botonIa}`} href="/junta">
           Convocar junta médica
         </Link>
+        {vistaCmo && (
+          <Link className={styles.boton} href="/tripulacion">
+            Panel CMO / Privacidad
+          </Link>
+        )}
       </div>
     </Card>
   );

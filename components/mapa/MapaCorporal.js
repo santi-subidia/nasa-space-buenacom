@@ -45,7 +45,7 @@ function Marca({ nivel, x, y }) {
 }
 
 export default function MapaCorporal() {
-  const { lecturas, sintomas, evaluacion } = useEstadoMision('ana', SOL_ACTUAL);
+  const { lecturas, sintomas, evaluacion } = useEstadoMision(null, SOL_ACTUAL);
   const vals = valoresDelDia(lecturas, SOL_ACTUAL);
   const parametro = useSearchParams().get('zona');
   const herpeSol = sintomas.find((s) => s.code === 'cold_sore' || s.code === 'rash');

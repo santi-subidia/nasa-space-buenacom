@@ -61,10 +61,13 @@ function combinarSintomas(sintomasGuardados) {
 }
 
 /** Construye el cuerpo de POST /api/claude con `tipo: 'board'`. */
-export function armarEntradaJunta(lecturasGuardadas = [], sintomasGuardados = []) {
+export function armarEntradaJunta(lecturasGuardadas = [], sintomasGuardados = [], astronauta = null) {
+  const idAstro = astronauta?.id || MISION.astronauta.id;
+  const nombreAstro = astronauta?.name || astronauta?.nombre || MISION.astronauta.nombre;
+  const baseline = astronauta?.baseline || LINEA_BASE;
   const lecturasHastaHoy = lecturasGuardadas.filter((l) => l?.sol == null || l.sol <= SOL_ACTUAL);
   const sintomasHastaHoy = sintomasGuardados.filter((s) => s?.sol == null || s.sol <= SOL_ACTUAL);
-  const evaluacion = evaluate(lecturasHastaHoy, LINEA_BASE, 'mars_base', {
+  const evaluacion = evaluate(lecturasHastaHoy, baseline, 'mars_base', {
     symptoms: sintomasHastaHoy,
     sol: SOL_ACTUAL,
   });
@@ -83,11 +86,13 @@ export function armarEntradaJunta(lecturasGuardadas = [], sintomasGuardados = []
         actions: a.actions,
         escalate: a.escalate,
       }))
-    : ENTRADA_SOL42.alertas;
+    : idAstro === 'ana'
+      ? ENTRADA_SOL42.alertas
+      : [];
 
   return {
     tipo: 'board',
-    astronauta: { id: MISION.astronauta.id, nombre: MISION.astronauta.nombre },
+    astronauta: { id: idAstro, nombre: nombreAstro },
     sol: SOL_ACTUAL,
     entorno: ENTRADA_SOL42.entorno,
     nivelMotor,

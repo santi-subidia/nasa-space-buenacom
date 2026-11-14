@@ -4,7 +4,8 @@ import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import Card from '@/components/Card';
 import { SUGERENCIAS } from '@/ai/vega/sesion.js';
-import { MISION } from '@/lib/mock/mision';
+import { useTripulanteActivo } from '@/lib/datos/tripulante';
+import { TRIPULANTES } from '@/lib/demo/generador';
 import { INDICADORES } from '@/lib/tipos';
 import { useChequeo } from './useChequeo';
 import { useVega } from './useVega';
@@ -47,6 +48,8 @@ function valorDelPaso(paso, hechos) {
 }
 
 export default function VegaPantalla({ modoInicial = 'conversar' }) {
+  const activoId = useTripulanteActivo();
+  const nombreTripulante = TRIPULANTES.find((t) => t.id === activoId)?.name || 'Ana Ríos';
   const vega = useVega();
   const chequeo = useChequeo(vega.voz);
   const [modo, setModo] = useState(modoInicial);
@@ -119,8 +122,8 @@ export default function VegaPantalla({ modoInicial = 'conversar' }) {
                 <span className={styles.quien}>Vega</span>
                 <p>
                   {enChequeo
-                    ? `Hola ${MISION.astronauta.nombre}. Te voy a preguntar, de a una cosa: presión, temperatura, ánimo y estrés. Contestame en voz alta con los números; si querés saltear un paso, decí “después”. Tocá el micrófono para empezar.`
-                    : `Hola ${MISION.astronauta.nombre}, soy Vega. Puedo explicarte cómo viene tu cuerpo hoy, qué significan tus números y qué hacer. Preguntame lo que quieras.`}
+                    ? `Hola ${nombreTripulante}. Te voy a preguntar, de a una cosa: presión, temperatura, ánimo y estrés. Contestame en voz alta con los números; si querés saltear un paso, decí “después”. Tocá el micrófono para empezar.`
+                    : `Hola ${nombreTripulante}, soy Vega. Puedo explicarte cómo viene tu cuerpo hoy, qué significan tus números y qué hacer. Preguntame lo que quieras.`}
                 </p>
               </li>
             )}

@@ -5,7 +5,8 @@ import { armarVistaJunta } from '@/ai/junta/vista.js';
 import { guardarAviso } from '@/lib/datos/avisos';
 import { leerLecturas, useLecturas } from '@/lib/datos/lecturas';
 import { leerSintomas, useSintomas } from '@/lib/datos/sintomas';
-import { MISION } from '@/lib/mock/mision';
+import { useTripulanteActivo } from '@/lib/datos/tripulante';
+import { TRIPULANTES } from '@/lib/demo/generador';
 import { armarEntradaJunta } from './entrada';
 
 /**
@@ -13,10 +14,12 @@ import { armarEntradaJunta } from './entrada';
  * estado "pensando" con contador de segundos, manejo de respuesta guardada y registro de aviso al CMO.
  */
 export function useJunta() {
-  const lecturas = useLecturas();
-  const sintomas = useSintomas();
-  const datosRef = useRef({ lecturas: [], sintomas: [] });
-  datosRef.current = { lecturas, sintomas };
+  const activoId = useTripulanteActivo();
+  const astroMeta = TRIPULANTES.find((t) => t.id === activoId) || TRIPULANTES[0];
+  const lecturas = useLecturas(activoId);
+  const sintomas = useSintomas(activoId);
+  const datosRef = useRef({ lecturas: [], sintomas: [], astroMeta });
+  datosRef.current = { lecturas, sintomas, astroMeta };
 
   const [estado, setEstado] = useState({
     fase: 'pensando', // 'pensando' | 'lista' | 'error'
@@ -39,14 +42,18 @@ export function useJunta() {
 
     let lecturasActuales = datosRef.current.lecturas;
     let sintomasActuales = datosRef.current.sintomas;
+    const astro = datosRef.current.astroMeta;
     try {
-      [lecturasActuales, sintomasActuales] = await Promise.all([leerLecturas(), leerSintomas()]);
+      [lecturasActuales, sintomasActuales] = await Promise.all([
+        leerLecturas(astro.id),
+        leerSintomas(astro.id),
+      ]);
     } catch {
       /* si IndexedDB falla, seguimos con los datos ya cargados */
     }
     if (controller.signal.aborted || pedidoId !== pedidoIdRef.current) return;
 
-    const entrada = armarEntradaJunta(lecturasActuales, sintomasActuales);
+    const entrada = armarEntradaJunta(lecturasActuales, sintomasActuales, astro);
     setSegundos(0);
     setAvisoEnviado(false);
     setEstado((prev) => ({
@@ -66,7 +73,7 @@ export function useJunta() {
       const data = await res.json();
       if (pedidoId !== pedidoIdRef.current) return;
 
-      const vista = armarVistaJunta(data, MISION.astronauta.nombre);
+      const vista = armarVistaJunta(data, astro.name);
       if (!vista) {
         setEstado((prev) => ({
           ...prev,

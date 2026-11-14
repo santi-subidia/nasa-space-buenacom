@@ -4,7 +4,8 @@ import Link from 'next/link';
 import { AVISO_NO_DIAGNOSTICO } from '@/ai/cara/aviso.js';
 import Card from '@/components/Card';
 import { ASPECTOS_CARAS, INTENSIDAD_ETIQUETA, ZONAS_CARA } from '@/lib/cara/blendshapes';
-import { MISION, SOL_ACTUAL } from '@/lib/mock/mision';
+import { useTripulanteActivo } from '@/lib/datos/tripulante';
+import { SOL_ACTUAL, TRIPULANTES } from '@/lib/demo/generador';
 import { useCara } from './useCara';
 import styles from './CaraPantalla.module.scss';
 
@@ -20,6 +21,8 @@ const ORIGEN_TEXTO = {
 };
 
 export default function CaraPantalla() {
+  const activoId = useTripulanteActivo();
+  const nombreTripulante = TRIPULANTES.find((t) => t.id === activoId)?.name || 'Ana Ríos';
   const {
     videoRef,
     camaraEstado,
@@ -57,7 +60,7 @@ export default function CaraPantalla() {
         <div>
           <h1>¿Cómo me ves hoy?</h1>
           <p className={styles.sub}>
-            Compara tu cara de hoy con tu foto base e identifica signos de fatiga por parpadeo · Sol {SOL_ACTUAL} · {MISION.astronauta.nombre}
+            Compara tu cara de hoy con tu foto base e identifica signos de fatiga por parpadeo · Sol {SOL_ACTUAL} · {nombreTripulante}
           </p>
         </div>
         <label className={styles.vozToggle}>

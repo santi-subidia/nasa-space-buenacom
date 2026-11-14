@@ -5,13 +5,14 @@
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
-  gap: $espacio-5;
-  padding: $espacio-5 $espacio-4;
+  gap: $espacio-3;
+  padding: $espacio-4;
   background: $color-superficie;
   border-right: 1px solid $color-borde;
   position: sticky;
   top: 0;
   height: 100vh;
+  overflow-y: auto;
 }
 
 .marca {
@@ -42,10 +43,11 @@
   display: flex;
   align-items: center;
   gap: $espacio-3;
-  padding: $espacio-3;
+  padding: $espacio-2 $espacio-3;
   border-radius: $radio-s;
   color: $color-texto-suave;
   font-weight: 500;
+  font-size: 14px;
   border-left: 3px solid transparent;
 
   &:hover {
