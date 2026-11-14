@@ -102,9 +102,105 @@
 }
 .primario { background: $color-acento; color: $color-fondo; border-color: $color-acento; &:hover:not(:disabled) { background: $color-acento; filter: brightness(1.1); } }
 
+.resumenGrid {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: $espacio-4;
+  align-items: start;
+}
+
 .resumen {
-  max-width: 640px;
   h2 { font-size: 24px; margin-bottom: $espacio-3; }
   ul { padding-left: 20px; display: flex; flex-direction: column; gap: $espacio-2; }
 }
+
+.fotosClave {
+  display: flex;
+  gap: $espacio-2;
+  margin-top: $espacio-3;
+  img {
+    height: 60px;
+    width: auto;
+    border-radius: $radio-s;
+    border: 1px solid $color-borde;
+    transform: scaleX(-1);
+  }
+}
+
+.vegaCard {
+  display: flex;
+  flex-direction: column;
+  gap: $espacio-3;
+}
+
+.vegaPensando {
+  margin: 0;
+  color: $color-ia;
+  font-size: 15px;
+}
+
+.vegaComentario {
+  margin: 0;
+  font-size: 17px;
+  line-height: 1.5;
+}
+
+.vegaCorreccion {
+  margin: 0;
+  padding: $espacio-2 $espacio-3;
+  border-radius: $radio-s;
+  background: rgba($color-amarillo, 0.12);
+  border: 1px solid rgba($color-amarillo, 0.45);
+  font-size: 14px;
+}
+
+.planAjustado {
+  background: $color-superficie-2;
+  border: 1px solid $color-borde;
+  border-radius: $radio-s;
+  padding: $espacio-3 $espacio-4;
+  display: flex;
+  flex-direction: column;
+  gap: $espacio-1;
+}
+
+.planTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: $espacio-2;
+  flex-wrap: wrap;
+}
+
+.planEtiqueta {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: $color-texto-suave;
+}
+
+.planTecho {
+  font-size: 11px;
+  font-weight: 700;
+  color: $color-naranja;
+  border: 1px solid rgba($color-naranja, 0.5);
+  border-radius: 999px;
+  padding: 2px 8px;
+}
+
+.planValor {
+  margin: 0;
+  font-family: $fuente-titulo;
+  font-size: 20px;
+  font-weight: 700;
+  color: $color-acento;
+}
+
+.planMotivo {
+  margin: 0;
+  font-size: 14px;
+  color: $color-texto-suave;
+}
+
 .acciones { display: flex; gap: $espacio-2; margin-top: $espacio-4; }
