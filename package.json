@@ -5,12 +5,17 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "test": "node --test lib/*.test.js"
   },
   "dependencies": {
+    "dexie": "^4.4.7",
     "next": "^16.4.6",
     "react": "^19.3.1",
     "react-dom": "^19.3.1",
     "sass": "^1.108.2"
+  },
+  "devDependencies": {
+    "fake-indexeddb": "^6.2.8"
   }
 }
