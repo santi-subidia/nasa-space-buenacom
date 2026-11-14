@@ -1,4 +1,4 @@
-// Entrada de ejemplo de la junta para la historia "Día 42 en Marte" (doc/05-plan/prototipo.md §5):
+// Entrada de ejemplo de la junta para la historia "Día 42 en Marte" (doc/proyecto/plan/prototipo.md §5):
 // sueño ~5,5 h, estrés alto, herpes labial el sol 41 y temperatura de 37,6 °C → regla viral_reactivation 🟠.
 // Es de mentira y con la forma de los tipos de #2; se reemplaza por los datos de #4 cuando existan.
 // Sirve para `npm run probar:junta`, para las pruebas y para la demo con IA apagada.

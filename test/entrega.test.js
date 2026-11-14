@@ -134,9 +134,9 @@ test('con IA_APAGADA=1 y crearAlmacenEnArchivo(), sentadillas Sol 42 en nivel or
   assert.equal(procesada.plan.limitadoPorMotor, false);
 });
 
-test('README.md y doc/05-plan/guion-demo.md documentan el aviso médico, IA_APAGADA=1 y las 11 rutas', () => {
+test('README.md y doc/proyecto/plan/guion-demo.md documentan el aviso médico, IA_APAGADA=1 y las 11 rutas', () => {
   const readmePath = join(RAIZ, 'README.md');
-  const guionPath = join(RAIZ, 'doc', '05-plan', 'guion-demo.md');
+  const guionPath = join(RAIZ, 'doc', 'proyecto', 'plan', 'guion-demo.md');
 
   assert.equal(existsSync(readmePath), true);
   assert.equal(existsSync(guionPath), true);

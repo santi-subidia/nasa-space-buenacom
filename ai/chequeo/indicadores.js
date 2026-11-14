@@ -1,4 +1,4 @@
-// Indicadores que se pueden dictar por voz (subconjunto de IndicatorId de doc/05-plan/prototipo.md),
+// Indicadores que se pueden dictar por voz (subconjunto de IndicatorId de doc/proyecto/plan/prototipo.md),
 // con su unidad y un rango plausible. El rango es una red de seguridad contra errores del
 // reconocimiento de voz o de la IA ("376 de temperatura"): fuera de rango se pide repetir, no se guarda.
 

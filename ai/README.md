@@ -23,9 +23,9 @@ Orden recomendado del prompt para el caché (#5): `INSTRUCCIONES_VEGA` → `ctx.
 | `fichas/mapa.js` | Zonas del cuerpo y especialistas de la junta → riesgos (a mano) |
 | `tokens.js` | Estimación de tokens (2,0 caracteres por token, calibrada con `countTokens`) y el umbral de 100K |
 | `vega.js` | Instrucciones fijas de Vega |
-| `scripts/generar-indice.js` | Regenera el índice leyendo `doc/02-riesgos/**` y `doc/fuentes/**` |
+| `scripts/generar-indice.js` | Regenera el índice leyendo `doc/nasa/riesgos/**` y `doc/nasa/fuentes/**` |
 
-- **Ids de riesgo:** el nombre del archivo de `doc/02-riesgos/**` (`inmunidad`, `cardiovascular`, `sueno-horarios`…). `listarRiesgos()` devuelve los 17.
+- **Ids de riesgo:** el nombre del archivo de `doc/nasa/riesgos/**` (`inmunidad`, `cardiovascular`, `sueno-horarios`…). `listarRiesgos()` devuelve los 17.
 - **Fuentes:** `'principales'` (por defecto) = página del HRP + registro del HSRB; `'todas'` suma investigaciones y artículos; `'ninguna'` solo la ficha en español. Si el contexto no entra en el presupuesto, baja de nivel solo y lo avisa en `recortado`. Si ni las fichas solas entran, lanza un error.
 - **Tamaño típico (medido con `countTokens`):** un riesgo con fuentes principales ≈ 3–4K tokens; con todas, hasta ≈ 10K. Los 17 riesgos solo en fichas ≈ 11,5K. El corpus completo pasa de 200K: por eso cada consulta manda solo las fichas que toca.
 - **Dónde está `doc/`:** por defecto, la carpeta padre de `ai/`. Si se mueve la carpeta, definir `ASTROVITALS_DOC_ROOT` o pasar `raiz`.
@@ -55,7 +55,7 @@ curl -X POST localhost:3000/api/claude -H 'content-type: application/json' \
 
 ```bash
 npm test                   # pruebas con node:test (cliente simulado, sin red)
-npm run indice             # regenera fichas/indice.generado.json tras editar doc/02-riesgos
+npm run indice             # regenera fichas/indice.generado.json tras editar doc/nasa/riesgos
 npm run probar             # prueba REAL contra la API con ai/.env (gasta centavos)
 npm run probar:sin-clave   # comprueba que sin clave no se rompe nada
 ```
@@ -63,7 +63,7 @@ npm run probar:sin-clave   # comprueba que sin clave no se rompe nada
 ## Pendiente / decisiones para #5
 
 - El conteo de tokens es una estimación. En #5 se puede contrastar con `client.messages.countTokens` y ajustar `CARACTERES_POR_TOKEN`.
-- Las zonas de `fichas/mapa.js` son las 12 de `doc/04-sintesis/matriz-peligro-riesgo-indicador.md`; #7 define las 9 del mapa corporal y habrá que alinear los ids.
+- Las zonas de `fichas/mapa.js` son las 12 de `doc/proyecto/sintesis/matriz-peligro-riesgo-indicador.md`; #7 define las 9 del mapa corporal y habrá que alinear los ids.
 - Si la demo se publica con la IA apagada (#21), `getContext` no hace falta en ese entorno: solo se leen las respuestas guardadas.
 
 ## Vega: compañero de voz (issue #14)

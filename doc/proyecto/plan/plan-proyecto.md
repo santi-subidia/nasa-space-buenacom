@@ -1,6 +1,6 @@
 # Plan de proyecto · Hackathon NASA Space Apps 2026
 
-> Desafío: *Create Health Monitoring Software for Astronauts on Space Missions* ([00-desafio](../00-desafio/desafio.md))
+> Desafío: *Create Health Monitoring Software for Astronauts on Space Missions* ([desafio](../../nasa/desafio/desafio.md))
 > Nombre provisional del producto: **"AstroVitals"** (cámbialo libremente)
 
 ## 1. Planteamiento del problema
@@ -24,8 +24,8 @@ En misiones largas, los astronautas son **responsables de detectar en sí mismos
 ### MVP (lo que **se demuestra** en el hackathon)
 
 1. Registro de los **6 indicadores del desafío** + SpO₂, agua y ejercicio.
-2. **Motor de reglas** con semáforo (umbrales + línea base + reglas compuestas). Ver [catálogo](../04-sintesis/catalogo-indicadores.md).
-3. **Mapa corporal clicable** con estado por zona. Ver [matriz](../04-sintesis/matriz-peligro-riesgo-indicador.md).
+2. **Motor de reglas** con semáforo (umbrales + línea base + reglas compuestas). Ver [catálogo](../sintesis/catalogo-indicadores.md).
+3. **Mapa corporal clicable** con estado por zona. Ver [matriz](../sintesis/matriz-peligro-riesgo-indicador.md).
 4. **Gráficos de tendencia** con bandas de color.
 5. **Guías de acción** + fichas educativas (ⓘ).
 6. **Selector de entorno** (nave / estación / rover / base en Marte) que ajusta umbrales y textos.
@@ -75,6 +75,6 @@ Diagnóstico médico real, integración con hardware real certificado e IA clín
 
 - **Impacto:** responde a un hueco real que reconoce la NASA (autonomía médica, sin contramedidas conductuales validadas).
 - **Creatividad:** mapa corporal + reglas compuestas + entorno adaptable + gamificación cooperativa.
-- **Validez:** cada regla y texto **enlaza a su fuente** de la NASA ([fuentes/INDICE.md](../fuentes/INDICE.md)).
+- **Validez:** cada regla y texto **enlaza a su fuente** de la NASA ([fuentes/INDICE.md](../../nasa/fuentes/INDICE.md)).
 - **Relevancia:** usa los recursos del HRP que propone el desafío.
 - **Presentación:** demo con la historia "Día 42 en Marte" (ver [prototipo](prototipo.md)).

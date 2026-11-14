@@ -1,33 +1,33 @@
 {
-  "generadoDesde": "doc/02-riesgos",
+  "generadoDesde": "doc/nasa/riesgos",
   "riesgos": {
     "cargas-dinamicas": {
       "id": "cargas-dinamicas",
       "grupo": "conducta",
       "titulo": "Riesgo de lesión por cargas dinámicas (*Injury from Dynamic Loads*)",
       "peligros": "G",
-      "ficha": "doc/02-riesgos/conducta/cargas-dinamicas.md",
+      "ficha": "doc/nasa/riesgos/conducta/cargas-dinamicas.md",
       "fuentes": [
         {
-          "archivo": "doc/fuentes/02-riesgos/risk-of-injury-from-dynamic-loads.md",
+          "archivo": "doc/nasa/fuentes/02-riesgos/risk-of-injury-from-dynamic-loads.md",
           "titulo": "Risk of injury from dynamic loads",
           "url": "https://www.nasa.gov/reference/risk-of-injury-from-dynamic-loads/",
           "tipo": "hrp"
         },
         {
-          "archivo": "doc/fuentes/05-human-system-risk-board/dynamic-loads-risk.md",
+          "archivo": "doc/nasa/fuentes/05-human-system-risk-board/dynamic-loads-risk.md",
           "titulo": "Risk of In-Mission Injury and Performance Decrements and Long-term Health Effects due to Dynamic Loads (Dynamic Loads Risk)",
           "url": "https://www.nasa.gov/directorates/esdmd/hhp/dynamic-loads-risk/",
           "tipo": "hsrb"
         },
         {
-          "archivo": "doc/fuentes/05-human-system-risk-board/risk-to-vehicle-crew-egress-capability-and-task-performance-as-applied-to-earth-and-extraterrestrial-landings.md",
+          "archivo": "doc/nasa/fuentes/05-human-system-risk-board/risk-to-vehicle-crew-egress-capability-and-task-performance-as-applied-to-earth-and-extraterrestrial-landings.md",
           "titulo": "Risk to Vehicle Crew Egress Capability and Task Performance as Applied to Earth and Extraterrestrial Landings",
           "url": "https://www.nasa.gov/directorates/esdmd/hhp/risk-to-vehicle-crew-egress-capability-and-task-performance-as-applied-to-earth-and-extraterrestrial-landings/",
           "tipo": "hsrb"
         },
         {
-          "archivo": "doc/fuentes/03-investigaciones/spacecraft-occupant-protection.md",
+          "archivo": "doc/nasa/fuentes/03-investigaciones/spacecraft-occupant-protection.md",
           "titulo": "Spacecraft Occupant Protection",
           "url": "https://www.nasa.gov/reference/spacecraft-occupant-protection/",
           "tipo": "investigacion"
@@ -39,28 +39,28 @@
       "grupo": "conducta",
       "titulo": "Riesgo de cambios de conducta y trastornos psiquiátricos",
       "peligros": "I, D, R (y la sobrecarga de trabajo)",
-      "ficha": "doc/02-riesgos/conducta/conducta-psiquiatria.md",
+      "ficha": "doc/nasa/riesgos/conducta/conducta-psiquiatria.md",
       "fuentes": [
         {
-          "archivo": "doc/fuentes/02-riesgos/risk-of-behavioral-conditions-and-psychiatric-disorders.md",
+          "archivo": "doc/nasa/fuentes/02-riesgos/risk-of-behavioral-conditions-and-psychiatric-disorders.md",
           "titulo": "Risk of behavioral changes and psychiatric disorders",
           "url": "https://www.nasa.gov/reference/risk-of-behavioral-conditions-and-psychiatric-disorders/",
           "tipo": "hrp"
         },
         {
-          "archivo": "doc/fuentes/05-human-system-risk-board/behavioral-health-risk.md",
+          "archivo": "doc/nasa/fuentes/05-human-system-risk-board/behavioral-health-risk.md",
           "titulo": "Risk of Adverse Cognitive or Behavioral Changes and Psychiatric Disorders Leading to In-mission Health and Performance and Long-term Health Effects (Behavioral Health Risk)",
           "url": "https://www.nasa.gov/directorates/esdmd/hhp/behavioral-health-risk/",
           "tipo": "hsrb"
         },
         {
-          "archivo": "doc/fuentes/04-articulos-profundizacion/five-tips-from-nasa-crew-on-emerging-from-isolation.md",
+          "archivo": "doc/nasa/fuentes/04-articulos-profundizacion/five-tips-from-nasa-crew-on-emerging-from-isolation.md",
           "titulo": "Five Tips from NASA Crew on Emerging from Isolation",
           "url": "https://www.nasa.gov/humans-in-space/five-tips-from-nasa-crew-on-emerging-from-isolation/",
           "tipo": "articulo"
         },
         {
-          "archivo": "doc/fuentes/03-investigaciones/can-space-gardening-help-astronauts-cope-with-isolation.md",
+          "archivo": "doc/nasa/fuentes/03-investigaciones/can-space-gardening-help-astronauts-cope-with-isolation.md",
           "titulo": "Can Space Gardening Help Astronauts Cope With Isolation?",
           "url": "https://www.nasa.gov/humans-in-space/can-space-gardening-help-astronauts-cope-with-isolation/",
           "tipo": "investigacion"
@@ -72,28 +72,28 @@
       "grupo": "conducta",
       "titulo": "Riesgo de soporte inadecuado de sistemas y operaciones",
       "peligros": "D",
-      "ficha": "doc/02-riesgos/conducta/soporte-sistemas.md",
+      "ficha": "doc/nasa/riesgos/conducta/soporte-sistemas.md",
       "fuentes": [
         {
-          "archivo": "doc/fuentes/02-riesgos/risk-of-inadequate-systems-operations-support.md",
+          "archivo": "doc/nasa/fuentes/02-riesgos/risk-of-inadequate-systems-operations-support.md",
           "titulo": "Risk of inadequate systems operations support",
           "url": "https://www.nasa.gov/reference/risk-of-inadequate-systems-operations-support/",
           "tipo": "hrp"
         },
         {
-          "archivo": "doc/fuentes/05-human-system-risk-board/eihso-risk.md",
+          "archivo": "doc/nasa/fuentes/05-human-system-risk-board/eihso-risk.md",
           "titulo": "Risk of Adverse Mission Outcomes Due to Earth Independent Human-Systems Operations (EIHSO Risk)",
           "url": "https://www.nasa.gov/directorates/esdmd/hhp/eihso-risk/",
           "tipo": "hsrb"
         },
         {
-          "archivo": "doc/fuentes/05-human-system-risk-board/risk-of-adverse-health-outcomes-and-decrements-in-performance-due-to-inflight-medical-conditions.md",
+          "archivo": "doc/nasa/fuentes/05-human-system-risk-board/risk-of-adverse-health-outcomes-and-decrements-in-performance-due-to-inflight-medical-conditions.md",
           "titulo": "Risk of Adverse Health Outcomes and Decrements in Performance due to Inflight Medical Conditions",
           "url": "https://www.nasa.gov/directorates/esdmd/hhp/risk-of-adverse-health-outcomes-and-decrements-in-performance-due-to-inflight-medical-conditions/",
           "tipo": "hsrb"
         },
         {
-          "archivo": "doc/fuentes/03-investigaciones/tempus-pro.md",
+          "archivo": "doc/nasa/fuentes/03-investigaciones/tempus-pro.md",
           "titulo": "Tempus Pro",
           "url": "https://www.nasa.gov/reference/tempus-pro/",
           "tipo": "investigacion"
@@ -105,28 +105,28 @@
       "grupo": "conducta",
       "titulo": "Riesgo de sueño inadecuado y horarios irregulares",
       "peligros": "I (más el entorno: luz y ruido)",
-      "ficha": "doc/02-riesgos/conducta/sueno-horarios.md",
+      "ficha": "doc/nasa/riesgos/conducta/sueno-horarios.md",
       "fuentes": [
         {
-          "archivo": "doc/fuentes/02-riesgos/risk-from-inadequate-sleep-and-irregular-schedules.md",
+          "archivo": "doc/nasa/fuentes/02-riesgos/risk-from-inadequate-sleep-and-irregular-schedules.md",
           "titulo": "Risk from Inadequate Sleep and Irregular Schedules",
           "url": "https://www.nasa.gov/reference/risk-from-inadequate-sleep-and-irregular-schedules/",
           "tipo": "hrp"
         },
         {
-          "archivo": "doc/fuentes/05-human-system-risk-board/risk-of-performance-decrements-and-adverse-health-outcomes-resulting-from-sleep-loss-circadian-desynchronization-and-work-overload.md",
+          "archivo": "doc/nasa/fuentes/05-human-system-risk-board/risk-of-performance-decrements-and-adverse-health-outcomes-resulting-from-sleep-loss-circadian-desynchronization-and-work-overload.md",
           "titulo": "Risk of Performance Decrements and Adverse Health Outcomes Resulting from Sleep Loss, Circadian Desynchronization, and Work Overload",
           "url": "https://www.nasa.gov/directorates/esdmd/hhp/risk-of-performance-decrements-and-adverse-health-outcomes-resulting-from-sleep-loss-circadian-desynchronization-and-work-overload/",
           "tipo": "hsrb"
         },
         {
-          "archivo": "doc/fuentes/03-investigaciones/standard-measures.md",
+          "archivo": "doc/nasa/fuentes/03-investigaciones/standard-measures.md",
           "titulo": "Standard Measures",
           "url": "https://www.nasa.gov/reference/standard-measures/",
           "tipo": "investigacion"
         },
         {
-          "archivo": "doc/fuentes/03-investigaciones/archer.md",
+          "archivo": "doc/nasa/fuentes/03-investigaciones/archer.md",
           "titulo": "ARCHeR",
           "url": "https://www.nasa.gov/reference/archer/",
           "tipo": "investigacion"
@@ -138,22 +138,22 @@
       "grupo": "conducta",
       "titulo": "Riesgo de trabajo en equipo inadecuado (*Inadequate Teamwork*)",
       "peligros": "I, D",
-      "ficha": "doc/02-riesgos/conducta/trabajo-en-equipo.md",
+      "ficha": "doc/nasa/riesgos/conducta/trabajo-en-equipo.md",
       "fuentes": [
         {
-          "archivo": "doc/fuentes/02-riesgos/risk-of-inadequate-teamwork.md",
+          "archivo": "doc/nasa/fuentes/02-riesgos/risk-of-inadequate-teamwork.md",
           "titulo": "Risk of inadequate teamwork",
           "url": "https://www.nasa.gov/reference/risk-of-inadequate-teamwork/",
           "tipo": "hrp"
         },
         {
-          "archivo": "doc/fuentes/05-human-system-risk-board/team-risk.md",
+          "archivo": "doc/nasa/fuentes/05-human-system-risk-board/team-risk.md",
           "titulo": "Risk of In-Mission Performance and Behavioral Health Decrements Due to Inadequate Cooperation, Coordination, Communication, and Psychosocial Adaptation within a Team (Team Risk)",
           "url": "https://www.nasa.gov/directorates/esdmd/hhp/team-risk/",
           "tipo": "hsrb"
         },
         {
-          "archivo": "doc/fuentes/03-investigaciones/archer.md",
+          "archivo": "doc/nasa/fuentes/03-investigaciones/archer.md",
           "titulo": "ARCHeR",
           "url": "https://www.nasa.gov/reference/archer/",
           "tipo": "investigacion"
@@ -165,28 +165,28 @@
       "grupo": "fisiologia",
       "titulo": "Riesgo de menor capacidad cardiorrespiratoria y musculoesquelética",
       "peligros": "G",
-      "ficha": "doc/02-riesgos/fisiologia/capacidad-fisica.md",
+      "ficha": "doc/nasa/riesgos/fisiologia/capacidad-fisica.md",
       "fuentes": [
         {
-          "archivo": "doc/fuentes/02-riesgos/risk-of-reduced-cardiorespiratory-and-musculoskeletal-fitness.md",
+          "archivo": "doc/nasa/fuentes/02-riesgos/risk-of-reduced-cardiorespiratory-and-musculoskeletal-fitness.md",
           "titulo": "Risk of Reduced Cardiorespiratory and Musculoskeletal Fitness",
           "url": "https://www.nasa.gov/reference/risk-of-reduced-cardiorespiratory-and-musculoskeletal-fitness/",
           "tipo": "hrp"
         },
         {
-          "archivo": "doc/fuentes/05-human-system-risk-board/aerobic-risk.md",
+          "archivo": "doc/nasa/fuentes/05-human-system-risk-board/aerobic-risk.md",
           "titulo": "Risk of Reduced Physical Performance Capabilities Due to Reduced Aerobic Capacity (Aerobic Risk)",
           "url": "https://www.nasa.gov/directorates/esdmd/hhp/aerobic-risk/",
           "tipo": "hsrb"
         },
         {
-          "archivo": "doc/fuentes/05-human-system-risk-board/muscle-risk.md",
+          "archivo": "doc/nasa/fuentes/05-human-system-risk-board/muscle-risk.md",
           "titulo": "Risk of Reduced Physical Performance Capabilities Due to Reduced Muscle Size, Strength, and Endurance (Muscle Risk)",
           "url": "https://www.nasa.gov/directorates/esdmd/hhp/muscle-risk/",
           "tipo": "hsrb"
         },
         {
-          "archivo": "doc/fuentes/03-investigaciones/zero-t2.md",
+          "archivo": "doc/nasa/fuentes/03-investigaciones/zero-t2.md",
           "titulo": "Zero T2",
           "url": "https://www.nasa.gov/reference/zero-t2/",
           "tipo": "investigacion"
@@ -198,28 +198,28 @@
       "grupo": "fisiologia",
       "titulo": "Riesgo de adaptaciones cardiovasculares (*Cardiovascular Adaptations*)",
       "peligros": "G (microgravedad), R (radiación, efecto a largo plazo)",
-      "ficha": "doc/02-riesgos/fisiologia/cardiovascular.md",
+      "ficha": "doc/nasa/riesgos/fisiologia/cardiovascular.md",
       "fuentes": [
         {
-          "archivo": "doc/fuentes/02-riesgos/risk-of-cardiovascular-adaptations.md",
+          "archivo": "doc/nasa/fuentes/02-riesgos/risk-of-cardiovascular-adaptations.md",
           "titulo": "Risk of Cardiovascular Adaptations",
           "url": "https://www.nasa.gov/reference/risk-of-cardiovascular-adaptations/",
           "tipo": "hrp"
         },
         {
-          "archivo": "doc/fuentes/05-human-system-risk-board/cv-risk.md",
+          "archivo": "doc/nasa/fuentes/05-human-system-risk-board/cv-risk.md",
           "titulo": "Risk of Cardiovascular Adaptations Contributing to Adverse Mission Performance and Health Outcomes (CV Risk)",
           "url": "https://www.nasa.gov/directorates/esdmd/hhp/cv-risk/",
           "tipo": "hsrb"
         },
         {
-          "archivo": "doc/fuentes/05-human-system-risk-board/concern-of-venous-thromboembolism.md",
+          "archivo": "doc/nasa/fuentes/05-human-system-risk-board/concern-of-venous-thromboembolism.md",
           "titulo": "Concern of Venous Thromboembolism",
           "url": "https://www.nasa.gov/directorates/esdmd/hhp/concern-of-venous-thromboembolism/",
           "tipo": "hsrb"
         },
         {
-          "archivo": "doc/fuentes/04-articulos-profundizacion/nasa-fluid-shifts-study-advances-journey-to-mars.md",
+          "archivo": "doc/nasa/fuentes/04-articulos-profundizacion/nasa-fluid-shifts-study-advances-journey-to-mars.md",
           "titulo": "NASA Fluid Shifts Study Advances Journey to Mars",
           "url": "https://www.nasa.gov/humans-in-space/nasa-fluid-shifts-study-advances-journey-to-mars/",
           "tipo": "articulo"
@@ -231,16 +231,16 @@
       "grupo": "fisiologia",
       "titulo": "Riesgo de enfermedad por descompresión (*Decompression Sickness*, \"the bends\")",
       "peligros": "E (entorno hostil: cambios de presión)",
-      "ficha": "doc/02-riesgos/fisiologia/descompresion.md",
+      "ficha": "doc/nasa/riesgos/fisiologia/descompresion.md",
       "fuentes": [
         {
-          "archivo": "doc/fuentes/02-riesgos/risk-of-decompression-sickness.md",
+          "archivo": "doc/nasa/fuentes/02-riesgos/risk-of-decompression-sickness.md",
           "titulo": "Risk of Decompression Sickness",
           "url": "https://www.nasa.gov/reference/risk-of-decompression-sickness/",
           "tipo": "hrp"
         },
         {
-          "archivo": "doc/fuentes/05-human-system-risk-board/risk-of-decompression-sickness.md",
+          "archivo": "doc/nasa/fuentes/05-human-system-risk-board/risk-of-decompression-sickness.md",
           "titulo": "Risk of Mission Impacts and Long-Term Health Issues due to Decompression Sickness",
           "url": "https://www.nasa.gov/directorates/esdmd/hhp/risk-of-decompression-sickness/",
           "tipo": "hsrb"
@@ -252,16 +252,16 @@
       "grupo": "fisiologia",
       "titulo": "Riesgo de lesión y rendimiento comprometido en EVA (caminatas espaciales)",
       "peligros": "E, G",
-      "ficha": "doc/02-riesgos/fisiologia/eva.md",
+      "ficha": "doc/nasa/riesgos/fisiologia/eva.md",
       "fuentes": [
         {
-          "archivo": "doc/fuentes/02-riesgos/risk-of-injury-and-compromised-performance-from-extravehicular-activity-eva.md",
+          "archivo": "doc/nasa/fuentes/02-riesgos/risk-of-injury-and-compromised-performance-from-extravehicular-activity-eva.md",
           "titulo": "Risk of Injury and Compromised Performance from Spacewalks",
           "url": "https://www.nasa.gov/reference/risk-of-injury-and-compromised-performance-from-extravehicular-activity-eva/",
           "tipo": "hrp"
         },
         {
-          "archivo": "doc/fuentes/05-human-system-risk-board/eva-operations-risk.md",
+          "archivo": "doc/nasa/fuentes/05-human-system-risk-board/eva-operations-risk.md",
           "titulo": "Risk of Mission Impacting Injury and Compromised Performance and Long-Term Health Effects due to EVA Operations (EVA Risk)",
           "url": "https://www.nasa.gov/directorates/esdmd/hhp/eva-operations-risk/",
           "tipo": "hsrb"
@@ -273,16 +273,16 @@
       "grupo": "fisiologia",
       "titulo": "Riesgo de hipoxia (*Hypoxia*)",
       "peligros": "E (atmósfera de cabina)",
-      "ficha": "doc/02-riesgos/fisiologia/hipoxia.md",
+      "ficha": "doc/nasa/riesgos/fisiologia/hipoxia.md",
       "fuentes": [
         {
-          "archivo": "doc/fuentes/02-riesgos/risk-of-hypoxia.md",
+          "archivo": "doc/nasa/fuentes/02-riesgos/risk-of-hypoxia.md",
           "titulo": "Risk of Hypoxia",
           "url": "https://www.nasa.gov/reference/risk-of-hypoxia/",
           "tipo": "hrp"
         },
         {
-          "archivo": "doc/fuentes/05-human-system-risk-board/risk-of-reduced-crew-health-and-performance-due-to-hypoxia.md",
+          "archivo": "doc/nasa/fuentes/05-human-system-risk-board/risk-of-reduced-crew-health-and-performance-due-to-hypoxia.md",
           "titulo": "Risk of Reduced Crew Health and Performance Due to Hypoxia",
           "url": "https://www.nasa.gov/directorates/esdmd/hhp/risk-of-reduced-crew-health-and-performance-due-to-hypoxia/",
           "tipo": "hsrb"
@@ -294,34 +294,34 @@
       "grupo": "fisiologia",
       "titulo": "Riesgo de cambios óseos (*Spaceflight-Induced Bone Changes*)",
       "peligros": "G",
-      "ficha": "doc/02-riesgos/fisiologia/hueso.md",
+      "ficha": "doc/nasa/riesgos/fisiologia/hueso.md",
       "fuentes": [
         {
-          "archivo": "doc/fuentes/02-riesgos/risk-of-spaceflight-induced-bone-changes.md",
+          "archivo": "doc/nasa/fuentes/02-riesgos/risk-of-spaceflight-induced-bone-changes.md",
           "titulo": "Risk of Spaceflight-Induced Bone Changes",
           "url": "https://www.nasa.gov/reference/risk-of-spaceflight-induced-bone-changes/",
           "tipo": "hrp"
         },
         {
-          "archivo": "doc/fuentes/05-human-system-risk-board/risk-of-bone-fracture-due-to-spaceflight-induced-changes-to-bone.md",
+          "archivo": "doc/nasa/fuentes/05-human-system-risk-board/risk-of-bone-fracture-due-to-spaceflight-induced-changes-to-bone.md",
           "titulo": "Risk of Bone Fracture due to Spaceflight-induced Changes to Bone",
           "url": "https://www.nasa.gov/directorates/esdmd/hhp/risk-of-bone-fracture-due-to-spaceflight-induced-changes-to-bone/",
           "tipo": "hsrb"
         },
         {
-          "archivo": "doc/fuentes/05-human-system-risk-board/risk-of-renal-stone-formation.md",
+          "archivo": "doc/nasa/fuentes/05-human-system-risk-board/risk-of-renal-stone-formation.md",
           "titulo": "Risk of Renal Stone Formation",
           "url": "https://www.nasa.gov/directorates/esdmd/hhp/risk-of-renal-stone-formation/",
           "tipo": "hsrb"
         },
         {
-          "archivo": "doc/fuentes/03-investigaciones/astronauts-spines-under-scrutiny.md",
+          "archivo": "doc/nasa/fuentes/03-investigaciones/astronauts-spines-under-scrutiny.md",
           "titulo": "Astronauts’ Spines Under Scrutiny",
           "url": "https://www.nasa.gov/missions/station/astronauts-spines-under-scrutiny/",
           "tipo": "investigacion"
         },
         {
-          "archivo": "doc/fuentes/03-investigaciones/cipher.md",
+          "archivo": "doc/nasa/fuentes/03-investigaciones/cipher.md",
           "titulo": "CIPHER",
           "url": "https://www.nasa.gov/reference/cipher/",
           "tipo": "investigacion"
@@ -333,22 +333,22 @@
       "grupo": "fisiologia",
       "titulo": "Riesgo de sistema inmune alterado (*Altered Immune System Responses*)",
       "peligros": "E (entorno cerrado), R (radiación), I (estrés/aislamiento), G (microgravedad)",
-      "ficha": "doc/02-riesgos/fisiologia/inmunidad.md",
+      "ficha": "doc/nasa/riesgos/fisiologia/inmunidad.md",
       "fuentes": [
         {
-          "archivo": "doc/fuentes/02-riesgos/risk-of-altered-immune-system-responses.md",
+          "archivo": "doc/nasa/fuentes/02-riesgos/risk-of-altered-immune-system-responses.md",
           "titulo": "Risk of Altered Immune System Responses",
           "url": "https://www.nasa.gov/reference/risk-of-altered-immune-system-responses/",
           "tipo": "hrp"
         },
         {
-          "archivo": "doc/fuentes/05-human-system-risk-board/immune-risk.md",
+          "archivo": "doc/nasa/fuentes/05-human-system-risk-board/immune-risk.md",
           "titulo": "Risk of In Mission Impacts, Adverse Health Events or Long-Term Health Impacts due to Altered Immune Response (Immune Risk)",
           "url": "https://www.nasa.gov/directorates/esdmd/hhp/immune-risk/",
           "tipo": "hsrb"
         },
         {
-          "archivo": "doc/fuentes/03-investigaciones/scientists-probe-how-long-term-spaceflight-alters-immunity.md",
+          "archivo": "doc/nasa/fuentes/03-investigaciones/scientists-probe-how-long-term-spaceflight-alters-immunity.md",
           "titulo": "Scientists Probe How Long-Term Spaceflight Alters Immunity",
           "url": "https://www.nasa.gov/missions/station/scientists-probe-how-long-term-spaceflight-alters-immunity/",
           "tipo": "investigacion"
@@ -360,22 +360,22 @@
       "grupo": "fisiologia",
       "titulo": "Riesgo de interacción huésped-microorganismo (*Host-Microorganism Interactions*)",
       "peligros": "E (entorno cerrado)",
-      "ficha": "doc/02-riesgos/fisiologia/microorganismos.md",
+      "ficha": "doc/nasa/riesgos/fisiologia/microorganismos.md",
       "fuentes": [
         {
-          "archivo": "doc/fuentes/02-riesgos/risk-of-host-microorganism-interactions.md",
+          "archivo": "doc/nasa/fuentes/02-riesgos/risk-of-host-microorganism-interactions.md",
           "titulo": "Risk of Host-Microorganism Interactions",
           "url": "https://www.nasa.gov/reference/risk-of-host-microorganism-interactions/",
           "tipo": "hrp"
         },
         {
-          "archivo": "doc/fuentes/05-human-system-risk-board/risk-of-adverse-health-effects-due-to-host-microorganism-interactions.md",
+          "archivo": "doc/nasa/fuentes/05-human-system-risk-board/risk-of-adverse-health-effects-due-to-host-microorganism-interactions.md",
           "titulo": "Risk of Adverse Health Effects Due to Host-Microorganism Interactions",
           "url": "https://www.nasa.gov/directorates/esdmd/hhp/risk-of-adverse-health-effects-due-to-host-microorganism-interactions/",
           "tipo": "hsrb"
         },
         {
-          "archivo": "doc/fuentes/03-investigaciones/researchers-put-space-garden-microbes-under-the-microscope.md",
+          "archivo": "doc/nasa/fuentes/03-investigaciones/researchers-put-space-garden-microbes-under-the-microscope.md",
           "titulo": "Researchers Put Space Garden Microbes Under the Microscope",
           "url": "https://www.nasa.gov/missions/station/researchers-put-space-garden-microbes-under-the-microscope/",
           "tipo": "investigacion"
@@ -387,34 +387,34 @@
       "grupo": "fisiologia",
       "titulo": "Riesgo de alimentación y nutrición inadecuadas (*Inadequate Food and Nutrition*)",
       "peligros": "D (distancia: sin reabastecimiento)",
-      "ficha": "doc/02-riesgos/fisiologia/nutricion.md",
+      "ficha": "doc/nasa/riesgos/fisiologia/nutricion.md",
       "fuentes": [
         {
-          "archivo": "doc/fuentes/02-riesgos/risk-of-inadequate-food-and-nutrition.md",
+          "archivo": "doc/nasa/fuentes/02-riesgos/risk-of-inadequate-food-and-nutrition.md",
           "titulo": "Risk of Inadequate Food and Nutrition",
           "url": "https://www.nasa.gov/reference/risk-of-inadequate-food-and-nutrition/",
           "tipo": "hrp"
         },
         {
-          "archivo": "doc/fuentes/05-human-system-risk-board/food-and-nutrition-risk.md",
+          "archivo": "doc/nasa/fuentes/05-human-system-risk-board/food-and-nutrition-risk.md",
           "titulo": "Risk of Inadequate Food and Nutrition Causing Decrements in In-Mission Health and Performance and Long-term Health (Food and Nutrition Risk)",
           "url": "https://www.nasa.gov/directorates/esdmd/hhp/food-and-nutrition-risk/",
           "tipo": "hsrb"
         },
         {
-          "archivo": "doc/fuentes/03-investigaciones/how-does-spaceflight-change-food-appeal.md",
+          "archivo": "doc/nasa/fuentes/03-investigaciones/how-does-spaceflight-change-food-appeal.md",
           "titulo": "How Does Spaceflight Change Food Appeal?",
           "url": "https://www.nasa.gov/humans-in-space/how-does-spaceflight-change-food-appeal/",
           "tipo": "investigacion"
         },
         {
-          "archivo": "doc/fuentes/03-investigaciones/enhanced-diet-may-help-astronauts-adapt-to-spaceflight.md",
+          "archivo": "doc/nasa/fuentes/03-investigaciones/enhanced-diet-may-help-astronauts-adapt-to-spaceflight.md",
           "titulo": "Enhanced Diet May Help Astronauts Adapt to Spaceflight",
           "url": "https://www.nasa.gov/missions/station/enhanced-diet-may-help-astronauts-adapt-to-spaceflight/",
           "tipo": "investigacion"
         },
         {
-          "archivo": "doc/fuentes/04-articulos-profundizacion/the-menu-for-mars-designing-a-deep-space-food-system.md",
+          "archivo": "doc/nasa/fuentes/04-articulos-profundizacion/the-menu-for-mars-designing-a-deep-space-food-system.md",
           "titulo": "The Menu for Mars: Designing a Deep Space Food System",
           "url": "https://www.nasa.gov/humans-in-space/the-menu-for-mars-designing-a-deep-space-food-system/",
           "tipo": "articulo"
@@ -426,40 +426,40 @@
       "grupo": "fisiologia",
       "titulo": "Riesgo de SANS: síndrome neuro-ocular asociado al vuelo espacial",
       "peligros": "G",
-      "ficha": "doc/02-riesgos/fisiologia/sans-ojos.md",
+      "ficha": "doc/nasa/riesgos/fisiologia/sans-ojos.md",
       "fuentes": [
         {
-          "archivo": "doc/fuentes/02-riesgos/risk-of-spaceflight-associated-neuro-ocular-syndrome-sans.md",
+          "archivo": "doc/nasa/fuentes/02-riesgos/risk-of-spaceflight-associated-neuro-ocular-syndrome-sans.md",
           "titulo": "Risk of Spaceflight Associated Neuro-ocular Syndrome (SANS)",
           "url": "https://www.nasa.gov/reference/risk-of-spaceflight-associated-neuro-ocular-syndrome-sans/",
           "tipo": "hrp"
         },
         {
-          "archivo": "doc/fuentes/05-human-system-risk-board/risk-of-spaceflight-associated-neuro-ocular-syndrome.md",
+          "archivo": "doc/nasa/fuentes/05-human-system-risk-board/risk-of-spaceflight-associated-neuro-ocular-syndrome.md",
           "titulo": "Risk of Spaceflight Associated Neuro-ocular Syndrome (SANS Risk)",
           "url": "https://www.nasa.gov/directorates/esdmd/hhp/risk-of-spaceflight-associated-neuro-ocular-syndrome/",
           "tipo": "hsrb"
         },
         {
-          "archivo": "doc/fuentes/03-investigaciones/b-complex.md",
+          "archivo": "doc/nasa/fuentes/03-investigaciones/b-complex.md",
           "titulo": "B-Complex",
           "url": "https://www.nasa.gov/reference/b-complex/",
           "tipo": "investigacion"
         },
         {
-          "archivo": "doc/fuentes/03-investigaciones/brain-fluid-pressure.md",
+          "archivo": "doc/nasa/fuentes/03-investigaciones/brain-fluid-pressure.md",
           "titulo": "Brain Fluid Pressure",
           "url": "https://www.nasa.gov/reference/brain-fluid-pressure/",
           "tipo": "investigacion"
         },
         {
-          "archivo": "doc/fuentes/03-investigaciones/thigh-cuff.md",
+          "archivo": "doc/nasa/fuentes/03-investigaciones/thigh-cuff.md",
           "titulo": "Thigh Cuff",
           "url": "https://www.nasa.gov/reference/thigh-cuff/",
           "tipo": "investigacion"
         },
         {
-          "archivo": "doc/fuentes/03-investigaciones/spinal-fluid-biomarkers.md",
+          "archivo": "doc/nasa/fuentes/03-investigaciones/spinal-fluid-biomarkers.md",
           "titulo": "Spinal Fluid Biomarkers",
           "url": "https://www.nasa.gov/reference/spinal-fluid-biomarkers/",
           "tipo": "investigacion"
@@ -471,22 +471,22 @@
       "grupo": "fisiologia",
       "titulo": "Riesgo sensoriomotor y vestibular (*Altered Sensorimotor and Vestibular Function*)",
       "peligros": "G (gravedad y sus transiciones)",
-      "ficha": "doc/02-riesgos/fisiologia/sensoriomotor-vestibular.md",
+      "ficha": "doc/nasa/riesgos/fisiologia/sensoriomotor-vestibular.md",
       "fuentes": [
         {
-          "archivo": "doc/fuentes/02-riesgos/risk-of-altered-sensorimotor-and-vestibular-function.md",
+          "archivo": "doc/nasa/fuentes/02-riesgos/risk-of-altered-sensorimotor-and-vestibular-function.md",
           "titulo": "Risk of Altered Sensorimotor and Vestibular Function",
           "url": "https://www.nasa.gov/reference/risk-of-altered-sensorimotor-and-vestibular-function/",
           "tipo": "hrp"
         },
         {
-          "archivo": "doc/fuentes/05-human-system-risk-board/sensorimotor-risk.md",
+          "archivo": "doc/nasa/fuentes/05-human-system-risk-board/sensorimotor-risk.md",
           "titulo": "Risk of Altered Sensorimotor/Vestibular Function Impacting Critical Mission Tasks, Human Health, and Long-Term Health (Sensorimotor Risk)",
           "url": "https://www.nasa.gov/directorates/esdmd/hhp/sensorimotor-risk/",
           "tipo": "hsrb"
         },
         {
-          "archivo": "doc/fuentes/04-articulos-profundizacion/new-tests-evaluate-mission-readiness-of-astronauts-upon-landing.md",
+          "archivo": "doc/nasa/fuentes/04-articulos-profundizacion/new-tests-evaluate-mission-readiness-of-astronauts-upon-landing.md",
           "titulo": "New Tests Evaluate Mission Readiness of Astronauts Upon Landing",
           "url": "https://www.nasa.gov/humans-in-space/new-tests-evaluate-mission-readiness-of-astronauts-upon-landing/",
           "tipo": "articulo"
@@ -498,28 +498,28 @@
       "grupo": "radiacion",
       "titulo": "Riesgo de cáncer inducido por radiación (*Radiation-Induced Cancers*)",
       "peligros": "R",
-      "ficha": "doc/02-riesgos/radiacion/cancer-por-radiacion.md",
+      "ficha": "doc/nasa/riesgos/radiacion/cancer-por-radiacion.md",
       "fuentes": [
         {
-          "archivo": "doc/fuentes/02-riesgos/risk-of-radiation-induced-cancers.md",
+          "archivo": "doc/nasa/fuentes/02-riesgos/risk-of-radiation-induced-cancers.md",
           "titulo": "Risk of radiation-induced cancers",
           "url": "https://www.nasa.gov/reference/risk-of-radiation-induced-cancers/",
           "tipo": "hrp"
         },
         {
-          "archivo": "doc/fuentes/05-human-system-risk-board/risk-of-radiation-carcinogenesis.md",
+          "archivo": "doc/nasa/fuentes/05-human-system-risk-board/risk-of-radiation-carcinogenesis.md",
           "titulo": "Risk of Radiation Carcinogenesis",
           "url": "https://www.nasa.gov/directorates/esdmd/hhp/risk-of-radiation-carcinogenesis/",
           "tipo": "hsrb"
         },
         {
-          "archivo": "doc/fuentes/04-articulos-profundizacion/space-radiation.md",
+          "archivo": "doc/nasa/fuentes/04-articulos-profundizacion/space-radiation.md",
           "titulo": "Space Radiation",
           "url": "https://www.nasa.gov/directorates/esdmd/hhp/space-radiation/",
           "tipo": "articulo"
         },
         {
-          "archivo": "doc/fuentes/04-articulos-profundizacion/space-radiation-risks.md",
+          "archivo": "doc/nasa/fuentes/04-articulos-profundizacion/space-radiation-risks.md",
           "titulo": "Space Radiation Risks",
           "url": "https://www.nasa.gov/hrp/radiation/space-radiation-risks/",
           "tipo": "articulo"

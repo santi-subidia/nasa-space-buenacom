@@ -1,6 +1,6 @@
 # Dispositivos disponibles y qué podemos medir con ellos
 
-> **Objetivo:** adaptar la solución al hardware que **ya tenemos** y usarlo para destacar. Las ideas parten del [catálogo de indicadores](../04-sintesis/catalogo-indicadores.md) y del [prototipo](prototipo.md).
+> **Objetivo:** adaptar la solución al hardware que **ya tenemos** y usarlo para destacar. Las ideas parten del [catálogo de indicadores](../sintesis/catalogo-indicadores.md) y del [prototipo](prototipo.md).
 >
 > ⚠️ **Varias capacidades dependen del modelo exacto, de la versión del sistema y del país.** Completa el inventario (sección 1) y revisa las columnas marcadas con *depende del modelo*.
 
@@ -33,7 +33,7 @@
 | Frecuencia respiratoria nocturna | resp/min durante el sueño | Hipoxia, enfermedad | watchOS 8+ |
 | App Signos Vitales | Resumen nocturno de FC, frecuencia respiratoria, temperatura, SpO₂ y HRV con aviso si salen de rango | Panel matutino | watchOS 11+, Series 6+ |
 | Notificaciones de hipertensión | Aviso de posible hipertensión tras unos 30 días. **No da valores de presión arterial.** | PA (solo aviso) | Series 9+ / Ultra 2+, watchOS 26 |
-| VO₂ máx. estimado | Capacidad cardiorrespiratoria | [Capacidad física](../02-riesgos/fisiologia/capacidad-fisica.md) | Todos |
+| VO₂ máx. estimado | Capacidad cardiorrespiratoria | [Capacidad física](../../nasa/riesgos/fisiologia/capacidad-fisica.md) | Todos |
 | Entrenamientos | Minutos y tipo de ejercicio, calorías | Ejercicio | Todos |
 | Acelerómetro + giroscopio | Movimiento, detección de caídas, actigrafía | Sueño, actividad | Todos |
 | Micrófono (app Ruido) | **Nivel de ruido ambiental en dB** | Ruido de cabina (**real, no simulado**) | Series 4+ |
@@ -44,7 +44,7 @@
 | Función | Qué da | Uso en la app | Depende del modelo |
 |---|---|---|---|
 | **Seguimiento de la cabeza** (*head motion*) | Orientación, rotación y aceleración de la cabeza en tiempo real | **Test vestibular / equilibrio**, postura | Pro, Max, 3.ª gen o posteriores. **Requiere app nativa** (ver la sección 4) |
-| Prueba de audición | Audiograma guardado en Salud | Riesgo HSRB de [acústica y pérdida auditiva](../fuentes/05-human-system-risk-board/risk-of-hearing-loss-and-performance-decrements-due-to-acoustics-issues-in-space.md) | Pro 2 o posteriores, iOS 18.1+ |
+| Prueba de audición | Audiograma guardado en Salud | Riesgo HSRB de [acústica y pérdida auditiva](../../nasa/fuentes/05-human-system-risk-board/risk-of-hearing-loss-and-performance-decrements-due-to-acoustics-issues-in-space.md) | Pro 2 o posteriores, iOS 18.1+ |
 | Exposición al audio de auriculares | dB acumulados | Acústica | Todos con iPhone |
 | Sensor de FC | FC durante entrenamientos | FC (segunda fuente) | **Solo AirPods Pro 3** |
 | Audio | Instrucciones por voz y relajación guiada | Accesibilidad, conducta | Todos |
@@ -80,7 +80,7 @@
 | **MediaPipe Face Landmarker** (malla facial + *blendshapes*) | Frecuencia de parpadeo, **PERCLOS** (tiempo con los ojos cerrados), bostezos, expresión | Fatiga y sueño, ánimo | Media |
 | Hinchazón facial (comparada con la base) | Desplazamiento de fluidos hacia la cabeza (*puffy face*) | Fluidos, SANS | Baja (demo) |
 | **MediaPipe Pose Landmarker** | Conteo de sentadillas y flexiones, forma del ejercicio, oscilación del cuerpo de pie | Ejercicio, equilibrio | Media-alta |
-| Pantalla | **Test de agudeza visual** + rejilla de Amsler | [SANS](../02-riesgos/fisiologia/sans-ojos.md) | Media (con distancia calibrada) |
+| Pantalla | **Test de agudeza visual** + rejilla de Amsler | [SANS](../../nasa/riesgos/fisiologia/sans-ojos.md) | Media (con distancia calibrada) |
 | Teclado / ratón | **PVT** (tiempo de reacción) | Sueño, cognición | Alta |
 | Foto | Piel y lesiones (herpes, erupción) | Inmunidad | Alta (como registro) |
 | Web Bluetooth (Chrome en Windows o macOS) | Igual que Android: medidores BLE | PA, glucosa, SpO₂ | Alta (si hay medidor) |
@@ -155,11 +155,11 @@ Ordenadas por **impacto en la demo / esfuerzo**.
 | 1 | **"Chequeo matutino de 90 s"**: la noche llega sola (sueño, HRV, FC en reposo, SpO₂, temperatura de muñeca y frecuencia respiratoria del Watch) y el astronauta solo añade ánimo + PVT de 30 s | Watch + teléfono | Sueño, conducta, CV | Bajo |
 | 2 | **Escaneo facial en la estación**: 30 s frente a la webcam → FC sin contacto + fatiga (parpadeo y PERCLOS) + comparación de hinchazón con la base | Notebook | Sueño, fluidos / SANS | Medio |
 | 3 | **Ruido de cabina real**: el Watch mide los dB y se cruzan con la prueba de audición de los AirPods | Watch + AirPods | HSRB acústica | Bajo |
-| 4 | **Test de aptitud al aterrizar** (estilo [*new tests evaluate mission readiness*](../fuentes/04-articulos-profundizacion/new-tests-evaluate-mission-readiness-of-astronauts-upon-landing.md)): equilibrio con el teléfono en el pecho, ojos abiertos y cerrados, + **giros de cabeza medidos con AirPods** (app puente) | iPhone + AirPods | [Sensoriomotor](../02-riesgos/fisiologia/sensoriomotor-vestibular.md) | Medio |
+| 4 | **Test de aptitud al aterrizar** (estilo [*new tests evaluate mission readiness*](../../nasa/fuentes/04-articulos-profundizacion/new-tests-evaluate-mission-readiness-of-astronauts-upon-landing.md)): equilibrio con el teléfono en el pecho, ojos abiertos y cerrados, + **giros de cabeza medidos con AirPods** (app puente) | iPhone + AirPods | [Sensoriomotor](../../nasa/riesgos/fisiologia/sensoriomotor-vestibular.md) | Medio |
 | 5 | **Entrenador de ejercicio por cámara**: cuenta repeticiones y corrige la postura; alimenta la racha de la gamificación | Notebook | Hueso, músculo | Medio |
 | 6 | **FC con el dedo en la cámara**, sin ningún dispositivo extra | Android (PWA) + iPhone (app puente) | CV | Medio |
-| 7 | **Alerta temprana de infección**: temperatura de muñeca ↑ + FC en reposo ↑ + HRV ↓ durante 2 noches → regla compuesta | Watch | [Inmunidad](../02-riesgos/fisiologia/inmunidad.md) | Bajo (solo reglas) |
-| 8 | **Simulacro de despresurización** con el barómetro del teléfono → la app activa el protocolo de hipoxia | iPhone | [Hipoxia](../02-riesgos/fisiologia/hipoxia.md) | Bajo |
+| 7 | **Alerta temprana de infección**: temperatura de muñeca ↑ + FC en reposo ↑ + HRV ↓ durante 2 noches → regla compuesta | Watch | [Inmunidad](../../nasa/riesgos/fisiologia/inmunidad.md) | Bajo (solo reglas) |
+| 8 | **Simulacro de despresurización** con el barómetro del teléfono → la app activa el protocolo de hipoxia | iPhone | [Hipoxia](../../nasa/riesgos/fisiologia/hipoxia.md) | Bajo |
 | 9 | **Test visual en pantalla** (agudeza + Amsler) con la distancia medida por la cámara | Notebook | SANS | Medio |
 
 **Nuevas reglas compuestas** que habilitan los dispositivos (añadir a `rules.json`):

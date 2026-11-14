@@ -6,7 +6,7 @@ import { GRAFOS, alertaConGrafo, armarGrafoCausal } from '../lib/causas/grafos.j
 import { evaluate } from '../lib/motor/evaluar.js';
 import { DEMO_DATA } from '../lib/demo/sembrar.js';
 
-// Nodos y aristas del DAG oficial, leídos de la transcripción en doc/fuentes.
+// Nodos y aristas del DAG oficial, leídos de la transcripción en doc/nasa/fuentes.
 function leerDag(ruta) {
   const texto = readFileSync(new URL(`../${ruta}`, import.meta.url), 'utf8');
   const bloque = texto.split('```')[1];

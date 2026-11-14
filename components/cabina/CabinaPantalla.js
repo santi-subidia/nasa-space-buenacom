@@ -14,7 +14,7 @@ import styles from './Cabina.module.scss';
 export const CLAVE_CABINA = 'astrovitals:cabina:v1';
 const INICIAL = { tormenta: false, enRefugio: false, hechos: [] };
 
-const DOC = 'https://github.com/santi-subidia/nasa-space-buenacom/blob/main/doc/04-sintesis/cabina-y-radiacion.md';
+const DOC = 'https://github.com/santi-subidia/nasa-space-buenacom/blob/main/doc/proyecto/sintesis/cabina-y-radiacion.md';
 const coma = (n, d = 1) => Number(n).toFixed(d).replace('.', ',');
 
 function usarEstadoCabina() {
@@ -182,7 +182,7 @@ export default function CabinaPantalla() {
         Fuentes: límite de 600 mSv (NASA-STD-3001), tasas medidas por Curiosity/RAD, CO₂ ≤ 3 mmHg y ruido NC-50/NC-40 (NASA-STD-3001)
         · detalle y enlaces en{' '}
         <a href={DOC} target="_blank" rel="noreferrer">
-          doc/04-sintesis/cabina-y-radiacion.md
+          doc/proyecto/sintesis/cabina-y-radiacion.md
         </a>
         . La cabina es un riesgo compartido: no cambia tu semáforo personal. <Link href="/mapa?zona=lungs">Ver pulmones en el mapa</Link>
       </p>

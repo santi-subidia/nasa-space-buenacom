@@ -11,10 +11,10 @@
 
 ## Riesgos asociados
 
-- [Inmunidad alterada](../02-riesgos/fisiologia/inmunidad.md)
-- [Interacción huésped-microorganismo](../02-riesgos/fisiologia/microorganismos.md)
-- [Hipoxia](../02-riesgos/fisiologia/hipoxia.md)
-- [Descompresión](../02-riesgos/fisiologia/descompresion.md)
+- [Inmunidad alterada](../riesgos/fisiologia/inmunidad.md)
+- [Interacción huésped-microorganismo](../riesgos/fisiologia/microorganismos.md)
+- [Hipoxia](../riesgos/fisiologia/hipoxia.md)
+- [Descompresión](../riesgos/fisiologia/descompresion.md)
 - Riesgos del HSRB:
   - **CO₂**
   - **Pérdida auditiva por acústica**

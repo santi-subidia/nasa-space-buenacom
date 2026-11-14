@@ -31,4 +31,4 @@
 | Autotest de fuerza (carga máxima en el dispositivo) | Registro | Cada 2–4 semanas |
 | VO₂ estimado (test submáximo) | Cálculo a partir de FC y carga | Mensual |
 
-**Gamificación:** rachas de días con el ejercicio cumplido, medallas y desafíos de tripulación. Ver [ideas de UX](../../04-sintesis/ideas-ux-gamificacion.md).
+**Gamificación:** rachas de días con el ejercicio cumplido, medallas y desafíos de tripulación. Ver [ideas de UX](../../../proyecto/sintesis/ideas-ux-gamificacion.md).

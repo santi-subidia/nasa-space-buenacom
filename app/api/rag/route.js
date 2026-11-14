@@ -17,8 +17,9 @@ function obtenerDocumentosLocales() {
   try {
     const indice = JSON.parse(readFileSync(join(process.cwd(), 'ai', 'fichas', 'indice.generado.json'), 'utf8'));
     cacheLocal = Object.entries(indice.riesgos ?? {}).map(([riesgoId, meta]) => {
-      const subruta = String(meta.ficha ?? '').replace(/^doc\/02-riesgos\//, '').split('/');
-      const contenido = readFileSync(join(process.cwd(), 'doc', '02-riesgos', ...subruta), 'utf8').replace(/\r\n/g, '\n');
+      // Acepta la ruta actual (doc/nasa/riesgos/) y la anterior a la reorganización (doc/02-riesgos/).
+      const subruta = String(meta.ficha ?? '').replace(/^doc\/(nasa\/riesgos|02-riesgos)\//, '').split('/');
+      const contenido = readFileSync(join(process.cwd(), 'doc', 'nasa', 'riesgos', ...subruta), 'utf8').replace(/\r\n/g, '\n');
       const titulo = meta.titulo.replace(/\*+/g, '').trim();
       const lineas = contenido
         .split('\n')

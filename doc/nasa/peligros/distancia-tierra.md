@@ -12,7 +12,7 @@
 ## Consecuencias
 
 - **Autosuficiencia:** la tripulación debe gestionar fallos de equipos y **emergencias médicas** con poco apoyo de tierra.
-- Ver los riesgos [Soporte inadecuado de sistemas y operaciones](../02-riesgos/conducta/soporte-sistemas.md), la [nutrición](../02-riesgos/fisiologia/nutricion.md) y, en el HSRB, **"Earth Independent Human-Systems Operations (EIHSO)"** y **"Inflight Medical Conditions"** ([fuentes/05](../fuentes/05-human-system-risk-board/)).
+- Ver los riesgos [Soporte inadecuado de sistemas y operaciones](../riesgos/conducta/soporte-sistemas.md), la [nutrición](../riesgos/fisiologia/nutricion.md) y, en el HSRB, **"Earth Independent Human-Systems Operations (EIHSO)"** y **"Inflight Medical Conditions"** ([fuentes/05](../fuentes/05-human-system-risk-board/)).
 - La NASA investiga un **Medical Decision Support System** (proyecto AMO) para ampliar la capacidad médica de la tripulación cuando no hay contacto directo con la Tierra. **Nuestra app es una versión ligera de eso.**
 
 ## 💡 Qué puede hacer nuestra app

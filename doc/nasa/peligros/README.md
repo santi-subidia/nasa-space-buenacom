@@ -28,7 +28,7 @@ G Gravedad ────► hueso, músculo, cardio, SANS (ojos), vestíbulo, car
 E Entorno ─────► inmunidad, microbios, hipoxia, CO2, descompresión ─────────► temperatura, síntomas, SpO2, CO2 cabina
 ```
 
-Desarrollo completo en [`../02-riesgos/`](../02-riesgos/) y [`../04-sintesis/matriz-peligro-riesgo-indicador.md`](../04-sintesis/matriz-peligro-riesgo-indicador.md).
+Desarrollo completo en [`../02-riesgos/`](../riesgos/) y [`../04-sintesis/matriz-peligro-riesgo-indicador.md`](../../proyecto/sintesis/matriz-peligro-riesgo-indicador.md).
 
 ## Videos oficiales (lista de reproducción de los 5 peligros)
 

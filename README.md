@@ -107,10 +107,10 @@ Vistas complementarias: **`/login`** (cambio de rol tripulante / CMO / Médica d
 
 Toda la lógica educativa y las citas de Vega y la Junta Médica provienen de documentación pública oficial descargada y sintetizada en `doc/`:
 
-- **Human Research Program (HRP) — 5 Peligros y 17 Riesgos:** [`doc/02-riesgos/`](doc/02-riesgos/) y [`doc/fuentes/02-riesgos/`](doc/fuentes/02-riesgos/) (inmunidad, sueño y ritmos circadianos, cardiovascular, hueso, capacidad física, nutrición, EVA, SANS, conducta y equipo, radiación).
-- **Human System Risk Board (HSRB):** fichas técnicas, *Risk Records* y grafos causales (DAGs) en [`doc/fuentes/05-human-system-risk-board/`](doc/fuentes/05-human-system-risk-board/).
-- **Investigaciones y Standard Measures:** [`doc/fuentes/03-investigaciones/`](doc/fuentes/03-investigaciones/) (Standard Measures, Artemis II Standard Measures, Immune Biomarkers, ARCHeR, CIPHER, Food Physiology) y artículos de contexto en [`doc/fuentes/04-articulos-profundizacion/`](doc/fuentes/04-articulos-profundizacion/).
-- El índice completo de enlaces y documentos vive en [`doc/fuentes/INDICE.md`](doc/fuentes/INDICE.md).
+- **Human Research Program (HRP) — 5 Peligros y 17 Riesgos:** [`doc/nasa/riesgos/`](doc/nasa/riesgos/) y [`doc/nasa/fuentes/02-riesgos/`](doc/nasa/fuentes/02-riesgos/) (inmunidad, sueño y ritmos circadianos, cardiovascular, hueso, capacidad física, nutrición, EVA, SANS, conducta y equipo, radiación).
+- **Human System Risk Board (HSRB):** fichas técnicas, *Risk Records* y grafos causales (DAGs) en [`doc/nasa/fuentes/05-human-system-risk-board/`](doc/nasa/fuentes/05-human-system-risk-board/).
+- **Investigaciones y Standard Measures:** [`doc/nasa/fuentes/03-investigaciones/`](doc/nasa/fuentes/03-investigaciones/) (Standard Measures, Artemis II Standard Measures, Immune Biomarkers, ARCHeR, CIPHER, Food Physiology) y artículos de contexto en [`doc/nasa/fuentes/04-articulos-profundizacion/`](doc/nasa/fuentes/04-articulos-profundizacion/).
+- El índice completo de enlaces y documentos vive en [`doc/nasa/fuentes/INDICE.md`](doc/nasa/fuentes/INDICE.md).
 
 ---
 
@@ -131,5 +131,5 @@ Toda la lógica educativa y las citas de Vega y la Junta Médica provienen de do
 | `components/` | Componentes de interfaz, módulos Sass y barra lateral (`Sidebar`, `TrafficLight`, `Card`) |
 | `ai/` | Cliente Claude Haiku 5.5 (`claude.js`, `almacen.js`, `respaldo-demo.json`), contexto NASA y módulos de Vega, chequeo, junta, entrenador y cara (ver [`ai/README.md`](ai/README.md)) |
 | `lib/` | Motor de reglas (`motor/`), datos en Dexie (`db.js`, `datos/`), semilla de 60 soles (`demo/`), rutas, tipos y lógica pura |
-| `doc/` | Fuentes NASA originales (`fuentes/`), síntesis de riesgos (`02-riesgos/`), plan final y guion de demo (`05-plan/`) |
+| `doc/` | `nasa/` (documentación oficial: desafío, fuentes originales y resúmenes de riesgos) y `proyecto/` (síntesis, plan final, decisiones y guion de demo) |
 | `test/` | Pruebas unitarias en `node:test` para motor, demo, reloj, enlace, entrenador, tripulación y entrega |

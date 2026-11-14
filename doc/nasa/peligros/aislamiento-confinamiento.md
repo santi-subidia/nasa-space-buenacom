@@ -10,9 +10,9 @@
 
 ## Riesgos asociados
 
-- [Conducta y trastornos psiquiátricos](../02-riesgos/conducta/conducta-psiquiatria.md) (ansiedad y depresión)
-- [Trabajo en equipo inadecuado](../02-riesgos/conducta/trabajo-en-equipo.md)
-- [Sueño inadecuado y horarios irregulares](../02-riesgos/conducta/sueno-horarios.md)
+- [Conducta y trastornos psiquiátricos](../riesgos/conducta/conducta-psiquiatria.md) (ansiedad y depresión)
+- [Trabajo en equipo inadecuado](../riesgos/conducta/trabajo-en-equipo.md)
+- [Sueño inadecuado y horarios irregulares](../riesgos/conducta/sueno-horarios.md)
 
 ## Qué está haciendo la NASA
 
