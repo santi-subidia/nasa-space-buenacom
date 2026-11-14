@@ -273,3 +273,29 @@ test('POST /api/claude con "¿por qué me salió herpes?": elige fichas de inmun
   assert.ok(cuerpo.citasUsadas.every((c) => c.url.startsWith('https://www.nasa.gov/')));
   assert.doesNotMatch(cuerpo.textoVoz, /\[F\d\]/);
 });
+
+test('sesión: ante una señal alta, consulta a la IA mientras todavía lee el aviso, y lee la respuesta después', async () => {
+  const eventos = [];
+  let terminarAviso;
+  const voz = {
+    soportaSintesis: true,
+    callar() {},
+    hablar: (texto) => {
+      eventos.push(`habla: ${texto.slice(0, 12)}`);
+      return texto.startsWith('Eso puede') ? new Promise((r) => { terminarAviso = r; }) : Promise.resolve();
+    },
+  };
+  const fetchFn = async () => {
+    eventos.push('consulta');
+    return { ok: true, json: async () => cuerpoDeVega('Avisá al oficial médico.') };
+  };
+  const vega = crearSesionVega({ voz, fetchFn });
+  const hecho = vega.preguntar('tengo dolor en el pecho');
+  await new Promise((r) => setTimeout(r, 10));
+  assert.deepEqual(eventos, ['habla: Eso puede se', 'consulta']); // la consulta no espera al aviso
+  assert.equal(vega.obtener().mensajes.at(-1).texto, 'Avisá al oficial médico.');
+  assert.equal(eventos.includes('habla: Avisá al ofi'), false); // la respuesta todavía no se lee
+  terminarAviso();
+  await hecho;
+  assert.equal(eventos.at(-1), 'habla: Avisá al ofi');
+});
