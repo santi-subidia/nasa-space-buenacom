@@ -1,0 +1,16 @@
+# dependencias
+node_modules/
+
+# Next.js
+.next/
+out/
+
+# secretos: nunca se suben
+.env
+.env.local
+.env.*.local
+
+# varios
+.DS_Store
+*.log
+.vercel

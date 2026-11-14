@@ -1,0 +1,29 @@
+@use 'tokens' as *;
+
+.pantalla {
+  display: flex;
+  flex-direction: column;
+  gap: $espacio-5;
+  height: 100%;
+}
+
+.titulo { font-size: 32px; }
+
+.descripcion {
+  margin: $espacio-2 0 0;
+  color: $color-texto-suave;
+}
+
+.vacio {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: $espacio-2;
+  border: 2px dashed $color-borde;
+  border-radius: $radio-l;
+  color: $color-texto-suave;
+}
+
+.issue { font-size: 13px; color: $color-acento; }
