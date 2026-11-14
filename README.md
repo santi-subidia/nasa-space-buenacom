@@ -26,8 +26,12 @@ Para la IA: copiar `.env.example` a `.env.local` y completar la clave. `.env` y 
 | `app/` | Rutas (una carpeta por pantalla, con su `page.js`) y el layout con la barra lateral |
 | `components/` | Componentes compartidos (`Sidebar`, `TrafficLight`, `PantallaVacia`) |
 | `lib/rutas.js` | Lista de pantallas de la barra lateral |
+| `lib/tipos.js` | Contrato de datos (typedefs JSDoc + constantes: `ZONAS`, `NIVELES`, `INDICADORES`…) y `nivelMaximo` |
+| `lib/db.js` | Guardado local en IndexedDB (Dexie): `addReading`, `getReadings`, `saveAiResult`… Solo en el navegador |
 | `styles/` | `_tokens.scss` (variables Sass) y `globals.scss` (variables CSS y base) |
 | `doc/` | Documentación del desafío, riesgos y plan |
+
+Probar el guardado desde la consola del navegador (con `npm run dev`): `await astro.db.addReading({ astronautId: 'a1', indicator: 'temp', value: 37.6 })` y `await astro.db.getReadings('a1')`. Tests: `npm test`.
 
 ## Estilos
 

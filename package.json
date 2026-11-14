@@ -7,15 +7,19 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "test": "node --test \"test/*.test.js\"",
+    "test": "node --test \"lib/*.test.js\" \"test/*.test.js\"",
     "postinstall": "node scripts/copiar-mediapipe.mjs"
   },
   "dependencies": {
     "@mediapipe/tasks-vision": "^1.2.3",
+    "dexie": "^4.4.7",
     "next": "^16.4.6",
     "react": "^19.3.1",
     "react-dom": "^19.3.1",
     "recharts": "^3.10.1",
     "sass": "^1.108.2"
+  },
+  "devDependencies": {
+    "fake-indexeddb": "^6.2.8"
   }
 }
