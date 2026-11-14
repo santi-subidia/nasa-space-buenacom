@@ -152,11 +152,21 @@ test('sin red: solo se reusa lo guardado si son EXACTAMENTE las mismas fotos', a
   assert.equal(otras.aviso, AVISO_NO_DIAGNOSTICO);
 });
 
-test('una salida vacía no se guarda ni se muestra', async () => {
+test('una salida sin resumen no se guarda ni se muestra', async () => {
   const almacen = crearAlmacenEnMemoria();
-  const { cuerpo } = await pedir(clienteDevolviendo({ resumen: 'x', observaciones: [], accion: 'y' }), almacen);
+  const { cuerpo } = await pedir(clienteDevolviendo({ resumen: '', observaciones: [], accion: 'y' }), almacen);
   assert.equal(cuerpo.ok, false);
   assert.equal(almacen.listar('face').length, 0);
+});
+
+test('fotos que no permiten comparar: observaciones vacías y el resumen pide otra foto', async () => {
+  const salida = { resumen: 'La foto de hoy está muy oscura para comparar.', observaciones: [], accion: 'Sacá otra foto con buena luz, como la base.' };
+  const { cuerpo } = await pedir(clienteDevolviendo(salida), crearAlmacenEnMemoria());
+  assert.equal(cuerpo.ok, true);
+  assert.deepEqual(cuerpo.observaciones, []);
+  assert.match(cuerpo.accion, /otra foto/);
+  assert.equal(cuerpo.sugerirAvisoAlOficial, false);
+  assert.equal(cuerpo.aviso, AVISO_NO_DIAGNOSTICO);
 });
 
 // ---------- el cliente del navegador ----------
