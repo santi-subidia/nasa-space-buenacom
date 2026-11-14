@@ -2,6 +2,7 @@
 // instrucciones, el contexto y el esfuerzo los decide el servidor (el cliente nunca arma el prompt).
 import { getContext, listarRiesgos } from './contexto.js';
 import { ESFUERZOS } from './claude.js';
+import { HERRAMIENTA_REGISTRAR_MEDICION, IDS_DE_VOZ, INSTRUCCIONES_CHEQUEO, validarMedicion } from './chequeo/indicadores.js';
 import { INSTRUCCIONES_VEGA } from './vega.js';
 import { elegirRiesgos } from './vega/riesgos.js';
 
@@ -60,7 +61,42 @@ function tareaAnswer(body) {
   };
 }
 
-export const TAREAS = { answer: tareaAnswer };
+/**
+ * check: convierte una frase dicha ("anotá 37 con 6 de temperatura") en mediciones con la herramienta
+ * registrar_medicion. Nunca usa una respuesta guardada: sería registrar el valor de otra persona.
+ * body: { texto, pendientes?: string[] }  →  respuesta: { mediciones, rechazadas, mensaje }
+ */
+function tareaCheck(body) {
+  const texto = validarTexto(body.texto, 'texto', 300);
+  const pendientes = body.pendientes ?? [];
+  if (!Array.isArray(pendientes) || pendientes.some((id) => !IDS_DE_VOZ.includes(id))) {
+    throw new ErrorDePeticion('"pendientes" debe ser una lista de indicadores válidos');
+  }
+  return {
+    kind: 'answer',
+    sinRespaldo: true,
+    guardar: false,
+    instrucciones: INSTRUCCIONES_CHEQUEO,
+    variable: (pendientes.length ? `Indicadores que se esperan ahora: ${pendientes.join(', ')}.\n` : '') + `Frase del tripulante: «${texto}»`,
+    esfuerzo: 'low',
+    maxTokens: 1200,
+    herramientas: [HERRAMIENTA_REGISTRAR_MEDICION],
+    entrada: { texto, pendientes },
+    procesar(resultado) {
+      const mediciones = [];
+      const rechazadas = [];
+      for (const llamada of resultado.llamadas ?? []) {
+        if (llamada.nombre !== 'registrar_medicion') continue;
+        const validada = validarMedicion(llamada.entrada);
+        if (validada.ok) mediciones.push(validada.medicion);
+        else rechazadas.push({ ...llamada.entrada, motivo: validada.motivo, mensaje: validada.mensaje });
+      }
+      return { mediciones, rechazadas, mensaje: resultado.texto ?? '' };
+    },
+  };
+}
+
+export const TAREAS = { answer: tareaAnswer, check: tareaCheck };
 
 export function construirTarea(body) {
   if (!body || typeof body !== 'object' || Array.isArray(body)) throw new ErrorDePeticion('El cuerpo debe ser un objeto JSON');

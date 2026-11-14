@@ -34,12 +34,15 @@ export function crearManejador({ consultar = consultarClaude, construir = constr
       throw error;
     }
 
-    const { citas = [], ...paraClaude } = peticion;
+    const { citas = [], procesar, ...paraClaude } = peticion;
     const resultado = await consultar(paraClaude);
-    // Para Vega: las citas que Claude realmente usó (1–2) y el texto limpio para leer en voz alta.
-    const extra = resultado.texto
-      ? { citasUsadas: citasUsadas(resultado.texto, citas), textoVoz: textoParaVoz(resultado.texto) }
-      : {};
+    // Cada tarea puede dar forma a su respuesta (p. ej. validar mediciones). Si no, es una respuesta de Vega:
+    // las citas que Claude realmente usó (1–2) y el texto limpio para leer en voz alta.
+    const extra = procesar
+      ? procesar(resultado)
+      : resultado.texto
+        ? { citasUsadas: citasUsadas(resultado.texto, citas), textoVoz: textoParaVoz(resultado.texto) }
+        : {};
     return json({ ...resultado, citas, ...extra });
   };
 }
