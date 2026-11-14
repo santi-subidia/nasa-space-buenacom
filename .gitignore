@@ -5,10 +5,13 @@ node_modules/
 .next/
 out/
 
-# secretos: nunca se suben
+# secretos: nunca se suben (la API key vive solo en ANTHROPIC_API_KEY)
 .env
-.env.local
-.env.*.local
+.env.*
+!.env.example
+
+# respuestas guardadas de la IA (se generan en local)
+.data/
 
 # varios
 .DS_Store

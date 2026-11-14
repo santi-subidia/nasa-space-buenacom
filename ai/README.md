@@ -1,6 +1,6 @@
 # ai/ · Fichas y contexto para Claude (issue #13)
 
-Carpeta propia mientras no exista el esqueleto Next.js (#1). Cuando exista, se mueve entera (por ejemplo a `lib/ai/`) y se usa desde las rutas `app/api/**` del servidor. No depende de ningún paquete: solo Node (≥ 20) y JS con módulos ES.
+Carpeta propia mientras no exista el esqueleto Next.js (#1). Cuando exista, se mueve entera (por ejemplo a `lib/ai/`) y se usa desde las rutas `app/api/**` del servidor. Solo depende de `@anthropic-ai/sdk` (Node ≥ 20, JS con módulos ES).
 
 ## Uso
 
@@ -30,11 +30,34 @@ Orden recomendado del prompt para el caché (#5): `INSTRUCCIONES_VEGA` → `ctx.
 - **Tamaño típico (medido con `countTokens`):** un riesgo con fuentes principales ≈ 3–4K tokens; con todas, hasta ≈ 10K. Los 17 riesgos solo en fichas ≈ 11,5K. El corpus completo pasa de 200K: por eso cada consulta manda solo las fichas que toca.
 - **Dónde está `doc/`:** por defecto, la carpeta padre de `ai/`. Si se mueve la carpeta, definir `ASTROVITALS_DOC_ROOT` o pasar `raiz`.
 
+## Servidor con Claude (issue #5)
+
+`POST /api/claude` llama a `claude-haiku-5-5` con `@anthropic-ai/sdk`. El navegador manda solo `tipo` + datos; las instrucciones, las fichas y el esfuerzo los decide el servidor.
+
+```bash
+curl -X POST localhost:3000/api/claude -H 'content-type: application/json' \
+  -d '{"tipo":"answer","pregunta":"¿Por qué me salió herpes?","riesgos":["inmunidad"]}'
+```
+
+| Archivo | Qué hace |
+|---|---|
+| `claude.js` | `consultarClaude(peticion)`: arma la petición, revisa `stop_reason`, lee el contenido por tipo de bloque, guarda lo bueno y **nunca lanza** por red o IA |
+| `almacen.js` | Respuestas guardadas (`AiResult`): en memoria o en `ai/.data/ai-results.json` (ignorado por git) |
+| `tareas.js` | Tareas que acepta el servidor (`answer`; el resto llega con #14–#20) y su validación |
+| `route.js` | Manejador `POST` con `Request`/`Response`: en Next.js, `export { POST } from '…/ai/route.js'` en `app/api/claude/route.js` |
+
+- **Respuesta guardada de respaldo:** sin clave, sin red, API caída, `refusal`, `max_tokens` o JSON inválido → se devuelve la guardada (la de la misma pregunta si existe, si no la última de ese tipo) con `origen: 'guardada'` y el `motivo`. Si no hay nada guardado, `ok: false`. `IA_APAGADA=1` fuerza este modo (demo pública, #21).
+- **Esfuerzo:** `low` para voz (por defecto en `answer`), `medium` para la junta. No se envía `thinking`, `temperature`, `top_p` ni `top_k` (Haiku 5.5 los rechaza o ya razona solo).
+- **Caché:** `system` = instrucciones + fichas (último bloque con `cache_control`); lo variable va al final. `uso.cacheLectura > 0` en la segunda consulta confirma que funciona. El prefijo tiene que superar el mínimo cacheable del modelo.
+- **Clave:** `ANTHROPIC_API_KEY` en `ai/.env` (copiar `.env.example`; `.env` está en `.gitignore`). Poner un límite de gasto en la Console.
+
 ## Comandos (desde `ai/`)
 
 ```bash
-npm test          # 11 pruebas con node:test
-npm run indice    # regenera fichas/indice.generado.json tras editar doc/02-riesgos
+npm test                   # pruebas con node:test (cliente simulado, sin red)
+npm run indice             # regenera fichas/indice.generado.json tras editar doc/02-riesgos
+npm run probar             # prueba REAL contra la API con ai/.env (gasta centavos)
+npm run probar:sin-clave   # comprueba que sin clave no se rompe nada
 ```
 
 ## Pendiente / decisiones para #5
