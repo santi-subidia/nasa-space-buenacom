@@ -21,13 +21,13 @@ Orden recomendado del prompt para el caché (#5): `INSTRUCCIONES_VEGA` → `ctx.
 | `contexto.js` | `getContext(riesgos, { fuentes, presupuesto, raiz })`, `listarRiesgos()`, `riesgosDeZona(z)`, `riesgosDeEspecialista(e)` |
 | `fichas/indice.generado.json` | Índice riesgo → ficha → fuentes (título + URL NASA). **Generado**, no se edita a mano |
 | `fichas/mapa.js` | Zonas del cuerpo y especialistas de la junta → riesgos (a mano) |
-| `tokens.js` | Estimación de tokens (3,5 caracteres por token) y el umbral de 100K |
+| `tokens.js` | Estimación de tokens (2,0 caracteres por token, calibrada con `countTokens`) y el umbral de 100K |
 | `vega.js` | Instrucciones fijas de Vega |
 | `scripts/generar-indice.js` | Regenera el índice leyendo `doc/02-riesgos/**` y `doc/fuentes/**` |
 
 - **Ids de riesgo:** el nombre del archivo de `doc/02-riesgos/**` (`inmunidad`, `cardiovascular`, `sueno-horarios`…). `listarRiesgos()` devuelve los 17.
 - **Fuentes:** `'principales'` (por defecto) = página del HRP + registro del HSRB; `'todas'` suma investigaciones y artículos; `'ninguna'` solo la ficha en español. Si el contexto no entra en el presupuesto, baja de nivel solo y lo avisa en `recortado`. Si ni las fichas solas entran, lanza un error.
-- **Tamaño típico:** un riesgo con fuentes principales ≈ 2–3K tokens; con todas, hasta ≈ 7K. Los 17 riesgos solo en fichas ≈ 7K.
+- **Tamaño típico (medido con `countTokens`):** un riesgo con fuentes principales ≈ 3–4K tokens; con todas, hasta ≈ 10K. Los 17 riesgos solo en fichas ≈ 11,5K. El corpus completo pasa de 200K: por eso cada consulta manda solo las fichas que toca.
 - **Dónde está `doc/`:** por defecto, la carpeta padre de `ai/`. Si se mueve la carpeta, definir `ASTROVITALS_DOC_ROOT` o pasar `raiz`.
 
 ## Servidor con Claude (issue #5)
@@ -148,7 +148,7 @@ const vista = armarVistaJunta(r, 'Ana');   // ai/junta/vista.js → lo que dibuj
 | `junta/ejemplo-sol42.js` | Datos de ejemplo del sol 42 (herpes + 37,6 °C + poco sueño) para pruebas y demo |
 
 - **El motor manda:** la respuesta trae `nivelMotor`, `nivelJunta`, `nivelFinal = mergeLevel(...)`, `subioPorMotor` y `accionFinal` (si el nivel final es naranja, la acción mínima es avisar al oficial médico; si es rojo, contactar a los médicos de vuelo). Una junta guardada se vuelve a cruzar con el motor de hoy.
-- **Tamaño:** ≈ 15K tokens de entrada (fichas de ≤ 8 riesgos con sus fuentes principales) y ≈ 2K de salida: unas milésimas de dólar. Presupuesto de contexto de 45K; el total nunca llega a 100K.
+- **Tamaño:** ≈ 29K tokens de entrada medidos con la API (fichas de ≤ 8 riesgos con sus fuentes principales, cacheables) y ≈ 4,5K de salida: ≈ US$ 0,006 por junta y ~25 s. Presupuesto de contexto de 45K; el total nunca llega a 100K.
 - **Resultado guardado:** cada junta válida se guarda como `AiResult` (`kind: 'board'`); una salida incompleta no se guarda ni se muestra (cae en la última guardada).
 - **Probarla de verdad:** `npm run probar:junta` (necesita `ai/.env`).
 
