@@ -112,6 +112,7 @@ const resumirUso = (u = {}) => ({
  * @param {object[]} [peticion.herramientas] herramientas con strict: true
  * @param {*}       [peticion.entrada]      lo que identifica la consulta (para elegir la respuesta guardada)
  * @param {boolean} [peticion.guardar=true]
+ * @param {(json:object)=>string|null} [peticion.validarJson]  devuelve un texto de error si la salida no cumple
  * @param {boolean} [peticion.sinRespaldo=false]  no devolver nunca una respuesta guardada (mediciones)
  * @param {object}  [dependencias]  { cliente, almacen, modelo, env } (para pruebas)
  */
@@ -158,6 +159,9 @@ export async function consultarClaude(peticion, dependencias = {}) {
   // 2) Contenido por tipo de bloque.
   const leido = leerRespuesta(respuesta, Boolean(peticion.formato));
   if (leido.error) return respaldo(leido.error, { uso });
+  // La tarea puede exigir más que "es JSON" (p. ej. los 5 especialistas): si no cumple, no se guarda ni se usa.
+  const detalle = peticion.validarJson && leido.json ? peticion.validarJson(leido.json) : null;
+  if (detalle) return respaldo('json_invalido', { uso, detalle });
 
   const output = { texto: leido.texto, json: leido.json, llamadas: leido.llamadas };
   const guardado = guardar ? almacen.guardar({ kind, input: entrada, output, clave }) : null;

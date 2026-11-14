@@ -123,3 +123,31 @@ await chequeo.anotar('Anotá 37 con 6 de temperatura');  // frase suelta
 - **Nunca se guarda un valor absurdo:** cada medición se valida contra un rango plausible (temperatura 33–42,5 °C, ánimo 1–5…); si no pasa, Vega pide repetir. Solo se aceptan los indicadores que el paso esperaba.
 - **Sin respaldo guardado:** `check` usa `sinRespaldo` — con la red caída nunca devuelve la medición de otra frase (registraría un valor ajeno). Sin red, igual funcionan las frases con dígitos.
 - **Pasos por defecto:** presión (alta y baja, preguntando la que falte), temperatura, ánimo (1–5) y estrés (1–10). El sueño llega del Watch simulado y el test de reacción lo hace la pantalla.
+
+## Junta médica IA (issue #16)
+
+Una sola consulta (`tipo: 'board'`, esfuerzo `medium`) con salida estructurada: 5 especialistas (cardiovascular, inmunidad, conducta y sueño, hueso y músculo, ambiente) con nivel, opinión y fuentes; desacuerdos resueltos; síntesis del coordinador; informe simple para el astronauta e informe técnico para los médicos de vuelo (con recordatorios por sol). En pantalla se ve como 6 agentes, pero es una llamada.
+
+```js
+const r = await fetch('/api/claude', { method: 'POST', body: JSON.stringify({
+  tipo: 'board',
+  astronauta: { id: 'ana', nombre: 'Ana' }, sol: 42, nivelMotor: 'orange',
+  alertas,    // Alert[] del motor de reglas (#3)
+  lecturas,   // Reading[] de los últimos 7 días (#2/#4)
+  sintomas,   // Symptom[]
+}) }).then((res) => res.json());
+const vista = armarVistaJunta(r, 'Ana');   // ai/junta/vista.js → lo que dibuja la pantalla
+```
+
+| Archivo | Qué hace |
+|---|---|
+| `junta/tarea.js` | Arma el prompt (lecturas por indicador, alertas, síntomas + fichas de los riesgos involucrados) y cruza el resultado con el motor |
+| `junta/esquema.js` | Esquema JSON de la salida y `revisarSalida` (los 5 especialistas, sin repetidos, nivel válido) |
+| `junta/niveles.js` | `mergeLevel(motor, junta)`: **el nivel final nunca baja del que dio el motor** |
+| `junta/vista.js` | `armarVistaJunta()`: especialistas con semáforo, desacuerdos, síntesis y pestañas "Para Ana" / "Para médicos de vuelo" |
+| `junta/ejemplo-sol42.js` | Datos de ejemplo del sol 42 (herpes + 37,6 °C + poco sueño) para pruebas y demo |
+
+- **El motor manda:** la respuesta trae `nivelMotor`, `nivelJunta`, `nivelFinal = mergeLevel(...)`, `subioPorMotor` y `accionFinal` (si el nivel final es naranja, la acción mínima es avisar al oficial médico; si es rojo, contactar a los médicos de vuelo). Una junta guardada se vuelve a cruzar con el motor de hoy.
+- **Tamaño:** ≈ 15K tokens de entrada (fichas de ≤ 8 riesgos con sus fuentes principales) y ≈ 2K de salida: unas milésimas de dólar. Presupuesto de contexto de 45K; el total nunca llega a 100K.
+- **Resultado guardado:** cada junta válida se guarda como `AiResult` (`kind: 'board'`); una salida incompleta no se guarda ni se muestra (cae en la última guardada).
+- **Probarla de verdad:** `npm run probar:junta` (necesita `ai/.env`).

@@ -1,42 +1,15 @@
 // Tareas que el servidor sabe pedirle a Claude. El navegador manda solo `tipo` + datos: las
 // instrucciones, el contexto y el esfuerzo los decide el servidor (el cliente nunca arma el prompt).
-import { getContext, listarRiesgos } from './contexto.js';
-import { ESFUERZOS } from './claude.js';
+import { getContext } from './contexto.js';
 import { HERRAMIENTA_REGISTRAR_MEDICION, IDS_DE_VOZ, INSTRUCCIONES_CHEQUEO, validarMedicion } from './chequeo/indicadores.js';
 import { INSTRUCCIONES_VEGA } from './vega.js';
 import { elegirRiesgos } from './vega/riesgos.js';
+import { tareaJunta } from './junta/tarea.js';
+import { datosComoTexto, ErrorDePeticion, validarEsfuerzo, validarRiesgos, validarTexto } from './validar.js';
 
-export class ErrorDePeticion extends Error {}
+export { ErrorDePeticion };
 
 const MAX_PREGUNTA = 500;
-const MAX_DATOS = 8000;
-
-export function validarTexto(valor, campo, max) {
-  if (typeof valor !== 'string' || !valor.trim()) throw new ErrorDePeticion(`Falta "${campo}"`);
-  if (valor.length > max) throw new ErrorDePeticion(`"${campo}" pasa de ${max} caracteres`);
-  return valor.trim();
-}
-
-export function validarRiesgos(riesgos = []) {
-  if (!Array.isArray(riesgos)) throw new ErrorDePeticion('"riesgos" debe ser una lista');
-  const validos = new Set(listarRiesgos());
-  const malos = riesgos.filter((r) => !validos.has(r));
-  if (malos.length) throw new ErrorDePeticion(`Riesgos desconocidos: ${malos.join(', ')}`);
-  return riesgos;
-}
-
-export function validarEsfuerzo(esfuerzo, porDefecto) {
-  if (esfuerzo === undefined) return porDefecto;
-  if (!ESFUERZOS.includes(esfuerzo)) throw new ErrorDePeticion(`"esfuerzo" debe ser: ${ESFUERZOS.join(', ')}`);
-  return esfuerzo;
-}
-
-export function datosComoTexto(datos) {
-  if (datos === undefined || datos === null) return '';
-  const texto = typeof datos === 'string' ? datos : JSON.stringify(datos);
-  if (texto.length > MAX_DATOS) throw new ErrorDePeticion(`"datosDelDia" pasa de ${MAX_DATOS} caracteres`);
-  return texto;
-}
 
 /**
  * answer: una pregunta de texto para Vega. Esfuerzo `low` por defecto (voz: la latencia importa más).
@@ -96,7 +69,7 @@ function tareaCheck(body) {
   };
 }
 
-export const TAREAS = { answer: tareaAnswer, check: tareaCheck };
+export const TAREAS = { answer: tareaAnswer, check: tareaCheck, board: tareaJunta };
 
 export function construirTarea(body) {
   if (!body || typeof body !== 'object' || Array.isArray(body)) throw new ErrorDePeticion('El cuerpo debe ser un objeto JSON');
