@@ -40,7 +40,8 @@ desafio-health-monitoring/
 │  └─ ideas-ux-gamificacion.md
 ├─ 05-plan/
 │  ├─ plan-proyecto.md                ← problema, propuesta de valor, alcance MVP, cronograma de 48 h
-│  └─ prototipo.md                    ← stack, modelo de datos, motor de reglas, pantallas, demo
+│  ├─ prototipo.md                    ← stack, modelo de datos, motor de reglas, pantallas, demo
+│  └─ dispositivos-y-sensores.md      ← hardware disponible (iPhone, Android, Watch, AirPods, notebook) y qué medir
 └─ fuentes/                           ← 76 páginas originales de nasa.gov (EN) + índice de PDFs
    ├─ INDICE.md                       ← todas las URL + Evidence Reports + Risk Records + DAGs
    ├─ 01-peligros/ (6)  02-riesgos/ (18)  03-investigaciones/ (22)
