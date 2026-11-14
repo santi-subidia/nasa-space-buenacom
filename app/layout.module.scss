@@ -13,3 +13,30 @@
   min-height: 100vh;
   padding: $espacio-6;
 }
+
+.app:has([data-dashboard]) {
+  min-width: 0;
+  background: #020817;
+
+  .contenido {
+    padding: 21px 20px 17px 26px;
+  }
+}
+
+@media (min-width: 1280px) {
+  .app:has([data-dashboard]) {
+    width: 1648px;
+    min-height: 928px;
+    zoom: calc((100vw - 16px) / 1648px);
+
+    .contenido { min-height: 928px; }
+  }
+}
+
+@media (max-width: 760px) {
+  .app:has([data-dashboard]) {
+    flex-direction: column;
+
+    .contenido { padding: 16px; }
+  }
+}

@@ -1,313 +1,175 @@
-'use client';
+﻿'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import Card from '@/components/Card';
 import TrafficLight from '@/components/TrafficLight';
-import {
-  SOL_ACTUAL,
-  accionReiniciarDemo,
-  accionSincronizarWatch,
-  useEstadoMision,
-} from '@/lib/datos/demo';
-import { usePermisosCompartir } from '@/lib/datos/tripulante';
-import { armarVistaOficialMedico } from '@/lib/tripulacion/logicaTripulante';
-import { minutosHoy } from '@/lib/entrenador/racha';
+import TendenciaResumen from './TendenciaResumen';
+import VytaVoz from './VytaVoz';
+import { SOL_ACTUAL, useEstadoMision } from '@/lib/datos/demo';
 import { tieneGrafo } from '@/lib/causas/grafos';
 import { MISION } from '@/lib/mock/mision';
-import { TARJETAS, CHEQUEO, valoresDelDia, nivelDeTarjeta } from '@/lib/mock/indicadores';
+import { CHEQUEO, valoresDelDia } from '@/lib/mock/indicadores';
+import { NIVELES } from '@/lib/niveles';
+import { lecturasParaInicio, metricasDesdeLecturas } from './metricas';
 import styles from './InicioPantalla.module.scss';
 
 export default function InicioPantalla() {
-  const {
-    activoId,
-    astronauta,
-    tripulacion,
-    lecturas,
-    watchSincronizadoHoy,
-    evaluacion,
-    evaluacionAna,
-    evaluacionMarcos,
-  } = useEstadoMision(null, SOL_ACTUAL);
-  const permisos = usePermisosCompartir();
-
-  const [ocupado, setOcupado] = useState(false);
-  const [avisoDemo, setAvisoDemo] = useState('');
-
+  const { astronauta, lecturas, evaluacion } = useEstadoMision(null, SOL_ACTUAL);
   const vals = valoresDelDia(lecturas, SOL_ACTUAL);
-  const tarjetas = TARJETAS.map((t) => ({
-    ...t,
-    nivel: evaluacion.indicatorLevels?.[t.claves[0]] ?? nivelDeTarjeta(t, vals),
-  }));
   const nivelGeneral = evaluacion.globalLevel || 'green';
+  const tarjetas = metricasDesdeLecturas(lecturas, evaluacion, astronauta?.baseline || {}, SOL_ACTUAL);
+  const ultimaLectura = lecturasParaInicio(lecturas, SOL_ACTUAL).at(-1);
   const chequeo = CHEQUEO.map((c) => ({ ...c, hecho: c.claves.every((k) => vals[k]?.hoy) }));
   const hechos = chequeo.filter((c) => c.hecho).length;
-  const vistaCmo = activoId === 'marcos'
-    ? armarVistaOficialMedico({
-        tripulacion,
-        evaluacionesPorId: { ana: evaluacionAna, marcos: evaluacionMarcos },
-        permisosPorId: permisos,
-      })
-    : null;
-
-  async function manejarSyncWatch() {
-    setOcupado(true);
-    setAvisoDemo('');
-    try {
-      await accionSincronizarWatch(SOL_ACTUAL, activoId);
-      setAvisoDemo(`Watch sincronizado para ${astronauta?.name || activoId} (watch_sim · sol ${SOL_ACTUAL}).`);
-    } catch (err) {
-      console.error(err);
-      setAvisoDemo('No se pudo sincronizar el Watch.');
-    } finally {
-      setOcupado(false);
-    }
-  }
-
-  async function manejarReiniciar() {
-    setOcupado(true);
-    setAvisoDemo('');
-    try {
-      await accionReiniciarDemo();
-      setAvisoDemo('Demo reiniciada con los 60 soles iniciales.');
-    } catch (err) {
-      console.error(err);
-      setAvisoDemo('No se pudo reiniciar la demo.');
-    } finally {
-      setOcupado(false);
-    }
-  }
 
   return (
-    <div className={styles.pantalla}>
-      <Encabezado
-        nombre={astronauta?.name || MISION.astronauta.nombre}
-        nivelMarcos={evaluacionMarcos?.globalLevel || 'green'}
-        watchSincronizadoHoy={watchSincronizadoHoy}
-        ocupado={ocupado}
-        onSyncWatch={manejarSyncWatch}
-        onReiniciar={manejarReiniciar}
-        avisoDemo={avisoDemo}
-      />
-
-      <div className={styles.fila}>
-        <EstadoGeneral nivel={nivelGeneral} alertas={evaluacion.alerts || []} vistaCmo={vistaCmo} />
-        <Chequeo items={chequeo} hechos={hechos} />
-      </div>
-
-      <section aria-label="Indicadores de hoy" className={styles.indicadores}>
-        {tarjetas.map((t) => (
-          <TarjetaIndicador key={t.id} tarjeta={t} vals={vals} />
-        ))}
-      </section>
-
-      <div className={styles.fila}>
-        <Racha ejercicioHoy={minutosHoy(lecturas, SOL_ACTUAL) > 0} />
-        <BarraVega />
+    <div className={styles.pantalla} data-dashboard>
+      <Encabezado nombre={astronauta?.name || MISION.astronauta.nombre} titulo={astronauta?.titulo || 'Tripulante de misión'} />
+      <h1 className={styles.oculto}>Vista general · {astronauta?.name || MISION.astronauta.nombre}</h1>
+      <div className={styles.paneles}>
+        <div className={styles.columnaPrincipal}>
+          <EstadoGeneral nivel={nivelGeneral} alertas={evaluacion.alerts || []} hechos={hechos} total={chequeo.length} ultimaLectura={ultimaLectura} />
+          <section aria-label="Métricas de salud" className={styles.indicadores}>
+            {tarjetas.map((tarjeta) => <TarjetaIndicador key={tarjeta.id} tarjeta={tarjeta} />)}
+          </section>
+          <TendenciaResumen lecturas={lecturas} />
+        </div>
+        <div className={styles.columnaLateral}>
+          <VytaVoz />
+          <AlertasObservaciones alertas={evaluacion.alerts || []} />
+        </div>
       </div>
     </div>
   );
 }
 
-function Encabezado({
-  nombre,
-  nivelMarcos,
-  watchSincronizadoHoy,
-  ocupado,
-  onSyncWatch,
-  onReiniciar,
-  avisoDemo,
-}) {
+function Encabezado({ nombre, titulo }) {
+  const [ahora, setAhora] = useState(null);
+  const [enLinea, setEnLinea] = useState(true);
+  useEffect(() => {
+    const actualizar = () => { setAhora(new Date()); setEnLinea(navigator.onLine); };
+    actualizar();
+    const intervalo = setInterval(actualizar, 60000);
+    window.addEventListener('online', actualizar);
+    window.addEventListener('offline', actualizar);
+    return () => {
+      clearInterval(intervalo);
+      window.removeEventListener('online', actualizar);
+      window.removeEventListener('offline', actualizar);
+    };
+  }, []);
+
   return (
     <header className={styles.encabezado}>
-      <div>
-        <h1>Buen día, {nombre}</h1>
-        <p className={styles.sub}>
-          Sol {SOL_ACTUAL} de 60 · {MISION.entorno}
-        </p>
-        {avisoDemo && <p className={styles.avisoAccion} role="status">{avisoDemo}</p>}
+      <Link href="/tripulacion" className={styles.perfil} aria-label={`Ver tripulación y privacidad de ${nombre}`}>
+        <Image src="/figma/tripulante.png" width={88} height={88} sizes="88px" alt="" className={styles.retrato} />
+        <span><strong>{nombre}</strong><small>{titulo}</small></span>
+      </Link>
+      <div className={styles.conexion}>
+        <span>Conexión</span>
+        <strong><i className={enLinea ? styles.enLinea : styles.sinConexion} aria-hidden="true" /> {enLinea ? 'En línea' : 'Sin conexión'}</strong>
+        <small>{MISION.entorno} · Sol {SOL_ACTUAL}</small>
       </div>
-      <div className={styles.chips}>
-        <span className={styles.chip} title="Estado del oficial médico de la tripulación">
-          <TrafficLight nivel={nivelMarcos} conTexto={false} /> Marcos (CMO): <strong>todo verde</strong>
-        </span>
-        <span className={styles.chip} title="Tiempo que tarda un mensaje en llegar a la Tierra">
-          ⏱ Retraso con Tierra: <strong>{MISION.retrasoMin} min</strong>
-        </span>
-        <button
-          type="button"
-          className={styles.chipBoton}
-          onClick={onSyncWatch}
-          disabled={ocupado}
-        >
-          ⌚ {watchSincronizadoHoy ? 'Re-sincronizar Watch' : 'Sincronizar Watch'}
-        </button>
-        <button
-          type="button"
-          className={`${styles.chipBoton} ${styles.chipSecundario}`}
-          onClick={onReiniciar}
-          disabled={ocupado}
-        >
-          ↺ Reiniciar demo
-        </button>
+      <div className={styles.tierra} aria-hidden="true" />
+      <div className={styles.fecha}>
+        <span>{ahora ? ahora.toLocaleDateString('es-AR', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'America/Argentina/Buenos_Aires' }) : '—'}</span>
+        <span>{ahora ? `${ahora.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'UTC' })} UTC` : '—'}</span>
       </div>
+      <img src="/figma/nasa.svg" width="66" height="66" alt="NASA" className={styles.insignia} />
     </header>
   );
 }
 
-function EstadoGeneral({ nivel, alertas, vistaCmo }) {
+function EstadoGeneral({ nivel, alertas, hechos, total, ultimaLectura }) {
   const principal = alertas[0] || null;
-  const extras = Math.max(0, alertas.length - 1);
-
   return (
-    <Card titulo="Estado general" acento={nivel} className={styles.estado}>
-      <div className={styles.estadoNivel}>
-        <TrafficLight nivel={nivel} />
+    <Card className={styles.estado}>
+      <div className={styles.ventanaHero} aria-hidden="true" />
+      <div className={styles.estadoCabecera}>
+        <h2>Estado de salud general</h2>
+        <span className={styles.actualizacion}><i aria-hidden="true" /><span>Última lectura<small>{ultimaLectura ? `Sol ${ultimaLectura.sol}` : 'Sin datos'}</small></span></span>
       </div>
-
-      {principal ? (
-        <div className={styles.alerta}>
-          <h3>
-            <TrafficLight nivel={principal.level} conTexto={false} /> {principal.title}
-          </h3>
-          <p>{principal.why}</p>
-          <ul>
-            {(principal.actions || []).map((x) => (
-              <li key={x}>{x}</li>
-            ))}
-          </ul>
-          <p className={styles.fuente}>
-            Fuente: {principal.nasaSource}
-            {extras > 0 ? ` · +${extras} aviso(s) adicional(es)` : ''}
-          </p>
+      <div className={styles.estadoCuerpo}>
+        <div className={styles.anillo} aria-hidden="true">
+          <svg viewBox="0 0 200 200" width="200" height="200" fill="none">
+            <defs><linearGradient id="anillo-vyta" x1="0" y1="0" x2="1" y2="1"><stop stopColor="#66ffe3" /><stop offset="1" stopColor="#0bd8ff" /></linearGradient></defs>
+            <circle cx="100" cy="100" r="90.68" stroke="#1a2c40" strokeWidth="15.77" />
+            <circle className={styles.arco} cx="100" cy="100" r="90.68" stroke="url(#anillo-vyta)" strokeWidth="15.77" strokeLinecap="round" strokeDasharray="478 570" transform="rotate(-90 100 100)" />
+          </svg>
+          <div><strong>{NIVELES[nivel]?.etiqueta || 'Normal'}</strong><small>Estado actual</small></div>
         </div>
+        <div className={styles.resumenEstado}>
+          <svg className={styles.ecg} viewBox="0 0 54 30" width="54" height="30" fill="none" aria-hidden="true"><path d="M1 17h10l4-7 4 13 5-22 5 27 4-17 5 6h15" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" /></svg>
+          <div className={styles.estadoNivel}>
+            <h3>{nivel === 'green' ? 'Estable' : NIVELES[nivel]?.etiqueta}</h3>
+            <span className={styles.estadoPildora}><TrafficLight nivel={nivel} /></span>
+          </div>
+          <p>{principal ? principal.why : 'Tus signos vitales se mantienen dentro de los rangos esperados. Buen estado general para continuar con las actividades de la misión.'}</p>
+        </div>
+        <Link href="/registrar" className={styles.checkin} aria-label={`Chequeo diario: ${hechos} de ${total} completados. Ir a registrar`}>
+          <span>Check-in diario</span>
+          <span className={styles.relojArena}><Image src="/figma/reloj-arena.png" width={36} height={36} alt="" /></span>
+          <small><i aria-hidden="true" /> {hechos === total ? 'Completado' : 'Pendiente'}</small>
+        </Link>
+      </div>
+    </Card>
+  );
+}
+
+function TarjetaIndicador({ tarjeta }) {
+  const { nombre, valor, unidad, estado, color, icono, onda, detalle } = tarjeta;
+  return (
+    <Card className={styles.indicador} title={detalle}>
+      <img className={styles.iconoMetrica} src={`/figma/${icono}.svg`} width="64" height="64" alt="" />
+      <div className={styles.datoMetrica}>
+        <h2>{nombre}</h2>
+        <p className={styles.valor}>{valor} <small>{unidad}</small></p>
+        <p className={`${styles.nivelMetrica} ${styles[color]}`}><i aria-hidden="true" />{estado}</p>
+      </div>
+      {onda && <img className={styles.onda} src={`/figma/onda-${onda}.svg`} width="104" height="60" alt="" />}
+    </Card>
+  );
+}
+
+function AlertasObservaciones({ alertas }) {
+  const [verTodas, setVerTodas] = useState(false);
+  const visibles = verTodas ? alertas : alertas.slice(0, 3);
+  return (
+    <Card className={styles.observaciones}>
+      <div className={styles.observacionesTitulo}>
+        <h2><svg viewBox="0 0 24 28" width="22" height="26" fill="none" aria-hidden="true"><path d="M4 19V11a8 8 0 0 1 16 0v8l2 3H2l2-3Z" fill="currentColor" /><path d="M9 25h6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /></svg> Alertas y observaciones</h2>
+        {alertas.length > 3 && <button type="button" onClick={() => setVerTodas(!verTodas)}>{verTodas ? 'Ver menos' : 'Ver todas'} <span aria-hidden="true">→</span></button>}
+      </div>
+      {alertas.length === 0 ? (
+        <div className={styles.sinAlertas}><TrafficLight nivel="green" /><p>Sin alertas activas. Tus indicadores están dentro de los valores esperados.</p></div>
       ) : (
-        <div className={styles.alerta}>
-          <h3>
-            <TrafficLight nivel="green" conTexto={false} /> Todo dentro de los valores esperados
-          </h3>
-          <p>Tus mediciones y síntomas recientes no disparan alertas en el motor de reglas.</p>
-        </div>
-      )}
-
-      {vistaCmo && (
-        <div className={styles.alerta} style={{ marginTop: 12 }}>
-          <h3>Vista del oficial médico (CMO)</h3>
-          <ul>
-            {vistaCmo.map((c) => (
-              <li key={c.id}>
-                <TrafficLight nivel={c.level} conTexto={false} /> <strong>{c.name}:</strong>{' '}
-                {c.alertaActiva ? c.alertaActiva.title : 'Todo en verde'}
-                {!c.compartioDetalles ? ' · mediciones detalladas privadas' : ''}
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-
-      <div className={styles.botones}>
-        {tieneGrafo(principal?.ruleId) && (
-          <Link className={`${styles.boton} ${styles.botonAcento}`} href={`/causas?alerta=${principal.ruleId}`}>
-            ¿Por qué pasó?
-          </Link>
-        )}
-        <Link className={styles.boton} href={`/mapa?zona=${principal?.zone || 'immune'}`}>
-          Ver guía
-        </Link>
-        <Link className={styles.boton} href="/enlace">
-          Avisar al oficial médico
-        </Link>
-        <Link className={`${styles.boton} ${styles.botonIa}`} href="/junta">
-          Convocar junta médica
-        </Link>
-        {vistaCmo && (
-          <Link className={styles.boton} href="/tripulacion">
-            Panel CMO / Privacidad
-          </Link>
-        )}
-      </div>
-    </Card>
-  );
-}
-
-function Chequeo({ items, hechos }) {
-  const completo = hechos === items.length;
-  return (
-    <Card titulo="Chequeo matutino" className={styles.chequeo}>
-      <p className={styles.progreso}>
-        {hechos} de {items.length} {completo && '· ¡listo por hoy!'}
-      </p>
-      <div
-        className={styles.barra}
-        role="progressbar"
-        aria-valuemin={0}
-        aria-valuemax={items.length}
-        aria-valuenow={hechos}
-      >
-        <span style={{ width: `${(hechos / items.length) * 100}%` }} />
-      </div>
-      <ul className={styles.lista}>
-        {items.map((c) => (
-          <li key={c.id} className={c.hecho ? styles.hecho : undefined}>
-            <span aria-hidden="true">{c.hecho ? '☑' : '☐'}</span> {c.etiqueta}
-            <span className={styles.oculto}>{c.hecho ? ' (hecho)' : ' (pendiente)'}</span>
-          </li>
-        ))}
-      </ul>
-      {!completo && (
-        <Link className={`${styles.boton} ${styles.botonAcento}`} href="/registrar">
-          Completar chequeo
-        </Link>
+        <ul className={styles.listaAlertas}>
+          {visibles.map((alerta, index) => (
+            <li key={alerta.ruleId || index}>
+              <details>
+                <summary>
+                  <TrafficLight nivel={alerta.level} conTexto={false} />
+                  <span className={styles.alertaTexto}><strong>{alerta.title}</strong><span>{alerta.why}</span></span>
+                  <small>Sol {Number.isInteger(alerta.sol) ? alerta.sol : SOL_ACTUAL}</small>
+                </summary>
+                <div className={styles.detalleAlerta}>
+                  <p>{alerta.why}</p>
+                  <ul>{(alerta.actions || []).map((accion) => <li key={accion}>{accion}</li>)}</ul>
+                  {alerta.nasaSource && <p className={styles.fuente}>Fuente: {alerta.nasaSource}</p>}
+                  <div className={styles.accionesAlerta}>
+                    {tieneGrafo(alerta.ruleId) && <Link href={`/causas?alerta=${alerta.ruleId}`}>¿Por qué pasó? →</Link>}
+                    <Link href={`/mapa?zona=${alerta.zone || 'immune'}`}>Ver guía →</Link>
+                    <Link href="/enlace">Avisar al oficial médico →</Link>
+                    <Link href="/junta">Convocar junta médica →</Link>
+                  </div>
+                </div>
+              </details>
+            </li>
+          ))}
+        </ul>
       )}
     </Card>
-  );
-}
-
-function TarjetaIndicador({ tarjeta, vals }) {
-  const { nombre, unidad, claves, formato, nivel } = tarjeta;
-  const valor = formato(claves.map((k) => vals[k].valor));
-  const hoy = claves.every((k) => vals[k].hoy);
-  const notaWatch = claves.map((k) => vals[k].note).find(Boolean);
-  return (
-    <Card acento={nivel} className={styles.indicador}>
-      <div className={styles.indicadorTop}>
-        <span className={styles.nombre}>{nombre}</span>
-        <TrafficLight nivel={nivel} />
-      </div>
-      <p className={styles.valor}>
-        {valor} <small>{unidad}</small>
-      </p>
-      {!hoy && <p className={styles.ayer}>último dato (ayer)</p>}
-      {hoy && notaWatch && <p className={styles.ayer}>{notaWatch}</p>}
-    </Card>
-  );
-}
-
-function Racha({ ejercicioHoy }) {
-  const { total } = MISION.tripulacion;
-  const conEjercicioHoy = MISION.tripulacion.conEjercicioHoy + (ejercicioHoy ? 1 : 0);
-  const racha = MISION.rachaEjercicio + (ejercicioHoy ? 1 : 0);
-  return (
-    <Card className={styles.racha}>
-      <p>
-        🔥 Racha de ejercicio: <strong>{racha} días</strong>
-      </p>
-      <p className={styles.sub}>
-        Meta de la tripulación: {conEjercicioHoy} de {total} ya entrenaron hoy
-      </p>
-      <div className={styles.barra}>
-        <span style={{ width: `${(conEjercicioHoy / total) * 100}%` }} />
-      </div>
-    </Card>
-  );
-}
-
-function BarraVega() {
-  return (
-    <Link href="/vega" className={styles.vega} aria-label="Hablar con Vega">
-      <span className={styles.vegaIcono} aria-hidden="true">✦</span>
-      <span className={styles.vegaTexto}>Preguntale a Vega o contale cómo te sentís…</span>
-      <span className={styles.vegaMic} aria-hidden="true">🎙</span>
-    </Link>
   );
 }

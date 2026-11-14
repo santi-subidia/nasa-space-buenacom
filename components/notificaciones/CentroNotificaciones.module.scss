@@ -1,5 +1,9 @@
 @use 'tokens' as *;
 
+:global(body:has([data-dashboard])) .contenedor {
+  display: none;
+}
+
 .contenedor {
   position: fixed;
   top: $espacio-4;

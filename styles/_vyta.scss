@@ -1,0 +1,17 @@
+// Paleta de la pantalla General del prototipo de Figma.
+$fondo: #020817;
+$panel: #06121f;
+$panel-alto: #0c1b2c;
+$borde: #1b354b;
+$texto: #f1f5ff;
+$suave: #aac0df;
+$cian: #20d5f6;
+$menta: #35edb5;
+$violeta: #a078ff;
+$rosa: #ff6388;
+
+@mixin panel {
+  background: linear-gradient(125deg, #080f20, #051923);
+  border: 1px solid $borde;
+  border-radius: 17px;
+}

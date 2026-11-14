@@ -12,6 +12,36 @@ export default function Sidebar() {
   const pathname = usePathname();
   const sesion = useSesion();
   const supabaseOk = estaSupabaseConfigurado();
+  const esInicio = pathname === '/';
+
+  if (esInicio) {
+    const menu = [
+      { href: '/', etiqueta: 'Vista General', icono: 'inicio' },
+      { href: '/mapa', etiqueta: 'Salud', icono: 'salud' },
+      { href: '/entrenador', etiqueta: 'Actividad', icono: 'actividad' },
+      { href: '/tendencias', etiqueta: 'Analítica', icono: 'analitica' },
+      { href: '/enlace', etiqueta: 'Informes', icono: 'informes' },
+    ];
+    return (
+      <aside className={`${styles.lateral} ${styles.prototipo}`}>
+        <Link href="/" className={styles.marca} aria-label="VYTA · Inicio">
+          <img src="/figma/marca.svg" width="231" height="155" alt="VYTA · Health Monitoring Software" />
+        </Link>
+        <nav aria-label="Pantallas principales">
+          <ul className={styles.lista}>
+            {menu.map((ruta) => (
+              <li key={ruta.href}>
+                <Link href={ruta.href} aria-current={ruta.href === '/' ? 'page' : undefined} className={`${styles.enlace} ${ruta.href === '/' ? styles.activo : ''}`}>
+                  <img src={`/figma/nav-${ruta.icono}.svg`} width="24" height="24" alt="" />
+                  {ruta.etiqueta}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      </aside>
+    );
+  }
 
   return (
     <aside className={styles.lateral}>
