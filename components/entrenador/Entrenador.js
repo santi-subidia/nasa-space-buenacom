@@ -8,9 +8,11 @@ import Card from '@/components/Card';
 import { EJERCICIOS, crearEntrenamiento } from '@/lib/entrenador/ejercicios';
 import { armarPayloadSerie } from '@/lib/entrenador/resumen';
 import { guardarLecturas, leerLecturas, useLecturas } from '@/lib/datos/lecturas';
+import { leerSintomas } from '@/lib/datos/sintomas';
+import { evaluate } from '@/lib/motor/evaluar';
 import { maxNivel } from '@/lib/niveles';
-import { TARJETAS, nivelDeTarjeta, valoresDelDia } from '@/lib/mock/indicadores';
-import { ALERTA_ACTIVA, MISION, SOL_ACTUAL } from '@/lib/mock/mision';
+import { LINEA_BASE, TARJETAS, nivelDeTarjeta, valoresDelDia } from '@/lib/mock/indicadores';
+import { MISION, SOL_ACTUAL } from '@/lib/mock/mision';
 import styles from './Entrenador.module.scss';
 
 // WASM: lo copia `npm install` a public/mediapipe/wasm. Modelo: por defecto del CDN de Google;
@@ -268,13 +270,15 @@ export default function Entrenador() {
 
     const idPedido = ++comentarioIdRef.current;
     let lecturasActuales = lecturasRef.current;
+    let sintomasActuales = [];
     try {
-      lecturasActuales = await leerLecturas();
+      [lecturasActuales, sintomasActuales] = await Promise.all([leerLecturas(), leerSintomas()]);
     } catch {
       /* si IndexedDB falla, seguimos con las lecturas ya cargadas */
     }
     const vals = valoresDelDia(lecturasActuales, SOL_ACTUAL);
-    const nivelMotor = maxNivel(TARJETAS.map((t) => nivelDeTarjeta(t, vals)), ALERTA_ACTIVA.nivel);
+    const ev = evaluate(lecturasActuales, LINEA_BASE, 'mars_base', { symptoms: sintomasActuales, sol: SOL_ACTUAL });
+    const nivelMotor = maxNivel(TARJETAS.map((t) => nivelDeTarjeta(t, vals)), ev.globalLevel);
     const payload = armarPayloadSerie({
       series,
       ejercicioActual: ejercicio,
@@ -283,7 +287,7 @@ export default function Entrenador() {
       fotos,
       vals,
       nivelMotor,
-      alertaTitulo: ALERTA_ACTIVA.titulo,
+      alertaTitulo: ev.alerts[0]?.title || null,
     });
 
     const vozCliente = {

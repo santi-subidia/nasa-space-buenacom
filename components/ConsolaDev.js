@@ -3,13 +3,14 @@
 import { useEffect } from 'react';
 import * as db from '@/lib/db';
 import * as tipos from '@/lib/tipos';
+import * as motor from '@/lib/motor/evaluar';
+import * as demo from '@/lib/datos/demo';
 
-// Deja la base y los tipos en `window.astro` para probar desde la consola del navegador:
-//   await astro.db.addReading({ astronautId: 'a1', indicator: 'temp', value: 37.6 })
-//   await astro.db.getReadings('a1')
+// Deja la base, los tipos y el motor en `window.astro` y asegura que los 60 soles de demo existan en IndexedDB.
 export default function ConsolaDev() {
   useEffect(() => {
-    window.astro = { db, tipos };
+    window.astro = { db, tipos, motor, demo };
+    demo.asegurarDemo().catch((e) => console.error('No se pudieron inicializar los datos de demo', e));
   }, []);
   return null;
 }

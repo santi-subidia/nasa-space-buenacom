@@ -1,10 +1,12 @@
-// Arma la petición `tipo: 'board'` combinando el estado de hoy (mock + lecturas/síntomas guardados)
-// con la serie base del sol 42 hasta que existan #3 (motor completo) y #4 (datos de demo).
+// Arma la petición `tipo: 'board'` combinando las lecturas y síntomas guardados
+// con la evaluación real del motor de reglas (#3 y #4).
 
 import { ENTRADA_SOL42 } from '@/ai/junta/ejemplo-sol42.js';
+import { SOL_ACTUAL } from '@/lib/demo/generador';
 import { maxNivel } from '@/lib/niveles';
-import { ALERTA_ACTIVA, MISION, SOL_ACTUAL } from '@/lib/mock/mision';
-import { TARJETAS, nivelDeTarjeta, valoresDelDia } from '@/lib/mock/indicadores';
+import { evaluate } from '@/lib/motor/evaluar';
+import { MISION } from '@/lib/mock/mision';
+import { LINEA_BASE, TARJETAS, nivelDeTarjeta, valoresDelDia } from '@/lib/mock/indicadores';
 
 const MAX_LECTURAS = 500;
 const MAX_SINTOMAS = 50;
@@ -60,9 +62,28 @@ function combinarSintomas(sintomasGuardados) {
 
 /** Construye el cuerpo de POST /api/claude con `tipo: 'board'`. */
 export function armarEntradaJunta(lecturasGuardadas = [], sintomasGuardados = []) {
-  const vals = valoresDelDia(lecturasGuardadas, SOL_ACTUAL);
+  const lecturasHastaHoy = lecturasGuardadas.filter((l) => l?.sol == null || l.sol <= SOL_ACTUAL);
+  const sintomasHastaHoy = sintomasGuardados.filter((s) => s?.sol == null || s.sol <= SOL_ACTUAL);
+  const evaluacion = evaluate(lecturasHastaHoy, LINEA_BASE, 'mars_base', {
+    symptoms: sintomasHastaHoy,
+    sol: SOL_ACTUAL,
+  });
+
+  const vals = valoresDelDia(lecturasHastaHoy, SOL_ACTUAL);
   const nivelIndicadores = maxNivel(TARJETAS.map((t) => nivelDeTarjeta(t, vals)));
-  const nivelMotor = maxNivel(nivelIndicadores, ALERTA_ACTIVA.nivel);
+  const nivelMotor = maxNivel(nivelIndicadores, evaluacion.globalLevel);
+  const alertas = evaluacion.alerts.length
+    ? evaluacion.alerts.map((a) => ({
+        id: a.id,
+        level: a.level,
+        zone: a.zone,
+        ruleId: a.ruleId,
+        title: a.title,
+        why: a.why,
+        actions: a.actions,
+        escalate: a.escalate,
+      }))
+    : ENTRADA_SOL42.alertas;
 
   return {
     tipo: 'board',
@@ -70,19 +91,8 @@ export function armarEntradaJunta(lecturasGuardadas = [], sintomasGuardados = []
     sol: SOL_ACTUAL,
     entorno: ENTRADA_SOL42.entorno,
     nivelMotor,
-    alertas: [
-      {
-        id: ALERTA_ACTIVA.id,
-        level: ALERTA_ACTIVA.nivel,
-        zone: ALERTA_ACTIVA.zona,
-        ruleId: ALERTA_ACTIVA.id,
-        title: ALERTA_ACTIVA.titulo,
-        why: ALERTA_ACTIVA.porQue,
-        actions: ALERTA_ACTIVA.acciones,
-        escalate: nivelMotor === 'red' ? 'flight_surgeon' : 'cmo',
-      },
-    ],
-    lecturas: combinarLecturas(lecturasGuardadas),
-    sintomas: combinarSintomas(sintomasGuardados),
+    alertas,
+    lecturas: combinarLecturas(lecturasHastaHoy),
+    sintomas: combinarSintomas(sintomasHastaHoy),
   };
 }

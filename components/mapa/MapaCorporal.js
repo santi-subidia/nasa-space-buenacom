@@ -6,8 +6,7 @@ import { useSearchParams } from 'next/navigation';
 import Card from '@/components/Card';
 import TrafficLight from '@/components/TrafficLight';
 import { NIVELES, maxNivel } from '@/lib/niveles';
-import { useLecturas } from '@/lib/datos/lecturas';
-import { SOL_ACTUAL, ALERTA_ACTIVA } from '@/lib/mock/mision';
+import { SOL_ACTUAL, useEstadoMision } from '@/lib/datos/demo';
 import { EVALUAR, META, valoresDelDia } from '@/lib/mock/indicadores';
 import { ZONAS, PELIGROS } from '@/lib/content/zones';
 import styles from './MapaCorporal.module.scss';
@@ -46,13 +45,21 @@ function Marca({ nivel, x, y }) {
 }
 
 export default function MapaCorporal() {
-  const lecturas = useLecturas();
+  const { lecturas, sintomas, evaluacion } = useEstadoMision('ana', SOL_ACTUAL);
   const vals = valoresDelDia(lecturas, SOL_ACTUAL);
   const parametro = useSearchParams().get('zona');
+  const herpeSol = sintomas.find((s) => s.code === 'cold_sore' || s.code === 'rash');
 
-  // Zona con indicadores resueltos y nivel = el peor de sus indicadores (y de la alerta activa).
+  // Zona con indicadores resueltos y nivel = máximo entre sus indicadores y el motor de reglas (#3).
   const zonas = ZONAS.map((z) => {
     const indicadores = z.indicadores.map((i) => {
+      if (z.id === 'immune' && !i.clave && herpeSol) {
+        return {
+          nombre: 'Erupción (foto)',
+          valor: `Herpes labial · sol ${herpeSol.sol ?? 41}`,
+          nivel: evaluacion.zoneLevels?.immune || 'orange',
+        };
+      }
       if (!i.clave) return i;
       const dato = vals[i.clave];
       const { nombre, unidad } = META[i.clave];
@@ -62,7 +69,7 @@ export default function MapaCorporal() {
         nivel: dato && EVALUAR[i.clave] ? EVALUAR[i.clave](dato.valor) : 'green',
       };
     });
-    const nivel = maxNivel(indicadores.map((i) => i.nivel), z.alerta ? ALERTA_ACTIVA.nivel : 'green');
+    const nivel = maxNivel(indicadores.map((i) => i.nivel), evaluacion.zoneLevels?.[z.id] ?? 'green');
     return { ...z, indicadores, nivel };
   });
 

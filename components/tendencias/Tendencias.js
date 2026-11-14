@@ -16,16 +16,16 @@ import {
   YAxis,
 } from 'recharts';
 import Card from '@/components/Card';
-import { useLecturas } from '@/lib/datos/lecturas';
-import { SOL_ACTUAL } from '@/lib/mock/mision';
+import { SOL_ACTUAL, useEstadoMision } from '@/lib/datos/demo';
 import { LINEA_BASE, EVALUAR, valoresDelDia } from '@/lib/mock/indicadores';
 import { SERIE, SOL_EVENTO } from '@/lib/mock/series';
 import styles from './Tendencias.module.scss';
 
 const PERIODOS = [
-  { id: '7', texto: '7 días', desde: SOL_ACTUAL - 6 },
-  { id: '14', texto: '14 días', desde: SOL_ACTUAL - 13 },
-  { id: 'mision', texto: 'Misión', desde: 1 },
+  { id: '7', texto: '7 días', desde: SOL_ACTUAL - 6, hasta: SOL_ACTUAL },
+  { id: '14', texto: '14 días', desde: SOL_ACTUAL - 13, hasta: SOL_ACTUAL },
+  { id: 'mision', texto: 'Hasta hoy', desde: 1, hasta: SOL_ACTUAL },
+  { id: '60', texto: '60 soles', desde: 1, hasta: 60 },
 ];
 
 const C = {
@@ -46,33 +46,60 @@ const tooltip = {
   labelFormatter: (sol) => `Sol ${sol}`,
 };
 
-const prom = (xs) => xs.reduce((a, b) => a + b, 0) / xs.length;
+const prom = (xs) => (xs.length ? xs.reduce((a, b) => a + b, 0) / xs.length : 0);
 const coma = (n, d = 1) => n.toFixed(d).replace('.', ',');
 
-export default function Tendencias() {
-  const lecturas = useLecturas();
-  const [periodo, setPeriodo] = useState('mision');
-  const desde = PERIODOS.find((p) => p.id === periodo).desde;
+function construirSerie(lecturas, hoy) {
+  const porSol = new Map();
+  for (const l of lecturas) {
+    if (!Number.isInteger(l?.sol)) continue;
+    if (!porSol.has(l.sol)) porSol.set(l.sol, { sol: l.sol });
+    porSol.get(l.sol)[l.indicator] = l.value;
+  }
 
-  // Lo que se guardó hoy en Registrar pisa el último punto de la serie.
+  if (porSol.size === 0) {
+    return SERIE.map((d) =>
+      d.sol !== SOL_ACTUAL
+        ? d
+        : {
+            ...d,
+            sleep_h: hoy.sleep_h?.hoy ? hoy.sleep_h.valor : d.sleep_h,
+            stress: hoy.stress?.hoy ? hoy.stress.valor : d.stress,
+            temp: hoy.temp?.hoy ? hoy.temp.valor : d.temp,
+            mood: hoy.mood?.hoy ? hoy.mood.valor : d.mood,
+          },
+    );
+  }
+
+  const sols = [...porSol.keys()].sort((a, b) => a - b);
+  return sols.map((sol) => {
+    const fila = porSol.get(sol);
+    if (sol !== SOL_ACTUAL) return fila;
+    return {
+      ...fila,
+      sleep_h: hoy.sleep_h?.valor ?? fila.sleep_h,
+      stress: hoy.stress?.valor ?? fila.stress,
+      temp: hoy.temp?.valor ?? fila.temp,
+      mood: hoy.mood?.valor ?? fila.mood,
+    };
+  });
+}
+
+export default function Tendencias() {
+  const { astronauta, lecturas } = useEstadoMision('ana', SOL_ACTUAL);
+  const [periodo, setPeriodo] = useState('mision');
+  const rango = PERIODOS.find((p) => p.id === periodo);
+  const sleepBase = astronauta?.baseline?.sleep_h ?? LINEA_BASE.sleep_h;
+
+  // Arma la serie completa (60 soles desde IndexedDB) aplicando lo registrado hoy en sol 42.
   const hoy = valoresDelDia(lecturas, SOL_ACTUAL);
-  const serie = SERIE.map((d) =>
-    d.sol !== SOL_ACTUAL
-      ? d
-      : {
-          ...d,
-          sleep_h: hoy.sleep_h?.hoy ? hoy.sleep_h.valor : d.sleep_h,
-          stress: hoy.stress?.hoy ? hoy.stress.valor : d.stress,
-          temp: hoy.temp?.hoy ? hoy.temp.valor : d.temp,
-          mood: hoy.mood?.hoy ? hoy.mood.valor : d.mood,
-        },
-  );
-  const datos = serie.filter((d) => d.sol >= desde);
+  const serie = construirSerie(lecturas, hoy);
+  const datos = serie.filter((d) => d.sol >= rango.desde && d.sol <= rango.hasta);
   const conEvento = datos.some((d) => d.sol === SOL_EVENTO);
 
-  // Lectura de Vega (texto fijo calculado con la serie; #14 puede generarlo con IA).
-  const caida = serie.filter((d) => d.sol >= 31 && d.sol <= 40);
-  const previo = serie.filter((d) => d.sol <= 30);
+  // Lectura de Vega calculada sobre la serie real de la misión.
+  const caida = serie.filter((d) => d.sol >= 31 && d.sol <= 40 && d.sleep_h != null);
+  const previo = serie.filter((d) => d.sol <= 30 && d.sleep_h != null);
 
   const marcaEvento = conEvento && (
     <ReferenceLine x={SOL_EVENTO} stroke={C.naranja} strokeDasharray="4 4" label={{ value: 'Sol 41', fill: C.naranja, fontSize: 11, position: 'top' }} />
@@ -83,7 +110,7 @@ export default function Tendencias() {
       <header className={styles.encabezado}>
         <div>
           <h1>Tendencias</h1>
-          <p className={styles.sub}>Cómo vienen tus indicadores · hasta el sol {SOL_ACTUAL}</p>
+          <p className={styles.sub}>Cómo vienen tus indicadores · {periodo === '60' ? 'misión completa (60 soles)' : `hasta el sol ${SOL_ACTUAL}`}</p>
         </div>
         <div className={styles.periodos} role="radiogroup" aria-label="Período">
           {PERIODOS.map((p) => (
@@ -120,12 +147,12 @@ export default function Tendencias() {
               <ReferenceArea y1={6} y2={7} fill={C.amarillo} fillOpacity={0.14} />
               <ReferenceArea y1={5} y2={6} fill={C.naranja} fillOpacity={0.14} />
               <ReferenceArea y1={3} y2={5} fill={C.rojo} fillOpacity={0.14} />
-              <ReferenceLine y={LINEA_BASE.sleep_h} stroke={C.texto} strokeDasharray="6 4" label={{ value: 'tu base', fill: C.texto, fontSize: 11, position: 'insideTopRight' }} />
+              <ReferenceLine y={sleepBase} stroke={C.texto} strokeDasharray="6 4" label={{ value: 'tu base', fill: C.texto, fontSize: 11, position: 'insideTopRight' }} />
               {marcaEvento}
               <XAxis dataKey="sol" {...EJE} />
               <YAxis domain={[3, 9]} ticks={[3, 5, 6, 7, 9]} {...EJE} />
               <Tooltip {...tooltip} formatter={(v) => [`${coma(v)} h`, 'Sueño']} />
-              <Line type="monotone" dataKey="sleep_h" stroke={C.acento} strokeWidth={2.5} dot={periodo !== 'mision'} isAnimationActive={false} />
+              <Line type="monotone" dataKey="sleep_h" stroke={C.acento} strokeWidth={2.5} dot={periodo !== 'mision' && periodo !== '60'} isAnimationActive={false} />
             </LineChart>
           </Grafico>
           <Leyenda items={[['verde', '7–9 h'], ['amarillo', '6–7 h'], ['naranja', '5–6 h'], ['rojo', '< 5 h']]} />
