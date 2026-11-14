@@ -1,0 +1,9 @@
+# Secretos: la API key vive solo en ANTHROPIC_API_KEY (.env), nunca en el repo
+.env
+.env.*
+!.env.example
+
+node_modules/
+.next/
+.data/
+*.log

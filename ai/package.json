@@ -5,6 +5,11 @@
   "description": "Fichas por riesgo y contexto para la IA (issue #13). Se mueve a la app Next.js cuando exista el esqueleto (#1).",
   "scripts": {
     "indice": "node scripts/generar-indice.js",
-    "test": "node --test \"test/*.test.js\""
+    "test": "node --test \"test/*.test.js\"",
+    "probar": "node --env-file-if-exists=.env scripts/probar-claude.js",
+    "probar:sin-clave": "node scripts/probar-claude.js"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^1.8.0"
   }
 }
