@@ -38,7 +38,7 @@ function leer(raiz, rutaRelativa) {
   return cacheArchivos.get(clave);
 }
 
-/** Ids de riesgo válidos (nombres de archivo de doc/02-riesgos/**). */
+/** Ids de riesgo válidos (nombres de archivo de doc/nasa/riesgos/**). */
 export const listarRiesgos = () => Object.keys(INDICE);
 
 export const riesgosDeZona = (zona) => {
@@ -55,7 +55,7 @@ export const riesgosDeEspecialista = (especialista) => {
 
 const escapar = (s) => String(s).replace(/"/g, '&quot;');
 
-/** Quita el encabezado repetido (título y línea de fuente) de un archivo de doc/fuentes. */
+/** Quita el encabezado repetido (título y línea de fuente) de un archivo de doc/nasa/fuentes. */
 function cuerpoDeFuente(texto) {
   return texto
     .replace(/^#\s+.+\n+/, '')

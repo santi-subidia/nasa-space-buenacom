@@ -7,7 +7,7 @@ import { EVALUAR } from '@/lib/mock/indicadores';
 import styles from './Registrar.module.scss';
 
 // Minitest de agudeza visual con "E direccional" (tumbling E), para seguir SANS en el tiempo.
-// doc/02-riesgos/fisiologia/sans-ojos.md · doc/04-sintesis/catalogo-indicadores.md (Tier 2).
+// doc/nasa/riesgos/fisiologia/sans-ojos.md · doc/proyecto/sintesis/catalogo-indicadores.md (Tier 2).
 // No es un examen oftalmológico: sirve para comparar contra la propia base, siempre a la misma distancia y luz.
 
 // Tamaño de la E en px por nivel. Cada nivel superado suma 10 puntos (0–100).

@@ -77,7 +77,7 @@ test('cada zona y cada especialista apuntan solo a riesgos que existen', () => {
   assert.throws(() => riesgosDeZona('rodilla'), /Zona desconocida/);
 });
 
-test('todos los riesgos de doc/02-riesgos están indexados', () => {
+test('todos los riesgos de doc/nasa/riesgos están indexados', () => {
   assert.equal(listarRiesgos().length, 17);
 });
 

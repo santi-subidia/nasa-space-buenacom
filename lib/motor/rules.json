@@ -13,7 +13,7 @@
         "Repetir la toma sentado tras 5 minutos de reposo",
         "Registrar hidratación del día y síntomas al pararse"
       ],
-      "source": "doc/fuentes/02-riesgos/risk-of-cardiovascular-adaptations.md"
+      "source": "doc/nasa/fuentes/02-riesgos/risk-of-cardiovascular-adaptations.md"
     },
     "bp_dia": {
       "zone": "heart",
@@ -27,7 +27,7 @@
         "Repetir la toma en reposo a la altura del corazón",
         "Informar si persiste elevada en el siguiente control"
       ],
-      "source": "doc/fuentes/02-riesgos/risk-of-cardiovascular-adaptations.md"
+      "source": "doc/nasa/fuentes/02-riesgos/risk-of-cardiovascular-adaptations.md"
     },
     "hr_rest": {
       "zone": "heart",
@@ -41,7 +41,7 @@
         "Comparar con la línea base personal y revisar hidratación",
         "Reducir carga física intensa hasta normalizar"
       ],
-      "source": "doc/fuentes/02-riesgos/risk-of-cardiovascular-adaptations.md"
+      "source": "doc/nasa/fuentes/02-riesgos/risk-of-cardiovascular-adaptations.md"
     },
     "glucose": {
       "zone": "gut",
@@ -55,7 +55,7 @@
         "Confirmar si la medición fue en ayunas (8 h)",
         "Seguir protocolo nutricional y repetir control"
       ],
-      "source": "doc/fuentes/02-riesgos/risk-of-inadequate-food-and-nutrition.md"
+      "source": "doc/nasa/fuentes/02-riesgos/risk-of-inadequate-food-and-nutrition.md"
     },
     "temp": {
       "zone": "immune",
@@ -68,7 +68,7 @@
         "Controlar temperatura cada 6 horas y registrar síntomas asociados",
         "Priorizar descanso e higiene para reducir contagio"
       ],
-      "source": "doc/fuentes/02-riesgos/risk-of-altered-immune-system-responses.md"
+      "source": "doc/nasa/fuentes/02-riesgos/risk-of-altered-immune-system-responses.md"
     },
     "sleep_h": {
       "zone": "brain",
@@ -80,7 +80,7 @@
         "Proteger ventana de 8 horas de sueño y bajar luz azul antes de dormir",
         "Evitar tareas críticas de precisión si la deuda continúa"
       ],
-      "source": "doc/fuentes/02-riesgos/risk-from-inadequate-sleep-and-irregular-schedules.md"
+      "source": "doc/nasa/fuentes/02-riesgos/risk-from-inadequate-sleep-and-irregular-schedules.md"
     },
     "mood": {
       "zone": "brain",
@@ -92,7 +92,7 @@
         "Hablar con Vega o con el oficial médico de la tripulación",
         "Bajar carga no esencial y reservar pausa de descanso"
       ],
-      "source": "doc/fuentes/02-riesgos/risk-of-behavioral-conditions-and-psychiatric-disorders.md"
+      "source": "doc/nasa/fuentes/02-riesgos/risk-of-behavioral-conditions-and-psychiatric-disorders.md"
     },
     "spo2": {
       "zone": "lungs",
@@ -104,7 +104,7 @@
         "Verificar CO₂, O₂ y presión de cabina de inmediato",
         "Permanecer en reposo y escalar si persiste por debajo de 94 %"
       ],
-      "source": "doc/fuentes/02-riesgos/risk-of-hypoxia.md"
+      "source": "doc/nasa/fuentes/02-riesgos/risk-of-hypoxia.md"
     },
     "water_ml": {
       "zone": "kidneys",
@@ -116,7 +116,7 @@
         "Tomar al menos 2000 ml de agua distribuidos en el día",
         "Vigilar color de orina o dolor en el flanco"
       ],
-      "source": "doc/fuentes/05-human-system-risk-board/risk-of-renal-stone-formation.md"
+      "source": "doc/nasa/fuentes/05-human-system-risk-board/risk-of-renal-stone-formation.md"
     },
     "exercise_min": {
       "zone": "muscles",
@@ -128,7 +128,7 @@
         "Completar la meta diaria de 90 min con trabajo de fuerza y aeróbico",
         "Usar el Entrenador para registrar repeticiones y postura"
       ],
-      "source": "doc/fuentes/02-riesgos/risk-of-reduced-cardiorespiratory-and-musculoskeletal-fitness.md"
+      "source": "doc/nasa/fuentes/02-riesgos/risk-of-reduced-cardiorespiratory-and-musculoskeletal-fitness.md"
     },
     "stress": {
       "zone": "immune",
@@ -141,7 +141,7 @@
         "Redistribuir carga de trabajo con la tripulación si el estrés sostenido supera 7",
         "Priorizar descanso y respiración guiada"
       ],
-      "source": "doc/fuentes/02-riesgos/risk-of-altered-immune-system-responses.md"
+      "source": "doc/nasa/fuentes/02-riesgos/risk-of-altered-immune-system-responses.md"
     },
     "reaction_ms": {
       "zone": "brain",
@@ -153,7 +153,7 @@
         "Repetir test PVT tras descansar y evitar maniobras de alto riesgo",
         "Priorizar recuperación de sueño"
       ],
-      "source": "doc/fuentes/02-riesgos/risk-from-inadequate-sleep-and-irregular-schedules.md"
+      "source": "doc/nasa/fuentes/02-riesgos/risk-from-inadequate-sleep-and-irregular-schedules.md"
     },
     "visual_acuity": {
       "zone": "eyes",
@@ -165,7 +165,7 @@
         "Repetir minitest de agudeza y programar control con fondo de ojo / OCT",
         "Reportar visión borrosa persistente"
       ],
-      "source": "doc/fuentes/02-riesgos/risk-of-spaceflight-associated-neuro-ocular-syndrome-sans.md"
+      "source": "doc/nasa/fuentes/02-riesgos/risk-of-spaceflight-associated-neuro-ocular-syndrome-sans.md"
     },
     "radiation_msv": {
       "zone": "dna",
@@ -178,7 +178,7 @@
         "Registrar dosis acumulada y verificar blindaje en alerta solar",
         "Planificar EVA y salidas en rover según la dosis que queda hasta el límite de 600 mSv"
       ],
-      "source": "doc/04-sintesis/cabina-y-radiacion.md"
+      "source": "doc/proyecto/sintesis/cabina-y-radiacion.md"
     },
     "co2_mmhg": {
       "zone": "lungs",
@@ -191,7 +191,7 @@
         "Revisar el depurador de CO₂ y la ventilación del módulo",
         "Si hay dolor de cabeza, avisar y repetir oximetría"
       ],
-      "source": "doc/04-sintesis/cabina-y-radiacion.md"
+      "source": "doc/proyecto/sintesis/cabina-y-radiacion.md"
     },
     "o2_pct": {
       "zone": "lungs",
@@ -203,7 +203,7 @@
       "actions": [
         "Verificar el sistema de generación de O₂ y la presión de cabina"
       ],
-      "source": "doc/04-sintesis/cabina-y-radiacion.md"
+      "source": "doc/proyecto/sintesis/cabina-y-radiacion.md"
     },
     "noise_dba": {
       "zone": "inner_ear",
@@ -215,7 +215,7 @@
         "Usar protección auditiva y alejarse de la fuente de ruido",
         "Reportar el equipo ruidoso para mantenimiento"
       ],
-      "source": "doc/04-sintesis/cabina-y-radiacion.md"
+      "source": "doc/proyecto/sintesis/cabina-y-radiacion.md"
     }
   },
   "baselineDelta": {
@@ -229,7 +229,7 @@
         "Revisar hidratación, fiebre y calidad del descanso nocturno",
         "Repetir medición en reposo absoluto"
       ],
-      "source": "doc/fuentes/02-riesgos/risk-of-cardiovascular-adaptations.md"
+      "source": "doc/nasa/fuentes/02-riesgos/risk-of-cardiovascular-adaptations.md"
     },
     "temp": {
       "direction": "up",
@@ -240,7 +240,7 @@
       "actions": [
         "Vigilar síntomas inmunes o cutáneos y controlar cada 6 horas"
       ],
-      "source": "doc/fuentes/02-riesgos/risk-of-altered-immune-system-responses.md"
+      "source": "doc/nasa/fuentes/02-riesgos/risk-of-altered-immune-system-responses.md"
     },
     "reaction_ms": {
       "direction": "up",
@@ -251,7 +251,7 @@
       "actions": [
         "Posponer tareas de alta precisión y priorizar 8 h de sueño"
       ],
-      "source": "doc/fuentes/02-riesgos/risk-from-inadequate-sleep-and-irregular-schedules.md"
+      "source": "doc/nasa/fuentes/02-riesgos/risk-from-inadequate-sleep-and-irregular-schedules.md"
     },
     "visual_acuity": {
       "direction": "down",
@@ -262,7 +262,7 @@
       "actions": [
         "Programar control visual / OCT por posible desplazamiento de fluidos (SANS)"
       ],
-      "source": "doc/fuentes/02-riesgos/risk-of-spaceflight-associated-neuro-ocular-syndrome-sans.md"
+      "source": "doc/nasa/fuentes/02-riesgos/risk-of-spaceflight-associated-neuro-ocular-syndrome-sans.md"
     }
   },
   "composite": [
@@ -277,7 +277,7 @@
         "Priorizar 8 horas de sueño y bajar la carga operativa",
         "Avisar al oficial médico de la tripulación y vigilar fiebre o nuevas lesiones"
       ],
-      "source": "doc/fuentes/02-riesgos/risk-of-altered-immune-system-responses.md"
+      "source": "doc/nasa/fuentes/02-riesgos/risk-of-altered-immune-system-responses.md"
     },
     {
       "id": "orthostatic_pre_landing",
@@ -289,7 +289,7 @@
         "Beber líquidos y electrolitos según el protocolo previo al descenso",
         "Preparar la prenda de compresión y levantarse despacio"
       ],
-      "source": "doc/fuentes/02-riesgos/risk-of-cardiovascular-adaptations.md"
+      "source": "doc/nasa/fuentes/02-riesgos/risk-of-cardiovascular-adaptations.md"
     },
     {
       "id": "jugular_vte",
@@ -302,7 +302,7 @@
         "Realizar ecografía guiada del cuello o brazo afectado",
         "Contactar de inmediato con los médicos de vuelo"
       ],
-      "source": "doc/fuentes/05-human-system-risk-board/concern-of-venous-thromboembolism.md"
+      "source": "doc/nasa/fuentes/05-human-system-risk-board/concern-of-venous-thromboembolism.md"
     },
     {
       "id": "sleep_deficit_streak",
@@ -314,7 +314,7 @@
         "Proteger 8 horas de descanso y evitar maniobras críticas hasta recuperar ritmo",
         "Revisar iluminación y ruido del módulo de descanso"
       ],
-      "source": "doc/fuentes/02-riesgos/risk-from-inadequate-sleep-and-irregular-schedules.md"
+      "source": "doc/nasa/fuentes/02-riesgos/risk-from-inadequate-sleep-and-irregular-schedules.md"
     },
     {
       "id": "mood_low_streak",
@@ -326,7 +326,7 @@
         "Conversar de forma confidencial con el oficial médico o con Vega",
         "Programar contacto con apoyo psicológico en Tierra"
       ],
-      "source": "doc/fuentes/02-riesgos/risk-of-behavioral-conditions-and-psychiatric-disorders.md"
+      "source": "doc/nasa/fuentes/02-riesgos/risk-of-behavioral-conditions-and-psychiatric-disorders.md"
     },
     {
       "id": "exercise_deficit_week",
@@ -338,7 +338,7 @@
         "Retomar la meta de 90 min diarios con fuerza y aeróbico: el Entrenador te guía",
         "Sin carga de ejercicio se pierde hueso (1–1,5 % por mes) y músculo (10–12 %)"
       ],
-      "source": "doc/fuentes/02-riesgos/risk-of-reduced-cardiorespiratory-and-musculoskeletal-fitness.md"
+      "source": "doc/nasa/fuentes/02-riesgos/risk-of-reduced-cardiorespiratory-and-musculoskeletal-fitness.md"
     },
     {
       "id": "sans_visual_change",
@@ -351,7 +351,7 @@
         "Repetir el test de agudeza visual mañana a la misma distancia y con la misma luz",
         "Evitar tareas de precisión visual hasta la evaluación"
       ],
-      "source": "doc/fuentes/02-riesgos/risk-of-spaceflight-associated-neuro-ocular-syndrome-sans.md"
+      "source": "doc/nasa/fuentes/02-riesgos/risk-of-spaceflight-associated-neuro-ocular-syndrome-sans.md"
     },
     {
       "id": "renal_stone_risk",
@@ -363,7 +363,7 @@
         "Hidratación guiada según protocolo y control de diuresis",
         "Contactar con los médicos de vuelo para evaluación urgente"
       ],
-      "source": "doc/fuentes/05-human-system-risk-board/risk-of-renal-stone-formation.md"
+      "source": "doc/nasa/fuentes/05-human-system-risk-board/risk-of-renal-stone-formation.md"
     },
     {
       "id": "hypoxia_co2",
@@ -375,7 +375,7 @@
         "Revisar depuradores de CO₂ y nivel de O₂ de cabina",
         "Permanecer en reposo y repetir oximetría en 15 minutos"
       ],
-      "source": "doc/fuentes/02-riesgos/risk-of-hypoxia.md"
+      "source": "doc/nasa/fuentes/02-riesgos/risk-of-hypoxia.md"
     }
   ],
   "envModifiers": {

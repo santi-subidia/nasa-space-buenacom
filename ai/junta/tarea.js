@@ -1,7 +1,7 @@
 // Junta médica IA en UNA sola consulta (issue #16): 5 especialistas, desacuerdos, síntesis y dos informes.
 // En pantalla se ve como 6 agentes, pero es una llamada: más rápida y más barata que 6.
 //
-// Entrada (los tipos de doc/05-plan/prototipo.md, que producen #2/#3/#4):
+// Entrada (los tipos de doc/proyecto/plan/prototipo.md, que producen #2/#3/#4):
 //   { astronauta: { id, nombre, baseline? }, sol, entorno?, nivelMotor: Level,
 //     alertas: Alert[], lecturas: Reading[] (últimos 7 días), sintomas?: Symptom[] }
 import { getContext } from '../contexto.js';

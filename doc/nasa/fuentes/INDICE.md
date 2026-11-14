@@ -1,6 +1,6 @@
 # Índice de fuentes y documentos técnicos
 
-Páginas descargadas de nasa.gov el 2026-11-14 (texto original en inglés, sin navegación). Las síntesis en español están en las carpetas 01–05 del árbol.
+Páginas descargadas de nasa.gov el 2026-11-14 (texto original en inglés, sin navegación). Los resúmenes en español están en `peligros/`, `riesgos/` e `investigaciones/`, un nivel más arriba.
 
 ## 01-peligros
 

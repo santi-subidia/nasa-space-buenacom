@@ -1,54 +1,68 @@
 # 🚀 Desafío NASA Space Apps 2026 · Software de monitoreo de salud para astronautas
 
-Base de conocimiento extraída de los recursos oficiales del desafío y de la NASA (HRP), organizada para **diseñar el plan y el prototipo**.
+La documentación está separada en dos bloques según **quién lo dice**:
+
+| Carpeta | Qué contiene | Quién lo escribe |
+|---|---|---|
+| **[nasa/](nasa/README.md)** | Lo que dice la NASA: el enunciado del desafío, las páginas originales de nasa.gov y los resúmenes en español de esas páginas | La NASA (los resúmenes los redactamos nosotros, pero **no agregan nada propio**) |
+| **[proyecto/](proyecto/README.md)** | Lo que decidimos y construimos: síntesis de indicadores, plan final, prototipo, trazabilidad y guion de demo | Nosotros |
+
+**Regla práctica:** si es un dato sobre la salud en el espacio, vive en `nasa/`. Si es una decisión, un umbral que elegimos o algo de la app, vive en `proyecto/`.
 
 ## Cómo leer este árbol
 
-1. Empieza por **[00-desafio](00-desafio/desafio.md)**: qué pide el desafío.
-2. Entiende el **porqué** con **[01-peligros](01-peligros/README.md)** (los 5 peligros RIDGE) y **[02-riesgos](02-riesgos/README.md)** (la tabla maestra de riesgos).
-3. Mira **qué mide la NASA hoy** en **[03-investigaciones](03-investigaciones/README.md)**.
-4. Usa la **síntesis** de **[04-sintesis](04-sintesis/)** para decidir indicadores, reglas y UI.
-5. Ejecuta con **[05-plan](05-plan/)**.
-6. Si necesitas el texto original o los PDFs técnicos, ve a **[fuentes](fuentes/INDICE.md)**.
+1. Empieza por **[nasa/desafio](nasa/desafio/desafio.md)**: qué pide el desafío.
+2. Entiende el **porqué** con **[nasa/peligros](nasa/peligros/README.md)** (los 5 peligros RIDGE) y **[nasa/riesgos](nasa/riesgos/README.md)** (la tabla maestra de riesgos).
+3. Mira **qué mide la NASA hoy** en **[nasa/investigaciones](nasa/investigaciones/README.md)**.
+4. Usa la **síntesis** de **[proyecto/sintesis](proyecto/sintesis/)** para decidir indicadores, reglas y UI.
+5. Ejecuta con **[proyecto/plan](proyecto/plan/)**; las decisiones finales están en [plan-final.md](proyecto/plan/plan-final.md).
+6. Si necesitas el texto original o los PDFs técnicos, ve a **[nasa/fuentes](nasa/fuentes/INDICE.md)**.
 
 ## Árbol
 
 ```
-desafio-health-monitoring/
+doc/
 ├─ README.md                          ← estás aquí
-├─ 00-desafio/
-│  └─ desafio.md                      ← enunciado, objetivos, consideraciones, recursos
-├─ 01-peligros/                       ← los 5 peligros (RIDGE)
+├─ nasa/                              ← DOCUMENTACIÓN DE LA NASA
 │  ├─ README.md
-│  ├─ radiacion.md                    (R)
-│  ├─ aislamiento-confinamiento.md    (I)
-│  ├─ distancia-tierra.md             (D)
-│  ├─ gravedad.md                     (G)
-│  └─ entorno-hostil-cerrado.md       (E)
-├─ 02-riesgos/                        ← 17 riesgos del HRP + extras del HSRB
-│  ├─ README.md                       ← TABLA MAESTRA + prioridad para la app
-│  ├─ fisiologia/   inmunidad · sensoriomotor-vestibular · cardiovascular · descompresion ·
-│  │                microorganismos · hipoxia · nutricion · eva · capacidad-fisica · sans-ojos · hueso
-│  ├─ conducta/     conducta-psiquiatria · trabajo-en-equipo · sueno-horarios ·
-│  │                soporte-sistemas · cargas-dinamicas
-│  └─ radiacion/    cancer-por-radiacion
-├─ 03-investigaciones/
-│  └─ README.md                       ← Artemis II, ISS (CIPHER ×14…), pasadas (Tempus Pro…)
-├─ 04-sintesis/
-│  ├─ catalogo-indicadores.md         ← indicadores, unidades, umbrales 🟢🟡🔴, reglas compuestas
-│  ├─ matriz-peligro-riesgo-indicador.md ← base del MAPA CORPORAL clicable
-│  └─ ideas-ux-gamificacion.md
-├─ 05-plan/
-│  ├─ plan-final.md                   ← ⭐ DECISIONES FINALES: solo notebook, jornada, notificaciones, Claude Haiku 5.5, cámara, reparto
-│  ├─ plan-proyecto.md                ← problema, propuesta de valor, alcance MVP, cronograma de 48 h
-│  ├─ prototipo.md                    ← stack, modelo de datos, motor de reglas, pantallas, demo
-│  ├─ trazabilidad.md                 ← funcionalidad ↔ desafío ↔ documentación NASA ↔ código, y huecos
-│  └─ dispositivos-y-sensores.md      ← hardware disponible (iPhone, Android, Watch, AirPods, notebook) y qué medir
-└─ fuentes/                           ← 76 páginas originales de nasa.gov (EN) + índice de PDFs
-   ├─ INDICE.md                       ← todas las URL + Evidence Reports + Risk Records + DAGs
-   ├─ 01-peligros/ (6)  02-riesgos/ (18)  03-investigaciones/ (22)
-   ├─ 04-articulos-profundizacion/ (15)
-   └─ 05-human-system-risk-board/ (31)
+│  ├─ desafio/
+│  │  └─ desafio.md                   ← enunciado, objetivos, consideraciones, recursos
+│  ├─ fuentes/                        ← 76 páginas ORIGINALES de nasa.gov (EN) + índice de PDFs
+│  │  ├─ INDICE.md                    ← todas las URL + Evidence Reports + Risk Records + DAGs
+│  │  ├─ 01-peligros/ (6)  02-riesgos/ (18)  03-investigaciones/ (22)
+│  │  ├─ 04-articulos-profundizacion/ (15)
+│  │  └─ 05-human-system-risk-board/ (31)
+│  ├─ peligros/                       ← resumen en español de los 5 peligros (RIDGE)
+│  │  ├─ README.md
+│  │  ├─ radiacion.md                 (R)
+│  │  ├─ aislamiento-confinamiento.md (I)
+│  │  ├─ distancia-tierra.md          (D)
+│  │  ├─ gravedad.md                  (G)
+│  │  └─ entorno-hostil-cerrado.md    (E)
+│  ├─ riesgos/                        ← resumen en español de los 17 riesgos del HRP + extras del HSRB
+│  │  ├─ README.md                    ← TABLA MAESTRA de riesgos
+│  │  ├─ fisiologia/   inmunidad · sensoriomotor-vestibular · cardiovascular · descompresion ·
+│  │  │                microorganismos · hipoxia · nutricion · eva · capacidad-fisica · sans-ojos · hueso
+│  │  ├─ conducta/     conducta-psiquiatria · trabajo-en-equipo · sueno-horarios ·
+│  │  │                soporte-sistemas · cargas-dinamicas
+│  │  └─ radiacion/    cancer-por-radiacion
+│  └─ investigaciones/
+│     └─ README.md                    ← Artemis II, ISS (CIPHER ×14…), pasadas (Tempus Pro…)
+└─ proyecto/                          ← DOCUMENTACIÓN Y DECISIONES DEL PROYECTO
+   ├─ README.md
+   ├─ sintesis/                       ← de la NASA a nuestro diseño
+   │  ├─ catalogo-indicadores.md      ← indicadores, unidades, umbrales 🟢🟡🔴, reglas compuestas
+   │  ├─ matriz-peligro-riesgo-indicador.md ← base del MAPA CORPORAL clicable
+   │  ├─ cabina-y-radiacion.md
+   │  └─ ideas-ux-gamificacion.md
+   ├─ voz-vyta.md                     ← voz de la card VYTA AI (Gemini, micrófono y respuesta hablada)
+   └─ plan/
+      ├─ plan-final.md                ← ⭐ DECISIONES FINALES: solo notebook, jornada, notificaciones, Claude Haiku 5.5, cámara, reparto
+      ├─ plan-proyecto.md             ← problema, propuesta de valor, alcance MVP, cronograma de 48 h
+      ├─ prototipo.md                 ← stack, modelo de datos, motor de reglas, pantallas, demo
+      ├─ trazabilidad.md              ← funcionalidad ↔ desafío ↔ documentación NASA ↔ código, y huecos
+      ├─ dispositivos-y-sensores.md   ← hardware disponible (iPhone, Android, Watch, AirPods, notebook) y qué medir
+      └─ guion-demo.md                ← guion de la demo
 ```
 
 ## Los 10 datos más útiles para el pitch
@@ -66,4 +80,4 @@ desafio-health-monitoring/
 
 ## Aviso
 
-Las síntesis en español resumen el contenido de la NASA. Los **umbrales clínicos** del catálogo son valores generales orientativos (no salen de las páginas de la NASA) y el prototipo es **educativo, no un dispositivo médico**.
+Los resúmenes en español de `nasa/` condensan el contenido de la NASA. Los **umbrales clínicos** del catálogo (`proyecto/sintesis/`) son valores generales orientativos (no salen de las páginas de la NASA) y el prototipo es **educativo, no un dispositivo médico**.

@@ -73,7 +73,7 @@ Durante el sueño protegido solo suena una alerta roja.
 
 ### Reglas de diseño
 
-1. **Cada prompt por debajo de 100K tokens.** El corpus entero (~125K tokens) pasaría el umbral, así que cada pregunta manda solo las fichas del riesgo que toca (`doc/02-riesgos/` + sus fuentes en `doc/fuentes/`), unos pocos miles de tokens.
+1. **Cada prompt por debajo de 100K tokens.** El corpus entero (~125K tokens) pasaría el umbral, así que cada pregunta manda solo las fichas del riesgo que toca (`doc/nasa/riesgos/` + sus fuentes en `doc/nasa/fuentes/`), unos pocos miles de tokens.
 2. **Prompt caching.** Primero lo fijo (instrucciones de Vega + fichas), con `cache_control`; al final lo variable (datos del día, pregunta). Comprobar en `usage.cache_read_input_tokens` que el caché se está usando: si el prefijo es muy corto, no se cachea.
 3. **Esfuerzo según la tarea** (`output_config.effort`): `"low"` para Vega por voz, porque la latencia importa más que la profundidad; `"medium"` (el valor por defecto de Haiku 5.5) para la junta médica. No tocar el parámetro `thinking`.
 4. **Junta médica en una sola consulta** con salida estructurada (`output_config.format` con un esquema JSON): las 5 opiniones (cardiovascular, inmunidad, conducta y sueño, hueso y músculo, ambiente), los desacuerdos, la síntesis del coordinador y los dos informes. En pantalla se ve igual que 6 agentes, y es más rápido que 6 llamadas.

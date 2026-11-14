@@ -1,6 +1,6 @@
 # Cabina y radiación · cifras verificadas para el panel de cabina
 
-> Usadas por `lib/cabina/simulador.js` y la pantalla `/cabina`. Reemplazan el "orden de magnitud orientativo, hay que verificarlo" de [cancer-por-radiacion](../02-riesgos/radiacion/cancer-por-radiacion.md).
+> Usadas por `lib/cabina/simulador.js` y la pantalla `/cabina`. Reemplazan el "orden de magnitud orientativo, hay que verificarlo" de [cancer-por-radiacion](../../nasa/riesgos/radiacion/cancer-por-radiacion.md).
 > Los **sensores y el dosímetro son simulados**; las cifras de referencia sí salen de documentos de la NASA (verificado el 14-11-2026).
 
 ## Radiación
@@ -11,9 +11,9 @@
 | Base del límite | Mantener a cada astronauta por debajo de **3 %** de riesgo medio de muerte por cáncer inducido (REID) | Mismo documento |
 | Tránsito Tierra → Marte | **~1,8 mSv/día** de rayos cósmicos galácticos (medido por Curiosity/RAD) | [JPL · Data From NASA Rover's Voyage to Mars Aids Planning](https://www.jpl.nasa.gov/news/data-from-nasa-rovers-voyage-to-mars-aids-planning/) |
 | Superficie de Marte | **~0,64–0,67 mSv/día** (cráter Gale, Curiosity/RAD): unas 2,5 veces menos que en tránsito | [NASA Science · Radiation Measurements on Mars](https://science.nasa.gov/resource/radiation-measurements-on-mars/) |
-| Equivalencia | 1 mSv ≈ 10 radiografías de tórax; los astronautas reciben entre 50 y 2.000 mSv | [why-space-radiation-matters](../fuentes/04-articulos-profundizacion/why-space-radiation-matters.md) |
+| Equivalencia | 1 mSv ≈ 10 radiografías de tórax; los astronautas reciben entre 50 y 2.000 mSv | [why-space-radiation-matters](../../nasa/fuentes/04-articulos-profundizacion/why-space-radiation-matters.md) |
 | Misiones a Marte | Es probable que superen los 600 mSv | [National Academies · NASA's Spaceflight Radiation Exposure Standard](https://nap.nationalacademies.org/read/26155/chapter/5) |
-| Contramedida ante tormenta solar | Refugiarse usando la carga almacenada como blindaje | [01-peligros/radiacion](../01-peligros/radiacion.md) |
+| Contramedida ante tormenta solar | Refugiarse usando la carga almacenada como blindaje | [peligros/radiacion](../../nasa/peligros/radiacion.md) |
 
 ## Atmósfera de cabina
 

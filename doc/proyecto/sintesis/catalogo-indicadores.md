@@ -15,27 +15,27 @@
 
 | Indicador | Unidad | Entrada | Frecuencia | 🟢 | 🟡 | 🔴 (orientativo) | Riesgos NASA |
 |---|---|---|---|---|---|---|---|
-| Presión arterial | mmHg | Teclado / BLE | Diaria (mañana) | 90–129 / 60–84 | 130–139 / 85–89, o < 90/60 sin síntomas | ≥ 180/120, o < 90/60 **con mareo/síncope** | [CV](../02-riesgos/fisiologia/cardiovascular.md) |
+| Presión arterial | mmHg | Teclado / BLE | Diaria (mañana) | 90–129 / 60–84 | 130–139 / 85–89, o < 90/60 sin síntomas | ≥ 180/120, o < 90/60 **con mareo/síncope** | [CV](../../nasa/riesgos/fisiologia/cardiovascular.md) |
 | Frecuencia cardíaca en reposo | lpm | Teclado / *wearable* | Diaria | 50–90 (o base ± 10) | 91–100, o +10 sobre la base | > 120 o < 40 en reposo, o ritmo irregular | CV, capacidad física, inmunidad |
-| Glucosa en sangre | mg/dL | Glucómetro | Semanal o según protocolo | 70–99 en ayunas | 100–125 en ayunas | < 70 (o < 54 grave), o > 250 | [Nutrición](../02-riesgos/fisiologia/nutricion.md) |
-| Temperatura corporal | °C | Termómetro | Diaria | 36,1–37,2 | 37,3–37,9 | ≥ 38,0, o < 35 | [Inmunidad](../02-riesgos/fisiologia/inmunidad.md) |
-| Horas de sueño | h | Manual / actigrafía | Diaria | 7–9 | 6–7 | < 5, o < 6 durante 3 noches | [Sueño](../02-riesgos/conducta/sueno-horarios.md) |
-| Ánimo | escala 1–5 | Emojis | Diaria | 4–5 | 3, o tendencia negativa | ≤ 2 durante 3 días, o ideas de autolesión → contacto inmediato | [Conducta](../02-riesgos/conducta/conducta-psiquiatria.md) |
+| Glucosa en sangre | mg/dL | Glucómetro | Semanal o según protocolo | 70–99 en ayunas | 100–125 en ayunas | < 70 (o < 54 grave), o > 250 | [Nutrición](../../nasa/riesgos/fisiologia/nutricion.md) |
+| Temperatura corporal | °C | Termómetro | Diaria | 36,1–37,2 | 37,3–37,9 | ≥ 38,0, o < 35 | [Inmunidad](../../nasa/riesgos/fisiologia/inmunidad.md) |
+| Horas de sueño | h | Manual / actigrafía | Diaria | 7–9 | 6–7 | < 5, o < 6 durante 3 noches | [Sueño](../../nasa/riesgos/conducta/sueno-horarios.md) |
+| Ánimo | escala 1–5 | Emojis | Diaria | 4–5 | 3, o tendencia negativa | ≤ 2 durante 3 días, o ideas de autolesión → contacto inmediato | [Conducta](../../nasa/riesgos/conducta/conducta-psiquiatria.md) |
 
 ## Tier 2 · Indicadores que nos diferencian
 
 | Indicador | Unidad | Entrada | Por qué (NASA) |
 |---|---|---|---|
-| SpO₂ | % | Oxímetro | [Hipoxia](../02-riesgos/fisiologia/hipoxia.md) con la cabina despresurizada (🔴 < 90 %) |
-| Ejercicio | min/día, tipo | Registro | 1,5 h al día, 6–7 días por semana; [capacidad física](../02-riesgos/fisiologia/capacidad-fisica.md) y [hueso](../02-riesgos/fisiologia/hueso.md) |
+| SpO₂ | % | Oxímetro | [Hipoxia](../../nasa/riesgos/fisiologia/hipoxia.md) con la cabina despresurizada (🔴 < 90 %) |
+| Ejercicio | min/día, tipo | Registro | 1,5 h al día, 6–7 días por semana; [capacidad física](../../nasa/riesgos/fisiologia/capacidad-fisica.md) y [hueso](../../nasa/riesgos/fisiologia/hueso.md) |
 | Agua | ml/día | Registro | Cálculos renales y presión baja al aterrizar |
 | Ingesta y masa corporal | kcal, kg | Registro | Fatiga de menú y pérdida de masa |
 | Estrés / fatiga | 1–10 | Escala | Inmunidad y conducta |
-| Agudeza visual | test | **Minitest en pantalla** | [SANS](../02-riesgos/fisiologia/sans-ojos.md) (~70 % de afectados) |
+| Agudeza visual | test | **Minitest en pantalla** | [SANS](../../nasa/riesgos/fisiologia/sans-ojos.md) (~70 % de afectados) |
 | Tiempo de reacción | ms | **Minijuego tipo PVT** | Sueño, radiación en el SNC, cognición |
 | Síntomas | checklist | Clics en el **mapa corporal** | Todos |
 | Foto de la piel o lesión | imagen | **Cámara** | Inmunidad (erupción, herpes) |
-| Dosis de radiación | mSv | Dosímetro (simulado) | [Cáncer](../02-riesgos/radiacion/cancer-por-radiacion.md), SNC |
+| Dosis de radiación | mSv | Dosímetro (simulado) | [Cáncer](../../nasa/riesgos/radiacion/cancer-por-radiacion.md), SNC |
 | CO₂ / O₂ / ruido de cabina | ppm, %, dB | Sensor (simulado) | Riesgos HSRB de CO₂, acústica e hipoxia |
 
 ## Tier 3 · Opcionales o futuros

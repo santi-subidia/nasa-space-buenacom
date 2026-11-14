@@ -23,7 +23,7 @@
 
 ## Riesgos asociados
 
-[Hueso](../02-riesgos/fisiologia/hueso.md) · [Músculo y capacidad cardiorrespiratoria](../02-riesgos/fisiologia/capacidad-fisica.md) · [Cardiovascular](../02-riesgos/fisiologia/cardiovascular.md) · [SANS](../02-riesgos/fisiologia/sans-ojos.md) · [Sensoriomotor y vestibular](../02-riesgos/fisiologia/sensoriomotor-vestibular.md) · [Cargas dinámicas](../02-riesgos/conducta/cargas-dinamicas.md)
+[Hueso](../riesgos/fisiologia/hueso.md) · [Músculo y capacidad cardiorrespiratoria](../riesgos/fisiologia/capacidad-fisica.md) · [Cardiovascular](../riesgos/fisiologia/cardiovascular.md) · [SANS](../riesgos/fisiologia/sans-ojos.md) · [Sensoriomotor y vestibular](../riesgos/fisiologia/sensoriomotor-vestibular.md) · [Cargas dinámicas](../riesgos/conducta/cargas-dinamicas.md)
 
 ## Plataformas de investigación
 

@@ -1,6 +1,6 @@
 // Relaciones escritas a mano entre zonas del cuerpo, especialistas de la junta y riesgos.
-// Los ids de riesgo son los nombres de archivo de doc/02-riesgos/** (ver indice.generado.json).
-// Fuente de las zonas: doc/04-sintesis/matriz-peligro-riesgo-indicador.md
+// Los ids de riesgo son los nombres de archivo de doc/nasa/riesgos/** (ver indice.generado.json).
+// Fuente de las zonas: doc/proyecto/sintesis/matriz-peligro-riesgo-indicador.md
 
 /** Zona del mapa corporal -> riesgos que la tocan. */
 export const ZONAS = {

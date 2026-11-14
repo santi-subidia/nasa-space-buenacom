@@ -1,4 +1,4 @@
-// Genera ai/fichas/indice.generado.json a partir de doc/02-riesgos/**.md.
+// Genera ai/fichas/indice.generado.json a partir de doc/nasa/riesgos/**.md.
 // Cada ficha enlaza a sus fuentes en la línea "> Fuentes: [..](..) · [..](..)".
 // De cada fuente se saca el título (primer "# ") y la URL (línea "> Fuente: <url>").
 //
@@ -22,7 +22,7 @@ function leerFuente(ruta) {
   return { titulo, url };
 }
 
-// 01-peligros/fuentes/... -> tipo de fuente según la carpeta
+// nasa/fuentes/... -> tipo de fuente según la carpeta
 function tipoDeFuente(rutaRelativaADoc) {
   if (rutaRelativaADoc.includes('fuentes/02-riesgos/')) return 'hrp';
   if (rutaRelativaADoc.includes('fuentes/05-human-system-risk-board/')) return 'hsrb';
@@ -33,7 +33,7 @@ function tipoDeFuente(rutaRelativaADoc) {
 }
 
 function listarFichas() {
-  const base = join(DOC, '02-riesgos');
+  const base = join(DOC, 'nasa', 'riesgos');
   const fichas = [];
   for (const grupo of readdirSync(base, { withFileTypes: true })) {
     if (!grupo.isDirectory()) continue;
@@ -77,5 +77,5 @@ if (problemas.length) {
   process.exit(1);
 }
 
-writeFileSync(SALIDA, JSON.stringify({ generadoDesde: 'doc/02-riesgos', riesgos }, null, 2) + '\n');
+writeFileSync(SALIDA, JSON.stringify({ generadoDesde: 'doc/nasa/riesgos', riesgos }, null, 2) + '\n');
 console.log(`OK: ${Object.keys(riesgos).length} riesgos -> ${rel(SALIDA)}`);

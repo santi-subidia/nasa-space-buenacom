@@ -11,7 +11,7 @@
 
 ## Efectos en la salud
 
-- Más **riesgo de cáncer** (es el riesgo principal; ver [02-riesgos/radiacion/cancer-por-radiacion.md](../02-riesgos/radiacion/cancer-por-radiacion.md)).
+- Más **riesgo de cáncer** (es el riesgo principal; ver [riesgos/radiacion/cancer-por-radiacion.md](../riesgos/radiacion/cancer-por-radiacion.md)).
 - **Enfermedades degenerativas:** cardiopatías, daño vascular y **cataratas**.
 - **Sistema nervioso central:** alteración cognitiva, menor función motora y cambios de conducta.
 - **Síndrome de radiación aguda**, si hay una tormenta solar intensa sin protección.
