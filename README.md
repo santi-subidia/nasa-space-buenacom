@@ -13,7 +13,9 @@ npm install
 npm run dev
 ```
 
-Abrir <http://localhost:3000>. Otros comandos: `npm run build` y `npm start`.
+Abrir <http://localhost:3000>. Otros comandos: `npm run build`, `npm start` y `npm test` (pruebas de la lógica del entrenador).
+
+`npm install` también copia el WASM de MediaPipe a `public/mediapipe/` (lo usa el Entrenador, no se sube al repo). El modelo de pose se baja del CDN de Google la primera vez; para trabajar sin conexión ver `.env.example`.
 
 Para la IA: copiar `.env.example` a `.env.local` y completar la clave. `.env` y `.env.local` están en `.gitignore`.
 
@@ -26,10 +28,10 @@ Para la IA: copiar `.env.example` a `.env.local` y completar la clave. `.env` y 
 | `lib/rutas.js` | Lista de pantallas de la barra lateral |
 | `lib/tipos.js` | Contrato de datos (typedefs JSDoc + constantes: `ZONAS`, `NIVELES`, `INDICADORES`…) y `nivelMaximo` |
 | `lib/db.js` | Guardado local en IndexedDB (Dexie): `addReading`, `getReadings`, `saveAiResult`… Solo en el navegador |
-
-Probar el guardado desde la consola del navegador (con `npm run dev`): `await astro.db.addReading({ astronautId: 'a1', indicator: 'temp', value: 37.6 })` y `await astro.db.getReadings('a1')`. Tests: `npm test`.
 | `styles/` | `_tokens.scss` (variables Sass) y `globals.scss` (variables CSS y base) |
 | `doc/` | Documentación del desafío, riesgos y plan |
+
+Probar el guardado desde la consola del navegador (con `npm run dev`): `await astro.db.addReading({ astronautId: 'a1', indicator: 'temp', value: 37.6 })` y `await astro.db.getReadings('a1')`. Tests: `npm test`.
 
 ## Estilos
 

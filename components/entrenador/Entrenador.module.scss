@@ -1,0 +1,110 @@
+@use 'tokens' as *;
+
+.pantalla { display: flex; flex-direction: column; gap: $espacio-4; h1 { font-size: 30px; } }
+.encabezado { display: flex; justify-content: space-between; align-items: flex-end; }
+.sub { margin: 2px 0 0; color: $color-texto-suave; font-size: 14px; }
+.voz { display: flex; align-items: center; gap: $espacio-2; color: $color-texto-suave; cursor: pointer; }
+
+.ejercicios {
+  display: flex;
+  gap: $espacio-2;
+  button {
+    background: $color-superficie;
+    border: 1px solid $color-borde;
+    color: $color-texto;
+    border-radius: 999px;
+    padding: 8px 18px;
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+    &:hover:not(:disabled) { background: $color-superficie-2; }
+    &:disabled { opacity: 0.5; cursor: not-allowed; }
+  }
+  .activo { background: $color-acento; color: $color-fondo; border-color: $color-acento; }
+}
+
+.cuerpo { display: grid; grid-template-columns: 1fr 260px; gap: $espacio-4; align-items: start; }
+
+.escena {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  background: $color-superficie;
+  border: 1px solid $color-borde;
+  border-radius: $radio-m;
+  overflow: hidden;
+}
+
+.espejo {
+  position: absolute;
+  inset: 0;
+  transform: scaleX(-1);
+  &[hidden] { display: none; }
+}
+.video, .canvas { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+
+.portada {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: $espacio-3;
+  padding: $espacio-5;
+  text-align: center;
+}
+.consejo { margin: 0; color: $color-texto-suave; max-width: 380px; }
+
+.correccion {
+  position: absolute;
+  left: $espacio-4;
+  right: $espacio-4;
+  bottom: $espacio-4;
+  margin: 0;
+  padding: $espacio-3 $espacio-4;
+  background: rgba($color-fondo, 0.85);
+  border: 2px solid $color-amarillo;
+  border-radius: $radio-s;
+  color: $color-amarillo;
+  font-size: 20px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.lado { display: flex; flex-direction: column; gap: $espacio-3; }
+
+.contador {
+  margin: 0;
+  font-family: $fuente-titulo;
+  font-size: 72px;
+  font-weight: 700;
+  line-height: 1;
+  small { font-size: 16px; font-weight: 400; color: $color-texto-suave; }
+}
+.fase { margin: $espacio-2 0 0; font-size: 18px; font-weight: 600; color: $color-acento; }
+.dato { margin: $espacio-1 0 0; font-size: 14px; color: $color-texto-suave; }
+.nota { margin: 0; font-size: 12px; color: $color-texto-suave; }
+.error { color: $color-rojo; max-width: 460px; margin: 0; font-size: 14px; }
+
+.boton {
+  display: inline-block;
+  background: transparent;
+  border: 1px solid $color-borde;
+  color: $color-texto;
+  border-radius: $radio-s;
+  padding: 10px 18px;
+  font: inherit;
+  font-weight: 600;
+  text-align: center;
+  cursor: pointer;
+  &:hover:not(:disabled) { background: $color-superficie-2; }
+  &:disabled { opacity: 0.45; cursor: not-allowed; }
+}
+.primario { background: $color-acento; color: $color-fondo; border-color: $color-acento; &:hover:not(:disabled) { background: $color-acento; filter: brightness(1.1); } }
+
+.resumen {
+  max-width: 640px;
+  h2 { font-size: 24px; margin-bottom: $espacio-3; }
+  ul { padding-left: 20px; display: flex; flex-direction: column; gap: $espacio-2; }
+}
+.acciones { display: flex; gap: $espacio-2; margin-top: $espacio-4; }

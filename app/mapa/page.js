@@ -1,12 +1,13 @@
-import PantallaVacia from '@/components/PantallaVacia';
+import { Suspense } from 'react';
+import MapaCorporal from '@/components/mapa/MapaCorporal';
 
 export const metadata = { title: 'Mapa corporal · AstroVitals' };
 
 export default function Mapa() {
+  // useSearchParams (la zona que pide la URL) necesita Suspense en el build estático.
   return (
-    <PantallaVacia
-      titulo="Mapa corporal"
-      descripcion="9 zonas clicables con función, riesgos, indicadores, qué hacer y fuente."
-    />
+    <Suspense>
+      <MapaCorporal />
+    </Suspense>
   );
 }

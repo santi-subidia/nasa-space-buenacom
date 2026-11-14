@@ -1,12 +1,7 @@
-import PantallaVacia from '@/components/PantallaVacia';
+import Tendencias from '@/components/tendencias/Tendencias';
 
 export const metadata = { title: 'Tendencias · AstroVitals' };
 
-export default function Tendencias() {
-  return (
-    <PantallaVacia
-      titulo="Tendencias"
-      descripcion="Sueño, sueño vs. estrés, temperatura y ánimo con bandas y línea base."
-    />
-  );
+export default function TendenciasPage() {
+  return <Tendencias />;
 }

@@ -1,0 +1,23 @@
+@use 'tokens' as *;
+
+.card {
+  background: $color-superficie;
+  border: 1px solid $color-borde;
+  border-radius: $radio-m;
+  padding: $espacio-4 $espacio-5;
+}
+
+.titulo {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: $color-texto-suave;
+  margin-bottom: $espacio-3;
+}
+
+.ia { border-left: 4px solid $color-ia; }
+.green { border-left: 4px solid $color-verde; }
+.yellow { border-left: 4px solid $color-amarillo; }
+.orange { border-left: 4px solid $color-naranja; }
+.red { border-left: 4px solid $color-rojo; }
