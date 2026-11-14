@@ -1,0 +1,272 @@
+# Índice de fuentes y documentos técnicos
+
+Páginas descargadas de nasa.gov el 2026-11-14 (texto original en inglés, sin navegación). Las síntesis en español están en las carpetas 01–05 del árbol.
+
+## 01-peligros
+
+- [Hazard: Distance From Earth](01-peligros/hazard-distance-from-earth.md) — <https://www.nasa.gov/hrp/hazard-distance-from-earth/>
+- [Hazard: Gravity Fields](01-peligros/hazard-gravity-fields.md) — <https://www.nasa.gov/hrp/hazard-gravity-fields/>
+- [Hazard: Hostile/Closed Environments](01-peligros/hazard-hostile-closed-environments.md) — <https://www.nasa.gov/hrp/hazard-hostile-closed-environments/>
+- [Hazard: Isolation and Confinement](01-peligros/hazard-isolation-and-confinement.md) — <https://www.nasa.gov/hrp/hazard-isolation-and-confinement/>
+- [Hazard: Space Radiation](01-peligros/hazard-space-radiation.md) — <https://www.nasa.gov/hrp/hazard-space-radiation/>
+- [5 Hazards of Human Spaceflight](01-peligros/hazards.md) — <https://www.nasa.gov/hrp/hazards/>
+
+## 02-riesgos
+
+- [Risk from Inadequate Sleep and Irregular Schedules](02-riesgos/risk-from-inadequate-sleep-and-irregular-schedules.md) — <https://www.nasa.gov/reference/risk-from-inadequate-sleep-and-irregular-schedules/>
+- [Risk of Altered Immune System Responses](02-riesgos/risk-of-altered-immune-system-responses.md) — <https://www.nasa.gov/reference/risk-of-altered-immune-system-responses/>
+- [Risk of Altered Sensorimotor and Vestibular Function](02-riesgos/risk-of-altered-sensorimotor-and-vestibular-function.md) — <https://www.nasa.gov/reference/risk-of-altered-sensorimotor-and-vestibular-function/>
+- [Risk of behavioral changes and psychiatric disorders](02-riesgos/risk-of-behavioral-conditions-and-psychiatric-disorders.md) — <https://www.nasa.gov/reference/risk-of-behavioral-conditions-and-psychiatric-disorders/>
+- [Risk of Cardiovascular Adaptations](02-riesgos/risk-of-cardiovascular-adaptations.md) — <https://www.nasa.gov/reference/risk-of-cardiovascular-adaptations/>
+- [Risk of Decompression Sickness](02-riesgos/risk-of-decompression-sickness.md) — <https://www.nasa.gov/reference/risk-of-decompression-sickness/>
+- [Risk of Host-Microorganism Interactions](02-riesgos/risk-of-host-microorganism-interactions.md) — <https://www.nasa.gov/reference/risk-of-host-microorganism-interactions/>
+- [Risk of Hypoxia](02-riesgos/risk-of-hypoxia.md) — <https://www.nasa.gov/reference/risk-of-hypoxia/>
+- [Risk of Inadequate Food and Nutrition](02-riesgos/risk-of-inadequate-food-and-nutrition.md) — <https://www.nasa.gov/reference/risk-of-inadequate-food-and-nutrition/>
+- [Risk of inadequate systems operations support](02-riesgos/risk-of-inadequate-systems-operations-support.md) — <https://www.nasa.gov/reference/risk-of-inadequate-systems-operations-support/>
+- [Risk of inadequate teamwork](02-riesgos/risk-of-inadequate-teamwork.md) — <https://www.nasa.gov/reference/risk-of-inadequate-teamwork/>
+- [Risk of Injury and Compromised Performance from Spacewalks](02-riesgos/risk-of-injury-and-compromised-performance-from-extravehicular-activity-eva.md) — <https://www.nasa.gov/reference/risk-of-injury-and-compromised-performance-from-extravehicular-activity-eva/>
+- [Risk of injury from dynamic loads](02-riesgos/risk-of-injury-from-dynamic-loads.md) — <https://www.nasa.gov/reference/risk-of-injury-from-dynamic-loads/>
+- [Risk of radiation-induced cancers](02-riesgos/risk-of-radiation-induced-cancers.md) — <https://www.nasa.gov/reference/risk-of-radiation-induced-cancers/>
+- [Risk of Reduced Cardiorespiratory and Musculoskeletal Fitness](02-riesgos/risk-of-reduced-cardiorespiratory-and-musculoskeletal-fitness.md) — <https://www.nasa.gov/reference/risk-of-reduced-cardiorespiratory-and-musculoskeletal-fitness/>
+- [Risk of Spaceflight Associated Neuro-ocular Syndrome (SANS)](02-riesgos/risk-of-spaceflight-associated-neuro-ocular-syndrome-sans.md) — <https://www.nasa.gov/reference/risk-of-spaceflight-associated-neuro-ocular-syndrome-sans/>
+- [Risk of Spaceflight-Induced Bone Changes](02-riesgos/risk-of-spaceflight-induced-bone-changes.md) — <https://www.nasa.gov/reference/risk-of-spaceflight-induced-bone-changes/>
+- [Risks of Human Spaceflight](02-riesgos/risks.md) — <https://www.nasa.gov/hrp/risks/>
+
+## 03-investigaciones
+
+- [ARCHeR](03-investigaciones/archer.md) — <https://www.nasa.gov/reference/archer/>
+- [Artemis II Standard Measures](03-investigaciones/artemis-ii-standard-measures.md) — <https://www.nasa.gov/reference/artemis-ii-standard-measures/>
+- [Astronauts’ Spines Under Scrutiny](03-investigaciones/astronauts-spines-under-scrutiny.md) — <https://www.nasa.gov/missions/station/astronauts-spines-under-scrutiny/>
+- [B-Complex](03-investigaciones/b-complex.md) — <https://www.nasa.gov/reference/b-complex/>
+- [Brain Fluid Pressure](03-investigaciones/brain-fluid-pressure.md) — <https://www.nasa.gov/reference/brain-fluid-pressure/>
+- [Can Space Gardening Help Astronauts Cope With Isolation?](03-investigaciones/can-space-gardening-help-astronauts-cope-with-isolation.md) — <https://www.nasa.gov/humans-in-space/can-space-gardening-help-astronauts-cope-with-isolation/>
+- [CIPHER](03-investigaciones/cipher.md) — <https://www.nasa.gov/reference/cipher/>
+- [Enhanced Diet May Help Astronauts Adapt to Spaceflight](03-investigaciones/enhanced-diet-may-help-astronauts-adapt-to-spaceflight.md) — <https://www.nasa.gov/missions/station/enhanced-diet-may-help-astronauts-adapt-to-spaceflight/>
+- [How Does Spaceflight Change Food Appeal?](03-investigaciones/how-does-spaceflight-change-food-appeal.md) — <https://www.nasa.gov/humans-in-space/how-does-spaceflight-change-food-appeal/>
+- [Immune Biomarkers](03-investigaciones/immune-biomarkers.md) — <https://www.nasa.gov/reference/immune-biomarkers/>
+- [Omics archive](03-investigaciones/omics-archive.md) — <https://www.nasa.gov/reference/omics-archive/>
+- [Ongoing HRP Research](03-investigaciones/ongoing-hrp-research.md) — <https://www.nasa.gov/hrp/ongoing-hrp-research/>
+- [Researchers Put Space Garden Microbes Under the Microscope](03-investigaciones/researchers-put-space-garden-microbes-under-the-microscope.md) — <https://www.nasa.gov/missions/station/researchers-put-space-garden-microbes-under-the-microscope/>
+- [Scientists Probe How Long-Term Spaceflight Alters Immunity](03-investigaciones/scientists-probe-how-long-term-spaceflight-alters-immunity.md) — <https://www.nasa.gov/missions/station/scientists-probe-how-long-term-spaceflight-alters-immunity/>
+- [Simulating Manual Piloting for Moon Landings](03-investigaciones/simulating-manual-piloting-for-moon-landings.md) — <https://www.nasa.gov/reference/simulating-manual-piloting-for-moon-landings/>
+- [Spacecraft Occupant Protection](03-investigaciones/spacecraft-occupant-protection.md) — <https://www.nasa.gov/reference/spacecraft-occupant-protection/>
+- [Spinal Fluid Biomarkers  ](03-investigaciones/spinal-fluid-biomarkers.md) — <https://www.nasa.gov/reference/spinal-fluid-biomarkers/>
+- [Standard Measures](03-investigaciones/standard-measures.md) — <https://www.nasa.gov/reference/standard-measures/>
+- [Tempus Pro](03-investigaciones/tempus-pro.md) — <https://www.nasa.gov/reference/tempus-pro/>
+- [Thigh Cuff](03-investigaciones/thigh-cuff.md) — <https://www.nasa.gov/reference/thigh-cuff/>
+- [Venous Haemostasis](03-investigaciones/venous-haemostasis.md) — <https://www.nasa.gov/reference/venous-haemostasis/>
+- [Zero T2](03-investigaciones/zero-t2.md) — <https://www.nasa.gov/reference/zero-t2/>
+
+## 04-articulos-profundizacion
+
+- [CHAPEA](04-articulos-profundizacion/chapea.md) — <https://www.nasa.gov/humans-in-space/chapea/>
+- [SCaN: Communicating with Missions](04-articulos-profundizacion/communicating-with-missions.md) — <https://www.nasa.gov/communicating-with-missions/>
+- [Five Tips from NASA Crew on Emerging from Isolation](04-articulos-profundizacion/five-tips-from-nasa-crew-on-emerging-from-isolation.md) — <https://www.nasa.gov/humans-in-space/five-tips-from-nasa-crew-on-emerging-from-isolation/>
+- [HERA](04-articulos-profundizacion/hera.md) — <https://www.nasa.gov/mission/hera/>
+- [Houston, Do You Copy? HERA Crew Navigates Communication Delays](04-articulos-profundizacion/houston-do-you-copy-hera-crew-navigates-communication-delays.md) — <https://www.nasa.gov/humans-in-space/houston-do-you-copy-hera-crew-navigates-communication-delays/>
+- [Human System Risks](04-articulos-profundizacion/human-system-risks.md) — <https://www.nasa.gov/hhp/human-system-risks/>
+- [NASA Fluid Shifts Study Advances Journey to Mars](04-articulos-profundizacion/nasa-fluid-shifts-study-advances-journey-to-mars.md) — <https://www.nasa.gov/humans-in-space/nasa-fluid-shifts-study-advances-journey-to-mars/>
+- [New Tests Evaluate Mission Readiness of Astronauts Upon Landing](04-articulos-profundizacion/new-tests-evaluate-mission-readiness-of-astronauts-upon-landing.md) — <https://www.nasa.gov/humans-in-space/new-tests-evaluate-mission-readiness-of-astronauts-upon-landing/>
+- [One Small Step … Without Ever Leaving Bed](04-articulos-profundizacion/one-small-step-without-ever-leaving-bed.md) — <https://www.nasa.gov/humans-in-space/one-small-step-without-ever-leaving-bed/>
+- [Space Radiation Risks](04-articulos-profundizacion/space-radiation-risks.md) — <https://www.nasa.gov/hrp/radiation/space-radiation-risks/>
+- [Space Radiation Won’t Stop NASA’s Human Exploration](04-articulos-profundizacion/space-radiation-wont-stop-nasas-human-exploration.md) — <https://www.nasa.gov/humans-in-space/space-radiation-wont-stop-nasas-human-exploration/>
+- [Space Radiation](04-articulos-profundizacion/space-radiation.md) — <https://www.nasa.gov/directorates/esdmd/hhp/space-radiation/>
+- [The Human Body in Space](04-articulos-profundizacion/the-human-body-in-space.md) — <https://www.nasa.gov/humans-in-space/the-human-body-in-space/>
+- [The Menu for Mars: Designing a Deep Space Food System](04-articulos-profundizacion/the-menu-for-mars-designing-a-deep-space-food-system.md) — <https://www.nasa.gov/humans-in-space/the-menu-for-mars-designing-a-deep-space-food-system/>
+- [Why Space Radiation Matters](04-articulos-profundizacion/why-space-radiation-matters.md) — <https://www.nasa.gov/missions/analog-field-testing/why-space-radiation-matters/>
+
+## 05-human-system-risk-board
+
+- [Risk of Reduced Physical Performance Capabilities Due to Reduced Aerobic Capacity (Aerobic Risk)](05-human-system-risk-board/aerobic-risk.md) — <https://www.nasa.gov/directorates/esdmd/hhp/aerobic-risk/>
+- [Risk of Adverse Cognitive or Behavioral Changes and Psychiatric Disorders Leading to In-mission Health and Performance and Long-term Health Effects (Behavioral Health Risk)](05-human-system-risk-board/behavioral-health-risk.md) — <https://www.nasa.gov/directorates/esdmd/hhp/behavioral-health-risk/>
+- [Risk of Nominal Acute and Chronic Ambient Carbon Dioxide Exposure in Crewed Vehicles Leading to In-Mission Health Effects or Performance Decrements (CO2 Risk)](05-human-system-risk-board/carbon-dioxide-risk.md) — <https://www.nasa.gov/directorates/esdmd/hhp/carbon-dioxide-risk/>
+- [Concern of Venous Thromboembolism](05-human-system-risk-board/concern-of-venous-thromboembolism.md) — <https://www.nasa.gov/directorates/esdmd/hhp/concern-of-venous-thromboembolism/>
+- [Risk of Cardiovascular Adaptations Contributing to Adverse Mission Performance and Health Outcomes (CV Risk)](05-human-system-risk-board/cv-risk.md) — <https://www.nasa.gov/directorates/esdmd/hhp/cv-risk/>
+- [Risk of In-Mission Injury and Performance Decrements and Long-term Health Effects due to Dynamic Loads (Dynamic Loads Risk)](05-human-system-risk-board/dynamic-loads-risk.md) — <https://www.nasa.gov/directorates/esdmd/hhp/dynamic-loads-risk/>
+- [Risk of Adverse Mission Outcomes Due to Earth Independent Human-Systems Operations (EIHSO Risk)](05-human-system-risk-board/eihso-risk.md) — <https://www.nasa.gov/directorates/esdmd/hhp/eihso-risk/>
+- [Risk to Crew Health Due to Electrical Shock (Electrical Shock Risk)](05-human-system-risk-board/electrical-shock-risk.md) — <https://www.nasa.gov/directorates/esdmd/hhp/electrical-shock-risk/>
+- [Risk of Mission Impacting Injury and Compromised Performance and Long-Term Health Effects due to EVA Operations (EVA Risk)](05-human-system-risk-board/eva-operations-risk.md) — <https://www.nasa.gov/directorates/esdmd/hhp/eva-operations-risk/>
+- [Risk of Inadequate Food and Nutrition Causing Decrements in In-Mission Health and Performance and Long-term Health (Food and Nutrition Risk)](05-human-system-risk-board/food-and-nutrition-risk.md) — <https://www.nasa.gov/directorates/esdmd/hhp/food-and-nutrition-risk/>
+- [Risk of In Mission Impacts, Adverse Health Events or Long-Term Health Impacts due to Altered Immune Response (Immune Risk)](05-human-system-risk-board/immune-risk.md) — <https://www.nasa.gov/directorates/esdmd/hhp/immune-risk/>
+- [Risk of Reduced Physical Performance Capabilities Due to Reduced Muscle Size, Strength, and Endurance (Muscle Risk)](05-human-system-risk-board/muscle-risk.md) — <https://www.nasa.gov/directorates/esdmd/hhp/muscle-risk/>
+- [Risk of Adverse Health Outcomes and Performance Decrements resulting from Non-Ionizing Radiation (NIR) during Spaceflight (Non-Ionizing Radiation Risk)](05-human-system-risk-board/non-ionizing-radiation-risk.md) — <https://www.nasa.gov/directorates/esdmd/hhp/non-ionizing-radiation-risk/>
+- [Risk of Adverse Health Effects Due to Host-Microorganism Interactions](05-human-system-risk-board/risk-of-adverse-health-effects-due-to-host-microorganism-interactions.md) — <https://www.nasa.gov/directorates/esdmd/hhp/risk-of-adverse-health-effects-due-to-host-microorganism-interactions/>
+- [Risk of Adverse Health Outcomes and Decrements in Performance due to Inflight Medical Conditions](05-human-system-risk-board/risk-of-adverse-health-outcomes-and-decrements-in-performance-due-to-inflight-medical-conditions.md) — <https://www.nasa.gov/directorates/esdmd/hhp/risk-of-adverse-health-outcomes-and-decrements-in-performance-due-to-inflight-medical-conditions/>
+- [Risk of Adverse In-Mission Health and Performance Effects and Long-Term Health Effects Due to Celestial Dust Exposure (Dust Risk)](05-human-system-risk-board/risk-of-adverse-health-performance-effects-of-celestial-dust-exposure.md) — <https://www.nasa.gov/directorates/esdmd/hhp/risk-of-adverse-health-performance-effects-of-celestial-dust-exposure/>
+- [Risk of Bone Fracture due to Spaceflight-induced Changes to Bone](05-human-system-risk-board/risk-of-bone-fracture-due-to-spaceflight-induced-changes-to-bone.md) — <https://www.nasa.gov/directorates/esdmd/hhp/risk-of-bone-fracture-due-to-spaceflight-induced-changes-to-bone/>
+- [Risk of Mission Impacts and Long-Term Health Issues due to Decompression Sickness](05-human-system-risk-board/risk-of-decompression-sickness.md) — <https://www.nasa.gov/directorates/esdmd/hhp/risk-of-decompression-sickness/>
+- [Risk of Hearing Loss and Performance Decrements Due to Acoustics Issues in Space](05-human-system-risk-board/risk-of-hearing-loss-and-performance-decrements-due-to-acoustics-issues-in-space.md) — <https://www.nasa.gov/directorates/esdmd/hhp/risk-of-hearing-loss-and-performance-decrements-due-to-acoustics-issues-in-space/>
+- [Risk of Ineffective or Toxic Medications During Long-Duration Exploration Spaceflight](05-human-system-risk-board/risk-of-ineffective-or-toxic-medications-during-long-duration-exploration-spaceflight.md) — <https://www.nasa.gov/directorates/esdmd/hhp/risk-of-ineffective-or-toxic-medications-during-long-duration-exploration-spaceflight/>
+- [Risk of Inadequate Food and Nutrition Causing Decrements in In-Mission Health and Performance and Long-term Health (Food and Nutrition Risk)](05-human-system-risk-board/risk-of-performance-decrement-and-crew-illness-due-to-inadequate-food-and-nutrition.md) — <https://www.nasa.gov/directorates/esdmd/hhp/risk-of-performance-decrement-and-crew-illness-due-to-inadequate-food-and-nutrition/>
+- [Risk of Performance Decrements and Adverse Health Outcomes Resulting from Sleep Loss, Circadian Desynchronization, and Work Overload](05-human-system-risk-board/risk-of-performance-decrements-and-adverse-health-outcomes-resulting-from-sleep-loss-circadian-desynchronization-and-work-overload.md) — <https://www.nasa.gov/directorates/esdmd/hhp/risk-of-performance-decrements-and-adverse-health-outcomes-resulting-from-sleep-loss-circadian-desynchronization-and-work-overload/>
+- [Risk of Radiation Carcinogenesis](05-human-system-risk-board/risk-of-radiation-carcinogenesis.md) — <https://www.nasa.gov/directorates/esdmd/hhp/risk-of-radiation-carcinogenesis/>
+- [Risk of Reduced Crew Health and Performance Due to Hypoxia](05-human-system-risk-board/risk-of-reduced-crew-health-and-performance-due-to-hypoxia.md) — <https://www.nasa.gov/directorates/esdmd/hhp/risk-of-reduced-crew-health-and-performance-due-to-hypoxia/>
+- [Risk of Renal Stone Formation](05-human-system-risk-board/risk-of-renal-stone-formation.md) — <https://www.nasa.gov/directorates/esdmd/hhp/risk-of-renal-stone-formation/>
+- [Risk of Spaceflight Associated Neuro-ocular Syndrome (SANS Risk)](05-human-system-risk-board/risk-of-spaceflight-associated-neuro-ocular-syndrome.md) — <https://www.nasa.gov/directorates/esdmd/hhp/risk-of-spaceflight-associated-neuro-ocular-syndrome/>
+- [Risk of Toxic Substance Exposure](05-human-system-risk-board/risk-of-toxic-substance-exposure.md) — <https://www.nasa.gov/directorates/esdmd/hhp/risk-of-toxic-substance-exposure/>
+- [Risk of Urinary Retention](05-human-system-risk-board/risk-of-urinary-retention.md) — <https://www.nasa.gov/directorates/esdmd/hhp/risk-of-urinary-retention/>
+- [Risk to Vehicle Crew Egress Capability and Task Performance as Applied to Earth and Extraterrestrial Landings](05-human-system-risk-board/risk-to-vehicle-crew-egress-capability-and-task-performance-as-applied-to-earth-and-extraterrestrial-landings.md) — <https://www.nasa.gov/directorates/esdmd/hhp/risk-to-vehicle-crew-egress-capability-and-task-performance-as-applied-to-earth-and-extraterrestrial-landings/>
+- [Risk of Altered Sensorimotor/Vestibular Function Impacting Critical Mission Tasks, Human Health, and Long-Term Health (Sensorimotor Risk)](05-human-system-risk-board/sensorimotor-risk.md) — <https://www.nasa.gov/directorates/esdmd/hhp/sensorimotor-risk/>
+- [Risk of In-Mission Performance and Behavioral Health Decrements Due to Inadequate Cooperation, Coordination, Communication, and Psychosocial Adaptation within a Team (Team Risk)](05-human-system-risk-board/team-risk.md) — <https://www.nasa.gov/directorates/esdmd/hhp/team-risk/>
+
+## PDFs y documentos técnicos enlazados (evidence reports, risk records, DAGs)
+
+- [ cancer](https://humanresearchroadmap.nasa.gov/evidence/reports/Cancer.pdf?rnd=0.592505168445644)
+- [+ 2011 August Evidence Report (PDF)](https://humanresearchroadmap.nasa.gov/evidence/reports/Pharm.pdf?rnd=0.198234006854814)
+- [+ 2015 August Evidence Report (PDF)](https://humanresearchroadmap.nasa.gov/evidence/reports/Dust.pdf?rnd=0.972304465701945)
+- [+ 2015 March Evidence Report (PDF)](https://humanresearchroadmap.nasa.gov/evidence/reports/Muscle.pdf?rnd=0.979880374381263)
+- [+ 2015 March HRP Evidence Report (PDF)](http://humanresearchroadmap.nasa.gov/evidence/reports/Aerobic.pdf?rnd=0.283149571755505)
+- [+ 2015 November Evidence Report (MSWord)](https://humanresearchroadmap.nasa.gov/evidence/reports/ExpAtm.pdf?rnd=0.913546865300064)
+- [+ 2016 April Evidence Report (MSWord)](https://humanresearchroadmap.nasa.gov/evidence/reports/Cancer.pdf?rnd=0.421923281355725)
+- [+ 2016 April Evidence Report (MSWord)](https://humanresearchroadmap.nasa.gov/evidence/reports/Sleep.pdf?rnd=0.347871564025)
+- [+ 2016 April Evidence Report (MSWord)](https://humanresearchroadmap.nasa.gov/evidence/reports/Team.pdf?rnd=0.861854235577329)
+- [+ 2016 June Evidence Report (PDF)](https://humanresearchroadmap.nasa.gov/evidence/reports/DCS.pdf?rnd=0.784683635823747)
+- [+ 2017 May Evidence Report (MSWord)](https://humanresearchroadmap.nasa.gov/evidence/reports/Medical.pdf?rnd=0.489993205987845)
+- [+ 2017 May Evidence Report (PDF)](https://humanresearchroadmap.nasa.gov/evidence/reports/Fracture.pdf?rnd=0.550030875275857)
+- [+ 2017 May Evidence Report](https://humanresearchroadmap.nasa.gov/evidence/reports/Renal.pdf?rnd=0.388102424046072)
+- [+ 2021 September Evidence Report](https://humanresearchroadmap.nasa.gov/evidence/reports/OP%20Dynamic%20Loads%20EB%20FINAL_11-30-22.pdf?rnd=0.0755836554223595)
+- [+ 2022 April Evidence Report (PDF)](https://humanresearchroadmap.nasa.gov/evidence/reports/SANS%20EB%202022%20FINAL_8-15-22.pdf?rnd=0.644812223801768)
+- [+ 2022 July Evidence Report (PDF)](https://humanresearchroadmap.nasa.gov/evidence/reports/Host_Micro%20EB_Final%207-6-22.pdf?rnd=0.883247067631803)
+- [+ 2022 June Evidence Report (PDF)](https://humanresearchroadmap.nasa.gov/evidence/reports/IMMUNE%20EB%20Update%202021%20v02%20FINAL_6-15-22.pdf?rnd=0.636516558768468)
+- [+ 2026 June Evidence Report (MSWord)](https://humanresearchroadmap.nasa.gov/evidence/reports/SM.pdf?rnd=0.188018952583903)
+- [+ Aerobic Risk DAG Code (TXT)](https://www.nasa.gov/wp-content/uploads/2025/07/muscle-and-aerobic-risk-narrative-nba.txt?emrc=2b0609)
+- [+ Aerobic Risk DAG and Narrative (PDF)](https://www.nasa.gov/wp-content/uploads/2025/08/muscle-risk-and-aerobic-risk-dag-narrative.pdf?emrc=07c58f)
+- [+ Behavioral Health Mishaps (PDF)](https://www.nasa.gov/wp-content/uploads/2023/03/behavioral-health-mishaps-technical-brief-ochmo.pdf?emrc=6af8432b696bf)
+- [+ Behavioral Health and Performance (PDF)](https://www.nasa.gov/wp-content/uploads/2023/03/behavioral-health-technical-brief-ochmo.pdf?emrc=6af8432b6909d)
+- [+ Behavioral Med Risk DAG Code (TXT)](https://www.nasa.gov/wp-content/uploads/2025/09/behavioral-health-dag-code-sa-07566.txt?emrc=6f3bbc)
+- [+ Behavioral Med Risk DAG and Narrative (PDF)](https://www.nasa.gov/wp-content/uploads/2025/09/behavioral-health-risk-dag-narrative-approved-sa-06808.pdf?emrc=e6a947)
+- [+ Behavioral Med Risk Record (PDF)](https://www.nasa.gov/wp-content/uploads/2025/09/hsrb-behavioral-health-risk-record-rev-d-1-web.pdf?emrc=d92de7)
+- [+ Bone Fracture Risk DAG Code (TXT)](https://www.nasa.gov/wp-content/uploads/2023/03/bone-risk-narrative-dag-cm-final-errata.txt?emrc=6af7e53d5fde3)
+- [+ Bone Fracture Risk DAG and Narrative (PDF)](https://www.nasa.gov/wp-content/uploads/2023/03/risk-of-bone-fracture-due-to-spaceflight-induced-changes-to-bone-dag.pdf?emrc=6af7e53d5f704)
+- [+ Bone Loss (PDF)](https://www.nasa.gov/wp-content/uploads/2023/03/bone-loss-technical-brief-ochmo.pdf?emrc=6af7e53d612a6)
+- [+ Bone Risk Record (PDF)](https://www.nasa.gov/wp-content/uploads/2025/11/hsrb-bone-risk-record-rev-c-web.pdf?emrc=bce10e)
+- [+ CO2 Risk DAG Code (TXT)](https://www.nasa.gov/wp-content/uploads/2025/03/co2-dag-code.txt?emrc=8aac74)
+- [+ CO2 Risk DAG and Narrative (PDF)](https://www.nasa.gov/wp-content/uploads/2025/03/risk-of-acute-and-chronic-carbon-dioxide-exposure-dag.pdf?emrc=104ce7)
+- [+ CO2 Risk Record (PDF)](https://www.nasa.gov/wp-content/uploads/2025/09/hsrb-co2-risk-risk-record-rev-d-1-web.pdf?emrc=8bb1cc)
+- [+ Cardiovascular Med Risk DAG Code (TXT)](https://www.nasa.gov/wp-content/uploads/2024/07/cardio-vte-hsrb-dag-code.txt?emrc=3683cb)
+- [+ Cardiovascular Risk DAG and Narrative (PDF)](https://www.nasa.gov/wp-content/uploads/2024/07/risk-of-cardiovascular-adaptations-contributing-to-adverse-mission-performance-and-health-outcomes-dag.pdf?emrc=80c54d)
+- [+ Celestial Dust Risk DAG Code (TXT)](https://www.nasa.gov/wp-content/uploads/2025/07/dust-dag-code-sa-07566.txt?emrc=4eb2e2)
+- [+ Celestial Dust Risk DAG and Narrative (PDF)](https://www.nasa.gov/wp-content/uploads/2025/07/risk-of-adverse-health-and-performance-effects-of-celestial-dust-exposure-dag.pdf?emrc=5129ee)
+- [+ Celestial Dust Risk Record (PDF)](https://www.nasa.gov/wp-content/uploads/2025/09/hsrb-dust-risk-record-rev-c-1-web.pdf?emrc=94cc2b)
+- [+ Cognitive Workload (PDF)](https://www.nasa.gov/wp-content/uploads/2023/03/cognitive-workload-technical-brief-ochmo.pdf?emrc=6af8432b69ca1)
+- [+ Crew Egress Risk DAG Code (TXT)](https://www.nasa.gov/wp-content/uploads/2023/03/crew-egress-risk-narrative-dag-cm-final.txt?emrc=6af8437952301)
+- [+ Crew Egress Risk DAG and Narrative (PDF)](https://www.nasa.gov/wp-content/uploads/2022/11/risk_to_vehicle_crew_egress_capability_and_task_performance_as_applied_to_earth_and_extraterrestrial_landings_dag.pdf?emrc=609b2f)
+- [+ DCS Risk DAG Code (TXT)](https://www.nasa.gov/wp-content/uploads/2025/09/dcs-dag-code-sa-07566.txt?emrc=f660ea)
+- [+ DCS Risk DAG and Narrative (PDF)](https://www.nasa.gov/wp-content/uploads/2025/09/dcs-risk-dag-narrative.pdf?emrc=72e4be)
+- [+ Dynamic Loads Risk DAG Code (TXT)](https://www.nasa.gov/wp-content/uploads/2024/06/dynamic-loads-risk-narrative-dag-20231214.txt?emrc=b8e46c)
+- [+ Dynamic Loads Risk DAG and Narrative (PDF)](https://www.nasa.gov/wp-content/uploads/2024/06/dynamic-loads-risk-dag-narrative-20231214.pdf?emrc=7305e7)
+- [+ EVA Risk DAG Code (TXT)](https://www.nasa.gov/wp-content/uploads/2025/09/eva-dag-code-sa-07566.txt?emrc=49e79e)
+- [+ EVA Risk DAG and Narrative (PDF)](https://www.nasa.gov/wp-content/uploads/2025/09/eva-risk-narrative.pdf?emrc=b506f5)
+- [+ Electrical Shock Risk DAG Code (TXT)](https://www.nasa.gov/wp-content/uploads/2025/06/electric-shock-risk-narrative-nba.txt?emrc=100d3a)
+- [+ Electrical Shock Risk DAG and Narrative (PDF)](https://www.nasa.gov/wp-content/uploads/2025/06/risk-to-crew-health-due-electrical-shock-dag.pdf?emrc=f4d87a)
+- [+ Food and Nutrition (PDF)](https://www.nasa.gov/wp-content/uploads/2023/03/food-and-nutrition-technical-brief-ochmo.pdf?emrc=6af7e53d618ab)
+- [+ Food and Nutrition Risk DAG Code (TXT)](https://www.nasa.gov/wp-content/uploads/2023/09/food-risk-narrative.txt?emrc=6af8432fa6124)
+- [+ Food and Nutrition Risk DAG and Narrative (PDF)](https://www.nasa.gov/wp-content/uploads/2025/06/hsrb-food-nutrition-dag-narrative-rev-d.pdf?emrc=075cc5)
+- [+ Food and Nutrition Risk Record (PDF)](https://www.nasa.gov/wp-content/uploads/2025/08/food-risk-record-rev-d-web-final.pdf?emrc=2a913c)
+- [+ HSIA Risk DAG Code (TXT)](https://www.nasa.gov/wp-content/uploads/2025/09/eihso-dag-code-sa-07566.txt?emrc=4ebdcd)
+- [+ HSIA Risk DAG and Narrative (PDF)](https://www.nasa.gov/wp-content/uploads/2025/09/eihso-risk-dag-narrative.pdf?emrc=1a6371)
+- [+ Hearing Loss Risk DAG Code (TXT)](https://www.nasa.gov/wp-content/uploads/2024/07/hearing-loss-risk-hsrb-dag-code.txt?emrc=887d69)
+- [+ Hearing Loss Risk DAG and Narrative (PDF)](https://www.nasa.gov/wp-content/uploads/2024/07/hearing-loss-risk-dag-narrative.pdf?emrc=765e2c)
+- [+ Hearing Loss Risk Record (PDF)](https://www.nasa.gov/wp-content/uploads/2025/11/hsrb-hearing-loss-risk-record-rev-b-1-web.pdf?emrc=75a210)
+- [+ Hypoxia Risk DAG Code (TXT)](https://www.nasa.gov/wp-content/uploads/2023/09/hypoxia-risk-narrative-dag.txt?emrc=6af8432dc2fce)
+- [+ Hypoxia Risk DAG and Narrative (PDF)](https://www.nasa.gov/wp-content/uploads/2023/09/hypoxia-risk-rev-c-dag-narrative.pdf?emrc=6af8432dc2967)
+- [+ Immune Risk DAG Code (TXT)](https://www.nasa.gov/wp-content/uploads/2025/09/immune-dag-code-sa-07566.txt?emrc=4dcf68)
+- [+ Immune Risk DAG and Narrative (PDF)](https://www.nasa.gov/wp-content/uploads/2025/09/immune-risk-narrative-dag-20231109.pdf?emrc=a5be76)
+- [+ Ineffective or Toxic Medications DAG and Narrative (PDF)](https://www.nasa.gov/wp-content/uploads/2023/03/risk-of-ineffective-or-toxic-medications-during-long-duration-exploration-spaceflight-dag.pdf?emrc=6af843762864e)
+- [+ Ineffective or Toxic Medications Risk DAG Code (TXT)](https://www.nasa.gov/wp-content/uploads/2023/03/pharm-risk-narrative-dag-cm-final.txt?emrc=6af8437628cb7)
+- [+ Medical Care (PDF)](https://www.nasa.gov/wp-content/uploads/2023/03/medical-care-technical-brief-ochmo.pdf?emrc=6af7e53d61f09)
+- [+ Medical Conditions Risk DAG Code (TXT)](https://www.nasa.gov/wp-content/uploads/2025/07/medical-risk-narrative-nba.txt?emrc=e7ce62)
+- [+ Medical Conditions Risk DAG and Narrative (PDF)](https://www.nasa.gov/wp-content/uploads/2025/07/risk-of-adverse-health-outcomes-decrements-in-performance-due-to-inflight-medical-conditions-dag.pdf?emrc=3d33df)
+- [+ Microhost Risk DAG Code (TXT)](https://www.nasa.gov/wp-content/uploads/2025/09/microhost-dag-code-sa-07566.txt?emrc=5d9451)
+- [+ Microhost Risk DAG and Narrative (PDF)](https://www.nasa.gov/wp-content/uploads/2025/09/microhost-dag-narrative-sa-07566-ver.pdf?emrc=809199)
+- [+ Muscle Risk DAG Code (TXT)](https://www.nasa.gov/wp-content/uploads/2024/06/muscle-and-aerobic-risk-dag-code-1.txt?emrc=c4be4f)
+- [+ Muscle Risk DAG and Narrative (PDF)](https://www.nasa.gov/wp-content/uploads/2025/08/muscle-risk-and-aerobic-risk-dag-narrative.pdf?emrc=07c58f)
+- [+ Non-ionizing Radiation Risk DAG Code (TXT)](https://www.nasa.gov/wp-content/uploads/2025/09/nir-dag-code-sa-07566.txt?emrc=9feb08)
+- [+ Non-ionizing Radiation Risk DAG and Narrative (PDF)](https://www.nasa.gov/wp-content/uploads/2025/09/nir-risk-dag-narrative-approved-sa-06900.pdf?emrc=0daf3a)
+- [+ Radiation Carcinogenesis DAG and Narrative (PDF)](https://www.nasa.gov/wp-content/uploads/2025/09/radiation-carcinogenesis-risk-dag-narrative.pdf?emrc=0e9222)
+- [+ Radiation Carcinogenesis Risk DAG Code (TXT)](https://www.nasa.gov/wp-content/uploads/2025/09/carconogenesis-dag-code-sa-07566.txt?emrc=fcf3d0)
+- [+ Risk of Renal Stone Formation DAG Code (TXT)](https://www.nasa.gov/wp-content/uploads/2025/09/renal-stone-dag-code-sa-07566.txt?emrc=8b01bc)
+- [+ Risk of Renal Stone Formation DAG and Narrative (PDF)](https://www.nasa.gov/wp-content/uploads/2025/09/renal-stone-risk-dag-narrative.pdf?emrc=4550d1)
+- [+ SANS Risk DAG Code (TXT)](https://www.nasa.gov/wp-content/uploads/2025/09/sans-dag-code-sa-07566.txt?emrc=db7447)
+- [+ SANS Risk DAG and Narrative (PDF)](https://www.nasa.gov/wp-content/uploads/2025/09/sans-risk-directed-acyclic-graph-%E2%80%93-dag-narrative.pdf?emrc=a84f88)
+- [+ Sensorimotor Risk DAG Code (TXT)](https://www.nasa.gov/wp-content/uploads/2025/07/sensorimotor-risk-narrative-nba.txt?emrc=ffa4a5)
+- [+ Sensorimotor Risk DAG and Narrative (PDF)](https://www.nasa.gov/wp-content/uploads/2025/07/sensorimotor-dag-narrative.pdf?emrc=4ef9f5)
+- [+ Sleep Risk DAG Code (TXT)](https://www.nasa.gov/wp-content/uploads/2025/09/sleep-risk-dag-code-sa-07566.txt?emrc=8267ed)
+- [+ Sleep Risk DAG and Narrative (PDF)](https://www.nasa.gov/wp-content/uploads/2025/09/sleep-risk-dag-narrative-sa-07566.pdf?emrc=afa208)
+- [+ Team Risk DAG Code (TXT)](https://www.nasa.gov/wp-content/uploads/2025/03/team-risk-dag-code.txt?emrc=287aae)
+- [+ Team Risk DAG and Narrative (PDF)](https://www.nasa.gov/wp-content/uploads/2025/03/team-dag-narrative-approved-sa-06902.pdf?emrc=e149e7)
+- [+ Toxic Exposure Risk DAG Code (TXT)](https://www.nasa.gov/wp-content/uploads/2025/09/toxic-exposure-dag-code-sa-07566.txt?emrc=ff05bc)
+- [+ Toxic Exposure Risk DAG and Narrative (PDF)](https://www.nasa.gov/wp-content/uploads/2025/09/toxic-exposure-dag-narrative-1.pdf?emrc=4f6c3c)
+- [+ Toxic Exposure Risk Record (PDF)](https://www.nasa.gov/wp-content/uploads/2025/09/hsrb-toxic-exposure-risk-record-rev-b-1-web.pdf?emrc=8faef6)
+- [+ Urinary Retention Risk DAG Code (TXT)](https://www.nasa.gov/wp-content/uploads/2025/09/urinary-retention-risk-dag-code.txt?emrc=f18a70)
+- [+ Urinary Retention Risk DAG and Narrative (PDF)](https://www.nasa.gov/wp-content/uploads/2025/09/urinary-retention-risk-dag-narrative.pdf?emrc=12cd01)
+- [+ Urinary Retention Risk Record (PDF)](https://www.nasa.gov/wp-content/uploads/2025/09/hsrb-urinary-retention-risk-risk-record-web.pdf?emrc=f475ee)
+- [+ Usability, Workload, Error (PDF)](https://www.nasa.gov/wp-content/uploads/2023/03/usability-workload-error-technical-brief-ochmo.pdf?emrc=6af8432b6a2aa)
+- [+ Venous Thromboembolism Risk DAG Code (TXT)](https://www3.nasa.gov/sites/default/files/atoms/files/vte_concern_narrative_dag_cm_final_0.txt)
+- [+ Venous Thromboembolism Risk DAG and Narrative (PDF)](https://www3.nasa.gov/sites/default/files/atoms/files/concern_of_venous_thromboembolism_dag.pdf)
+- [1% to 1.5%](https://humanresearchroadmap.nasa.gov/Evidence/reports/Fracture.pdf)
+- [3% in space](https://www.nasa.gov/wp-content/uploads/2018/05/whatisyourspaceheight.pdf?emrc=87cc88)
+- [300 hours](https://www.nasa.gov/wp-content/uploads/2015/10/160410main_space_training_fact_sheet.pdf?emrc=6cb004)
+- [For a 508 Compliant PDF of this post, follow this link.](https://www.nasa.gov/wp-content/uploads/2021/02/bodyinspace_revised_forweb-2022-updated.pdf?emrc=6b269c)
+- [Read More](https://www.nasa.gov/wp-content/uploads/2026/06/hrp-rap-for-web-62026.pdf?emrc=062898)
+- [Space Faring: The Radiation Challenge: Educator Guide](https://www.nasa.gov/wp-content/uploads/2017/04/radiationchallenge.pdf?emrc=ba69fb)
+- [Space Faring: The Radiation Challenge: Middle School Guide](https://www.nasa.gov/wp-content/uploads/2017/04/sf_radiation_stu_bob.pdf?emrc=4fe89a)
+- [Thermal Control Systems](https://www.nasa.gov/wp-content/uploads/2021/02/473486main_iss_atcs_overview.pdf?emrc=046ace)
+- [acceptability of food](https://humanresearchroadmap.nasa.gov/evidence/reports/food.pdf)
+- [adequate nutrition](https://humanresearchroadmap.nasa.gov/Evidence/other/Nutrition%20ER_human_adaptation_2020_final.pdf)
+- [circadian rhythm](https://humanresearchroadmap.nasa.gov/Evidence/reports/BMed.pdf)
+- [clinical decision support tools](https://ntrs.nasa.gov/archive/nasa/casi.ntrs.nasa.gov/20200000567.pdf)
+- [crew](https://humanresearchroadmap.nasa.gov/Evidence/reports/Team.pdf)
+- [degenerative diseases](https://humanresearchroadmap.nasa.gov/evidence/reports/Degen.pdf?rnd=0.883156046216914)
+- [degenerative disorders](https://humanresearchroadmap.nasa.gov/evidence/reports/Degen.pdf?rnd=0.883156046216914)
+- [food formulation](https://humanresearchroadmap.nasa.gov/Evidence/reports/AFT.pdf)
+- [heart and blood vessels](https://humanresearchroadmap.nasa.gov/evidence/reports/Cardio%20Risk%20EB%202022%20FINAL_4-3-2023.pdf?rnd=0.824337259784498)
+- [isolated environment](https://humanresearchroadmap.nasa.gov/evidence/other/BMed.pdf)
+- [kidney stone](https://humanresearchroadmap.nasa.gov/Evidence/reports/Renal.pdf)
+- [medications like bisphosphonate](https://www.nasa.gov/wp-content/uploads/2023/12/ochmo-tb-030-bone-loss.pdf?emrc=705e1b)
+- [menu fatigue](https://humanresearchroadmap.nasa.gov/evidence/other/AFT.pdf)
+- [quarantined](https://ntrs.nasa.gov/archive/nasa/casi.ntrs.nasa.gov/20130000048.pdf)
+
+## Human Research Roadmap (fichas de riesgo)
+
+- [+ Risk of Adverse Cognitive or Behavioral Conditions and Psychiatric Disorders](https://humanresearchroadmap.nasa.gov/Risks/risk.aspx?i=99)
+- [+ Risk of Adverse Health Effects Due to Host-Microorganism Interactions](https://humanresearchroadmap.nasa.gov/Risks/risk.aspx?i=80)
+- [+ Risk of Adverse Health Event Due To Altered Immune Response](https://humanresearchroadmap.nasa.gov/Risks/risk.aspx?i=85)
+- [+ Risk of Adverse Health Outcomes & Decrements in Performance due to Inflight Medical Conditions](https://humanresearchroadmap.nasa.gov/Risks/risk.aspx?i=95)
+- [+ Risk of Adverse Outcome Due to Inadequate Human Systems Integration Architecture](https://humanresearchroadmap.nasa.gov/Risks/risk.aspx?i=175)
+- [+ Risk of Altered Sensorimotor/Vestibular Function Impacting Critical Mission Tasks](https://humanresearchroadmap.nasa.gov/Risks/risk.aspx?i=88)
+- [+ Risk of Bone Fracture due to Spaceflight-induced Changes to Bone](https://humanresearchroadmap.nasa.gov/Risks/?i=77)
+- [+ Risk of Cardiovascular Adaptations](https://humanresearchroadmap.nasa.gov/Risks/risk.aspx?i=177)
+- [+ Risk of Cardiovascular Adaptations](https://humanresearchroadmap.nasa.gov/Risks/risk.aspx?i=179)
+- [+ Risk of Celestial Dust Exposure](https://humanresearchroadmap.nasa.gov/Risks/risk.aspx?i=82)
+- [+ Risk of Decompression Sickness](https://humanresearchroadmap.nasa.gov/Risks/risk.aspx?i=168)
+- [+ Risk of Impaired Performance Due to Reduced Muscle Size, Strength & Endurance](https://humanresearchroadmap.nasa.gov/Risks/risk.aspx?i=92)
+- [+ Risk of Injury and Compromised Performance Due to EVA Operations](https://humanresearchroadmap.nasa.gov/Risks/?i=84)
+- [+ Risk of Injury from Dynamic Loads](https://humanresearchroadmap.nasa.gov/Risks/?i=167)
+- [+ Risk of Performance Decrement and Crew Illness Due to Inadequate Food and Nutrition](https://humanresearchroadmap.nasa.gov/Risks/risk.aspx?i=176)
+- [+ Risk of Performance Decrements and Adverse Health Outcomes Resulting from Sleep Loss, Circadian Desynchronization, and Work Overload](https://humanresearchroadmap.nasa.gov/Risks/risk.aspx?i=100)
+- [+ Risk of Performance and Behavioral Health Decrements Due to Inadequate Cooperation, Coordination, Communication, and Psychosocial Adaptation within a Team ](https://humanresearchroadmap.nasa.gov/Risks/risk.aspx?i=101)
+- [+ Risk of Radiation Carcinogenesis](https://humanresearchroadmap.nasa.gov/Risks/risk.aspx?i=96)
+- [+ Risk of Reduced Crew Health and Performance Due to Hypoxia](https://humanresearchroadmap.nasa.gov/Risks/risk.aspx?i=173)
+- [+ Risk of Reduced Physical Performance Capabilities Due to Reduced Aerobic Capacity](https://humanresearchroadmap.nasa.gov/Risks/?i=94)
+- [+ Risk of Renal Stone Formation Human Research Roadmap](https://humanresearchroadmap.nasa.gov/Risks/risk.aspx?i=81)
+- [+ Risk of Spaceflight Associated Neuro-ocular Syndrome](https://humanresearchroadmap.nasa.gov/Risks/risk.aspx?i=105)
+- [1% and 1.5%](https://humanresearchroadmap.nasa.gov/Risks/risk.aspx?i=77)
+- [Risk of Spaceflight Associated Neuro-ocular Syndrome (SANS)](https://humanresearchroadmap.nasa.gov/Risks/risk.aspx?i=105)
+- [Risk of adverse cognitive or behavioral changes and psychiatric disorders leading to in-mission health and performance and long-term health effects](https://humanresearchroadmap.nasa.gov/Risks/risk.aspx?i=99)
+- [Risk of adverse in-mission and long-term health effects and performance effects due to host-microorganism interactions](https://humanresearchroadmap.nasa.gov/Risks/risk.aspx?i=80)
+- [Risk of adverse mission outcomes due to Earth independent human-systems operation](https://humanresearchroadmap.nasa.gov/Risks/risk.aspx?i=175)
+- [Risk of altered sensorimotor/vestibular function impacting critical mission tasks, human health, and long-term health](https://humanresearchroadmap.nasa.gov/Risks/risk.aspx?i=88)
+- [Risk of bone fracture due to spaceflight-induced changes to bone](https://humanresearchroadmap.nasa.gov/Risks/risk.aspx?i=77)
+- [Risk of cardiovascular adaptations contributing to adverse mission performance and health outcomes](https://humanresearchroadmap.nasa.gov/Risks/risk.aspx?i=179)
+- [Risk of in mission impacts, adverse health events, or long-term health impacts due to altered immune system response](https://humanresearchroadmap.nasa.gov/Risks/risk.aspx?i=85)
+- [Risk of in-mission injury and performance decrements and long-term health effects from dynamic loads](https://humanresearchroadmap.nasa.gov/Risks/risk.aspx?i=167)
+- [Risk of in-mission performance and behavioral health decrements due to inadequate cooperation, coordination, communication, and psychosocial adaptation within a team](https://humanresearchroadmap.nasa.gov/Risks/risk.aspx?i=101)
+- [Risk of mission impacting injury and compromised performance and long-term health effects due to EVA operations](https://humanresearchroadmap.nasa.gov/Risks/risk.aspx?i=84)
+- [Risk of mission impacts and long-term health issues due to decompression sickness](https://humanresearchroadmap.nasa.gov/Risks/risk.aspx?i=179)
+- [Risk of mission performance decrements and adverse health outcomes resulting from reduced cardiorespiratory and musculoskeletal fitness](https://humanresearchroadmap.nasa.gov/Risks/risk.aspx?i=180)
+- [Risk of performance decrement and crew illness due to inadequate food and nutrition](https://humanresearchroadmap.nasa.gov/Risks/risk.aspx?i=176)
+- [Risk of performance decrements and adverse health outcomes resulting from sleep loss, circadian desynchronization, and work overload](https://humanresearchroadmap.nasa.gov/Risks/risk.aspx?i=100)
+- [Risk of radiation carcinogenesis](https://humanresearchroadmap.nasa.gov/Risks/risk.aspx?i=96)
+- [Risk of reduced crew health and performance due to hypoxia](https://humanresearchroadmap.nasa.gov/Risks/risk.aspx?i=85)
+- [trigger motion sickness](https://humanresearchroadmap.nasa.gov/Risks/risk.aspx?i=88)
