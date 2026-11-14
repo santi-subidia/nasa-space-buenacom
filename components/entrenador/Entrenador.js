@@ -173,7 +173,7 @@ export default function Entrenador() {
   }
 
   // Al terminar: guarda los minutos como lectura y suma la racha.
-  function terminar() {
+  async function terminar() {
     const hecho = r.entrenamiento.resumen();
     const series = [...r.serie, ...(hecho.reps || hecho.segundos ? [hecho] : [])];
     const minutos = Math.max(0.1, Math.round(((performance.now() - r.inicio) / 60000) * 10) / 10);
@@ -183,8 +183,14 @@ export default function Entrenador() {
       .map((s) => `${s.ejercicio === 'plancha' ? `${s.segundos} s de plancha` : `${s.reps} ${EJERCICIOS[s.ejercicio].nombre.toLowerCase()}`}`)
       .join(', ');
     const racha = MISION.rachaEjercicio + 1; // hoy ya cuenta (la racha de la misión llega hasta ayer)
-    guardarLecturas([{ indicator: 'exercise_min', value: minutos, unit: 'min', sol: SOL_ACTUAL, source: 'camera', note: nota || 'sin repeticiones' }]);
-    setResumen({ series, minutos, racha });
+    let guardado = true;
+    try {
+      await guardarLecturas([{ indicator: 'exercise_min', value: minutos, sol: SOL_ACTUAL, source: 'camera', note: nota || 'sin repeticiones' }]);
+    } catch (err) {
+      console.error(err);
+      guardado = false;
+    }
+    setResumen({ series, minutos, racha, guardado });
     setPantalla('resumen');
   }
 
@@ -282,6 +288,7 @@ export default function Entrenador() {
               </li>
             ))}
           </ul>
+          {!resumen.guardado && <p className={styles.error} role="alert">No se pudo guardar el ejercicio en este equipo.</p>}
           <p>
             Se guardaron <strong>{String(resumen.minutos).replace('.', ',')} min</strong> de ejercicio · 🔥 Racha: <strong>{resumen.racha} días</strong>
           </p>
