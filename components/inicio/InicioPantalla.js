@@ -5,6 +5,7 @@ import Card from '@/components/Card';
 import TrafficLight from '@/components/TrafficLight';
 import { maxNivel } from '@/lib/niveles';
 import { useLecturas } from '@/lib/datos/lecturas';
+import { minutosHoy } from '@/lib/entrenador/racha';
 import { MISION, SOL_ACTUAL, ALERTA_ACTIVA } from '@/lib/mock/mision';
 import { TARJETAS, CHEQUEO, valoresDelDia, nivelDeTarjeta } from '@/lib/mock/indicadores';
 import styles from './InicioPantalla.module.scss';
@@ -34,7 +35,7 @@ export default function InicioPantalla() {
       </section>
 
       <div className={styles.fila}>
-        <Racha />
+        <Racha ejercicioHoy={minutosHoy(lecturas, SOL_ACTUAL) > 0} />
         <BarraVega />
       </div>
     </div>
@@ -149,12 +150,14 @@ function TarjetaIndicador({ tarjeta, vals }) {
   );
 }
 
-function Racha() {
-  const { total, conEjercicioHoy } = MISION.tripulacion;
+function Racha({ ejercicioHoy }) {
+  const { total } = MISION.tripulacion;
+  const conEjercicioHoy = MISION.tripulacion.conEjercicioHoy + (ejercicioHoy ? 1 : 0);
+  const racha = MISION.rachaEjercicio + (ejercicioHoy ? 1 : 0);
   return (
     <Card className={styles.racha}>
       <p>
-        🔥 Racha de ejercicio: <strong>{MISION.rachaEjercicio} días</strong>
+        🔥 Racha de ejercicio: <strong>{racha} días</strong>
       </p>
       <p className={styles.sub}>
         Meta de la tripulación: {conEjercicioHoy} de {total} ya entrenaron hoy
