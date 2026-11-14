@@ -1,0 +1,47 @@
+@use 'tokens' as *;
+
+.pantalla { display: flex; flex-direction: column; gap: $espacio-4; h1 { font-size: 30px; } }
+.encabezado { display: flex; justify-content: space-between; align-items: flex-end; }
+.sub { margin: 2px 0 0; color: $color-texto-suave; font-size: 14px; }
+
+.periodos {
+  display: flex;
+  background: $color-superficie;
+  border: 1px solid $color-borde;
+  border-radius: 999px;
+  padding: 3px;
+  button {
+    background: transparent;
+    border: 0;
+    color: $color-texto-suave;
+    border-radius: 999px;
+    padding: 6px 16px;
+    font: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    &:hover { color: $color-texto; }
+  }
+  .activo { background: $color-acento; color: $color-fondo; }
+}
+
+.vega {
+  font-size: 14px;
+  p { margin: 0; }
+  strong { color: $color-texto; }
+}
+.vegaTitulo { color: $color-ia; font-weight: 700; margin-bottom: $espacio-1 !important; }
+
+.graficos { display: grid; grid-template-columns: 1fr 1fr; gap: $espacio-4; }
+
+.grafico { height: 190px; width: 100%; }
+
+.leyenda {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $espacio-3;
+  margin: $espacio-2 0 0;
+  font-size: 12px;
+  color: $color-texto-suave;
+  i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; }
+}
