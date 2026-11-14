@@ -7,7 +7,7 @@ import { crearVoz } from '@/ai/vega/voz.js';
 import Card from '@/components/Card';
 import { EJERCICIOS, crearEntrenamiento } from '@/lib/entrenador/ejercicios';
 import { armarPayloadSerie } from '@/lib/entrenador/resumen';
-import { guardarLecturas, useLecturas } from '@/lib/datos/lecturas';
+import { guardarLecturas, leerLecturas, useLecturas } from '@/lib/datos/lecturas';
 import { maxNivel } from '@/lib/niveles';
 import { TARJETAS, nivelDeTarjeta, valoresDelDia } from '@/lib/mock/indicadores';
 import { ALERTA_ACTIVA, MISION, SOL_ACTUAL } from '@/lib/mock/mision';
@@ -254,14 +254,26 @@ export default function Entrenador() {
       .map((s) => `${s.ejercicio === 'plancha' ? `${s.segundos} s de plancha` : `${s.reps} ${EJERCICIOS[s.ejercicio].nombre.toLowerCase()}`}`)
       .join(', ');
     const racha = MISION.rachaEjercicio + 1; // hoy ya cuenta (la racha de la misión llega hasta ayer)
-    guardarLecturas([{ indicator: 'exercise_min', value: minutos, unit: 'min', sol: SOL_ACTUAL, source: 'camera', note: nota || 'sin repeticiones' }]);
-    setResumen({ series, minutos, racha, fotos });
+    let guardado = true;
+    try {
+      await guardarLecturas([{ indicator: 'exercise_min', value: minutos, sol: SOL_ACTUAL, source: 'camera', note: nota || 'sin repeticiones' }]);
+    } catch (err) {
+      console.error(err);
+      guardado = false;
+    }
+    setResumen({ series, minutos, racha, fotos, guardado });
     setComentarioVega(null);
     setComentarioEstado('cargando');
     setPantalla('resumen');
 
     const idPedido = ++comentarioIdRef.current;
-    const vals = valoresDelDia(lecturasRef.current, SOL_ACTUAL);
+    let lecturasActuales = lecturasRef.current;
+    try {
+      lecturasActuales = await leerLecturas();
+    } catch {
+      /* si IndexedDB falla, seguimos con las lecturas ya cargadas */
+    }
+    const vals = valoresDelDia(lecturasActuales, SOL_ACTUAL);
     const nivelMotor = maxNivel(TARJETAS.map((t) => nivelDeTarjeta(t, vals)), ALERTA_ACTIVA.nivel);
     const payload = armarPayloadSerie({
       series,
@@ -382,6 +394,7 @@ export default function Entrenador() {
                 </li>
               ))}
             </ul>
+            {!resumen.guardado && <p className={styles.error} role="alert">No se pudo guardar el ejercicio en este equipo.</p>}
             <p>
               Se guardaron <strong>{String(resumen.minutos).replace('.', ',')} min</strong> de ejercicio · 🔥 Racha: <strong>{resumen.racha} días</strong>
             </p>

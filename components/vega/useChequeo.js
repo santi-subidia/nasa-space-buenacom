@@ -20,7 +20,7 @@ function registrar(reading) {
       sol: SOL_ACTUAL,
       source: 'voice',
     },
-  ]);
+  ]).catch((e) => console.error('No se pudo guardar la lectura por voz', e));
 }
 
 /** Chequeo matutino por voz (ai/chequeo). Comparte con Vega la misma voz: el micrófono es uno solo. */

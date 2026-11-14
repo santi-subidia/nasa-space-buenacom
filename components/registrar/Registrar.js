@@ -8,7 +8,7 @@ import { INFO, CARAS } from '@/lib/content/indicadores';
 import { useLecturas, guardarLecturas } from '@/lib/datos/lecturas';
 import { guardarFoto, guardarSintoma } from '@/lib/datos/sintomas';
 import { SOL_ACTUAL } from '@/lib/mock/mision';
-import { META, WATCH, valoresDelDia } from '@/lib/mock/indicadores';
+import { WATCH, valoresDelDia } from '@/lib/mock/indicadores';
 import FotoPiel from './FotoPiel';
 import TestReaccion from './TestReaccion';
 import styles from './Registrar.module.scss';
@@ -36,6 +36,7 @@ export default function Registrar() {
   const [foto, setFoto] = useState(null); // { blob, code, severity }
   const [reaccion, setReaccion] = useState(null); // { ms, intentos }
   const [guardando, setGuardando] = useState(false);
+  const [errorGuardado, setErrorGuardado] = useState(null);
 
   // Valor mostrado = lo editado o, si no, lo medido hoy.
   const valor = (k) => edit[k] ?? (base[k]?.hoy ? String(base[k].valor) : '');
@@ -59,20 +60,21 @@ export default function Registrar() {
     if (nada || hayError) return;
     setGuardando(true);
 
-    const nuevas = cambios.map((k) => ({
-      indicator: k,
-      value: num(edit[k]),
-      unit: META[k].unidad,
-      sol: SOL_ACTUAL,
-    }));
-    if (reaccion) nuevas.push({ indicator: 'reaction_ms', value: reaccion.ms, unit: 'ms', sol: SOL_ACTUAL });
-    if (nuevas.length) guardarLecturas(nuevas);
+    const nuevas = cambios.map((k) => ({ indicator: k, value: num(edit[k]), sol: SOL_ACTUAL }));
+    if (reaccion) nuevas.push({ indicator: 'reaction_ms', value: reaccion.ms, sol: SOL_ACTUAL });
 
-    if (foto) {
-      const photoBlobId = await guardarFoto(foto.blob);
-      guardarSintoma({ bodyZone: 'immune', code: foto.code, severity: foto.severity, sol: SOL_ACTUAL, photoBlobId });
+    try {
+      if (nuevas.length) await guardarLecturas(nuevas);
+      if (foto) {
+        const photoBlobId = await guardarFoto(foto.blob);
+        await guardarSintoma({ bodyZone: 'immune', code: foto.code, severity: foto.severity, sol: SOL_ACTUAL, photoBlobId });
+      }
+      router.push('/');
+    } catch (err) {
+      console.error(err);
+      setErrorGuardado('No se pudo guardar en este equipo. Probá de nuevo.');
+      setGuardando(false);
     }
-    router.push('/');
   }
 
   return (
@@ -182,7 +184,9 @@ export default function Registrar() {
               {guardando ? 'Guardando…' : 'Guardar chequeo'}
             </button>
             <span className={styles.nota}>
-              {hayError
+              {errorGuardado
+                ? errorGuardado
+                : hayError
                 ? 'Revisá los valores marcados.'
                 : nada
                   ? 'No hay cambios para guardar.'

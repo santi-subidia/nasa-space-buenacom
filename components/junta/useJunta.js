@@ -3,8 +3,8 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { armarVistaJunta } from '@/ai/junta/vista.js';
 import { guardarAviso } from '@/lib/datos/avisos';
-import { useLecturas } from '@/lib/datos/lecturas';
-import { useSintomas } from '@/lib/datos/sintomas';
+import { leerLecturas, useLecturas } from '@/lib/datos/lecturas';
+import { leerSintomas, useSintomas } from '@/lib/datos/sintomas';
 import { MISION } from '@/lib/mock/mision';
 import { armarEntradaJunta } from './entrada';
 
@@ -37,7 +37,16 @@ export function useJunta() {
     abortRef.current = controller;
     const pedidoId = ++pedidoIdRef.current;
 
-    const entrada = armarEntradaJunta(datosRef.current.lecturas, datosRef.current.sintomas);
+    let lecturasActuales = datosRef.current.lecturas;
+    let sintomasActuales = datosRef.current.sintomas;
+    try {
+      [lecturasActuales, sintomasActuales] = await Promise.all([leerLecturas(), leerSintomas()]);
+    } catch {
+      /* si IndexedDB falla, seguimos con los datos ya cargados */
+    }
+    if (controller.signal.aborted || pedidoId !== pedidoIdRef.current) return;
+
+    const entrada = armarEntradaJunta(lecturasActuales, sintomasActuales);
     setSegundos(0);
     setAvisoEnviado(false);
     setEstado((prev) => ({
