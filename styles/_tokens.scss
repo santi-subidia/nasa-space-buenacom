@@ -1,0 +1,40 @@
+// Tokens de diseño de AstroVitals (prototipos de 1280×800).
+// Solo variables Sass (no emite CSS): se importa con `@use 'tokens' as *;`.
+// Las variables CSS equivalentes (--color-*) se declaran en globals.scss.
+
+// ── Color ──────────────────────────────────────────────
+$color-fondo: #0a0f1e;
+$color-superficie: #121a2e;
+$color-superficie-2: #1a2440;
+$color-borde: #26325a;
+$color-texto: #e8edf7;
+$color-texto-suave: #9aa6c4;
+$color-acento: #5bc8f5; // acento principal
+$color-ia: #a78bfa; // todo lo que viene de Vega / la IA
+
+// Semáforo: el color NUNCA va solo, siempre con una forma (ver TrafficLight).
+$color-verde: #4ade80; // ●  círculo
+$color-amarillo: #facc15; // ▲  triángulo
+$color-naranja: #fb923c; // ◆  rombo
+$color-rojo: #f87171; // ■  cuadrado
+
+// ── Tipografía ─────────────────────────────────────────
+$fuente-texto: var(--font-inter), system-ui, sans-serif;
+$fuente-titulo: var(--font-space-grotesk), var(--font-inter), system-ui, sans-serif;
+
+// ── Espaciado, radios, layout ──────────────────────────
+$espacio-1: 4px;
+$espacio-2: 8px;
+$espacio-3: 12px;
+$espacio-4: 16px;
+$espacio-5: 24px;
+$espacio-6: 32px;
+
+$radio-s: 8px;
+$radio-m: 14px;
+$radio-l: 20px;
+
+$ancho-pantalla: 1280px;
+$alto-pantalla: 800px;
+$ancho-lateral: 240px;
+

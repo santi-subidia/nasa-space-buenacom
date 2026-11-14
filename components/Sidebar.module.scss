@@ -1,0 +1,75 @@
+@use 'tokens' as *;
+
+.lateral {
+  width: $ancho-lateral;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: $espacio-5;
+  padding: $espacio-5 $espacio-4;
+  background: $color-superficie;
+  border-right: 1px solid $color-borde;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+}
+
+.marca {
+  display: flex;
+  align-items: center;
+  gap: $espacio-2;
+  padding: 0 $espacio-3;
+}
+
+.logo { color: $color-acento; font-size: 22px; }
+
+.nombre {
+  font-family: $fuente-titulo;
+  font-weight: 700;
+  font-size: 20px;
+}
+
+.lista {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: $espacio-1;
+}
+
+.enlace {
+  display: flex;
+  align-items: center;
+  gap: $espacio-3;
+  padding: $espacio-3;
+  border-radius: $radio-s;
+  color: $color-texto-suave;
+  font-weight: 500;
+  border-left: 3px solid transparent;
+
+  &:hover {
+    background: $color-superficie-2;
+    color: $color-texto;
+  }
+}
+
+.icono { width: 20px; text-align: center; }
+
+.activo {
+  background: $color-superficie-2;
+  color: $color-texto;
+  border-left-color: $color-acento;
+  .icono { color: $color-acento; }
+}
+
+// Vega (la IA) se distingue con su color
+.ia .icono { color: $color-ia; }
+.ia.activo { border-left-color: $color-ia; }
+
+.aviso {
+  margin: auto 0 0;
+  padding: 0 $espacio-3;
+  font-size: 12px;
+  color: $color-texto-suave;
+}

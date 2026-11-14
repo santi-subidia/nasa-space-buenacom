@@ -1,0 +1,34 @@
+@use 'tokens' as *;
+
+.semaforo {
+  display: inline-flex;
+  align-items: center;
+  gap: $espacio-2;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.green { color: $color-verde; }
+.yellow { color: $color-amarillo; }
+.orange { color: $color-naranja; }
+.red { color: $color-rojo; }
+
+.forma {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  background: currentColor;
+}
+
+.circulo { border-radius: 50%; }
+.cuadrado { border-radius: 2px; }
+.rombo { transform: rotate(45deg) scale(0.8); border-radius: 2px; }
+.triangulo { clip-path: polygon(50% 0, 100% 100%, 0 100%); }
+
+.oculto {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
