@@ -242,14 +242,6 @@ export default function CaraPantalla() {
                 ) : (
                   <div className={styles.vacio}>Sin foto base</div>
                 )}
-                <label className={styles.subir}>
-                  Subir imagen
-                  <input
-                    type="file"
-                    accept="image/jpeg,image/png,image/webp"
-                    onChange={(e) => subirArchivo('base', e.target.files?.[0])}
-                  />
-                </label>
               </div>
 
               <div className={styles.slot}>
@@ -263,14 +255,6 @@ export default function CaraPantalla() {
                 ) : (
                   <div className={styles.vacio}>Falta foto de hoy</div>
                 )}
-                <label className={styles.subir}>
-                  Subir imagen
-                  <input
-                    type="file"
-                    accept="image/jpeg,image/png,image/webp"
-                    onChange={(e) => subirArchivo('hoy', e.target.files?.[0])}
-                  />
-                </label>
               </div>
             </div>
           </Card>
