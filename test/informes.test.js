@@ -132,3 +132,30 @@ test('sin Supabase el mensaje queda pendiente en IndexedDB y no se inyecta una c
   assert.equal(filas.length, 1);
   assert.equal(filas[0].sincronizacion, 'pendiente');
 });
+
+test('normaliza unidades heredadas (lpm/rpm) y respuestas médicas heredadas en español', async () => {
+  await addReading({ astronautId: 'ana', indicator: 'hr_rest', value: 63, unit: 'lpm', sol: 47 });
+  await addReading({ astronautId: 'ana', indicator: 'resp_rate', value: 15.8, unit: 'rpm', sol: 47 });
+  const lecturas = await getReadings('ana');
+  const informe = informeDesdeRegistros({ astronauta: ana, lecturas, evaluacion: { alerts: [] }, sol: 47 });
+  assert.match(informe.resumen, /63 bpm/);
+  assert.match(informe.resumen, /15\.8 breaths\/min/);
+  assert.doesNotMatch(informe.resumen, /\blpm\b|\brpm\b/);
+
+  const envio = crearTransmisionCanal({ informe, astronauta: ana, sol: 42, id: 'legado', ts: '2026-11-15T01:00:00Z' });
+  const mensajes = mensajesDeTransmisiones([{
+    ...envio,
+    astronaut_name: 'Ana Ríos',
+    estado: 'recibido',
+    sincronizacion: 'enviado',
+    actualizado_en: '2026-11-15T01:04:00Z',
+    respuesta_medica: {
+      remitente: 'Dra. Elena Vance · Médica de vuelo (Houston)',
+      resumenTecnico: 'Revisado el informe de la Junta médica del Sol 42.',
+      indicaciones: ['Control térmico cada 8 horas.'],
+    },
+  }], 'ana');
+  assert.equal(mensajes[0].remitente, 'Nicolás Méndez');
+  assert.equal(mensajes[1].remitente, 'Dr. Elena Vance · Flight Surgeon (Houston)');
+  assert.match(mensajes[1].texto, /Reviewed the Sol 42 Medical Board report/);
+});

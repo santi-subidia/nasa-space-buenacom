@@ -6,7 +6,7 @@ import { useEstadoMision } from '@/lib/datos/demo';
 import { useCanalInformes } from '@/lib/datos/canalInformes';
 import { alternarAutoAvance, avanzarTransmision, reiniciarEnlace, useEnlace } from '@/lib/datos/enlace';
 import { guardarEnvioCanal, sincronizarCanal } from '@/lib/enlace/canal';
-import { calcularEstadoEnvio, DURACION_EVALUACION_MIN, RETRASO_SOLO_IDA_MIN, RESPUESTA_MEDICA_SOL42 } from '@/lib/enlace/logicaEnlace';
+import { calcularEstadoEnvio, DURACION_EVALUACION_MIN, normalizarRespuestaMedica, RETRASO_SOLO_IDA_MIN, RESPUESTA_MEDICA_SOL42 } from '@/lib/enlace/logicaEnlace';
 import { agruparMensajesPorDia, crearTransmisionCanal, informeDesdeRegistros, mensajesDeTransmisiones } from '@/lib/enlace/informes';
 import styles from './EnlacePantalla.module.scss';
 
@@ -122,7 +122,7 @@ export default function EnlacePantalla() {
       remitente: astronauta.name,
       sol: informe.sol,
       iniciadaEn: new Date().toISOString(),
-      respuesta: ultimaRespuesta?.respuesta_medica || RESPUESTA_MEDICA_SOL42,
+      respuesta: normalizarRespuestaMedica(ultimaRespuesta?.respuesta_medica) || RESPUESTA_MEDICA_SOL42,
       recibidaEn: null,
     });
   }

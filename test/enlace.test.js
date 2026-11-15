@@ -8,6 +8,7 @@ import {
   DURACION_TOTAL_MIN,
   HITOS_ENLACE,
   INFORME_TECNICO_RESPALDO_SOL42,
+  normalizarRespuestaMedica,
   RESPUESTA_MEDICA_SOL42,
   RETRASO_SOLO_IDA_MIN,
   TRADUCCION_VEGA_SOL42,
@@ -151,4 +152,21 @@ test('armarInformeParaTierra usa resultado de Junta cuando existe y respaldo Sol
   assert.equal(desdeJunta.resumen, 'Resumen clínico generado por la Junta.');
   assert.deepEqual(desdeJunta.hallazgos, ['Hallazgo 1']);
   assert.deepEqual(desdeJunta.plan, ['Plan 1']);
+});
+
+test('normalizarRespuestaMedica reemplaza el dictamen heredado en español por RESPUESTA_MEDICA_SOL42', () => {
+  const legado = {
+    remitente: 'Dra. Elena Vance · Médica de vuelo (Houston)',
+    sol: 42,
+    asunto: 'Respuesta médica Sol 42 · Posible reactivación viral leve (Ana Ríos)',
+    resumenTecnico: 'Revisado el informe de la Junta médica del Sol 42. Cuadro compatible con reactivación viral leve.',
+    indicaciones: ['Control térmico y registro de síntomas cada 8 horas.'],
+  };
+  assert.deepEqual(normalizarRespuestaMedica(legado), RESPUESTA_MEDICA_SOL42);
+  const propia = {
+    remitente: 'Dr. Elena Vance · Flight Surgeon (Houston)',
+    resumenTecnico: 'Custom English reply for Sol 48.',
+    indicaciones: ['Continue hydration.'],
+  };
+  assert.deepEqual(normalizarRespuestaMedica(propia), propia);
 });
