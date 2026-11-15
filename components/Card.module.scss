@@ -1,23 +1,26 @@
 @use 'tokens' as *;
 
+// Panel base con el lenguaje del home (gradiente oscuro, borde azulado, radio 16).
 .card {
-  background: $color-superficie;
-  border: 1px solid $color-borde;
+  background: linear-gradient(120deg, #0a1426, #051724);
+  border: 1px solid #294766;
   border-radius: $radio-m;
-  padding: $espacio-4 $espacio-5;
+  padding: 14px 20px 16px;
 }
 
 .titulo {
+  font-family: $fuente-texto;
   font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 0.06em;
+  font-weight: 500;
+  letter-spacing: 1.8px;
   text-transform: uppercase;
   color: $color-texto-suave;
   margin-bottom: $espacio-3;
 }
 
-.ia { border-left: 4px solid $color-ia; }
-.green { border-left: 4px solid $color-verde; }
-.yellow { border-left: 4px solid $color-amarillo; }
-.orange { border-left: 4px solid $color-naranja; }
-.red { border-left: 4px solid $color-rojo; }
+// Acentos: Vega/IA con el violeta del panel de estado; semáforo con borde lateral.
+.ia { border-color: #6e48ad; background: linear-gradient(120deg, #10152d, #061825); }
+.green { border-left: 3px solid $color-verde; }
+.yellow { border-left: 3px solid $color-amarillo; }
+.orange { border-left: 3px solid $color-naranja; }
+.red { border-left: 3px solid $color-rojo; }

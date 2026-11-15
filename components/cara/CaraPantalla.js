@@ -5,6 +5,7 @@ import { AVISO_NO_DIAGNOSTICO } from '@/ai/cara/aviso.js';
 import Card from '@/components/Card';
 import { ASPECTOS_CARAS, INTENSIDAD_ETIQUETA, ZONAS_CARA } from '@/lib/cara/blendshapes';
 import { useTripulanteActivo } from '@/lib/datos/tripulante';
+import { rutaZona } from '@/lib/content/rutaZona';
 import { SOL_ACTUAL, TRIPULANTES } from '@/lib/demo/generador';
 import { useCara } from './useCara';
 import styles from './CaraPantalla.module.scss';
@@ -347,7 +348,7 @@ export default function CaraPantalla() {
                 </button>
               )}
               {resultado.zonas?.map((z) => (
-                <Link key={z} href={`/mapa?zona=${z}`} className={styles.boton}>
+                <Link key={z} href={rutaZona(z)} className={styles.boton}>
                   Ver {ZONAS_CARA[z] ?? z} en el mapa →
                 </Link>
               ))}

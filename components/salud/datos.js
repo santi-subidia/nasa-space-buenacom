@@ -1,6 +1,7 @@
 import { lecturasParaInicio, metricasDesdeLecturas } from '../inicio/metricas.js';
 import { evaluate, evaluarIndicador } from '../../lib/motor/evaluar.js';
 import { maxNivel } from '../../lib/niveles.js';
+import { rutaZona } from '../../lib/content/rutaZona.js';
 
 export const ETIQUETAS_NIVEL = { green: 'Estable', yellow: 'En seguimiento', orange: 'Alerta', red: 'Crítico' };
 const numero = (n) => n.toLocaleString('es-AR', { maximumFractionDigits: 1 });
@@ -51,11 +52,11 @@ export function datosSalud({ lecturas = [], sintomas = [], evaluacion = {}, base
     { nombre: 'Radiación acumulada', icono: 'radiation', nivel: radiacion.nivel, estado: radiacion.estado,
       detalle: radiacion.valorNumerico == null ? 'Sin mediciones de radiación guardadas.' : `Última dosis registrada: ${radiacion.valor} mSv.`, href: '/cabina' },
     { nombre: 'Pérdida ósea/muscular', icono: 'dumbbell', nivel: zona(['bones', 'muscles']),
-      detalle: zona(['bones', 'muscles']) == null ? 'Sin mediciones óseas o musculares.' : 'Seguimiento del motor para huesos y músculos.', href: '/mapa?zona=bones' },
+      detalle: zona(['bones', 'muscles']) == null ? 'Sin mediciones óseas o musculares.' : 'Seguimiento del motor para huesos y músculos.', href: rutaZona('bones') },
     { nombre: 'Fatiga y recuperación', icono: 'fatigue', nivel: sueno.nivel,
-      detalle: sueno.valorNumerico == null ? 'Sin registros de sueño.' : `Último descanso: ${sueno.valor} min.`, href: '/mapa?zona=brain' },
+      detalle: sueno.valorNumerico == null ? 'Sin registros de sueño.' : `Último descanso: ${sueno.valor} min.`, href: rutaZona('brain') },
     { nombre: 'Variabilidad inmunológica', icono: 'shield', nivel: zona(['immune']),
-      detalle: zona(['immune']) == null ? 'Sin registros inmunológicos.' : 'Seguimiento de los registros y síntomas guardados.', href: '/mapa?zona=immune' },
+      detalle: zona(['immune']) == null ? 'Sin registros inmunológicos.' : 'Seguimiento de los registros y síntomas guardados.', href: rutaZona('immune') },
     { nombre: 'Aislamiento', icono: 'people', nivel: null, estado: 'Sin datos',
       detalle: 'Sin una evaluación de aislamiento registrada.', href: '/salud/mental' },
   ];

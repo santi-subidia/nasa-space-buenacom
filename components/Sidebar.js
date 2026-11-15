@@ -8,21 +8,37 @@ import { estaSupabaseConfigurado } from '@/lib/supabase/cliente';
 import { RUTAS } from '@/lib/rutas';
 import styles from './Sidebar.module.scss';
 
+const RUTAS_VYTA = ['/salud', '/actividad', '/entrenador', '/tendencias', '/registrar', '/enlace', '/jornada', '/mapa'];
+
 export default function Sidebar() {
   const pathname = usePathname();
   const sesion = useSesion();
   const supabaseOk = estaSupabaseConfigurado();
-  const esInicio = pathname === '/';
-  const esSalud = pathname.startsWith('/salud');
-  const esActividad = pathname.startsWith('/actividad') || pathname === '/entrenador';
+  // Rutas que ya usan el diseño unificado del home (VYTA). El resto conserva la barra anterior.
+  const esVyta = pathname === '/' || RUTAS_VYTA.some((r) => pathname.startsWith(r));
 
-  if (esInicio || esSalud || esActividad) {
+  if (esVyta) {
     const menu = [
-      { href: '/', etiqueta: 'Vista General', icono: 'inicio' },
-      { href: '/salud/fisica', etiqueta: 'Salud', icono: 'salud' },
-      { href: '/actividad', etiqueta: 'Actividad', icono: 'actividad' },
-      { href: '/tendencias', etiqueta: 'Analítica', icono: 'analitica' },
-      { href: '/enlace', etiqueta: 'Informes', icono: 'informes' },
+      { href: '/', etiqueta: 'Vista General', icono: 'inicio', activa: pathname === '/' },
+      {
+        href: '/salud/fisica', etiqueta: 'Salud', icono: 'salud', activa: pathname.startsWith('/salud') || pathname.startsWith('/mapa'),
+        sub: [
+          { href: '/salud/fisica', nombre: 'Física' },
+          { href: '/salud/mental', nombre: 'Mental' },
+          { href: '/salud/riesgos', nombre: 'Riesgos' },
+        ],
+      },
+      {
+        href: '/actividad', etiqueta: 'Actividad', icono: 'actividad',
+        activa: pathname.startsWith('/actividad') || pathname === '/entrenador' || pathname.startsWith('/jornada'),
+        sub: [
+          { href: '/actividad', nombre: 'Ejercicios', actual: pathname.startsWith('/actividad') || pathname === '/entrenador' },
+          { href: '/jornada', nombre: 'Jornada' },
+        ],
+      },
+      { href: '/registrar', etiqueta: 'Registrar', icono: 'registrar', activa: pathname.startsWith('/registrar') },
+      { href: '/tendencias', etiqueta: 'Analítica', icono: 'analitica', activa: pathname.startsWith('/tendencias') },
+      { href: '/enlace', etiqueta: 'Informes', icono: 'informes', activa: pathname.startsWith('/enlace') },
     ];
     return (
       <aside className={`${styles.lateral} ${styles.prototipo}`}>
@@ -32,27 +48,26 @@ export default function Sidebar() {
         <nav aria-label="Pantallas principales">
           <ul className={styles.lista}>
             {menu.map((ruta) => {
-              const activa = (ruta.icono === 'inicio' && esInicio) || (ruta.icono === 'salud' && esSalud) || (ruta.icono === 'actividad' && esActividad);
+              const abierto = ruta.activa && ruta.sub;
               return (
-              <li key={ruta.href} className={esSalud && ruta.icono === 'salud' ? styles.grupoSalud : undefined}>
-                <Link href={ruta.href} aria-current={activa ? 'page' : undefined} className={`${styles.enlace} ${activa ? styles.activo : ''}`}>
-                  <img src={`/figma/nav-${ruta.icono}.svg`} width="24" height="24" alt="" />
-                  {ruta.etiqueta}
-                </Link>
-                {esSalud && ruta.icono === 'salud' && (
-                  <ul className={styles.submenu} aria-label="Secciones de salud">
-                    {[
-                      { href: '/salud/fisica', nombre: 'Física' },
-                      { href: '/salud/mental', nombre: 'Mental' },
-                      { href: '/salud/riesgos', nombre: 'Riesgos' },
-                    ].map((subruta) => (
-                      <li key={subruta.href}>
-                        <Link href={subruta.href} aria-current={pathname === subruta.href ? 'page' : undefined}>{subruta.nombre}</Link>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </li>
+                <li key={ruta.href} className={abierto ? styles.grupoSalud : undefined}>
+                  <Link href={ruta.href} aria-current={ruta.activa && !ruta.sub ? 'page' : undefined} className={`${styles.enlace} ${ruta.activa ? styles.activo : ''}`}>
+                    <img src={`/figma/nav-${ruta.icono}.svg`} width="24" height="24" alt="" />
+                    {ruta.etiqueta}
+                  </Link>
+                  {abierto && (
+                    <ul className={styles.submenu} aria-label={`Secciones de ${ruta.etiqueta.toLowerCase()}`}>
+                      {ruta.sub.map((subruta) => {
+                        const actual = subruta.actual ?? pathname.startsWith(subruta.href);
+                        return (
+                          <li key={subruta.href}>
+                            <Link href={subruta.href} aria-current={actual ? 'page' : undefined}>{subruta.nombre}</Link>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  )}
+                </li>
               );
             })}
           </ul>

@@ -3,6 +3,7 @@
 import { Fragment, useState } from 'react';
 import Link from 'next/link';
 import Card from '@/components/Card';
+import PantallaVyta from '@/components/layout/PantallaVyta';
 import TrafficLight from '@/components/TrafficLight';
 import {
   adelantarMinutos,
@@ -92,16 +93,11 @@ export default function JornadaPantalla() {
   const nivelGlobal = evaluacion?.globalLevel || 'green';
 
   return (
-    <div className={styles.pantalla}>
-      <header className={styles.encabezado}>
-        <div>
-          <h1>Jornada del astronauta</h1>
-          <p className={styles.sub}>
-            {astronauta?.name || 'Ana Ríos'} · Sol marciano de 24 h 37 min ·{' '}
-            {ETIQUETAS_DIA[diaSemana] || 'Jueves'}
-          </p>
-        </div>
-
+    <PantallaVyta
+      titulo="Jornada del sol"
+      icono="/figma/salud/target.svg"
+      subtitulo={`${astronauta?.name || 'Ana Ríos'} · Sol marciano de 24 h 37 min · ${ETIQUETAS_DIA[diaSemana] || 'Jueves'}`}
+      acciones={
         <div className={styles.relojCaja}>
           <div className={styles.relojLectura} aria-label="Reloj de misión marciano">
             <span className={styles.relojSol}>Sol {sol} ·</span>
@@ -120,7 +116,8 @@ export default function JornadaPantalla() {
             </span>
           </div>
         </div>
-      </header>
+      }
+    >
 
       <Card titulo="Controles del reloj marciano">
         <div className={styles.controlesCard}>
@@ -299,6 +296,6 @@ export default function JornadaPantalla() {
           )}
         </ol>
       </Card>
-    </div>
+    </PantallaVyta>
   );
 }

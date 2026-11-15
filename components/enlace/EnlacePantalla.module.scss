@@ -1,38 +1,19 @@
 @use 'tokens' as *;
 
-.pantalla {
-  display: flex;
-  flex-direction: column;
-  gap: $espacio-4;
-}
-
-.encabezado {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  gap: $espacio-4;
-  flex-wrap: wrap;
-  h1 { font-size: 30px; }
-}
-
-.sub {
-  margin: 4px 0 0;
-  color: $color-texto-suave;
-  font-size: 14px;
-}
-
+// El contenedor y el título los da PantallaVyta (diseño del home).
 .latenciaPill {
   display: inline-flex;
   align-items: center;
   gap: $espacio-2;
   padding: 6px 14px;
   border-radius: 999px;
-  background: rgba($color-acento, 0.14);
-  border: 1px solid rgba($color-acento, 0.45);
-  color: $color-acento;
-  font-size: 13px;
-  font-weight: 600;
+  background: #05232c;
+  border: 1px solid #15574e;
+  color: #9cfff0;
+  font-size: 12px;
+  font-weight: 500;
   white-space: nowrap;
+  i { width: 8px; height: 8px; border-radius: 50%; background: #32efb8; box-shadow: 0 0 9px #32efb866; }
 }
 
 // ── Informe en cola y controles ──────────────────────────
@@ -62,8 +43,8 @@
   align-items: center;
   padding: 3px 10px;
   border-radius: 999px;
-  background: $color-superficie-2;
-  border: 1px solid $color-borde;
+  background: linear-gradient(110deg, #111d34, #081f2b);
+  border: 1px solid #19354b;
   font-size: 12px;
   font-weight: 600;
   color: $color-texto;
@@ -84,8 +65,8 @@
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: $espacio-4;
-  background: $color-superficie-2;
-  border: 1px solid $color-borde;
+  background: linear-gradient(110deg, #111d34, #081f2b);
+  border: 1px solid #19354b;
   border-radius: $radio-s;
   padding: $espacio-3 $espacio-4;
 
@@ -123,18 +104,18 @@
   justify-content: center;
   gap: $espacio-2;
   padding: 9px 15px;
-  border: 1px solid $color-borde;
-  border-radius: $radio-s;
-  background: $color-superficie-2;
+  border: 1px solid #29536a;
+  border-radius: 10px;
+  background: #0c2031;
   color: $color-texto;
   font: inherit;
-  font-size: 14px;
-  font-weight: 600;
+  font-size: 13px;
+  font-weight: 500;
   cursor: pointer;
-  transition: background 0.15s ease, filter 0.15s ease;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
 
   &:hover:not(:disabled) {
-    background: rgba($color-texto, 0.09);
+    border-color: #17e7f6;
   }
 
   &:disabled {
@@ -144,13 +125,14 @@
 }
 
 .botonAcento {
-  background: $color-acento;
-  border-color: $color-acento;
-  color: $color-fondo;
+  background: linear-gradient(100deg, #9770ff, #6e48ad);
+  border-color: #9e7bff;
+  color: #fff;
+  box-shadow: 0 0 13px #9770ff44;
 
   &:hover:not(:disabled) {
-    background: $color-acento;
-    filter: brightness(1.08);
+    border-color: #c4adff;
+    box-shadow: 0 0 22px #9770ff77;
   }
 }
 
@@ -220,8 +202,8 @@
   width: 100%;
   height: 12px;
   border-radius: 999px;
-  background: $color-superficie-2;
-  border: 1px solid $color-borde;
+  background: linear-gradient(110deg, #111d34, #081f2b);
+  border: 1px solid #19354b;
   overflow: hidden;
 }
 
@@ -246,8 +228,8 @@
 }
 
 .hito {
-  background: $color-superficie-2;
-  border: 1px solid $color-borde;
+  background: linear-gradient(110deg, #111d34, #081f2b);
+  border: 1px solid #19354b;
   border-radius: $radio-s;
   padding: $espacio-3;
   display: flex;
