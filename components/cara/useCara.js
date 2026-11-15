@@ -9,6 +9,7 @@ import { estimarPulsoRppg, extraerMuestraRppg } from '@/lib/cara/rppg';
 import { guardarAviso } from '@/lib/datos/avisos';
 import { cargarFotoBase, capturarImagenJpeg, guardarFotoBase } from '@/lib/datos/cara';
 import { guardarLecturas } from '@/lib/datos/lecturas';
+import { getMissionState } from '@/lib/db';
 import { SOL_ACTUAL } from '@/lib/demo/generador';
 import { silenciarLogsMediaPipe } from '@/lib/mediapipe/silenciarLogs';
 
@@ -213,11 +214,13 @@ export function useCara() {
     setErrorAccion('');
     setGuardandoPulso(true);
     try {
+      const mision = await getMissionState();
+      const solDestino = mision?.solActual ?? SOL_ACTUAL;
       await guardarLecturas([
         {
           indicator: 'hr_rest',
           value: pulsoEnVivo.bpm,
-          sol: SOL_ACTUAL,
+          sol: solDestino,
           source: 'camera',
           note: `Estimación óptica rPPG (confianza ${pulsoEnVivo.confianza}, SQI ${Math.round(pulsoEnVivo.sqi * 100)} %)`,
         },

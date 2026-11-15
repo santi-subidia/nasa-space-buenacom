@@ -14,18 +14,21 @@ import {
 } from 'recharts';
 import Card from '@/components/Card';
 import PantallaVyta from '@/components/layout/PantallaVyta';
-import { SOL_ACTUAL, useEstadoMision } from '@/lib/datos/demo';
-import { LINEA_BASE, EVALUAR, valoresDelDia } from '@/lib/mock/indicadores';
-import { SERIE, SOL_EVENTO } from '@/lib/mock/series';
+import { useEstadoMision } from '@/lib/datos/demo';
+import { evaluarConMotor, resumirTendenciaParaVega, valoresDelDia } from '@/lib/datos/indicadores';
+import { PERFILES_SIMULACION, avanzarYSimularSoles } from '@/lib/simulador/artefactos';
 import { NIVELES } from '@/lib/niveles';
 import styles from './Tendencias.module.scss';
 
-const PERIODOS = [
-  { id: '7', texto: '7 días', desde: SOL_ACTUAL - 6, hasta: SOL_ACTUAL },
-  { id: '14', texto: '14 días', desde: SOL_ACTUAL - 13, hasta: SOL_ACTUAL },
-  { id: 'mision', texto: 'Hasta hoy', desde: 1, hasta: SOL_ACTUAL },
-  { id: '60', texto: '60 soles', desde: 1, hasta: 60 },
-];
+function periodosParaSol(solActual, maxSerie, totalSoles = 60) {
+  const techo = Math.max(totalSoles, maxSerie, solActual);
+  return [
+    { id: '7', texto: '7 días', desde: Math.max(1, solActual - 6), hasta: solActual },
+    { id: '14', texto: '14 días', desde: Math.max(1, solActual - 13), hasta: solActual },
+    { id: 'mision', texto: 'Hasta hoy', desde: 1, hasta: solActual },
+    { id: '60', texto: `${techo} soles`, desde: 1, hasta: techo },
+  ];
+}
 
 const C = {
   verde: 'var(--color-verde)',
@@ -69,7 +72,7 @@ const PUNTO_ACTIVO = { r: 4.5, strokeWidth: 2, stroke: '#f3f6ff', fill: '#0b2031
 const ANIMACION = { isAnimationActive: true, animationDuration: 500 };
 const BANDA = 0.06; // las bandas quedan de contexto; el color lo lleva la línea
 
-function construirSerie(lecturas, hoy) {
+function construirSerie(lecturas, hoy, solActual) {
   const porSol = new Map();
   for (const l of lecturas) {
     if (!Number.isInteger(l?.sol)) continue;
@@ -77,30 +80,19 @@ function construirSerie(lecturas, hoy) {
     porSol.get(l.sol)[l.indicator] = l.value;
   }
 
-  if (porSol.size === 0) {
-    return SERIE.map((d) =>
-      d.sol !== SOL_ACTUAL
-        ? d
-        : {
-            ...d,
-            sleep_h: hoy.sleep_h?.hoy ? hoy.sleep_h.valor : d.sleep_h,
-            stress: hoy.stress?.hoy ? hoy.stress.valor : d.stress,
-            temp: hoy.temp?.hoy ? hoy.temp.valor : d.temp,
-            mood: hoy.mood?.hoy ? hoy.mood.valor : d.mood,
-          },
-    );
-  }
+  if (porSol.size === 0) return [];
 
   const sols = [...porSol.keys()].sort((a, b) => a - b);
   return sols.map((sol) => {
     const fila = porSol.get(sol);
-    if (sol !== SOL_ACTUAL) return fila;
+    if (sol !== solActual) return fila;
     return {
       ...fila,
       sleep_h: hoy.sleep_h?.valor ?? fila.sleep_h,
       stress: hoy.stress?.valor ?? fila.stress,
       temp: hoy.temp?.valor ?? fila.temp,
       mood: hoy.mood?.valor ?? fila.mood,
+      reaction_ms: hoy.reaction_ms?.valor ?? fila.reaction_ms,
     };
   });
 }
@@ -170,31 +162,41 @@ function useIdSvg() {
 }
 
 export default function Tendencias() {
-  const { astronauta, lecturas } = useEstadoMision(null, SOL_ACTUAL);
+  const { astronauta, lecturas, sintomas, evaluacion, solActual, mision } = useEstadoMision();
   const [periodo, setPeriodo] = useState('mision');
   const [enfocado, setEnfocado] = useState(null);
+  const [perfilSim, setPerfilSim] = useState('nominal');
+  const [simulando, setSimulando] = useState(false);
   const idBase = useIdSvg();
-  const rango = PERIODOS.find((p) => p.id === periodo);
-  const sleepBase = astronauta?.baseline?.sleep_h ?? LINEA_BASE.sleep_h;
-  const reactionBase = astronauta?.baseline?.reaction_ms ?? null;
+  const baseline = astronauta?.baseline || {};
+  const sleepBase = baseline.sleep_h ?? 7.5;
+  const reactionBase = baseline.reaction_ms ?? null;
 
-  // Arma la serie completa (60 soles desde IndexedDB) aplicando lo registrado hoy en sol 42.
-  const hoy = valoresDelDia(lecturas, SOL_ACTUAL);
-  const serie = construirSerie(lecturas, hoy);
+  // Arma la serie completa desde la base de datos aplicando lo registrado en el sol activo.
+  const hoy = valoresDelDia(lecturas, solActual);
+  const serie = construirSerie(lecturas, hoy, solActual);
+  const maxSolSerie = serie.length ? serie[serie.length - 1].sol : solActual;
+  const periodos = periodosParaSol(solActual, maxSolSerie, mision?.totalSoles ?? 60);
+  const rango = periodos.find((p) => p.id === periodo) ?? periodos[2];
   const datos = serie.filter((d) => d.sol >= rango.desde && d.sol <= rango.hasta);
   const solesVisibles = new Set(datos.map((d) => d.sol));
-  const conEvento = solesVisibles.has(SOL_EVENTO);
+  const eventoSintoma = [...(sintomas || [])]
+    .filter((s) => Number.isInteger(s?.sol) && s.sol <= solActual)
+    .sort((a, b) => a.sol - b.sol)
+    .at(-1);
+  const solEvento = eventoSintoma?.sol ?? null;
+  const conEvento = solEvento != null && solesVisibles.has(solEvento);
   const hayPvt = datos.some((d) => d.reaction_ms != null);
   const pocos = datos.length <= 14;
 
-  // Lectura de Vega calculada sobre la serie real de la misión.
-  const caida = serie.filter((d) => d.sol >= 31 && d.sol <= 40 && d.sleep_h != null);
-  const previo = serie.filter((d) => d.sol <= 30 && d.sleep_h != null);
+  // Lectura dinámica de Vega calculada sobre la serie y alertas reales de la BD.
+  const lecturaVega = resumirTendenciaParaVega({ serie, sintomas, evaluacion, solActual, baseline });
 
-  // Tramo de la caída de sueño (soles 31–40) recortado al período visible.
-  const caidaDesde = Math.max(31, rango.desde);
-  const caidaHasta = Math.min(40, rango.hasta);
-  const hayCaida = caidaDesde < caidaHasta && solesVisibles.has(caidaDesde) && solesVisibles.has(caidaHasta);
+  // Resalta ventana reciente de caída de sueño (< base - 0.8 h) si aparece en los datos visibles.
+  const solesBajos = datos.filter((d) => d.sleep_h != null && d.sleep_h < sleepBase - 0.8).map((d) => d.sol);
+  const caidaDesde = solesBajos.length >= 2 ? solesBajos[0] : null;
+  const caidaHasta = solesBajos.length >= 2 ? solesBajos[solesBajos.length - 1] : null;
+  const hayCaida = caidaDesde != null && caidaHasta != null && caidaDesde < caidaHasta;
 
   const ejeX = {
     dataKey: 'sol',
@@ -210,10 +212,10 @@ export default function Tendencias() {
 
   const marcaEvento = conEvento && (
     <ReferenceLine
-      x={SOL_EVENTO}
+      x={solEvento}
       stroke={C.naranja}
       strokeDasharray="4 4"
-      label={{ value: `Sol ${SOL_EVENTO}`, fill: C.naranja, fontSize: 11, position: 'top' }}
+      label={{ value: `Sol ${solEvento}`, fill: C.naranja, fontSize: 11, position: 'top' }}
     />
   );
 
@@ -227,17 +229,17 @@ export default function Tendencias() {
   // Con syncId todos los gráficos siguen al cursor, pero solo el que está bajo el mouse
   // muestra la tarjeta del tooltip; los demás muestran la guía y el punto activo.
   const tooltip = (id, series) => (
-    <Tooltip cursor={CURSOR} content={<TooltipSol visible={enfocado === id} series={series} />} />
+    <Tooltip cursor={CURSOR} content={<TooltipSol visible={enfocado === id} series={series} baseline={baseline} />} />
   );
 
   return (
     <PantallaVyta
       titulo="Tendencias"
       icono="/figma/nav-analitica.svg"
-      subtitulo={`Cómo vienen tus indicadores · ${periodo === '60' ? 'misión completa (60 soles)' : `hasta el sol ${SOL_ACTUAL}`}`}
+      subtitulo={`Cómo vienen tus indicadores · ${periodo === '60' ? `serie completa (${rango.hasta} soles)` : `hasta el sol ${solActual}`}`}
       acciones={
-        <div className={styles.periodos} role="radiogroup" aria-label="Período">
-          {PERIODOS.map((p) => (
+        <div className={styles.periodos} role="group" aria-label="Período y simulación futura">
+          {periodos.map((p) => (
             <button
               key={p.id}
               type="button"
@@ -249,17 +251,36 @@ export default function Tendencias() {
               {p.texto}
             </button>
           ))}
+          <select
+            aria-label="Escenario de simulación futura"
+            value={perfilSim}
+            onChange={(e) => setPerfilSim(e.target.value)}
+            style={{ background: '#0b2031', color: '#e6f0ff', border: '1px solid #2b5970', borderRadius: 8, padding: '6px 8px', fontSize: 12 }}
+          >
+            {Object.values(PERFILES_SIMULACION).map((p) => (
+              <option key={p.id} value={p.id}>{p.etiqueta}</option>
+            ))}
+          </select>
+          <button
+            type="button"
+            disabled={simulando}
+            onClick={async () => {
+              setSimulando(true);
+              try {
+                await avanzarYSimularSoles({ cantidad: 1, perfil: perfilSim });
+              } finally {
+                setSimulando(false);
+              }
+            }}
+          >
+            {simulando ? 'Simulando…' : '+1 Sol futuro'}
+          </button>
         </div>
       }
     >
       <Card acento="ia" className={styles.vega}>
         <p className={styles.vegaTitulo}><span aria-hidden="true">✦</span> Lectura de Vega</p>
-        <p>
-          Entre los soles 31 y 40 dormiste en promedio <strong>{coma(prom(caida.map((d) => d.sleep_h)))} h</strong> (antes, {coma(prom(previo.map((d) => d.sleep_h)))} h) y
-          tu estrés pasó de <strong>{coma(prom(previo.map((d) => d.stress)), 0)}</strong> a <strong>{coma(prom(caida.slice(-3).map((d) => d.stress)), 0)}</strong> sobre 10. En el
-          sol 41 apareció herpes labial con temperatura algo alta. Es un patrón típico de reactivación viral: priorizá dormir 8 h
-          esta noche y avisá al oficial médico. Es una observación, no un diagnóstico.
-        </p>
+        <p>{lecturaVega}</p>
       </Card>
 
       <div className={styles.graficos}>
@@ -303,7 +324,7 @@ export default function Tendencias() {
                     label={{ value: 'sueño ↓ · estrés ↑', fill: '#c9b2ff', fontSize: 10, position: 'insideTopLeft' }}
                   />
                 )}
-                {conEvento && <ReferenceLine x={SOL_EVENTO} stroke={C.naranja} strokeDasharray="4 4" />}
+                {conEvento && <ReferenceLine x={solEvento} stroke={C.naranja} strokeDasharray="4 4" />}
                 <XAxis {...ejeX} hide />
                 <YAxis domain={[3, 9]} ticks={[5, 7, 9]} {...EJE} />
                 {tooltip('relacion', [SERIES.sleep_h, SERIES.stress])}
@@ -317,7 +338,7 @@ export default function Tendencias() {
                 </defs>
                 <CartesianGrid stroke={C.borde} strokeDasharray="3 3" vertical={false} />
                 {hayCaida && <ReferenceArea x1={caidaDesde} x2={caidaHasta} fill="#b896ff" fillOpacity={0.1} />}
-                {conEvento && <ReferenceLine x={SOL_EVENTO} stroke={C.naranja} strokeDasharray="4 4" />}
+                {conEvento && <ReferenceLine x={solEvento} stroke={C.naranja} strokeDasharray="4 4" />}
                 <XAxis {...ejeX} />
                 <YAxis domain={[0, 10]} ticks={[0, 5, 10]} {...EJE} />
                 <Tooltip cursor={CURSOR} content={() => null} />
@@ -419,7 +440,7 @@ function Grafico({ children, alto, onEnter }) {
 }
 
 // Tarjeta del tooltip: sol, valor y nivel del motor (símbolo + texto, nunca solo color).
-function TooltipSol({ active, payload, label, series, visible }) {
+function TooltipSol({ active, payload, label, series, visible, baseline }) {
   if (!visible || !active || !payload?.length) return null;
   const fila = payload[0].payload;
   return (
@@ -428,7 +449,7 @@ function TooltipSol({ active, payload, label, series, visible }) {
       {series.map((s) => {
         const v = fila[s.clave];
         if (v == null) return null;
-        const nivel = EVALUAR[s.clave]?.(v);
+        const nivel = evaluarConMotor(s.clave, v, baseline);
         const info = NIVELES[nivel];
         return (
           <div key={s.clave} className={styles.tooltipFila}>

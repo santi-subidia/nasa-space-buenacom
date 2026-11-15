@@ -6,8 +6,7 @@ import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YA
 import CabeceraMision from '@/components/layout/CabeceraMision';
 import OrigenUmbral from '@/components/OrigenUmbral';
 import VytaVoz from '@/components/inicio/VytaVoz';
-import { SOL_ACTUAL, useEstadoMision } from '@/lib/datos/demo';
-import { MISION } from '@/lib/mock/mision';
+import { useEstadoMision } from '@/lib/datos/demo';
 import { rutaZona } from '@/lib/content/rutaZona';
 import { datosSalud, ETIQUETAS_NIVEL } from './datos';
 import MapaZonas from './MapaZonas';
@@ -49,13 +48,16 @@ function resumenEstado(seccion, estado) {
 }
 
 export default function SaludPantalla({ seccion, zona = null }) {
-  const { astronauta, lecturas, sintomas, evaluacion, cargando } = useEstadoMision(null, SOL_ACTUAL);
-  const datos = useMemo(() => datosSalud({ lecturas, sintomas, evaluacion, baseline: astronauta?.baseline || {}, sol: SOL_ACTUAL, entorno: evaluacion.env }), [lecturas, sintomas, evaluacion, astronauta]);
+  const { astronauta, solActual, mision, cabina, lecturas, sintomas, evaluacion, cargando } = useEstadoMision();
+  const datos = useMemo(
+    () => datosSalud({ lecturas, sintomas, evaluacion, baseline: astronauta?.baseline || {}, sol: solActual, entorno: evaluacion.env }),
+    [lecturas, sintomas, evaluacion, astronauta, solActual],
+  );
   const estado = datos[seccion];
   const resumen = resumenEstado(seccion, estado);
   return (
     <div className={styles.pantalla} data-dashboard data-salud={seccion} aria-busy={cargando}>
-      <CabeceraMision nombre={astronauta?.name || MISION.astronauta.nombre} titulo={astronauta?.titulo || 'Tripulante de misión'} />
+      <CabeceraMision nombre={astronauta?.name} titulo={astronauta?.titulo} sol={solActual} entorno={mision?.entorno} />
       <h1 className={styles.oculto}>Salud / {TITULOS[seccion]}</h1>
       <div className={styles.paneles}>
         <div className={styles.principal}>
@@ -100,12 +102,21 @@ export default function SaludPantalla({ seccion, zona = null }) {
           </>}
         </div>
         <aside className={styles.lateral} aria-label="Seguimiento y protocolos">
-          <Alertas key={seccion} alertas={estado.alertas} seccion={seccion} cargando={cargando} />
+          <Alertas key={seccion} alertas={estado.alertas} seccion={seccion} cargando={cargando} solActual={solActual} />
           <Protocolos seccion={seccion} alertas={estado.alertas} />
         </aside>
       </div>
       {/* Mapa corporal repartido por subcategoría: Física (cuerpo), Mental (cerebro) y Riesgos (peligros). */}
-      <MapaZonas seccion={seccion} zona={zona} lecturas={lecturas} sintomas={sintomas} evaluacion={evaluacion} />
+      <MapaZonas
+        seccion={seccion}
+        zona={zona}
+        lecturas={lecturas}
+        sintomas={sintomas}
+        evaluacion={evaluacion}
+        solActual={solActual}
+        baseline={astronauta?.baseline || {}}
+        cabinaDb={cabina}
+      />
     </div>
   );
 }
@@ -173,7 +184,7 @@ function Tendencia({ datos, tipo }) {
   </section>;
 }
 
-function Alertas({ alertas, seccion, cargando }) {
+function Alertas({ alertas, seccion, cargando, solActual }) {
   const [verTodas, setVerTodas] = useState(false);
   const limite = seccion === 'mental' ? 3 : 4;
   const visibles = verTodas ? alertas : alertas.slice(0, limite);
@@ -183,7 +194,7 @@ function Alertas({ alertas, seccion, cargando }) {
     </div>
     {!visibles.length ? <p className={styles.sinDatos}>{cargando ? 'Cargando registros…' : 'Sin alertas activas para este apartado.'}</p> : <ul className={styles.listaAlertas}>
       {visibles.map((alerta, i) => <li key={alerta.ruleId || i} data-nivel={alerta.level}>
-        <details><summary><i className={styles.punto} aria-hidden="true" /><span><strong>{alerta.title}</strong><span>{alerta.why}</span></span><small>Sol {alerta.sol ?? SOL_ACTUAL}</small></summary>
+        <details><summary><i className={styles.punto} aria-hidden="true" /><span><strong>{alerta.title}</strong><span>{alerta.why}</span></span><small>Sol {alerta.sol ?? solActual}</small></summary>
           <div className={styles.detalleAlerta}><p>{alerta.why}</p><ul>{(alerta.actions || []).map((accion) => <li key={accion}>{accion}</li>)}</ul>
             {alerta.nasaSource && <p className={styles.fuente}>Fuente: {alerta.nasaSource}</p>}
             <OrigenUmbral basis={alerta.basis} className={styles.fuente} />

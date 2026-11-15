@@ -5,9 +5,8 @@ import { AVISO_NO_DIAGNOSTICO } from '@/ai/cara/aviso.js';
 import Card from '@/components/Card';
 import PantallaVyta from '@/components/layout/PantallaVyta';
 import { ASPECTOS_CARAS, INTENSIDAD_ETIQUETA, ZONAS_CARA } from '@/lib/cara/blendshapes';
-import { useTripulanteActivo } from '@/lib/datos/tripulante';
+import { useEstadoMision } from '@/lib/datos/demo';
 import { rutaZona } from '@/lib/content/rutaZona';
-import { SOL_ACTUAL, TRIPULANTES } from '@/lib/demo/generador';
 import { useCara } from './useCara';
 import styles from './CaraPantalla.module.scss';
 
@@ -53,8 +52,8 @@ function OndaPulso({ puntos }) {
 }
 
 export default function CaraPantalla() {
-  const activoId = useTripulanteActivo();
-  const nombreTripulante = TRIPULANTES.find((t) => t.id === activoId)?.name || 'Ana Ríos';
+  const { astronauta, solActual } = useEstadoMision();
+  const nombreTripulante = astronauta?.name || 'Tripulante';
   const {
     videoRef,
     camaraEstado,
@@ -94,7 +93,7 @@ export default function CaraPantalla() {
     <PantallaVyta
       className={styles.pantalla}
       titulo="¿Cómo me veo hoy?"
-      subtitulo={`Tu cara de hoy contra tu foto base: fatiga por parpadeo y pulso · Sol ${SOL_ACTUAL} · ${nombreTripulante}`}
+      subtitulo={`Tu cara de hoy contra tu foto base: fatiga por parpadeo y pulso · Sol ${solActual} · ${nombreTripulante}`}
       icono="/figma/nav-registrar.svg"
       acciones={
         <>
@@ -217,10 +216,10 @@ export default function CaraPantalla() {
                     disabled={guardandoPulso || pulsoGuardado}
                   >
                     {pulsoGuardado
-                      ? `✓ Pulso guardado en Sol ${SOL_ACTUAL}`
+                      ? `✓ Pulso guardado en Sol ${solActual}`
                       : guardandoPulso
                         ? 'Guardando…'
-                        : `Guardar pulso en chequeo (Sol ${SOL_ACTUAL})`}
+                        : `Guardar pulso en chequeo (Sol ${solActual})`}
                   </button>
                 )}
               </div>

@@ -19,6 +19,12 @@ import {
   ETIQUETAS_DIA,
   estadoTareaRespectoAHora,
 } from '@/lib/reloj/relojMision';
+import {
+  ARTEFACTOS_NASA,
+  PERFILES_SIMULACION,
+  avanzarYSimularSoles,
+  inyectarArtefactoEnSol,
+} from '@/lib/simulador/artefactos';
 import styles from './JornadaPantalla.module.scss';
 
 const FILTROS = [
@@ -76,6 +82,9 @@ function IconoCampana() {
 export default function JornadaPantalla() {
   const [filtro, setFiltro] = useState('all');
   const [simuladorAbierto, setSimuladorAbierto] = useState(false);
+  const [perfilSim, setPerfilSim] = useState('nominal');
+  const [simulando, setSimulando] = useState(false);
+  const [ultimoResumenSim, setUltimoResumenSim] = useState(null);
   const {
     reloj,
     sol,
@@ -89,6 +98,43 @@ export default function JornadaPantalla() {
     alternarTarea,
     cambiarDiaSemana,
   } = useJornada();
+
+  async function ejecutarSimulacion(cantidad) {
+    if (simulando) return;
+    setSimulando(true);
+    try {
+      const res = await avanzarYSimularSoles({ cantidad, perfil: perfilSim });
+      const astroId = astronauta?.id ?? 'ana';
+      const ev = res.evaluacionesPorTripulante[astroId];
+      setUltimoResumenSim(
+        `Avanzó de Sol ${res.solAnterior} a Sol ${res.solNuevo} (${res.lecturasGeneradas} lecturas NASA guardadas en BD). Nivel actual: ${ev?.globalLevel ?? 'green'}${ev?.alerts?.[0] ? ` · Alerta: ${ev.alerts[0].title}` : ' · Sin alertas'}.`,
+      );
+    } catch (e) {
+      setUltimoResumenSim(`Error al simular: ${e?.message ?? 'desconocido'}`);
+    } finally {
+      setSimulando(false);
+    }
+  }
+
+  async function simularArtefacto(artefactoId) {
+    if (simulando) return;
+    setSimulando(true);
+    try {
+      const res = await inyectarArtefactoEnSol({
+        astronautId: astronauta?.id ?? 'ana',
+        sol,
+        artefactoId,
+        perfil: perfilSim,
+      });
+      setUltimoResumenSim(
+        `Artefacto "${ARTEFACTOS_NASA[artefactoId]?.nombre}" cargado en Sol ${res.sol} (${res.lecturas.length} lecturas). Evaluación: ${res.evaluacion.globalLevel}${res.evaluacion.alerts[0] ? ` · ${res.evaluacion.alerts[0].title}` : ''}.`,
+      );
+    } catch (e) {
+      setUltimoResumenSim(`Error al inyectar artefacto: ${e?.message ?? 'desconocido'}`);
+    } finally {
+      setSimulando(false);
+    }
+  }
 
 
   const estados = useMemo(() => {
@@ -192,6 +238,33 @@ export default function JornadaPantalla() {
               </select>
             </label>
           </div>
+          <div className={styles.controlesCard} style={{ marginTop: 12, paddingTop: 12, borderTop: '1px solid rgba(130, 175, 220, 0.2)' }}>
+            <label className={styles.selectorDia}>
+              <span>Simular futuro (NASA):</span>
+              <select
+                value={perfilSim}
+                onChange={(e) => setPerfilSim(e.target.value)}
+                aria-label="Perfil de simulación por artefactos NASA"
+              >
+                {Object.values(PERFILES_SIMULACION).map((p) => (
+                  <option key={p.id} value={p.id}>{p.etiqueta}</option>
+                ))}
+              </select>
+            </label>
+            <div className={styles.botonesReloj}>
+              <button type="button" disabled={simulando} onClick={() => ejecutarSimulacion(1)} className={`${styles.boton} ${styles.botonPrimario}`}>
+                {simulando ? 'Simulando…' : 'Simular +1 Sol'}
+              </button>
+              <button type="button" disabled={simulando} onClick={() => ejecutarSimulacion(3)} className={styles.boton}>+3 Soles</button>
+              <button type="button" disabled={simulando} onClick={() => ejecutarSimulacion(7)} className={styles.boton}>+7 Soles</button>
+              <button type="button" disabled={simulando} onClick={() => simularArtefacto('watch')} className={styles.boton}>⌚ Watch ahora</button>
+              <button type="button" disabled={simulando} onClick={() => simularArtefacto('cabina_eclss')} className={styles.boton}>🛰️ Cabina ECLSS</button>
+              <button type="button" disabled={simulando} onClick={() => simularArtefacto('cognitivo_camara')} className={styles.boton}>🧠 PVT + SANS</button>
+            </div>
+          </div>
+          <p className={styles.notaNormal} style={{ marginTop: 8 }}>
+            {ultimoResumenSim || PERFILES_SIMULACION[perfilSim]?.descripcion}
+          </p>
         </Card>
       )}
 

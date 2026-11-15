@@ -2,15 +2,23 @@
 
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
-import { MISION, SOL_ACTUAL } from '@/lib/mock/mision';
+import { useEstadoMision } from '@/lib/datos/demo';
 import { alternarPanelNotificaciones, useNotificaciones } from '@/lib/datos/notificaciones';
 import styles from '@/components/inicio/InicioPantalla.module.scss';
 
-export default function CabeceraMision({ nombre, titulo }) {
+const ETIQUETA_ENTORNO = {
+  mars_base: 'Base Marte',
+  transit: 'Tránsito',
+  mars_orbit: 'Órbita Marte',
+};
+
+export default function CabeceraMision({ nombre, titulo, sol, entorno }) {
+  const { astronauta, mision, solActual } = useEstadoMision();
   const [ahora, setAhora] = useState(null);
   const [enLinea, setEnLinea] = useState(true);
   const { items: notificaciones } = useNotificaciones();
   const hayCritica = notificaciones.some((n) => n.color === 'red');
+
   useEffect(() => {
     const actualizar = () => { setAhora(new Date()); setEnLinea(navigator.onLine); };
     actualizar();
@@ -24,16 +32,22 @@ export default function CabeceraMision({ nombre, titulo }) {
     };
   }, []);
 
+  const nombreMostrar = nombre || astronauta?.name || 'Cargando…';
+  const tituloMostrar = titulo || astronauta?.titulo || 'Tripulante de misión';
+  const solMostrar = sol ?? solActual ?? mision?.solActual ?? 42;
+  const entornoRaw = entorno ?? mision?.entorno ?? 'mars_base';
+  const entornoMostrar = ETIQUETA_ENTORNO[entornoRaw] ?? entornoRaw;
+
   return (
     <header className={styles.encabezado}>
       <div className={styles.perfil}>
         <Image src="/figma/tripulante.png" width={88} height={88} sizes="88px" alt="" className={styles.retrato} />
-        <span><strong>{nombre}</strong><small>{titulo}</small></span>
+        <span><strong>{nombreMostrar}</strong><small>{tituloMostrar}</small></span>
       </div>
       <div className={styles.conexion}>
         <span>Conexión</span>
         <strong><i className={enLinea ? styles.enLinea : styles.sinConexion} aria-hidden="true" /> {enLinea ? 'En línea' : 'Sin conexión'}</strong>
-        <small>{MISION.entorno} · Sol {SOL_ACTUAL}</small>
+        <small>{entornoMostrar} · Sol {solMostrar}</small>
       </div>
       <div className={styles.tierra} aria-hidden="true" />
       <button
@@ -44,16 +58,17 @@ export default function CabeceraMision({ nombre, titulo }) {
         aria-label={`Notificaciones de misión (${notificaciones.length})`}
         title="Notificaciones de misión"
       >
-        <span aria-hidden="true">🔔</span>
-        {notificaciones.length > 0 && (
-          <span className={styles.campanaContador}>{notificaciones.length}</span>
-        )}
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" />
+          <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" />
+        </svg>
+        {notificaciones.length > 0 && <span className={styles.campanaCantidad}>{notificaciones.length}</span>}
       </button>
-      <div className={styles.fecha}>
-        <span>{ahora ? ahora.toLocaleDateString('es-AR', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'America/Argentina/Buenos_Aires' }) : '—'}</span>
-        <span>{ahora ? `${ahora.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'UTC' })} UTC` : '—'}</span>
+      <div className={styles.hora}>
+        <span className={styles.iconoReloj} aria-hidden="true" />
+        <strong>{ahora ? ahora.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit', hour12: false }) : '--:--'}</strong>
+        <small>UTC {ahora ? ahora.toISOString().slice(11, 16) : '--:--'}</small>
       </div>
-      <img src="/figma/nasa.svg" width="66" height="66" alt="NASA" className={styles.insignia} />
     </header>
   );
 }
