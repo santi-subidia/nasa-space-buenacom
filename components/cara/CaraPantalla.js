@@ -286,7 +286,7 @@ export default function CaraPantalla() {
       </div>
 
       {resultado && (
-        <Card titulo="Vega’s observation" acento="ia" className={styles.resultadoCard}>
+        <Card titulo="Vyta’s observation" acento="ia" className={styles.resultadoCard}>
           {chequeoGuardado && <p role="status">✓ Facial check-in completed for Sol {solActual}. <Link href="/registrar">Continue check-in →</Link></p>}
           <div className={styles.resultadoTop}>
             <p className={styles.resumen}>{resultado.resumen}</p>
