@@ -3,6 +3,19 @@
 // Pantalla Registrar con el diseño del home (VYTA): el contenedor lo da PantallaVyta.
 .cuerpo { display: grid; grid-template-columns: minmax(0, 906fr) minmax(0, 449fr); gap: 17px; align-items: start; }
 .form { display: flex; flex-direction: column; gap: $espacio-3; }
+.campos { display: flex; flex-direction: column; gap: $espacio-3; border: 0; padding: 0; margin: 0; min-width: 0; }
+.completado {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 22px;
+  border-color: #246655;
+  padding: 25px;
+  h2 { font-size: 22px; }
+  p { color: $color-texto-suave; font-size: 14px; margin: 7px 0 0; }
+  > a { margin-left: auto; }
+}
+.tickCompletado { display: grid; place-items: center; width: 58px; height: 58px; border-radius: 50%; color: #0a1724; background: #35edb5; font-size: 35px; flex-shrink: 0; }
 .lateral { display: flex; flex-direction: column; gap: 13px; }
 
 // ── Botones y campos ───────────────────────────────────

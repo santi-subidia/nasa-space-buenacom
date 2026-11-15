@@ -1,15 +1,16 @@
 'use client';
 
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import Card from '@/components/Card';
 import PantallaVyta from '@/components/layout/PantallaVyta';
 import { INFO, CARAS } from '@/lib/content/indicadores';
+import { eliminarFoto, guardarFoto } from '@/lib/datos/sintomas';
+import { useCheckinDiario } from '@/lib/datos/checkin';
+import { guardarCheckinDiario } from '@/lib/db';
 import { useEstadoMision } from '@/lib/datos/demo';
 import { valoresDelDia } from '@/lib/datos/indicadores';
-import { guardarLecturas } from '@/lib/datos/lecturas';
-import { guardarFoto, guardarSintoma } from '@/lib/datos/sintomas';
 import FotoPiel from './FotoPiel';
 import styles from './Registrar.module.scss';
 
@@ -33,6 +34,8 @@ export default function Registrar() {
   const router = useRouter();
   const { lecturas, solActual } = useEstadoMision();
   const base = valoresDelDia(lecturas, solActual);
+  const checkin = useCheckinDiario();
+  const guardandoRef = useRef(false);
 
   const [edit, setEdit] = useState({}); // solo lo que se tocó: { clave: texto }
   const [foto, setFoto] = useState(null); // { blob, code, severity }
@@ -52,28 +55,40 @@ export default function Registrar() {
   const hayError = Object.keys(LIMITES).some((k) => error(k));
 
   const cambios = Object.keys(LIMITES).filter(
-    (k) => edit[k] !== undefined && edit[k] !== '' && !error(k) && num(edit[k]) !== base[k]?.valor,
+    (k) => edit[k] !== undefined && edit[k] !== '' && !error(k),
   );
   const nada = cambios.length === 0 && !foto;
 
   async function guardar(e) {
     e.preventDefault();
-    if (nada || hayError) return;
+    if (nada || hayError || guardandoRef.current || checkin.cargando || checkin.completado || checkin.error) return;
+    guardandoRef.current = true;
     setGuardando(true);
+    setErrorGuardado(null);
 
     const nuevas = cambios.map((k) => ({ indicator: k, value: num(edit[k]), sol: solActual }));
 
+    let photoBlobId = null;
+    let conservarFoto = false;
     try {
-      if (nuevas.length) await guardarLecturas(nuevas);
       if (foto) {
-        const photoBlobId = await guardarFoto(foto.blob);
-        await guardarSintoma({ bodyZone: 'immune', code: foto.code, severity: foto.severity, sol: solActual, photoBlobId });
+        photoBlobId = await guardarFoto(foto.blob);
       }
+      const resultado = await guardarCheckinDiario({
+        astronautId: checkin.astronautId,
+        sol: solActual,
+        lecturas: nuevas,
+        sintoma: foto ? { bodyZone: 'immune', code: foto.code, severity: foto.severity, photoBlobId } : null,
+      });
+      conservarFoto = resultado.guardado;
       router.push('/');
     } catch (err) {
       console.error(err);
       setErrorGuardado('No se pudo guardar en este equipo. Probá de nuevo.');
+      guardandoRef.current = false;
       setGuardando(false);
+    } finally {
+      if (photoBlobId && !conservarFoto) await eliminarFoto(photoBlobId).catch(console.error);
     }
   }
 
@@ -83,8 +98,16 @@ export default function Registrar() {
       subtitulo={`Chequeo matutino · Sol ${solActual}`}
       icono="/figma/nav-registrar.svg"
     >
-      <div className={styles.cuerpo}>
+      {checkin.cargando ? <p role="status" className={styles.texto}>Consultando el check-in de hoy…</p> : checkin.completado ? (
+        <Card className={styles.completado}>
+          <span className={styles.tickCompletado} aria-hidden="true">✓</span>
+          <div><h2>Check-in de hoy completado</h2><p>Ya guardaste tu chequeo diario. Podés registrar el próximo a partir de mañana.</p></div>
+          <Link href="/" className={`${styles.boton} ${styles.primario}`}>Volver a Vista General</Link>
+        </Card>
+      ) : <div className={styles.cuerpo}>
         <form className={styles.form} onSubmit={guardar} noValidate>
+          {checkin.error && <p className={styles.error} role="alert">{checkin.error}</p>}
+          <fieldset className={styles.campos} disabled={guardando || Boolean(checkin.error)}>
           <Card titulo="Mediciones del día">
             <Fila id="presion" etiqueta="Presión arterial">
               <div className={styles.par}>
@@ -192,6 +215,7 @@ export default function Registrar() {
                   : `Se ${cambios.length === 1 ? 'guardará 1 lectura' : `guardarán ${cambios.length} lecturas`}${foto ? ' y 1 foto' : ''}.`}
             </span>
           </div>
+          </fieldset>
         </form>
 
         <div className={styles.lateral}>
@@ -205,7 +229,7 @@ export default function Registrar() {
           </Card>
           <FotoPiel valor={foto} onChange={setFoto} />
         </div>
-      </div>
+      </div>}
     </PantallaVyta>
   );
 }

@@ -1,5 +1,5 @@
 import { maxNivel, NIVELES } from '../../lib/niveles.js';
-import { evaluarIndicador } from '../../lib/motor/evaluar.js';
+import { evaluarIndicador, REGLAS } from '../../lib/motor/evaluar.js';
 
 // Composición del frame General; valores y estados leídos de la base y del motor existente.
 export const METRICAS_FIGMA = [
@@ -13,6 +13,37 @@ export const METRICAS_FIGMA = [
 
 const COLORES = { green: 'menta', yellow: 'amarillo', orange: 'naranja', red: 'rosa' };
 const numero = (valor) => valor.toLocaleString('es-AR', { maximumFractionDigits: 1 });
+
+// Índice de seguimiento propio de VYTA. La gravedad del motor va de 0 a 3.
+// El promedio se convierte a 0–100 y su máximo respeta la alerta más alta.
+const MAXIMO_PUNTAJE_POR_NIVEL = { green: 100, yellow: 89, orange: 69, red: 39 };
+
+export function calcularPuntajeSalud(evaluacion = {}) {
+  const indicadores = Object.values(evaluacion.indicators || {}).filter((indicador) =>
+    Number.isFinite(indicador.value) &&
+    NIVELES[indicador.level] &&
+    (REGLAS.thresholds[indicador.indicator] || REGLAS.baselineDelta[indicador.indicator]) &&
+    (evaluacion.sol == null || indicador.sol == null || indicador.sol <= evaluacion.sol));
+
+  if (!indicadores.length) {
+    return { valor: null, indicadores: 0, detalle: 'Sin mediciones evaluables para calcular el puntaje de salud.' };
+  }
+
+  const gravedadMedia = indicadores.reduce((suma, indicador) => suma + NIVELES[indicador.level].orden, 0) / indicadores.length;
+  const promedio = Math.round(100 * (1 - gravedadMedia / 3));
+  const nivel = maxNivel(
+    evaluacion.globalLevel,
+    indicadores.map((indicador) => indicador.level),
+    Object.values(evaluacion.zoneLevels || {}),
+    (evaluacion.alerts || []).map((alerta) => alerta.level),
+  );
+  const valor = Math.max(0, Math.min(promedio, MAXIMO_PUNTAJE_POR_NIVEL[nivel]));
+  return {
+    valor,
+    indicadores: indicadores.length,
+    detalle: `Índice de seguimiento VYTA. Promedio de ${indicadores.length} indicadores según su gravedad (normal 100, atención 66,7, alerta 33,3, crítico 0). Máximo de ${MAXIMO_PUNTAJE_POR_NIVEL[nivel]} por el nivel ${NIVELES[nivel].etiqueta.toLowerCase()} del motor.`,
+  };
+}
 
 /** Lecturas de presentación: conserva la unidad y extrae HRV de las notas ya guardadas por el Watch. */
 export function lecturasParaInicio(lecturas = [], sol) {
