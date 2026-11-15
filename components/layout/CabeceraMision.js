@@ -41,7 +41,9 @@ export default function CabeceraMision({ nombre, titulo, sol, entorno, mostrarNo
   return (
     <header className={styles.encabezado}>
       <div className={styles.perfil}>
-        <Image src="/figma/tripulante.png" width={88} height={88} sizes="88px" alt="" className={styles.retrato} />
+        <span className={styles.retrato}>
+          <Image src="/figma/tripulante.png" width={125} height={125} sizes="(max-width: 1200px) 80px, 125px" alt="" className={styles.fotoRetrato} />
+        </span>
         <span><strong>{nombreMostrar}</strong><small>{tituloMostrar}</small></span>
       </div>
       <div className={styles.conexion}>
