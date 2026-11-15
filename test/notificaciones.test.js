@@ -137,9 +137,9 @@ test('evaluarHitosHorario detecta todos los hitos del sol (incl. hidratación y 
   });
   assert.equal(despertar.emitidas.length, 1);
   assert.equal(despertar.emitidas[0].horaMision, '06:30');
-  assert.equal(despertar.emitidas[0].titulo, 'Despertar · Sincronizar Watch');
-  assert.equal(despertar.emitidas[0].mensaje, 'Tu noche llegó: 5 h 20. Hoy tu chequeo tiene 4 pasos.');
-  assert.equal(despertar.emitidas[0].ruta, '/');
+  assert.equal(despertar.emitidas[0].titulo, 'Despertar · Chequeo matutino');
+  assert.equal(despertar.emitidas[0].mensaje, 'Comienza un nuevo sol. Realizá tu chequeo matutino.');
+  assert.equal(despertar.emitidas[0].ruta, '/registrar');
 
   // Avance +60 min (06:30 -> 07:30): 06:45 y 07:00
   const manana = evaluarHitosHorario({

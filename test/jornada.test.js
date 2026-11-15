@@ -39,12 +39,12 @@ test('esSuenoProtegido marca la ventana 22:00–06:30 incluyendo 24:00–24:36',
   assert.equal(esSuenoProtegido(parsearHoraMision('13:30')), false);
 });
 
-test('generarTareasJornada genera las 12 tareas diarias y las semanales según el día', () => {
+test('generarTareasJornada genera las 11 tareas diarias y las semanales según el día', () => {
   const jueves = generarTareasJornada({ astronautId: 'ana', sol: 42, diaSemana: 'jueves' });
   const diarias = jueves.filter((t) => t.recurrence === 'daily');
-  assert.equal(diarias.length, 12);
-  assert.equal(diarias[0].missionTime, '06:30');
-  assert.equal(diarias[0].ruta, '/');
+  assert.equal(diarias.length, 11);
+  assert.equal(diarias[0].missionTime, '06:45');
+  assert.equal(diarias[0].ruta, '/registrar');
   assert.equal(diarias[diarias.length - 1].missionTime, '21:30');
   assert.equal(jueves.filter((t) => t.recurrence === 'weekly').length, 0);
 
@@ -110,11 +110,11 @@ test('agrega controles de temperatura cada 8 h (14:45 y 22:00) ante fiebre o rea
 test('integra y preserva tareasGuardadas de IndexedDB sin duplicar por título', () => {
   const tareasGuardadas = [
     {
-      id: 'db-watch',
+      id: 'db-chequeo',
       astronautId: 'ana',
-      kind: 'watch',
-      title: '  sincronizar watch  ',
-      missionTime: '06:30',
+      kind: 'measure',
+      title: '  chequeo matutino  ',
+      missionTime: '06:45',
       recurrence: 'daily',
       done: true,
     },
@@ -144,12 +144,12 @@ test('integra y preserva tareasGuardadas de IndexedDB sin duplicar por título',
     tareasGuardadas,
   });
 
-  const coincidenciasWatch = tareas.filter(
-    (t) => t.title.trim().toLowerCase() === 'sincronizar watch',
+  const coincidenciasChequeo = tareas.filter(
+    (t) => t.title.trim().toLowerCase() === 'chequeo matutino',
   );
-  assert.equal(coincidenciasWatch.length, 1);
-  assert.equal(coincidenciasWatch[0].done, true);
-  assert.equal(coincidenciasWatch[0].dbId, 'db-watch');
+  assert.equal(coincidenciasChequeo.length, 1);
+  assert.equal(coincidenciasChequeo[0].done, true);
+  assert.equal(coincidenciasChequeo[0].dbId, 'db-chequeo');
 
   const hisopado = tareas.find((t) => t.id === 'db-hisopado');
   assert.ok(hisopado);
@@ -167,21 +167,17 @@ test('autocompleta tareas con lecturasHoy y calcula estado respecto a la hora', 
   const parcial = generarTareasJornada({
     sol: 42,
     lecturasHoy: [
-      { sol: 42, source: 'watch_sim', indicator: 'sleep_h', value: 5.5 },
       { sol: 42, source: 'manual', indicator: 'bp_sys', value: 118 },
       { sol: 42, source: 'manual', indicator: 'temp', value: 37.6 },
     ],
   });
 
-  const watch = parcial.find((t) => t.missionTime === '06:30');
   const chequeo = parcial.find((t) => t.missionTime === '06:45');
-  assert.equal(watch.done, true);
   assert.equal(chequeo.done, false);
 
   const completo = generarTareasJornada({
     sol: 42,
     lecturasHoy: [
-      { sol: 42, source: 'watch_sim', indicator: 'sleep_h', value: 5.5 },
       { sol: 42, source: 'manual', indicator: 'bp_sys', value: 118 },
       { sol: 42, source: 'manual', indicator: 'temp', value: 37.6 },
       { sol: 42, source: 'manual', indicator: 'mood', value: 3 },
@@ -190,13 +186,12 @@ test('autocompleta tareas con lecturasHoy y calcula estado respecto a la hora', 
     ],
   });
 
-  assert.equal(completo.find((t) => t.missionTime === '06:30').done, true);
   assert.equal(completo.find((t) => t.missionTime === '06:45').done, true);
   assert.equal(completo.find((t) => t.missionTime === '07:30').done, true);
   assert.equal(completo.find((t) => t.missionTime === '13:30').done, true);
 
-  assert.equal(estadoTareaRespectoAHora(completo[0], parsearHoraMision('06:30')), 'hecha');
-  assert.equal(estadoTareaRespectoAHora(completo[2], parsearHoraMision('07:05')), 'ahora');
-  assert.equal(estadoTareaRespectoAHora(completo[2], parsearHoraMision('06:30')), 'pendiente');
-  assert.equal(estadoTareaRespectoAHora(completo[2], parsearHoraMision('09:00')), 'pasada');
+  assert.equal(estadoTareaRespectoAHora(completo[0], parsearHoraMision('06:45')), 'hecha');
+  assert.equal(estadoTareaRespectoAHora(completo[1], parsearHoraMision('07:05')), 'ahora');
+  assert.equal(estadoTareaRespectoAHora(completo[1], parsearHoraMision('06:30')), 'pendiente');
+  assert.equal(estadoTareaRespectoAHora(completo[1], parsearHoraMision('09:00')), 'pasada');
 });

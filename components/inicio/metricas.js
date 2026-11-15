@@ -45,7 +45,7 @@ export function calcularPuntajeSalud(evaluacion = {}) {
   };
 }
 
-/** Lecturas de presentación: conserva la unidad y extrae HRV de las notas ya guardadas por el Watch. */
+/** Lecturas de presentación: conserva la unidad y extrae HRV de las notas guardadas. */
 export function lecturasParaInicio(lecturas = [], sol) {
   const disponibles = lecturas
     .filter((l) => l && Number.isFinite(l.value) && (l.sol == null || l.sol <= sol))

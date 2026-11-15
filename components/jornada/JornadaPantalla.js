@@ -257,7 +257,6 @@ export default function JornadaPantalla() {
               </button>
               <button type="button" disabled={simulando} onClick={() => ejecutarSimulacion(3)} className={styles.boton}>+3 Soles</button>
               <button type="button" disabled={simulando} onClick={() => ejecutarSimulacion(7)} className={styles.boton}>+7 Soles</button>
-              <button type="button" disabled={simulando} onClick={() => simularArtefacto('watch')} className={styles.boton}>⌚ Watch ahora</button>
               <button type="button" disabled={simulando} onClick={() => simularArtefacto('cabina_eclss')} className={styles.boton}>🛰️ Cabina ECLSS</button>
               <button type="button" disabled={simulando} onClick={() => simularArtefacto('cognitivo_camara')} className={styles.boton}>🧠 PVT + SANS</button>
             </div>
@@ -326,7 +325,7 @@ export default function JornadaPantalla() {
             <p className={hayEventos ? styles.notaEvento : styles.notaNormal}>
               {hayEventos
                 ? `Se sumaron ${conteos.event} tareas por evento (${horasEvento.join(' y ')}) según tu evaluación actual.`
-                : 'Sincronizá el Watch o registrá mediciones para autocompletar tareas.'}
+                : 'Registrá mediciones para autocompletar tareas.'}
             </p>
           </Card>
         </div>

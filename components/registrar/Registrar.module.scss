@@ -66,7 +66,6 @@ select.campo { width: auto; text-align: left; }
 .numero { display: inline-flex; flex-direction: column; gap: 2px; }
 .par { display: flex; align-items: center; gap: $espacio-2; }
 .unidad { color: $color-texto-suave; font-size: 12px; min-width: 44px; }
-.watch { font-size: 11px; background: #0a3545; color: #9cfff0; border: 1px solid #15574e; border-radius: 999px; padding: 2px 10px; }
 .camaraBadge { font-size: 11px; background: #05232c; color: $color-verde; border: 1px solid #15574e; border-radius: 999px; padding: 2px 10px; }
 
 // ── Filas del formulario ───────────────────────────────
