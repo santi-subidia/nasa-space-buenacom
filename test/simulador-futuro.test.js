@@ -134,5 +134,54 @@ test('evaluarZonas, rachaEjercicio y resumirTendenciaParaVega reflejan únicamen
   const texto = resumirTendenciaParaVega({ serie: [{ sol: 43, sleep_h: 8.1, stress: 2 }], solActual: 43, baseline: { sleep_h: 7.8 } });
   assert.match(texto, /8,1 h/);
   assert.ok(!texto.includes('sol 41'));
-  assert.ok(Object.keys(PERFILES_SIMULACION).length >= 5);
+  assert.ok(Object.keys(PERFILES_SIMULACION).length >= 6);
+});
+
+test('simulador acopla resp_rate a CO2, músculo/hueso a ARED y gravedad, y aislamiento a ánimo/fatiga', () => {
+  const ana = {
+    id: 'ana',
+    baseline: {
+      hr_rest: 64,
+      resp_rate: 15,
+      muscle_mass_pct: 98,
+      bone_density_pct: 98.5,
+      microgravity_adapt: 86,
+      isolation_score: 2,
+    },
+  };
+
+  const co2Alto = generarPaqueteSol({
+    astronauta: ana,
+    sol: 43,
+    paso: 2,
+    cabinaPrevia: { co2Mmhg: 4.1 },
+    perfil: 'depurador_co2',
+    seed: 901,
+  });
+  const respCo2 = co2Alto.lecturas.find((r) => r.indicator === 'resp_rate')?.value;
+  assert.ok(respCo2 > 15, `resp_rate (${respCo2}) debería subir con CO₂ elevado`);
+
+  const transitoSinAred = generarPaqueteSol({
+    astronauta: ana,
+    sol: 43,
+    paso: 1,
+    entorno: 'transit_0g',
+    perfil: 'sin_ejercicio_ared',
+    seed: 902,
+  });
+  const superficieNominal = generarPaqueteSol({
+    astronauta: ana,
+    sol: 43,
+    paso: 1,
+    entorno: 'mars_base',
+    perfil: 'nominal',
+    seed: 902,
+  });
+
+  const musc0g = transitoSinAred.lecturas.find((r) => r.indicator === 'muscle_mass_pct')?.value;
+  const muscMarte = superficieNominal.lecturas.find((r) => r.indicator === 'muscle_mass_pct')?.value;
+  assert.ok(musc0g < muscMarte, `en 0g sin ARED (${musc0g}%) debe perder más músculo que en Marte nominal (${muscMarte}%)`);
+
+  const iso = transitoSinAred.lecturas.find((r) => r.indicator === 'isolation_score')?.value;
+  assert.ok(iso >= 1 && iso <= 10, `isolation_score (${iso}) en escala 1–10`);
 });

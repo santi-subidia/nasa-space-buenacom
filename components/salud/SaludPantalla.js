@@ -50,8 +50,8 @@ function resumenEstado(seccion, estado) {
 export default function SaludPantalla({ seccion, zona = null }) {
   const { astronauta, solActual, mision, cabina, lecturas, sintomas, evaluacion, cargando } = useEstadoMision();
   const datos = useMemo(
-    () => datosSalud({ lecturas, sintomas, evaluacion, baseline: astronauta?.baseline || {}, sol: solActual, entorno: evaluacion.env }),
-    [lecturas, sintomas, evaluacion, astronauta, solActual],
+    () => datosSalud({ lecturas, sintomas, evaluacion, baseline: astronauta?.baseline || {}, sol: solActual, entorno: evaluacion.env, cabina }),
+    [lecturas, sintomas, evaluacion, astronauta, solActual, cabina],
   );
   const estado = datos[seccion];
   const resumen = resumenEstado(seccion, estado);
