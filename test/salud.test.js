@@ -71,3 +71,40 @@ test('riesgos y su evolución muestran las alertas del motor existente, incluso 
   }
   assert.notEqual(datos.historia.find((d) => d.sol === 39).alertas, null);
 });
+
+test('Salud muestra respiración, músculo, hueso, microgravedad, aislamiento y radiación desde BD', async () => {
+  await addReading(lectura('resp_rate', 16, 42));
+  await addReading(lectura('muscle_mass_pct', 97.4, 42));
+  await addReading(lectura('bone_density_pct', 98.2, 42));
+  await addReading(lectura('microgravity_adapt', 86, 42));
+  await addReading(lectura('isolation_score', 4, 42));
+  const lecturas = await getReadings('ana');
+  const datos = datosSalud({
+    lecturas,
+    sintomas: [],
+    sol: 42,
+    cabina: [{ sol: 42, radiationTotalMsv: 354.7 }],
+    evaluacion: evaluate(lecturas, {}, 'mars_base', { sol: 42 }),
+  });
+
+  assert.equal(datos.vitales[5].valor, '16');
+  assert.equal(datos.vitales[5].unidad, 'rpm');
+  assert.equal(datos.fisica.indicadores[0].valor, '97,4');
+  assert.equal(datos.fisica.indicadores[1].valor, '98,2');
+  assert.equal(datos.fisica.indicadores[2].valor, '86');
+  assert.equal(datos.fisica.indicadores[3].valor, '354,7');
+  assert.equal(datos.mental.indicadores[3].valor, '4');
+  assert.equal(datos.mental.indicadores[3].nivel, 'yellow');
+  assert.equal(datos.riesgos.filas[4].nivel, 'yellow');
+
+  // También funciona cuando useEstadoMision entrega cabina como objeto único del sol actual.
+  const conObjetoUnico = datosSalud({
+    lecturas,
+    sintomas: [],
+    sol: 42,
+    cabina: { sol: 42, radiationTotalMsv: 354.7 },
+    evaluacion: evaluate(lecturas, {}, 'mars_base', { sol: 42 }),
+  });
+  assert.equal(conObjetoUnico.fisica.indicadores[3].valor, '354,7');
+  assert.equal(conObjetoUnico.riesgos.filas[0].nivel, 'yellow');
+});
