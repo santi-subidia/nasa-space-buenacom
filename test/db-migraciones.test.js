@@ -2,7 +2,7 @@ import 'fake-indexeddb/auto';
 import Dexie from 'dexie';
 import assert from 'node:assert/strict';
 import { afterEach, beforeEach, test } from 'node:test';
-import { getDb, guardarCheckinDiario } from '../lib/db.js';
+import { getDb, guardarCheckinPorSol, guardarChequeoFacial, getCheckinPorSol } from '../lib/db.js';
 
 const db = getDb();
 const esquemaBase = {
@@ -45,6 +45,7 @@ const versionesAnteriores = [
   { nombre: 'Informes local v2', version: 2, tablas: { ...esquemaBase, ...esquemaInformes } },
   { nombre: 'check-in local v3', version: 3, tablas: { ...esquemaBase, ...esquemaInformes, ...esquemaCheckin } },
   { nombre: 'persistencia de GitHub v2', version: 2, tablas: { ...esquemaBase, ...esquemaMision } },
+  { nombre: 'integración v4', version: 4, tablas: { ...esquemaBase, ...esquemaInformes, ...esquemaCheckin, ...esquemaMision } },
 ];
 
 for (const anterior of versionesAnteriores) {
@@ -61,8 +62,8 @@ for (const anterior of versionesAnteriores) {
     }
 
     await db.open();
-    assert.equal(db.verno, 4);
-    assert.deepEqual(db.tables.map((tabla) => tabla.name).sort(), Object.keys(registros).sort());
+    assert.equal(db.verno, 5);
+    assert.deepEqual(db.tables.map((tabla) => tabla.name).sort(), [...Object.keys(registros), 'checkinsPorSol'].sort());
     for (const nombre of Object.keys(anterior.tablas)) {
       assert.deepEqual(await db.table(nombre).toArray(), [registros[nombre]], nombre);
     }
@@ -70,7 +71,9 @@ for (const anterior of versionesAnteriores) {
       assert.equal(await db.table(nombre).count(), 0, nombre);
     }
 
-    const resultado = await guardarCheckinDiario({
+    if ('checkins' in anterior.tablas) assert.deepEqual(await getCheckinPorSol('ana', 43), registros.checkins);
+    await guardarChequeoFacial({ astronautId: 'ana', sol: 44, resultado: { ok: true, comparacionDeIA: true } });
+    const resultado = await guardarCheckinPorSol({
       astronautId: 'ana', sol: 44, lecturas: [{ indicator: 'spo2', value: 98 }],
     }, new Date('2026-11-16T14:00:00Z'));
     assert.equal(resultado.guardado, true);

@@ -7,8 +7,8 @@ import Card from '@/components/Card';
 import PantallaVyta from '@/components/layout/PantallaVyta';
 import { INFO, CARAS } from '@/lib/content/indicadores';
 import { eliminarFoto, guardarFoto } from '@/lib/datos/sintomas';
-import { useCheckinDiario } from '@/lib/datos/checkin';
-import { guardarCheckinDiario } from '@/lib/db';
+import { useCheckinPorSol } from '@/lib/datos/checkin';
+import { guardarCheckinPorSol } from '@/lib/db';
 import { useEstadoMision } from '@/lib/datos/demo';
 import { valoresDelDia } from '@/lib/datos/indicadores';
 import FotoPiel from './FotoPiel';
@@ -32,9 +32,9 @@ const num = (s) => Number(String(s).replace(',', '.'));
 
 export default function Registrar() {
   const router = useRouter();
-  const { lecturas, solActual } = useEstadoMision();
+  const { lecturas, solActual, cargando } = useEstadoMision();
   const base = valoresDelDia(lecturas, solActual);
-  const checkin = useCheckinDiario();
+  const checkin = useCheckinPorSol(cargando ? null : solActual);
   const guardandoRef = useRef(false);
 
   const [edit, setEdit] = useState({}); // solo lo que se tocó: { clave: texto }
@@ -57,11 +57,10 @@ export default function Registrar() {
   const cambios = Object.keys(LIMITES).filter(
     (k) => edit[k] !== undefined && edit[k] !== '' && !error(k),
   );
-  const nada = cambios.length === 0 && !foto;
 
   async function guardar(e) {
     e.preventDefault();
-    if (nada || hayError || guardandoRef.current || checkin.cargando || checkin.completado || checkin.error) return;
+    if (hayError || guardandoRef.current || checkin.cargando || checkin.completado || checkin.error || !checkin.facialCompletado) return;
     guardandoRef.current = true;
     setGuardando(true);
     setErrorGuardado(null);
@@ -74,7 +73,7 @@ export default function Registrar() {
       if (foto) {
         photoBlobId = await guardarFoto(foto.blob);
       }
-      const resultado = await guardarCheckinDiario({
+      const resultado = await guardarCheckinPorSol({
         astronautId: checkin.astronautId,
         sol: solActual,
         lecturas: nuevas,
@@ -84,7 +83,7 @@ export default function Registrar() {
       router.push('/');
     } catch (err) {
       console.error(err);
-      setErrorGuardado('No se pudo guardar en este equipo. Probá de nuevo.');
+      setErrorGuardado(err?.message || 'No se pudo guardar en este equipo. Probá de nuevo.');
       guardandoRef.current = false;
       setGuardando(false);
     } finally {
@@ -94,21 +93,21 @@ export default function Registrar() {
 
   return (
     <PantallaVyta
-      titulo="Check-in diario"
-      subtitulo={`Chequeo matutino · Sol ${solActual}`}
+      titulo="Check-in por sol"
+      subtitulo={`Un chequeo por sol · Sol ${solActual}`}
       icono="/figma/nav-registrar.svg"
     >
-      {checkin.cargando ? <p role="status" className={styles.texto}>Consultando el check-in de hoy…</p> : checkin.completado ? (
+      {checkin.cargando ? <p role="status" className={styles.texto}>Consultando el check-in del sol actual…</p> : checkin.completado ? (
         <Card className={styles.completado}>
           <span className={styles.tickCompletado} aria-hidden="true">✓</span>
-          <div><h2>Check-in de hoy completado</h2><p>Ya guardaste tu chequeo diario. Podés registrar el próximo a partir de mañana.</p></div>
+          <div><h2>Check-in del Sol {solActual} completado</h2><p>Ya guardaste tu chequeo de este sol. Podés registrar el próximo cuando avance el sol de la misión.</p></div>
           <Link href="/" className={`${styles.boton} ${styles.primario}`}>Volver a Vista General</Link>
         </Card>
       ) : <div className={styles.cuerpo}>
         <form className={styles.form} onSubmit={guardar} noValidate>
           {checkin.error && <p className={styles.error} role="alert">{checkin.error}</p>}
           <fieldset className={styles.campos} disabled={guardando || Boolean(checkin.error)}>
-          <Card titulo="Mediciones del día">
+          <Card titulo={`Mediciones del Sol ${solActual}`}>
             <Fila id="presion" etiqueta="Presión arterial">
               <div className={styles.par}>
                 <Numero k="bp_sys" label="Sistólica" valor={valor('bp_sys')} onChange={cambiar} error={error('bp_sys')} />
@@ -202,7 +201,7 @@ export default function Registrar() {
           </Card>
 
           <div className={styles.pie}>
-            <button type="submit" className={`${styles.boton} ${styles.primario}`} disabled={nada || hayError || guardando}>
+            <button type="submit" className={`${styles.boton} ${styles.primario}`} disabled={!checkin.facialCompletado || hayError || guardando}>
               {guardando ? 'Guardando…' : 'Guardar chequeo'}
             </button>
             <span className={styles.nota}>
@@ -210,19 +209,20 @@ export default function Registrar() {
                 ? errorGuardado
                 : hayError
                 ? 'Revisá los valores marcados.'
-                : nada
-                  ? 'No hay cambios para guardar.'
-                  : `Se ${cambios.length === 1 ? 'guardará 1 lectura' : `guardarán ${cambios.length} lecturas`}${foto ? ' y 1 foto' : ''}.`}
+                : !checkin.facialCompletado
+                  ? `Completá «Cómo me ves hoy» para el Sol ${solActual} antes de guardar.`
+                  : `Se guardará el check-in del Sol ${solActual}${cambios.length ? ` con ${cambios.length} ${cambios.length === 1 ? 'lectura' : 'lecturas'}` : ''}${foto ? ' y 1 foto' : ''}.`}
             </span>
           </div>
           </fieldset>
         </form>
 
         <div className={styles.lateral}>
-          <Card titulo="¿Cómo me veo hoy?" acento="ia">
+          <Card titulo="¿Cómo me ves hoy?" acento="ia">
             <p className={styles.texto}>
-              Compará tu cara de hoy con tu foto base: parpadeo para detectar fatiga, pulso por cámara y una observación de Vega.
+              Compará tu cara con tu foto base y completá el análisis facial. Es obligatorio para guardar el check-in de cada sol.
             </p>
+            <p className={styles.texto} role="status">{checkin.facialCompletado ? `✓ Chequeo facial completado · Sol ${solActual}` : `Pendiente · Sol ${solActual}`}</p>
             <Link href="/cara" className={`${styles.boton} ${styles.primario}`}>
               <span aria-hidden="true">📷</span> Abrir chequeo facial
             </Link>

@@ -10,15 +10,15 @@ import VytaVoz from './VytaVoz';
 import CabeceraMision from '@/components/layout/CabeceraMision';
 import OrigenUmbral from '@/components/OrigenUmbral';
 import { useEstadoMision } from '@/lib/datos/demo';
-import { useCheckinDiario } from '@/lib/datos/checkin';
+import { useCheckinPorSol } from '@/lib/datos/checkin';
 import { NIVELES } from '@/lib/niveles';
 import { rutaZona } from '@/lib/content/rutaZona';
 import { calcularPuntajeSalud, lecturasParaInicio, metricasDesdeLecturas } from './metricas';
 import styles from './InicioPantalla.module.scss';
 
 export default function InicioPantalla() {
-  const { astronauta, solActual, mision, lecturas, evaluacion } = useEstadoMision();
-  const checkin = useCheckinDiario();
+  const { astronauta, solActual, mision, lecturas, evaluacion, cargando } = useEstadoMision();
+  const checkin = useCheckinPorSol(cargando ? null : solActual);
   const nivelGeneral = evaluacion.globalLevel || 'green';
   const puntajeSalud = calcularPuntajeSalud(evaluacion);
   const tarjetas = metricasDesdeLecturas(lecturas, evaluacion, astronauta?.baseline || {}, solActual);
@@ -82,8 +82,8 @@ function EstadoGeneral({ nivel, puntaje, alertas, checkin, ultimaLectura }) {
           </div>
           <p>{principal ? principal.why : tienePuntaje ? 'Tus signos vitales se mantienen dentro de los rangos esperados. Buen estado general para continuar con las actividades de la misión.' : 'Registrá tus mediciones para calcular el puntaje de salud.'}</p>
         </div>
-        <Link href="/registrar" className={`${styles.checkin} ${checkin.completado ? styles.checkinCompletado : ''}`} aria-label={`Check-in diario ${checkin.completado ? 'completado hoy' : 'pendiente'}. Ver chequeo diario`}>
-          <span>Check-in diario</span>
+        <Link href="/registrar" className={`${styles.checkin} ${checkin.completado ? styles.checkinCompletado : ''}`} aria-label={`Check-in del Sol ${checkin.sol ?? 'actual'} ${checkin.completado ? 'completado' : 'pendiente'}. Ver chequeo`}>
+          <span>Check-in por sol</span>
           <span className={styles.relojArena}>
             {checkin.completado
               ? <svg viewBox="0 0 36 36" width="36" height="36" fill="none" aria-hidden="true"><path d="m8 18 7 7L29 11" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round" /></svg>

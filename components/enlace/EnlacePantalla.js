@@ -190,9 +190,8 @@ export default function EnlacePantalla() {
           {grupos.length ? grupos.map((grupo) => (
             <div key={grupo.clave}>
               <div className={styles.fechaConversacion}><span>{grupo.ts ? `${FECHA.format(new Date(grupo.ts))} · UTC` : `Sol ${grupo.sol}`}</span></div>
-              <div className={styles.columnasMensajes}>
-                <div className={styles.entrantes}>{grupo.entrada.map((mensaje) => <Mensaje key={mensaje.id} mensaje={mensaje} />)}</div>
-                <div className={styles.salientes}>{grupo.salida.map((mensaje) => <Mensaje key={mensaje.id} mensaje={mensaje} />)}</div>
+              <div className={styles.listaMensajes}>
+                {grupo.mensajes.map((mensaje) => <Mensaje key={mensaje.id} mensaje={mensaje} />)}
               </div>
             </div>
           )) : <p className={styles.sinMensajes}>{cargando ? 'Cargando mensajes…' : 'Todavía no hay mensajes guardados con Control Terrestre.'}</p>}

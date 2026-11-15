@@ -52,7 +52,7 @@ function OndaPulso({ puntos }) {
 }
 
 export default function CaraPantalla() {
-  const { astronauta, solActual } = useEstadoMision();
+  const { activoId, astronauta, solActual, cargando } = useEstadoMision();
   const nombreTripulante = astronauta?.name || 'Tripulante';
   const {
     videoRef,
@@ -72,6 +72,7 @@ export default function CaraPantalla() {
     setVozActiva,
     analizando,
     resultado,
+    chequeoGuardado,
     avisoEnviado,
     errorAccion,
     iniciarCamara,
@@ -83,22 +84,22 @@ export default function CaraPantalla() {
     subirArchivo,
     analizar,
     avisarOficial,
-  } = useCara();
+  } = useCara({ astronautId: activoId, sol: solActual });
 
   const camaraActiva = camaraEstado === 'activa';
   const camaraCargando = camaraEstado === 'cargando';
-  const puedeAnalizar = Boolean(consentimiento && fotoBase?.foto && fotoHoy?.foto && !analizando);
+  const puedeAnalizar = Boolean(!cargando && astronauta && consentimiento && fotoBase?.foto && fotoHoy?.foto && !analizando);
 
   return (
     <PantallaVyta
       className={styles.pantalla}
-      titulo="¿Cómo me veo hoy?"
+      titulo="¿Cómo me ves hoy?"
       subtitulo={`Tu cara de hoy contra tu foto base: fatiga por parpadeo y pulso · Sol ${solActual} · ${nombreTripulante}`}
       icono="/figma/nav-registrar.svg"
       acciones={
         <>
           <Link href="/registrar" className={styles.boton}>
-            ← Check-in diario
+            ← Check-in por sol
           </Link>
           <label className={styles.vozToggle}>
             <input type="checkbox" checked={vozActiva} onChange={(e) => setVozActiva(e.target.checked)} /> Voz
@@ -302,6 +303,7 @@ export default function CaraPantalla() {
 
       {resultado && (
         <Card titulo="Observación de Vega" acento="ia" className={styles.resultadoCard}>
+          {chequeoGuardado && <p role="status">✓ Chequeo facial completado para el Sol {solActual}. <Link href="/registrar">Continuar el check-in →</Link></p>}
           <div className={styles.resultadoTop}>
             <p className={styles.resumen}>{resultado.resumen}</p>
             <p className={styles.avisoResultado}>

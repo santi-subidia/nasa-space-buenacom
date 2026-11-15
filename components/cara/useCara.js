@@ -9,7 +9,7 @@ import { estimarPulsoRppg, extraerMuestraRppg } from '@/lib/cara/rppg';
 import { guardarAviso } from '@/lib/datos/avisos';
 import { cargarFotoBase, capturarImagenJpeg, guardarFotoBase } from '@/lib/datos/cara';
 import { guardarLecturas } from '@/lib/datos/lecturas';
-import { getMissionState } from '@/lib/db';
+import { getMissionState, guardarChequeoFacial } from '@/lib/db';
 import { SOL_ACTUAL } from '@/lib/demo/generador';
 import { silenciarLogsMediaPipe } from '@/lib/mediapipe/silenciarLogs';
 
@@ -45,10 +45,11 @@ function cargarImagenDesdeArchivo(file) {
  * Conecta webcam + MediaPipe Face Landmarker (`eyeBlinkLeft`/`Right`) + foto base (`baselinePhotoId`)
  * + `crearComoMeVes()` (`tipo: 'face'`).
  */
-export function useCara() {
+export function useCara({ astronautId, sol }) {
   const videoRef = useRef(null);
   const motorRef = useRef({});
   const vozVegaRef = useRef(null);
+  const analisisRef = useRef(0);
 
   const [camaraEstado, setCamaraEstado] = useState('inactiva'); // inactiva | cargando | activa | error
   const [errorCamara, setErrorCamara] = useState('');
@@ -67,6 +68,7 @@ export function useCara() {
 
   const [analizando, setAnalizando] = useState(false);
   const [resultado, setResultado] = useState(null);
+  const [chequeoGuardado, setChequeoGuardado] = useState(false);
   const [avisoEnviado, setAvisoEnviado] = useState(false);
   const [errorAccion, setErrorAccion] = useState('');
 
@@ -90,17 +92,30 @@ export function useCara() {
   useEffect(() => {
     vozVegaRef.current = crearVoz();
     let vivo = true;
-    cargarFotoBase().then((guardada) => {
+    setFotoBase(null);
+    setFotoHoy(null);
+    setResultado(null);
+    setChequeoGuardado(false);
+    setConsentimiento(false);
+    setAnalizando(false);
+    setErrorAccion('');
+    setParpadeoEnVivo(null);
+    setPulsoEnVivo(null);
+    setSegundosMedidos(0);
+    r.muestras = [];
+    r.muestrasRppg = [];
+    cargarFotoBase(astronautId).then((guardada) => {
       if (!vivo || !guardada) return;
       const url = URL.createObjectURL(guardada.blob);
       setFotoBase({ id: guardada.id, foto: guardada.foto, url });
     });
     return () => {
       vivo = false;
+      analisisRef.current++;
       apagarCamara();
       vozVegaRef.current?.callar();
     };
-  }, [apagarCamara]);
+  }, [apagarCamara, astronautId, sol, r]);
 
   useEffect(() => () => fotoBase?.url && URL.revokeObjectURL(fotoBase.url), [fotoBase?.url]);
   useEffect(() => () => fotoHoy?.url && URL.revokeObjectURL(fotoHoy.url), [fotoHoy?.url]);
@@ -234,7 +249,7 @@ export function useCara() {
   }
 
   async function guardarComoBase(captura) {
-    const id = await guardarFotoBase(captura.blob);
+    const id = await guardarFotoBase(captura.blob, astronautId);
     const url = URL.createObjectURL(captura.blob);
     setFotoBase({ id, foto: captura.foto, url });
     setResultado(null);
@@ -293,6 +308,8 @@ export function useCara() {
     }
 
     setAnalizando(true);
+    const analisis = ++analisisRef.current;
+    setChequeoGuardado(false);
     setAvisoEnviado(false);
     const muestras = r.muestras?.length ? [...r.muestras] : undefined;
     const vozCliente = {
@@ -306,10 +323,15 @@ export function useCara() {
         consentimiento: true,
         muestrasParpadeo: muestras,
       });
-      setResultado(res);
+      if (analisisRef.current === analisis) setResultado(res);
+      await guardarChequeoFacial({ astronautId, sol, resultado: res });
+      if (analisisRef.current !== analisis) return;
+      setChequeoGuardado(true);
       apagarCamara();
+    } catch (e) {
+      if (analisisRef.current === analisis) setErrorAccion(e?.message || 'No se pudo guardar el chequeo facial. Volvé a analizar para reintentar.');
     } finally {
-      setAnalizando(false);
+      if (analisisRef.current === analisis) setAnalizando(false);
     }
   }
 
@@ -342,6 +364,7 @@ export function useCara() {
     setVozActiva,
     analizando,
     resultado,
+    chequeoGuardado,
     avisoEnviado,
     errorAccion,
     iniciarCamara,
