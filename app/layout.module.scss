@@ -1,42 +1,28 @@
-@use 'tokens' as *;
-
-// Diseñado para notebook: 1280×800 (el prototipo se ve tal cual).
+// Lienzo VYTA de 1648×928 (Figma) que se escala al ancho de la ventana.
 .app {
   display: flex;
-  min-width: $ancho-pantalla;
   min-height: 100vh;
+  background: #020817;
 }
 
 .contenido {
   flex: 1;
   min-width: 0;
   min-height: 100vh;
-  padding: $espacio-6;
-}
-
-.app:has([data-dashboard]) {
-  min-width: 0;
-  background: #020817;
-
-  .contenido {
-    padding: 21px 20px 17px 26px;
-  }
+  padding: 21px 20px 17px 26px;
 }
 
 @media (min-width: 1280px) {
-  .app:has([data-dashboard]) {
+  .app {
     width: 1648px;
     min-height: 928px;
     zoom: calc((100vw - 16px) / 1648px);
-
-    .contenido { min-height: 928px; }
   }
+
+  .contenido { min-height: 928px; }
 }
 
 @media (max-width: 760px) {
-  .app:has([data-dashboard]) {
-    flex-direction: column;
-
-    .contenido { padding: 16px; }
-  }
+  .app { flex-direction: column; }
+  .contenido { padding: 16px; }
 }

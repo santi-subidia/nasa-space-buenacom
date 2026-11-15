@@ -1,13 +1,12 @@
 # Guion de presentación y demo · "Día 42 en Marte"
 
-> **Aviso obligatorio para la presentación:** AstroVitals es un **prototipo educativo; no es un dispositivo médico**.
+> **Aviso obligatorio para la presentación:** VYTA es un **prototipo educativo; no es un dispositivo médico**.
 
 ## Preparación previa (antes de abrir el navegador)
 
 1. Confirmar que el servidor corre en `http://localhost:3000` (`npm run dev` o `npm start`).
 2. Para demo pública o sin internet, verificar `IA_APAGADA=1` en `.env.local`: el servidor responde desde `ai/respaldo-demo.json` sin hacer llamadas externas y sin riesgo de fallos de red frente al jurado.
-3. Si se muestra cámara o micrófono en vivo (`/entrenador`, `/cara`, `/vega`), usar Chrome en notebook (1280×800) y habilitar permisos antes de empezar.
-4. En `/` (*Inicio*), si hace falta volver al estado limpio del Sol 42, usar **Reiniciar demo** para restaurar los 60 soles iniciales de Ana Ríos y Marcos Silva.
+3. Si se muestra cámara o micrófono en vivo (`/entrenador`, `/cara`, voz VYTA en `/`), usar Chrome en notebook y habilitar permisos antes de empezar.
 
 ---
 
@@ -16,59 +15,47 @@
 Ideal para el video de entrega de NASA Space Apps (≤ 30 s) o apertura del pitch:
 
 - **0–6 s (Problema):** *"En Marte la Tierra está a 14 minutos de señal y el sol dura 24 horas con 37 minutos. Si un astronauta se enferma, no puede esperar una respuesta en vivo."*
-- **6–14 s (Escenario Sol 42 en `/` y `/mapa`):** *"AstroVitals es una estación médica a bordo. En el Sol 42, Ana durmió cinco horas, tiene estrés alto y le salió un herpes labial: nuestro motor determinista de reglas cruza esas señales con fuentes de la NASA y dispara una alerta naranja de reactivación viral."*
-- **14–22 s (Vega + Junta en `/vega` y `/junta`):** *"Vega le responde por voz con citas reales de la NASA, una junta médica de cinco especialistas coordina los informes y el semáforo del motor nunca permite que la IA baje una alerta."*
-- **22–30 s (Entrenador + Tierra + Cierre en `/entrenador` y `/enlace`):** *"El entrenador por cámara adapta el ejercicio al estado del día y el enlace con Tierra gestiona el retraso de señal. Prototipo educativo; no es un dispositivo médico."*
+- **6–14 s (Escenario Sol 42 en `/` y `/salud/fisica`):** *"VYTA es una estación médica a bordo. En el Sol 42, Ana durmió cinco horas, tiene estrés alto y le salió un herpes labial: nuestro motor determinista de reglas cruza esas señales con fuentes de la NASA y dispara una alerta naranja de reactivación viral."*
+- **14–22 s (Voz VYTA en `/`):** *"Ana le habla a VYTA por voz y recibe respuestas con citas reales de la NASA; el semáforo del motor nunca permite que la IA baje una alerta."*
+- **22–30 s (Actividad + Tierra + Cierre en `/actividad` y `/enlace`):** *"El entrenador por cámara adapta el ejercicio al estado del día y el enlace con Tierra gestiona el retraso de señal. Prototipo educativo; no es un dispositivo médico."*
 
 ---
 
 ## Parte 2 · Recorrido guiado en vivo (2–3 minutos)
 
-Secuencia recomendada pantalla por pantalla sobre las **13 rutas** de la app (`/`, `/mapa`, `/jornada`, `/registrar`, `/tendencias`, `/cabina`, `/vega`, `/entrenador`, `/cara`, `/junta`, `/enlace`, `/houston`, `/tripulacion`) más `/login`:
+Secuencia recomendada siguiendo el menú lateral: `/`, `/salud/fisica`, `/actividad`, `/registrar`, `/tendencias` y `/enlace`.
 
-### 1. Inicio (`/`) — El cuadro del Sol 42 (20 s)
-- **Frase sugerida:** *"Estamos en el Sol 42 de la misión Ares IV en Marte con la comandante Ana Ríos. AstroVitals evalúa sus últimos días con reglas deterministas basadas en el Human Research Program de la NASA y marca nivel naranja: posible reactivación viral."*
+### 1. Vista General (`/`) — El cuadro del Sol 42 (20 s)
+- **Frase sugerida:** *"Estamos en el Sol 42 de la misión Ares IV en Marte con la comandante Ana Ríos. VYTA evalúa sus últimos días con reglas deterministas basadas en el Human Research Program de la NASA y marca nivel naranja: posible reactivación viral."*
 - **Qué verificar en pantalla:**
-  - Semáforo general con forma + color (`◆ orange`), alerta activa (`Posible reactivación viral`) y chequeo diario.
-  - Botón **Sincronizar Watch** (`watch_sim`) para simular la carga nocturna de sueño, FC, SpO₂ y temperatura.
-  - Botón **¿Por qué pasó?** (`/causas`): *"Esta cadena no la inventamos: es el grafo causal oficial del riesgo inmune de la NASA. AstroVitals enciende el camino con lo que midió hoy: sueño, estrés, temperatura y herpes. Y nuestra app ocupa el nodo 'Detectar cambios inmunes'."*
+  - Estado general con forma + color (`◆ orange`), alerta activa (`Posible reactivación viral`) con su fuente NASA y chequeo diario.
+  - Botón de voz VYTA: tocar y preguntar *"¿Por qué me salió herpes?"* o *"¿Puedo hacer la EVA de mañana?"* (cubiertas por `IA_APAGADA=1` desde `ai/respaldo-demo.json`). Destacar la red de seguridad local: si el tripulante menciona dolor de pecho o autolesión, se avisa sin esperar a la IA.
 
-### 2. Mapa corporal (`/mapa`) y Tendencias (`/tendencias`) — Trazabilidad y evolución (20 s)
-- **Frase sugerida:** *"En el mapa corporal vemos nueve zonas clicables. Inmunidad está en naranja por el herpes labial y la temperatura en treinta y siete con seis; cerebro y ojos reflejan el poco sueño. Si entramos a Tendencias vemos cómo en los últimos diez soles bajó el sueño y subió el estrés."*
+### 2. Salud (`/salud/fisica`, `/salud/mental`, `/salud/riesgos`) — Mapa corporal (20 s)
+- **Frase sugerida:** *"El mapa corporal reparte nueve zonas entre Física, Mental y Riesgos. Inmunidad está en naranja por el herpes labial y la temperatura en treinta y siete con seis; cerebro y ojos reflejan el poco sueño."*
 - **Qué verificar en pantalla:**
-  - Silueta SVG con marcas por forma y color; al hacer clic en **Inmunidad**, muestra indicadores, síntoma del Sol 41 y enlace a la fuente NASA.
-  - En `/tendencias`, bandas de referencia (7–9 h de sueño) y comparación sueño vs. estrés.
-  - Desde **Pulmones**, botón **Ver cabina** (`/cabina`): *"La radiación no se ve ni se siente. Ana ya lleva 355 mSv, el 59 % de su límite de carrera de 600; con el viaje de regreso la misión lo supera, como advierte la NASA. Si llega una tormenta solar, la app dispara la alerta roja y el checklist para ir al refugio."* Tocar **Simular tormenta solar** y marcar "Ir al refugio".
+  - Silueta con marcas por forma y color; al elegir **Inmunidad** se ven indicadores, qué hacer y el enlace a la fuente NASA.
+  - En Riesgos, radiación acumulada, pérdida ósea/muscular, fatiga e inmunidad priorizadas.
 
-### 3. Jornada y notificaciones (`/jornada`) — Reloj marciano y sueño protegido (20 s)
-- **Frase sugerida:** *"En Marte el día dura veinticuatro horas y treinta y siete minutos. La jornada ordena chequeos, hidratación y ejercicio con reloj acelerado para la demo, y respeta el descanso protegido nocturno: de diez de la noche a seis y media solo interrumpe una alerta roja."*
+### 3. Actividad (`/actividad`) y Jornada (`/jornada`) — Ejercicio y reloj marciano (30 s)
+- **Frase sugerida:** *"MediaPipe corre en el navegador sin mandar video continuo. El entrenador cuenta repeticiones de sentadillas y corrige postura; la IA puede bajar la carga a veinte minutos de intensidad liviana porque Ana está en naranja, pero nunca subirla por encima del techo del motor. La jornada ordena el sol de veinticuatro horas treinta y siete y respeta el descanso protegido: de diez de la noche a seis y media solo interrumpe una alerta roja."*
 - **Qué verificar en pantalla:**
-  - Reloj de misión en sol 42, selector de velocidad acelerada, lista de tareas del sol y banner/aviso de notificaciones (con sonido fuera del horario protegido).
+  - Esqueleto de pose y contador en `/entrenador` (o resumen de serie con límite `liviana`) y ejercicios cognitivos en `/actividad/cognitivos`.
+  - En `/jornada`, reloj de misión en sol 42, velocidad acelerada, tareas del sol y notificaciones desde la campana de la cabecera.
 
-### 4. Registrar (`/registrar`) y Hablar con Vega (`/vega`) — Voz y citas NASA (30 s)
-- **Frase sugerida:** *"Ana puede completar el chequeo matutino en Registrar —por teclado, ánimo, foto de piel o dictado por voz— o preguntarle directo a Vega."*
-- **Acción en `/vega`:** Hacer clic en la sugerencia **`¿Por qué me salió herpes?`** o **`¿Puedo hacer la EVA de mañana?`** (todas cubiertas por `IA_APAGADA=1` desde `ai/respaldo-demo.json`).
+### 4. Registrar (`/registrar`) y "¿Cómo me ves hoy?" (`/cara`) — Chequeo del día (25 s)
+- **Frase sugerida:** *"Ana completa el chequeo matutino —mediciones, ánimo, foto de piel y tests de reacción y visión— y puede sumar el chequeo facial: medimos parpadeo local y comparamos con la foto base solo si hay consentimiento explícito."*
 - **Qué verificar en pantalla:**
-  - Respuesta corta de Vega en español rioplatense, lectura en voz alta sin leer corchetes y tarjetas de citas reales de la NASA (`[F1]`, `[F2]`).
-  - Destacar la red de seguridad local: si el tripulante menciona dolor de pecho o autolesión, el navegador avisa al oficial médico sin esperar a la IA.
+  - Formulario de Registrar con validación y guardado local.
+  - En `/cara`, aviso fijo de no diagnóstico, consentimiento obligatorio y lectura local de fatiga por parpadeo.
 
-### 5. Entrenador (`/entrenador`) y "¿Cómo me ves hoy?" (`/cara`) — Cámara local en el navegador (25 s)
-- **Frase sugerida:** *"MediaPipe corre en el navegador sin mandar video continuo. En Entrenador cuenta repeticiones de sentadillas y corrige postura al instante; al terminar la serie, la IA puede bajar la carga a veinte minutos de intensidad liviana porque Ana está en naranja, pero nunca puede subirla por encima del techo del motor. En ¿Cómo me ves hoy? medimos parpadeo local y comparamos con la foto base solo si hay consentimiento explícito."*
-- **Qué verificar en pantalla:**
-  - Esqueleto de pose y contador en `/entrenador` (o resumen de serie con límite `liviana`).
-  - En `/cara`, aviso fijo de no diagnóstico, toggle de consentimiento obligatorio y lectura local de fatiga por parpadeo.
+### 5. Analítica (`/tendencias`) — Evolución (15 s)
+- **Frase sugerida:** *"En los últimos diez soles bajó el sueño y subió el estrés: lo vemos contra las bandas de referencia y la línea base personal de Ana."*
+- **Qué verificar en pantalla:** bandas de referencia (7–9 h de sueño), línea coloreada por zona y cursor sincronizado entre gráficos.
 
-### 6. Junta médica (`/junta`) — 5 especialistas en una sola consulta (25 s)
-- **Frase sugerida:** *"Convocamos la junta médica del Sol 42. En una única llamada estructurada opinan cinco especialistas —cardiovascular, inmunidad, conducta y sueño, hueso y músculo, y ambiente—, se resuelve el desacuerdo entre infección y falta de sueño, y el nivel final nunca baja del piso del motor."*
-- **Qué verificar en pantalla:**
-  - Tarjetas de los 5 especialistas con sus citas NASA, bloque de desacuerdo resuelto y las dos pestañas de informe: **Para Ana** (lenguaje claro) y **Para médicos de vuelo** (resumen clínico y recordatorios para los soles 43–45).
-
-### 7. Enlace con Tierra (`/enlace`), Consola Houston (`/houston`) y Tripulación (`/tripulacion`) — Cierre (25 s)
-- **Frase sugerida:** *"El informe sale hacia Tierra con catorce minutos de retraso por ida y llega a PostgreSQL en la consola de la médica de vuelo en Houston (`/houston`), donde consulta protocolos NASA en `pgvector` y devuelve su dictamen hacia Base Marte. Al llegar a `/enlace`, Vega lo traduce y agenda el seguimiento. Por último, en `/tripulacion` cambiamos a Marcos Silva, el oficial médico."*
-- **Qué verificar en pantalla:**
-  - En `/enlace`: línea de tiempo con retraso de 14 min, respuesta del médico de vuelo, traducción de Vega y botón para agendar recordatorios en la jornada.
-  - En `/houston`: bandeja en vivo desde Supabase PostgreSQL, buscador RAG `pgvector` y envío del dictamen médico de vuelta a Marte (ingresando desde `/login` como Dra. Elena Vance).
-  - En `/tripulacion`: cambio de tripulante activo entre Ana Ríos y Marcos Silva, tarjeta del CMO mostrando semáforo + alerta de Ana con nota de privacidad, y el switch para habilitar/deshabilitar compartir mediciones.
+### 6. Informes · Enlace con Tierra (`/enlace`) — Cierre (20 s)
+- **Frase sugerida:** *"El informe sale hacia Tierra con catorce minutos de retraso por ida; la respuesta del médico de vuelo vuelve a Base Marte y Vega la traduce a lenguaje simple y agenda el seguimiento."*
+- **Qué verificar en pantalla:** línea de tiempo con retraso de 14 min, bandeja de respuesta de Houston, traducción de Vega y recordatorios en la jornada.
 
 ---
 

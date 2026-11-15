@@ -50,7 +50,7 @@ export function datosSalud({ lecturas = [], sintomas = [], evaluacion = {}, base
   const radiacion = dato('radiation_msv', 'mSv');
   const filasRiesgo = [
     { nombre: 'Radiación acumulada', icono: 'radiation', nivel: radiacion.nivel, estado: radiacion.estado,
-      detalle: radiacion.valorNumerico == null ? 'Sin mediciones de radiación guardadas.' : `Última dosis registrada: ${radiacion.valor} mSv.`, href: '/cabina' },
+      detalle: radiacion.valorNumerico == null ? 'Sin mediciones de radiación guardadas.' : `Última dosis registrada: ${radiacion.valor} mSv.`, href: '/tendencias' },
     { nombre: 'Pérdida ósea/muscular', icono: 'dumbbell', nivel: zona(['bones', 'muscles']),
       detalle: zona(['bones', 'muscles']) == null ? 'Sin mediciones óseas o musculares.' : 'Seguimiento del motor para huesos y músculos.', href: rutaZona('bones') },
     { nombre: 'Fatiga y recuperación', icono: 'fatigue', nivel: sueno.nivel,

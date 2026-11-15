@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import Link from 'next/link';
 import Image from 'next/image';
 import { MISION, SOL_ACTUAL } from '@/lib/mock/mision';
 import { alternarPanelNotificaciones, useNotificaciones } from '@/lib/datos/notificaciones';
@@ -27,10 +26,10 @@ export default function CabeceraMision({ nombre, titulo }) {
 
   return (
     <header className={styles.encabezado}>
-      <Link href="/tripulacion" className={styles.perfil} aria-label={`Ver tripulación y privacidad de ${nombre}`}>
+      <div className={styles.perfil}>
         <Image src="/figma/tripulante.png" width={88} height={88} sizes="88px" alt="" className={styles.retrato} />
         <span><strong>{nombre}</strong><small>{titulo}</small></span>
-      </Link>
+      </div>
       <div className={styles.conexion}>
         <span>Conexión</span>
         <strong><i className={enLinea ? styles.enLinea : styles.sinConexion} aria-hidden="true" /> {enLinea ? 'En línea' : 'Sin conexión'}</strong>

@@ -10,7 +10,6 @@ import VytaVoz from './VytaVoz';
 import CabeceraMision from '@/components/layout/CabeceraMision';
 import OrigenUmbral from '@/components/OrigenUmbral';
 import { SOL_ACTUAL, useEstadoMision } from '@/lib/datos/demo';
-import { tieneGrafo } from '@/lib/causas/grafos';
 import { MISION } from '@/lib/mock/mision';
 import { CHEQUEO, valoresDelDia } from '@/lib/mock/indicadores';
 import { NIVELES } from '@/lib/niveles';
@@ -127,10 +126,8 @@ function AlertasObservaciones({ alertas }) {
                   {alerta.nasaSource && <p className={styles.fuente}>Fuente: {alerta.nasaSource}</p>}
                   <OrigenUmbral basis={alerta.basis} className={styles.fuente} />
                   <div className={styles.accionesAlerta}>
-                    {tieneGrafo(alerta.ruleId) && <Link href={`/causas?alerta=${alerta.ruleId}`}>¿Por qué pasó? →</Link>}
                     <Link href={rutaZona(alerta.zone)}>Ver guía →</Link>
                     <Link href="/enlace">Avisar al oficial médico →</Link>
-                    <Link href="/junta">Convocar junta médica →</Link>
                   </div>
                 </div>
               </details>

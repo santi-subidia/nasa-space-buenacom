@@ -36,7 +36,6 @@ const ETIQUETA_RUTA = {
   '/cara': 'Abrir cámara',
   '/entrenador': 'Entrenador',
   '/enlace': 'Enlace Tierra',
-  '/vega': 'Vega',
   '/registrar#vision': 'Test visual',
 };
 

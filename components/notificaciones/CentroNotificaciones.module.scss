@@ -1,18 +1,8 @@
 @use 'tokens' as *;
 
-// En pantallas VYTA la campana vive en la cabecera de misión (CabeceraMision):
-// acá solo se oculta la pastilla flotante, nunca los toasts ni el panel.
-:global(body:has([data-dashboard])) .barraSuperior {
-  display: none;
-}
-
-:global(body:has([data-dashboard])) .contenedor {
-  top: 112px;
-}
-
 .contenedor {
   position: fixed;
-  top: $espacio-4;
+  top: 112px; // debajo de la cabecera de misión, donde vive la campana
   right: $espacio-5;
   z-index: 60;
   display: flex;
@@ -20,64 +10,6 @@
   align-items: flex-end;
   gap: $espacio-2;
   pointer-events: none;
-}
-
-.barraSuperior {
-  display: flex;
-  align-items: center;
-  gap: $espacio-2;
-  pointer-events: auto;
-}
-
-.indicadorSueno {
-  display: inline-flex;
-  align-items: center;
-  gap: $espacio-1;
-  padding: 6px $espacio-3;
-  border-radius: 999px;
-  background: rgba(167, 139, 250, 0.16);
-  border: 1px solid rgba(167, 139, 250, 0.45);
-  color: $color-ia;
-  font-size: 12px;
-  font-weight: 600;
-  backdrop-filter: blur(8px);
-}
-
-.pastilla {
-  display: inline-flex;
-  align-items: center;
-  gap: $espacio-2;
-  padding: 7px $espacio-3;
-  border-radius: 999px;
-  background: $color-superficie;
-  border: 1px solid $color-borde;
-  color: $color-texto;
-  font-family: $fuente-texto;
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
-  transition: background 0.15s ease, border-color 0.15s ease;
-
-  &:hover,
-  &.pastillaActiva {
-    background: $color-superficie-2;
-    border-color: $color-acento;
-  }
-}
-
-.contador {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 22px;
-  height: 20px;
-  padding: 0 6px;
-  border-radius: 999px;
-  background: rgba(91, 200, 245, 0.18);
-  color: $color-acento;
-  font-size: 12px;
-  font-weight: 700;
 }
 
 .toasts {
