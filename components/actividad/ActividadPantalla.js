@@ -7,7 +7,7 @@ import EjerciciosPendientes from './EjerciciosPendientes';
 import styles from './Actividad.module.scss';
 
 export default function ActividadPantalla() {
-  const { astronauta, sol, tareas, cargando } = useJornada();
+  const { astronauta, sol, diaSemana, planEjercicios, tareas, cargando } = useJornada();
   return <div className={styles.pantalla} data-dashboard>
     <CabeceraMision nombre={astronauta?.name} titulo={astronauta?.titulo} sol={sol} />
     <h1 className={styles.oculto}>Actividad</h1>
@@ -22,7 +22,7 @@ export default function ActividadPantalla() {
         <span className={styles.iconoOpcion}><img src="/figma/salud/brain.svg" width="64" height="64" alt="" /></span>
         <p>Tests de atención, equilibrio y visión para seguir tu rendimiento en la misión.</p>
       </Link>
-      <EjerciciosPendientes tareas={tareas} cargando={cargando} />
+      <EjerciciosPendientes tareas={tareas} planEjercicios={planEjercicios} diaSemana={diaSemana} cargando={cargando} />
     </div>
   </div>;
 }
