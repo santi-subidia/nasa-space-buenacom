@@ -1,76 +1,31 @@
 @use 'tokens' as *;
 
 // El contenedor y el título los da PantallaVyta (diseño del home).
-.relojCaja {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: $espacio-2;
-}
 
-.relojLectura {
-  display: inline-flex;
-  align-items: baseline;
-  gap: $espacio-2;
-  background: linear-gradient(110deg, #111d34, #081f2b);
-  border: 1px solid #315a75;
-  border-radius: 12px;
-  padding: 10px 16px;
-  font-family: $fuente-titulo;
-  font-variant-numeric: tabular-nums;
-}
-
-.relojSol {
-  font-size: 14px;
-  font-weight: 600;
-  color: $color-acento;
-}
-
-.relojHora {
-  font-size: 26px;
-  font-weight: 600;
-  color: $color-texto;
-  line-height: 1;
-}
-
-.relojTotal {
-  font-size: 13px;
-  color: $color-texto-suave;
-}
-
-.badgesReloj {
-  display: flex;
-  gap: $espacio-2;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-}
-
-.badgeSueno {
+// ── Estado del reloj (acciones del título) ────────────────
+.chipEstado {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 5px 12px;
+  gap: 8px;
+  min-height: 34px;
+  padding: 0 14px;
   border-radius: 999px;
   font-size: 12px;
   font-weight: 600;
-  background: rgba($color-ia, 0.18);
-  border: 1px solid $color-ia;
-  color: $color-texto;
 }
 
-.badgeActivo {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 5px 12px;
-  border-radius: 999px;
-  font-size: 12px;
-  color: $color-texto-suave;
-  background: $color-superficie-2;
-  border: 1px solid $color-borde;
+.chipPunto {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
 }
 
-// ── Controles del reloj ───────────────────────────────────
+.chipCorriendo { background: rgba($color-verde, 0.12); color: $color-verde; }
+.chipPausa { background: $color-superficie-2; color: $color-texto-suave; border: 1px solid $color-borde; }
+.chipSueno { background: rgba($color-ia, 0.16); color: #c4b0ff; }
+
+// ── Botones y simulador ───────────────────────────────────
 .controlesCard {
   display: flex;
   flex-wrap: wrap;
@@ -90,8 +45,10 @@
   cursor: pointer;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 6px;
-  padding: 8px 14px;
+  min-height: 36px;
+  padding: 0 14px;
   border-radius: 10px;
   border: 1px solid #29536a;
   background: #0c2031;
@@ -100,10 +57,10 @@
   font-size: 13px;
   font-weight: 500;
 
-  &:hover {
-    border-color: #17e7f6;
-  }
+  &:hover { border-color: #17e7f6; }
 }
+
+.botonActivo { border-color: #17e7f6; background: rgba(32, 213, 246, 0.1); }
 
 .botonPrimario {
   background: linear-gradient(100deg, #9770ff, #6e48ad);
@@ -111,15 +68,27 @@
   color: #fff;
   box-shadow: 0 0 13px #9770ff44;
 
-  &:hover {
-    border-color: #c4adff;
-  }
+  &:hover { border-color: #c4adff; }
 }
 
 .botonAceleradoActivo {
   border-color: $color-amarillo;
   background: rgba($color-amarillo, 0.12);
-  color: $color-texto;
+}
+
+.botonCta {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 18px;
+  border-radius: 12px;
+  background: $color-acento;
+  color: #03121c;
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+
+  &:hover { background: #7fe8fb; }
 }
 
 .selectorDia {
@@ -140,293 +109,248 @@
   }
 }
 
-// ── Progreso y filtros ────────────────────────────────────
-.filaResumen {
-  display: grid;
-  grid-template-columns: 1.5fr 1fr;
-  gap: $espacio-4;
-}
-
-.progresoHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  margin-bottom: $espacio-2;
-  gap: $espacio-2;
-
-  strong {
-    font-size: 17px;
-    font-weight: 600;
-  }
-
-  span {
-    font-size: 13px;
-    color: $color-texto-suave;
-  }
-}
-
-.barra {
-  height: 8px;
-  background: #22394f;
-  border-radius: 999px;
-  overflow: hidden;
-
-  span {
-    display: block;
-    height: 100%;
-    background: #17e7f6;
-    box-shadow: 0 0 10px #17e7f66b;
-    border-radius: 999px;
-    transition: width 0.25s ease;
-  }
-}
-
-.estadoClinico {
+// ── Distribución: foco + contexto arriba, plan debajo ─────
+.columna {
   display: flex;
   flex-direction: column;
-  gap: $espacio-2;
-  justify-content: center;
+  gap: 16px;
 }
 
+.filaFoco {
+  display: grid;
+  grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr);
+  gap: 16px;
+  align-items: stretch;
+
+  > * { margin: 0; }
+}
+
+// ── Lo que toca ahora ─────────────────────────────────────
+.ahora {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px 20px;
+  padding: 20px 22px;
+  border-radius: $radio-m;
+  border: 1px solid rgba(32, 213, 246, 0.5);
+  background: linear-gradient(120deg, rgba(32, 213, 246, 0.08), #051724 60%);
+
+  h2 { margin: 6px 0 0; font-size: 22px; font-weight: 700; }
+}
+
+.ahoraAtrasada {
+  border-color: rgba(251, 146, 60, 0.55);
+  background: linear-gradient(120deg, rgba(251, 146, 60, 0.08), #051724 60%);
+
+  .ahoraEyebrow { color: #fdba74; }
+}
+
+.ahoraTexto { flex: 1 1 260px; min-width: 0; }
+
+.ahoraEyebrow {
+  margin: 0;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.6px;
+  text-transform: uppercase;
+  color: $color-acento;
+}
+
+.ahoraAcciones { display: flex; flex-wrap: wrap; gap: 10px; }
+
+.ahoraPie {
+  flex-basis: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 24px;
+  padding-top: 14px;
+  border-top: 1px solid $color-borde;
+  font-size: 13px;
+  color: $color-texto-suave;
+
+  strong { color: $color-texto; }
+}
+
+// ── Contexto clínico ──────────────────────────────────────
 .estadoFila {
   display: flex;
   align-items: center;
-  gap: $espacio-2;
-  flex-wrap: wrap;
-}
-
-.notaEvento {
-  margin: 0;
-  font-size: 13px;
-  color: $color-naranja;
-}
-
-.notaNormal {
-  margin: 0;
-  font-size: 13px;
-  color: $color-texto-suave;
-}
-
-.barraFiltros {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
   gap: $espacio-3;
-  flex-wrap: wrap;
+  font-size: 15px;
+  font-weight: 500;
 }
 
-.filtros {
+.notaEvento { margin: 8px 0 0; font-size: 13px; color: #fdba74; }
+.notaNormal { margin: 8px 0 0; font-size: 13px; color: $color-texto-suave; }
+
+// ── Plan del sol ──────────────────────────────────────────
+.cabeceraPlan {
   display: flex;
-  gap: $espacio-2;
   flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 6px;
 }
+
+.progresoTexto { font-size: 13px; font-weight: 600; color: $color-texto-suave; }
+
+.filtros { display: flex; flex-wrap: wrap; gap: 6px; }
 
 .filtro {
   cursor: pointer;
-  padding: 7px 14px;
+  min-height: 32px;
+  padding: 0 12px;
   border-radius: 999px;
   border: 1px solid #24435a;
-  background: #0c1b2c;
+  background: transparent;
   color: $color-texto-suave;
   font: inherit;
   font-size: 12px;
-  font-weight: 500;
+  font-weight: 600;
 
-  &:hover {
-    color: $color-texto;
-    border-color: #17e7f6;
-  }
+  &:hover { border-color: #17e7f6; color: $color-texto; }
 }
 
 .filtroActivo {
-  background: linear-gradient(100deg, #3d367e, #1d2a4d);
-  border-color: #6e48ad;
-  color: #f6f4ff;
+  background: linear-gradient(100deg, #3e2f86, #2a2a6a);
+  border-color: #9e7bff;
+  color: #fff;
 }
 
-// ── Línea de tiempo ───────────────────────────────────────
-.timeline {
-  list-style: none;
-  margin: 0;
-  padding: 0;
+.grupo { padding-top: 12px; }
+
+.grupoCabecera {
   display: flex;
-  flex-direction: column;
-  gap: $espacio-2;
+  align-items: baseline;
+  gap: 10px;
+  padding: 0 10px 6px;
+
+  h3 { margin: 0; font-size: 13px; font-weight: 700; color: $color-texto; }
+}
+
+.grupoRango { font-size: 12px; color: #6f88a8; }
+.grupoResumen { margin-left: auto; font-size: 12px; font-weight: 600; color: $color-texto-suave; }
+
+.lista { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
+
+.fila {
+  display: grid;
+  grid-template-columns: 48px 28px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  min-height: 46px;
+  padding: 0 10px;
+  border-radius: 12px;
+  transition: background 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover { background: #0c1b2c; }
+}
+
+.filaAhora { background: rgba(32, 213, 246, 0.08); box-shadow: inset 0 0 0 1px rgba(32, 213, 246, 0.45); }
+
+.hora { font-size: 13px; font-weight: 600; color: $color-texto-suave; font-variant-numeric: tabular-nums; }
+
+.checkCaja {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+
+  svg { position: absolute; color: #04101f; pointer-events: none; opacity: 0; }
+}
+
+.check {
+  appearance: none;
+  margin: 0;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 1.5px solid #3a5674;
+  background: transparent;
+  cursor: pointer;
+
+  &:checked { background: $color-verde; border-color: $color-verde; }
+  &:checked + svg { opacity: 1; }
+  &:focus-visible { outline: 2px solid $color-acento; outline-offset: 2px; }
+}
+
+.check_pasada { border-color: #fb923c; }
+.check_ahora { border-color: $color-acento; box-shadow: 0 0 0 4px rgba(32, 213, 246, 0.18); }
+
+.detalle { display: flex; align-items: center; gap: 8px; min-width: 0; }
+
+.titulo { font-size: 14px; font-weight: 500; color: $color-texto; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tituloHecha { color: #6f88a8; text-decoration: line-through; }
+
+.chip {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  height: 22px;
+  padding: 0 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.chipEvento { background: rgba(251, 146, 60, 0.14); color: #fdba74; }
+.chipSemanal { background: rgba(160, 120, 255, 0.14); color: #c4b0ff; }
+
+.aviso { flex-shrink: 0; display: inline-flex; color: #8fa6c4; }
+
+.oculto {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.accionesFila { display: flex; align-items: center; justify-content: flex-end; gap: 10px; }
+
+.textoAtrasada { font-size: 12px; font-weight: 600; color: #fdba74; }
+.textoAhora { font-size: 12px; font-weight: 700; color: $color-acento; }
+.textoHecha { font-size: 12px; color: #6f88a8; }
+
+.enlaceRuta {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  padding: 0 12px;
+  border-radius: 9px;
+  border: 1px solid #29536a;
+  color: $color-texto;
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+
+  &:hover { border-color: #17e7f6; }
 }
 
 .marcadorAhora {
   display: flex;
   align-items: center;
-  gap: $espacio-3;
-  padding: 6px 12px;
-  border-radius: $radio-s;
-  background: rgba($color-acento, 0.12);
-  border: 1px dashed $color-acento;
-  color: $color-acento;
-  font-size: 13px;
-  font-weight: 700;
-  font-variant-numeric: tabular-nums;
-}
-
-.puntoAhora {
-  width: 9px;
-  height: 9px;
-  border-radius: 999px;
-  background: $color-acento;
-  flex-shrink: 0;
-}
-
-.item {
-  display: grid;
-  grid-template-columns: 64px 28px 1fr auto;
-  align-items: center;
-  gap: $espacio-3;
-  padding: $espacio-3 $espacio-4;
-  border-radius: 12px;
-  background: linear-gradient(110deg, #111d34, #081f2b);
-  border: 1px solid #19354b;
-  transition: border-color 0.2s, opacity 0.2s;
-}
-
-.itemAhora {
-  border-color: $color-acento;
-  background: rgba($color-acento, 0.08);
-}
-
-.itemHecha {
-  opacity: 0.72;
-}
-
-.hora {
-  font-family: $fuente-titulo;
-  font-size: 14px;
-  font-weight: 600;
-  font-variant-numeric: tabular-nums;
-  color: $color-texto;
-}
-
-.check {
-  width: 18px;
-  height: 18px;
-  accent-color: $color-acento;
-  cursor: pointer;
-}
-
-.detalle {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  min-width: 0;
-}
-
-.tituloFila {
-  display: flex;
-  align-items: center;
-  gap: $espacio-2;
-  flex-wrap: wrap;
-}
-
-.tituloTarea {
-  font-size: 14px;
-  font-weight: 500;
-  color: $color-texto;
-}
-
-.tituloTachado {
-  text-decoration: line-through;
-  color: $color-texto-suave;
-}
-
-.recurrencia {
+  gap: 10px;
+  padding: 4px 10px;
   font-size: 11px;
-  font-weight: 600;
-  padding: 2px 8px;
-  border-radius: 999px;
-  border: 1px solid $color-borde;
-  color: $color-texto-suave;
-  background: $color-superficie;
-}
-
-.recurrenciaEvent {
-  border-color: rgba($color-naranja, 0.6);
-  color: $color-naranja;
-}
-
-.recurrenciaWeekly {
-  border-color: rgba($color-ia, 0.6);
-  color: $color-ia;
-}
-
-.accionesItem {
-  display: flex;
-  align-items: center;
-  gap: $espacio-2;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-}
-
-.estadoBadge {
-  font-size: 12px;
-  font-weight: 600;
-  padding: 3px 10px;
-  border-radius: 999px;
-}
-
-.estadoHecha {
-  background: rgba($color-verde, 0.15);
-  color: $color-verde;
-}
-
-.estadoAhora {
-  background: rgba($color-acento, 0.18);
+  font-weight: 700;
   color: $color-acento;
+
+  &::after { content: ''; flex: 1; height: 1px; background: $color-acento; opacity: 0.6; }
 }
 
-.estadoPendiente {
-  background: $color-superficie;
-  color: $color-texto-suave;
-  border: 1px solid $color-borde;
-}
-
-.estadoPasada {
-  background: rgba($color-amarillo, 0.15);
-  color: $color-amarillo;
-}
-
-.enlaceRuta {
-  padding: 5px 11px;
-  border-radius: $radio-s;
-  border: 1px solid $color-borde;
-  font-size: 12px;
-  font-weight: 600;
-  color: $color-texto;
-  background: $color-superficie;
-
-  &:hover {
-    border-color: $color-acento;
-    color: $color-acento;
-  }
-}
-
-.vacio {
-  margin: 0;
-  padding: $espacio-4;
-  text-align: center;
-  color: $color-texto-suave;
-  font-size: 14px;
-}
+.vacio { margin: 12px 10px 4px; font-size: 13px; color: $color-texto-suave; }
 
 @media (max-width: 900px) {
-  .filaResumen {
-    grid-template-columns: 1fr;
-  }
+  .filaFoco { grid-template-columns: minmax(0, 1fr); }
+}
 
-  .item {
-    grid-template-columns: 56px 24px 1fr;
-  }
-
-  .accionesItem {
-    grid-column: 1 / -1;
-    justify-content: flex-start;
-  }
+@media (max-width: 600px) {
+  .fila { grid-template-columns: 44px 28px minmax(0, 1fr); padding: 8px 6px; }
+  .accionesFila { grid-column: 3; justify-content: flex-start; }
 }

@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
-import { useMotorNotificaciones } from '@/lib/datos/notificaciones';
+import { EVENTO_ALTERNAR_PANEL, useMotorNotificaciones } from '@/lib/datos/notificaciones';
 import styles from './CentroNotificaciones.module.scss';
 
 const CLASE_COLOR = {
@@ -45,12 +45,16 @@ export default function CentroNotificaciones() {
   const [abierto, setAbierto] = useState(false);
   const [toastIds, setToastIds] = useState([]);
   const conocidosRef = useRef(null);
+  const montajeRef = useRef(0);
   const timersRef = useRef(new Map());
 
   // Muestra toasts solo para notificaciones nuevas emitidas durante la sesión actual.
+  // El primer render hidrata con la bandeja vacía del servidor; por eso se filtra por `ts`
+  // y las notificaciones guardadas de sesiones anteriores no reaparecen como toast al recargar.
   useEffect(() => {
     if (conocidosRef.current === null) {
       conocidosRef.current = new Set(items.map((it) => it.id));
+      montajeRef.current = Date.now();
       return;
     }
 
@@ -58,7 +62,10 @@ export default function CentroNotificaciones() {
     for (const item of items) {
       if (!conocidosRef.current.has(item.id)) {
         conocidosRef.current.add(item.id);
-        nuevos.push(item.id);
+        const emitidaEn = Date.parse(item.ts);
+        if (!Number.isFinite(emitidaEn) || emitidaEn >= montajeRef.current - 2000) {
+          nuevos.push(item.id);
+        }
       }
     }
 
@@ -74,6 +81,12 @@ export default function CentroNotificaciones() {
       timersRef.current.set(id, timer);
     }
   }, [items]);
+
+  useEffect(() => {
+    const alternar = () => setAbierto((v) => !v);
+    window.addEventListener(EVENTO_ALTERNAR_PANEL, alternar);
+    return () => window.removeEventListener(EVENTO_ALTERNAR_PANEL, alternar);
+  }, []);
 
   useEffect(() => {
     const timers = timersRef.current;
