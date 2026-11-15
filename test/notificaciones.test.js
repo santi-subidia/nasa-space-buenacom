@@ -1,6 +1,8 @@
+import 'fake-indexeddb/auto';
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 
+import { addNotificationDb, getNotificationsDb, resetDb } from '../lib/db.js';
 import { parsearHoraMision } from '../lib/reloj/relojMision.js';
 import {
   HITOS_NOTIFICACION_SOL,
@@ -9,8 +11,13 @@ import {
   construirNotificacionMotivacion,
   construirNotificacionTierra,
   evaluarHitosHorario,
+  filtrarAvisosParaTripulante,
+  filtrarNotificacionesPorTripulante,
+  filtrarPendientesDbParaTripulante,
+  normalizarTextoTripulante,
   obtenerAspectoNotificacion,
   puedeNotificar,
+  resolverAstronautIdNotificacion,
 } from '../lib/notificaciones/logicaNotificaciones.js';
 
 test('TIPOS_NOTIFICACION y obtenerAspectoNotificacion cubren los 4 tipos y símbolos ●, ◆, ■, ✦', () => {
@@ -277,4 +284,103 @@ test('constructores reactivos: aviso, Tierra y motivación respetan formato y su
   assert.equal(motivacion.ruta, '/entrenador');
   assert.match(motivacion.titulo, /12 días/);
   assert.equal(motivacion.permitido, true);
+});
+
+test('al iniciar y en bandeja solo llegan notificaciones del tripulante activo (más las generales)', async () => {
+  await resetDb();
+  await addNotificationDb({
+    id: 'sim-alerta-ana-sol43-viral',
+    astronautId: 'ana',
+    sol: 43,
+    tipo: 'alerta',
+    nivel: 'orange',
+    titulo: 'Nicolás Méndez · Posible reactivación viral',
+    mensaje: 'Alerta de Nicolás',
+    ts: '2026-11-15T10:00:00.000Z',
+  });
+  await addNotificationDb({
+    id: 'sim-alerta-marcos-sol43-sleep',
+    astronautId: 'marcos',
+    sol: 43,
+    tipo: 'alerta',
+    nivel: 'yellow',
+    titulo: 'Marcos Silva · Sueño bajo',
+    mensaje: 'Alerta de Marcos',
+    ts: '2026-11-15T10:01:00.000Z',
+  });
+  await addNotificationDb({
+    id: 'mision-cabina-sol43',
+    astronautId: null,
+    sol: 43,
+    tipo: 'rutina',
+    nivel: 'info',
+    titulo: 'Cabina · Control ambiental',
+    mensaje: 'General de la misión',
+    ts: '2026-11-15T10:02:00.000Z',
+  });
+
+  const dbParaNicolas = await getNotificationsDb('ana');
+  assert.deepEqual(
+    dbParaNicolas.map((n) => n.id),
+    ['mision-cabina-sol43', 'sim-alerta-ana-sol43-viral'],
+  );
+
+  const pendientesNicolas = filtrarPendientesDbParaTripulante({
+    listaDb: dbParaNicolas,
+    activoId: 'ana',
+    clavesEmitidas: new Set(),
+  });
+  assert.deepEqual(
+    pendientesNicolas.map((n) => n.id),
+    ['mision-cabina-sol43', 'sim-alerta-ana-sol43-viral'],
+  );
+
+  // Al cambiar a Marcos, solo aparecen las de Marcos (+ generales), no las de Nicolás
+  const dbParaMarcos = await getNotificationsDb('marcos');
+  assert.deepEqual(
+    dbParaMarcos.map((n) => n.id),
+    ['mision-cabina-sol43', 'sim-alerta-marcos-sol43-sleep'],
+  );
+
+  // Legadas sin astronautId explícito se infieren por clave o título
+  assert.equal(
+    resolverAstronautIdNotificacion({ id: 'sim-alerta-marcos-sol44-x', titulo: 'Alerta' }),
+    'marcos',
+  );
+  assert.equal(
+    resolverAstronautIdNotificacion({ id: 'x', titulo: 'Marcos Silva · Alerta' }),
+    'marcos',
+  );
+  assert.equal(
+    resolverAstronautIdNotificacion({ id: 'x', titulo: 'Ana Ríos · Alerta' }),
+    'ana',
+  );
+  assert.equal(
+    normalizarTextoTripulante('Ana Ríos · Posible reactivación viral'),
+    'Nicolás Méndez · Posible reactivación viral',
+  );
+
+  const mezcladas = [
+    { id: '1', astronautId: 'ana', titulo: 'Solo Nicolás' },
+    { id: '2', astronautId: 'marcos', titulo: 'Solo Marcos' },
+    { id: '3', titulo: 'General de misión' },
+    { id: '4', clave: 'sim-alerta-marcos-sol45-test', titulo: 'Legada Marcos' },
+  ];
+  assert.deepEqual(
+    filtrarNotificacionesPorTripulante(mezcladas, 'ana').map((n) => n.id),
+    ['1', '3'],
+  );
+  assert.deepEqual(
+    filtrarNotificacionesPorTripulante(mezcladas, 'marcos').map((n) => n.id),
+    ['2', '3', '4'],
+  );
+
+  const avisos = [
+    { id: 'av-ana', astronautId: 'ana', motivo: 'Aviso Nicolás' },
+    { id: 'av-marcos', astronautId: 'marcos', motivo: 'Aviso Marcos' },
+  ];
+  assert.deepEqual(
+    filtrarAvisosParaTripulante(avisos, 'ana', new Set()).map((a) => a.id),
+    ['av-ana'],
+  );
 });

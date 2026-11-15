@@ -274,7 +274,7 @@ async function sembrarUsuariosDemo() {
       password: 'ares4-marte',
       email_confirm: true,
       user_metadata: {
-        nombre: 'Cmdt. Ana Ríos',
+        nombre: 'Cmdt. Nicolás Méndez',
         rol: 'tripulante',
         astronautId: 'ana',
         titulo: 'Comandante · Base Marte (Ares IV)',

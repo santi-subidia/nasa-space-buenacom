@@ -201,10 +201,10 @@ test('refusal: no lee nada y devuelve lo guardado; sin nada guardado, ok:false s
 
 // ---------- vista de la pantalla ----------
 
-test('vista: pestañas "Para Ana" y "Para médicos de vuelo", semáforo por especialista y aviso de respuesta guardada', async () => {
+test('vista: pestañas "Para Nicolás" y "Para médicos de vuelo", semáforo por especialista y aviso de respuesta guardada', async () => {
   const r = await pedirJunta(clienteDevolviendo(salidaValida()), crearAlmacenEnMemoria());
-  const vista = armarVistaJunta(r, 'Ana');
-  assert.deepEqual(vista.pestanas.map((p) => p.etiqueta), ['Para Ana', 'Para médicos de vuelo']);
+  const vista = armarVistaJunta(r, 'Nicolás');
+  assert.deepEqual(vista.pestanas.map((p) => p.etiqueta), ['Para Nicolás', 'Para médicos de vuelo']);
   assert.equal(vista.especialistas.length, 5);
   assert.equal(vista.especialistas[2].nombre, 'Conducta y sueño');
   assert.equal(vista.accion.texto, 'Avisar al oficial médico');

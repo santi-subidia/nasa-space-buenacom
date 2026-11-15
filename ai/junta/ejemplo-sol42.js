@@ -8,7 +8,7 @@ const serie = (indicador, unidad, valores) =>
   SOLES.map((sol, i) => ({ id: `${indicador}-${sol}`, astronautId: 'ana', indicator: indicador, value: valores[i], unit: unidad, ts: `S${sol} 06:45`, source: 'manual' }));
 
 export const ENTRADA_SOL42 = {
-  astronauta: { id: 'ana', nombre: 'Ana' },
+  astronauta: { id: 'ana', nombre: 'Nicolás' },
   sol: 42,
   entorno: 'mars_base',
   nivelMotor: 'orange',

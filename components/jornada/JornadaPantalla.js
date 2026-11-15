@@ -193,7 +193,7 @@ export default function JornadaPantalla() {
     <PantallaVyta
       titulo="Jornada del sol"
       icono="/figma/salud/target.svg"
-      subtitulo={`${astronauta?.name || 'Ana Ríos'} · Sol marciano de 24 h 37 min · ${ETIQUETAS_DIA[diaSemana] || 'Jueves'}`}
+      subtitulo={`${astronauta?.name || 'Nicolás Méndez'} · Sol marciano de 24 h 37 min · ${ETIQUETAS_DIA[diaSemana] || 'Jueves'}`}
       acciones={
         <>
           <span className={`${styles.chipEstado} ${estadoReloj.clase}`} role="status">

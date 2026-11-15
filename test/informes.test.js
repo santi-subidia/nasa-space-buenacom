@@ -7,7 +7,7 @@ import { guardarEnvioCanal, sincronizarCanal } from '../lib/enlace/canal.js';
 import { publicarTransmisionEnlaceRemota } from '../lib/supabase/sincronizar.js';
 import { agruparMensajesPorDia, crearTransmisionCanal, informeDesdeRegistros, juntaDelTripulante, mensajesDeTransmisiones } from '../lib/enlace/informes.js';
 
-const ana = { id: 'ana', name: 'Ana Ríos' };
+const ana = { id: 'ana', name: 'Nicolás Méndez' };
 const marcos = { id: 'marcos', name: 'Marcos Silva' };
 beforeEach(async () => { await resetDb(); });
 
@@ -27,7 +27,7 @@ test('Informes usa las mediciones guardadas del tripulante y las indicaciones de
   const lecturas = await getReadings('ana');
   const evaluacion = evaluate(lecturas, {}, 'mars_base', { sol: 42 });
   const informe = informeDesdeRegistros({ astronauta: ana, lecturas, evaluacion, sol: 42 });
-  assert.match(informe.resumen, /Ana Ríos/);
+  assert.match(informe.resumen, /Nicolás Méndez/);
   assert.match(informe.resumen, /37,8/);
   assert.doesNotMatch(informe.resumen, /36,5|121\/78|herpes/i);
   assert.deepEqual(informe.hallazgos, evaluacion.alerts.map((a) => a.why));
@@ -53,7 +53,7 @@ test('Junta respeta el tripulante y el sol, y los campos vacíos no se completan
 });
 
 test('el canal conserva envíos, separa tripulantes y no presenta respuestas pendientes como recibidas', async () => {
-  const primero = crearTransmisionCanal({ texto: 'Mensaje real de Ana', astronauta: ana, sol: 42, id: '1', ts: '2026-11-15T01:00:00Z' });
+  const primero = crearTransmisionCanal({ texto: 'Mensaje real de Nicolás', astronauta: ana, sol: 42, id: '1', ts: '2026-11-15T01:00:00Z' });
   const segundo = crearTransmisionCanal({ texto: 'Mensaje de Marcos', astronauta: marcos, sol: 42, id: '2', ts: '2026-11-15T01:01:00Z' });
   await guardarEnvioCanal(primero);
   await guardarEnvioCanal(segundo);
@@ -62,7 +62,7 @@ test('el canal conserva envíos, separa tripulantes y no presenta respuestas pen
   const filas = await getDb().transmisionesEnlace.toArray();
   let mensajes = mensajesDeTransmisiones(filas.map((f) => ({ ...f, respuesta_medica: respuesta })), 'ana');
   assert.equal(mensajes.length, 1);
-  assert.equal(mensajes[0].texto, 'Mensaje real de Ana');
+  assert.equal(mensajes[0].texto, 'Mensaje real de Nicolás');
   assert.equal(mensajes[0].entrega, 'pendiente');
   assert.equal(mensajes[0].enviado, false);
   assert.equal(mensajes[0].recibidoEnDestino, false);

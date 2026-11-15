@@ -1,5 +1,5 @@
 // Convierte la respuesta de POST /api/claude (tipo "board") en lo que necesita la pantalla Junta médica:
-// 5 especialistas con su semáforo, desacuerdos resueltos, la síntesis y las pestañas "Para Ana" /
+// 5 especialistas con su semáforo, desacuerdos resueltos, la síntesis y las pestañas "Para Nicolás" /
 // "Para médicos de vuelo". Sin React: la pantalla (P1, prototipo "5") solo dibuja esto.
 
 const NOMBRES = {

@@ -21,6 +21,6 @@ for (const e of r.json.especialistas) console.log(`  [${e.nivel.padEnd(6)}] ${e.
 console.log('\nDesacuerdos:', r.json.desacuerdos.length);
 for (const d of r.json.desacuerdos) console.log(`  · ${d.tema} → ${d.resolucion}`);
 console.log('\nDecisión:', r.json.sintesis.decision);
-console.log('\nPara Ana:', r.json.informe_astronauta.resumen);
+console.log('\nPara Nicolás:', r.json.informe_astronauta.resumen);
 console.log('\nPara médicos de vuelo:', r.json.informe_tecnico.resumen_clinico);
 console.log('\nFuentes disponibles:', citas.map((c) => c.id).join(' '));

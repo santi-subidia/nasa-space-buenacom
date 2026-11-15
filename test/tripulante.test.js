@@ -19,7 +19,7 @@ function evaluarTripulacionDemo() {
   return evaluacionesPorId;
 }
 
-test('Marcos ve a Ana en orange con Posible reactivación viral y sin mediciones cuando permisosPorId.ana === false', () => {
+test('Marcos ve a Nicolás en orange con Posible reactivación viral y sin mediciones cuando permisosPorId.ana === false', () => {
   const evaluacionesPorId = evaluarTripulacionDemo();
   const vista = armarVistaOficialMedico({
     tripulacion: DEMO_DATA.astronauts,
@@ -37,7 +37,7 @@ test('Marcos ve a Ana en orange con Posible reactivación viral y sin mediciones
   assert.match(ana.notaPrivacidad, /no compartió/i);
 });
 
-test('Cuando permisosPorId.ana === true, Marcos ve los detalles compartidos de Ana', () => {
+test('Cuando permisosPorId.ana === true, Marcos ve los detalles compartidos de Nicolás', () => {
   const evaluacionesPorId = evaluarTripulacionDemo();
   const vista = armarVistaOficialMedico({
     tripulacion: DEMO_DATA.astronauts,

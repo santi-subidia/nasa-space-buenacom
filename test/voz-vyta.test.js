@@ -79,7 +79,7 @@ function navegadorDePrueba({
   sesion = crearSesionVega({
     voz,
     alAvisarOficial,
-    obtenerDatosDelDia: () => ({ tripulante: 'Ana Ríos', sol: 42, indicadores: { Sueño: '5.3 h' } }),
+    obtenerDatosDelDia: () => ({ tripulante: 'Nicolás Méndez', sol: 42, indicadores: { Sueño: '5.3 h' } }),
     obtenerContextoPantalla: () => 'Sección: mental. Resumen visible: Sueño bajo esta semana.',
     fetchFn: async (url, opciones) => {
       solicitudes.push({ url, opciones, tracksDetenidos });
