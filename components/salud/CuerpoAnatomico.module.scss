@@ -1,0 +1,88 @@
+// Cuerpo anatómico con estética de holograma VYTA. El color de cada zona sale de --nivel (data-nivel).
+.svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 560px;
+  font-family: var(--font-inter), system-ui, sans-serif;
+  user-select: none;
+}
+
+.silueta { stroke: #3d86bd; stroke-width: 1.6; filter: drop-shadow(0 0 6px #20d5f633); }
+.rostro { fill: none; stroke: #3d86bd; stroke-width: 1; opacity: 0.55; stroke-linecap: round; }
+
+// ── Zonas sobre el cuerpo ──────────────────────────────
+.zona {
+  color: var(--nivel);
+  cursor: pointer;
+  transition: opacity 0.2s, filter 0.2s;
+}
+.organo, .musculo, .pelvis, .craneo, .orbita {
+  fill: currentColor;
+  fill-opacity: 0.26;
+  stroke: currentColor;
+  stroke-width: 1.4;
+  stroke-linejoin: round;
+}
+.musculo { fill-opacity: 0.18; stroke-width: 1.1; }
+.craneo { fill-opacity: 0.06; stroke-dasharray: 3 3; }
+.orbita { fill: #020817; fill-opacity: 0.8; }
+.pelvis { fill-opacity: 0.16; }
+.linea, .fibra, .vaso, .costilla, .huesoFinoPath, .tubo, .columna {
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.linea { stroke-width: 1; opacity: 0.7; }
+.fibra { stroke-width: 0.8; opacity: 0.5; }
+.vaso { stroke-width: 0.9; opacity: 0.55; stroke-dasharray: 2 2.5; }
+.tubo { stroke-width: 3; opacity: 0.65; }
+.costilla { stroke-width: 2.2; opacity: 0.6; }
+.huesoFinoPath { stroke-width: 3; opacity: 0.75; }
+.columna { stroke-width: 5; stroke-dasharray: 5 2.5; opacity: 0.55; }
+.hueso, .huesoFino { stroke: currentColor; stroke-linecap: round; opacity: 0.6; }
+.hueso { stroke-width: 6; }
+.huesoFino { stroke-width: 3; }
+.rotula { fill: currentColor; fill-opacity: 0.5; stroke: currentColor; }
+.ganglio { fill: currentColor; stroke: #020817; stroke-width: 1; }
+.punto { fill: currentColor; }
+
+// Estados: elegida, resaltada (hover / foco de la etiqueta), atenuada (otra sección o filtro) y fuera de la capa.
+.zona.sel { filter: url(#vyta-brillo); }
+.zona.sel .organo, .zona.sel .musculo, .zona.sel .pelvis { fill-opacity: 0.5; stroke-width: 2; }
+.zona.sel .hueso, .zona.sel .huesoFino, .zona.sel .columna, .zona.sel .costilla { opacity: 0.95; }
+.zona.resaltada { filter: brightness(1.35) drop-shadow(0 0 5px currentColor); }
+.zona.apagada { opacity: 0.3; }
+.zona.fuera { opacity: 0.07; pointer-events: none; }
+.zona:not(.sel):not(.fuera):hover { filter: brightness(1.3); }
+
+// En una capa concreta, el sistema elegido gana protagonismo.
+.svg[data-capa='esqueleto'] .hueso, .svg[data-capa='esqueleto'] .huesoFino { opacity: 0.9; }
+.svg[data-capa='musculos'] .musculo { fill-opacity: 0.32; }
+
+// ── Etiquetas ──────────────────────────────────────────
+.etiqueta {
+  color: var(--nivel);
+  cursor: pointer;
+  outline: none;
+  transition: opacity 0.2s;
+}
+.area { fill: transparent; stroke: transparent; }
+.guia { fill: none; stroke: currentColor; stroke-width: 1; opacity: 0.45; }
+.origen { fill: currentColor; stroke: #020817; stroke-width: 1; }
+.marca { fill: currentColor; stroke: #020817; stroke-width: 1.5; }
+.nombre { fill: #dfe8f7; font-size: 13.5px; font-weight: 500; }
+.estado { fill: currentColor; font-size: 11px; }
+
+.etiqueta:hover .area, .etiqueta.resaltada .area { fill: #ffffff08; stroke: #29536a; }
+.etiqueta:focus-visible .area { stroke: #17e7f6; stroke-width: 1.5; }
+.etiqueta.sel .area { fill: #2b276099; stroke: #6e48ad; }
+.etiqueta.sel .nombre { fill: #fff; font-weight: 600; }
+.etiqueta.sel .guia, .etiqueta.resaltada .guia { opacity: 0.95; stroke-width: 1.4; }
+.etiqueta.apagada { opacity: 0.35; }
+.etiqueta.fuera { opacity: 0.15; pointer-events: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .zona, .etiqueta { transition: none; }
+}

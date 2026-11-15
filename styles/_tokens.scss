@@ -1,26 +1,27 @@
-// Tokens de diseño de AstroVitals (prototipos de 1280×800).
+// Tokens de diseño de VYTA (paleta y tipografía del home / Figma).
 // Solo variables Sass (no emite CSS): se importa con `@use 'tokens' as *;`.
 // Las variables CSS equivalentes (--color-*) se declaran en globals.scss.
 
 // ── Color ──────────────────────────────────────────────
-$color-fondo: #0a0f1e;
-$color-superficie: #121a2e;
-$color-superficie-2: #1a2440;
-$color-borde: #26325a;
-$color-texto: #e8edf7;
-$color-texto-suave: #9aa6c4;
-$color-acento: #5bc8f5; // acento principal
-$color-ia: #a78bfa; // todo lo que viene de Vega / la IA
+$color-fondo: #020817; // fondo VYTA (home)
+$color-superficie: #0a1426;
+$color-superficie-2: #111d34;
+$color-borde: #1b354b;
+$color-texto: #f3f6ff;
+$color-texto-suave: #b9cbe2;
+$color-acento: #20d5f6; // acento principal (cian VYTA)
+$color-ia: #a078ff; // todo lo que viene de Vega / la IA
 
 // Semáforo: el color NUNCA va solo, siempre con una forma (ver TrafficLight).
-$color-verde: #4ade80; // ●  círculo
+$color-verde: #35edb5; // ●  círculo
 $color-amarillo: #facc15; // ▲  triángulo
 $color-naranja: #fb923c; // ◆  rombo
-$color-rojo: #f87171; // ■  cuadrado
+$color-rojo: #ff6388; // ■  cuadrado
 
 // ── Tipografía ─────────────────────────────────────────
 $fuente-texto: var(--font-inter), system-ui, sans-serif;
-$fuente-titulo: var(--font-space-grotesk), var(--font-inter), system-ui, sans-serif;
+// Unificado con el home: toda la app usa Inter, también en títulos.
+$fuente-titulo: var(--font-inter), system-ui, sans-serif;
 
 // ── Espaciado, radios, layout ──────────────────────────
 $espacio-1: 4px;
@@ -31,7 +32,7 @@ $espacio-5: 24px;
 $espacio-6: 32px;
 
 $radio-s: 8px;
-$radio-m: 14px;
+$radio-m: 16px;
 $radio-l: 20px;
 
 $ancho-pantalla: 1280px;

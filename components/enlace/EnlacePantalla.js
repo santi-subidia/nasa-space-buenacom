@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import Card from '@/components/Card';
+import PantallaVyta from '@/components/layout/PantallaVyta';
 import TrafficLight from '@/components/TrafficLight';
 import { crearVoz } from '@/ai/vega/voz';
 import {
@@ -88,19 +89,16 @@ export default function EnlacePantalla() {
   const hablando = estadoVoz === 'hablando';
 
   return (
-    <div className={styles.pantalla}>
-      <header className={styles.encabezado}>
-        <div>
-          <h1>Enlace con Tierra</h1>
-          <p className={styles.sub}>
-            Ares IV (Base Marte) ↔ Control de Misión (Houston) · Retraso de {RETRASO_SOLO_IDA_MIN} min por tramo (30 min ida y vuelta)
-          </p>
-        </div>
+    <PantallaVyta
+      titulo="Enlace con Tierra"
+      icono="/figma/nav-informes.svg"
+      subtitulo={`Ares IV (Base Marte) ↔ Control de Misión (Houston) · Retraso de ${RETRASO_SOLO_IDA_MIN} min por tramo (30 min ida y vuelta)`}
+      acciones={
         <span className={styles.latenciaPill}>
-          ⇄ Latencia actual: {RETRASO_SOLO_IDA_MIN} min solo ida
+          <i aria-hidden="true" /> Latencia actual: {RETRASO_SOLO_IDA_MIN} min solo ida
         </span>
-      </header>
-
+      }
+    >
       <Card titulo="Informe técnico en cola · Para médicos de vuelo" acento={informe.nivel} className={styles.informeCard}>
         <div className={styles.informeTop}>
           <div className={styles.informeMeta}>
@@ -324,6 +322,6 @@ export default function EnlacePantalla() {
       <p className={styles.aviso}>
         Simulación educativa de comunicaciones Tierra–Marte con retraso de {RETRASO_SOLO_IDA_MIN} min por tramo.
       </p>
-    </div>
+    </PantallaVyta>
   );
 }

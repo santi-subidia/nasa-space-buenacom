@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import Card from '@/components/Card';
+import PantallaVyta from '@/components/layout/PantallaVyta';
 import { INFO, CARAS } from '@/lib/content/indicadores';
 import { useLecturas, guardarLecturas } from '@/lib/datos/lecturas';
 import { useEstadoMision } from '@/lib/datos/demo';
@@ -103,20 +104,19 @@ export default function Registrar() {
   }
 
   return (
-    <div className={styles.pantalla}>
-      <header className={styles.encabezado}>
-        <div>
-          <h1>Registrar</h1>
-          <p className={styles.sub}>Chequeo matutino · Sol {SOL_ACTUAL}</p>
-        </div>
+    <PantallaVyta
+      titulo="Check-in diario"
+      subtitulo={`Chequeo matutino · Sol ${SOL_ACTUAL}`}
+      icono="/figma/nav-registrar.svg"
+      acciones={
         <Link href="/vega?modo=chequeo" className={`${styles.boton} ${styles.ia}`}>
-          🎙 Completar por voz
+          <span aria-hidden="true">🎙</span> Completar por voz
         </Link>
-      </header>
-
+      }
+    >
       <div className={styles.cuerpo}>
         <form className={styles.form} onSubmit={guardar} noValidate>
-          <Card>
+          <Card titulo="Mediciones del día">
             <Fila id="presion" etiqueta="Presión arterial">
               <div className={styles.par}>
                 <Numero k="bp_sys" label="Sistólica" valor={valor('bp_sys')} onChange={cambiar} error={error('bp_sys')} />
@@ -242,7 +242,7 @@ export default function Registrar() {
           <TestVision resultado={vision} onTerminar={setVision} />
         </div>
       </div>
-    </div>
+    </PantallaVyta>
   );
 }
 

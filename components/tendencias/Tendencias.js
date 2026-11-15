@@ -16,6 +16,7 @@ import {
   YAxis,
 } from 'recharts';
 import Card from '@/components/Card';
+import PantallaVyta from '@/components/layout/PantallaVyta';
 import { SOL_ACTUAL, useEstadoMision } from '@/lib/datos/demo';
 import { LINEA_BASE, EVALUAR, valoresDelDia } from '@/lib/mock/indicadores';
 import { SERIE, SOL_EVENTO } from '@/lib/mock/series';
@@ -35,13 +36,13 @@ const C = {
   rojo: 'var(--color-rojo)',
   acento: 'var(--color-acento)',
   texto: 'var(--color-texto-suave)',
-  borde: 'var(--color-borde)',
+  borde: '#294357', // grilla de los gráficos del home
 };
 
-const EJE = { stroke: C.texto, fontSize: 12, tickLine: false };
+const EJE = { stroke: '#678198', tick: { fill: '#b9cbe2', fontSize: 11 }, tickLine: false };
 
 const tooltip = {
-  contentStyle: { background: 'var(--color-superficie-2)', border: '1px solid var(--color-borde)', borderRadius: 8, color: 'var(--color-texto)' },
+  contentStyle: { background: '#0b2031', border: '1px solid #2b5970', borderRadius: 9, fontSize: 12, color: '#f3f6ff' },
   labelStyle: { color: 'var(--color-texto-suave)' },
   labelFormatter: (sol) => `Sol ${sol}`,
 };
@@ -108,12 +109,11 @@ export default function Tendencias() {
   );
 
   return (
-    <div className={styles.pantalla}>
-      <header className={styles.encabezado}>
-        <div>
-          <h1>Tendencias</h1>
-          <p className={styles.sub}>Cómo vienen tus indicadores · {periodo === '60' ? 'misión completa (60 soles)' : `hasta el sol ${SOL_ACTUAL}`}</p>
-        </div>
+    <PantallaVyta
+      titulo="Tendencias"
+      icono="/figma/nav-analitica.svg"
+      subtitulo={`Cómo vienen tus indicadores · ${periodo === '60' ? 'misión completa (60 soles)' : `hasta el sol ${SOL_ACTUAL}`}`}
+      acciones={
         <div className={styles.periodos} role="radiogroup" aria-label="Período">
           {PERIODOS.map((p) => (
             <button
@@ -128,10 +128,10 @@ export default function Tendencias() {
             </button>
           ))}
         </div>
-      </header>
-
+      }
+    >
       <Card acento="ia" className={styles.vega}>
-        <p className={styles.vegaTitulo}>✦ Lectura de Vega</p>
+        <p className={styles.vegaTitulo}><span aria-hidden="true">✦</span> Lectura de Vega</p>
         <p>
           Entre los soles 31 y 40 dormiste en promedio <strong>{coma(prom(caida.map((d) => d.sleep_h)))} h</strong> (antes, {coma(prom(previo.map((d) => d.sleep_h)))} h) y
           tu estrés pasó de <strong>{coma(prom(previo.map((d) => d.stress)), 0)}</strong> a <strong>{coma(prom(caida.slice(-3).map((d) => d.stress)), 0)}</strong> sobre 10. En el
@@ -240,7 +240,7 @@ export default function Tendencias() {
           </Card>
         )}
       </div>
-    </div>
+    </PantallaVyta>
   );
 }
 

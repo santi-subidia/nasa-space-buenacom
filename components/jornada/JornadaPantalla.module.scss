@@ -1,30 +1,6 @@
 @use 'tokens' as *;
 
-.pantalla {
-  display: flex;
-  flex-direction: column;
-  gap: $espacio-4;
-}
-
-.encabezado {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: $espacio-4;
-  flex-wrap: wrap;
-
-  h1 {
-    font-size: 30px;
-    margin: 0;
-  }
-}
-
-.sub {
-  margin: 4px 0 0;
-  color: $color-texto-suave;
-  font-size: 14px;
-}
-
+// El contenedor y el título los da PantallaVyta (diseño del home).
 .relojCaja {
   display: flex;
   flex-direction: column;
@@ -36,9 +12,9 @@
   display: inline-flex;
   align-items: baseline;
   gap: $espacio-2;
-  background: $color-superficie-2;
-  border: 1px solid $color-borde;
-  border-radius: $radio-m;
+  background: linear-gradient(110deg, #111d34, #081f2b);
+  border: 1px solid #315a75;
+  border-radius: 12px;
   padding: 10px 16px;
   font-family: $fuente-titulo;
   font-variant-numeric: tabular-nums;
@@ -51,8 +27,8 @@
 }
 
 .relojHora {
-  font-size: 28px;
-  font-weight: 700;
+  font-size: 26px;
+  font-weight: 600;
   color: $color-texto;
   line-height: 1;
 }
@@ -116,25 +92,27 @@
   align-items: center;
   gap: 6px;
   padding: 8px 14px;
-  border-radius: $radio-s;
-  border: 1px solid $color-borde;
-  background: $color-superficie-2;
+  border-radius: 10px;
+  border: 1px solid #29536a;
+  background: #0c2031;
   color: $color-texto;
+  font: inherit;
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 500;
 
   &:hover {
-    border-color: $color-acento;
+    border-color: #17e7f6;
   }
 }
 
 .botonPrimario {
-  background: $color-acento;
-  border-color: $color-acento;
-  color: $color-fondo;
+  background: linear-gradient(100deg, #9770ff, #6e48ad);
+  border-color: #9e7bff;
+  color: #fff;
+  box-shadow: 0 0 13px #9770ff44;
 
   &:hover {
-    filter: brightness(1.08);
+    border-color: #c4adff;
   }
 }
 
@@ -152,9 +130,9 @@
   color: $color-texto-suave;
 
   select {
-    background: $color-superficie-2;
+    background: #0c1b2c;
     color: $color-texto;
-    border: 1px solid $color-borde;
+    border: 1px solid #24435a;
     border-radius: $radio-s;
     padding: 7px 12px;
     font-size: 13px;
@@ -177,7 +155,8 @@
   gap: $espacio-2;
 
   strong {
-    font-size: 18px;
+    font-size: 17px;
+    font-weight: 600;
   }
 
   span {
@@ -187,15 +166,16 @@
 }
 
 .barra {
-  height: 10px;
-  background: $color-superficie-2;
+  height: 8px;
+  background: #22394f;
   border-radius: 999px;
   overflow: hidden;
 
   span {
     display: block;
     height: 100%;
-    background: $color-acento;
+    background: #17e7f6;
+    box-shadow: 0 0 10px #17e7f66b;
     border-radius: 999px;
     transition: width 0.25s ease;
   }
@@ -245,22 +225,23 @@
   cursor: pointer;
   padding: 7px 14px;
   border-radius: 999px;
-  border: 1px solid $color-borde;
-  background: $color-superficie;
+  border: 1px solid #24435a;
+  background: #0c1b2c;
   color: $color-texto-suave;
-  font-size: 13px;
-  font-weight: 600;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 500;
 
   &:hover {
     color: $color-texto;
-    border-color: $color-acento;
+    border-color: #17e7f6;
   }
 }
 
 .filtroActivo {
-  background: rgba($color-acento, 0.16);
-  border-color: $color-acento;
-  color: $color-texto;
+  background: linear-gradient(100deg, #3d367e, #1d2a4d);
+  border-color: #6e48ad;
+  color: #f6f4ff;
 }
 
 // ── Línea de tiempo ───────────────────────────────────────
@@ -301,9 +282,9 @@
   align-items: center;
   gap: $espacio-3;
   padding: $espacio-3 $espacio-4;
-  border-radius: $radio-s;
-  background: $color-superficie-2;
-  border: 1px solid $color-borde;
+  border-radius: 12px;
+  background: linear-gradient(110deg, #111d34, #081f2b);
+  border: 1px solid #19354b;
   transition: border-color 0.2s, opacity 0.2s;
 }
 
@@ -318,8 +299,8 @@
 
 .hora {
   font-family: $fuente-titulo;
-  font-size: 15px;
-  font-weight: 700;
+  font-size: 14px;
+  font-weight: 600;
   font-variant-numeric: tabular-nums;
   color: $color-texto;
 }
@@ -346,8 +327,8 @@
 }
 
 .tituloTarea {
-  font-size: 15px;
-  font-weight: 600;
+  font-size: 14px;
+  font-weight: 500;
   color: $color-texto;
 }
 

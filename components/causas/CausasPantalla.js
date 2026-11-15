@@ -6,6 +6,7 @@ import Card from '@/components/Card';
 import TrafficLight from '@/components/TrafficLight';
 import { GRAFOS, TIPOS_NODO, alertaConGrafo, armarGrafoCausal } from '@/lib/causas/grafos';
 import { SOL_ACTUAL, useEstadoMision } from '@/lib/datos/demo';
+import { rutaZona } from '@/lib/content/rutaZona';
 import GrafoCausal from './GrafoCausal';
 import styles from './Causas.module.scss';
 
@@ -99,7 +100,7 @@ export default function CausasPantalla() {
         <Link className={styles.boton} href="/">
           Volver a Inicio
         </Link>
-        <Link className={styles.boton} href={`/mapa?zona=${alerta?.zone || 'immune'}`}>
+        <Link className={styles.boton} href={rutaZona(alerta?.zone)}>
           Ver en el mapa corporal
         </Link>
         <Link className={`${styles.boton} ${styles.ia}`} href="/junta">

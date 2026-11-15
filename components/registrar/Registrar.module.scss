@@ -1,41 +1,50 @@
 @use 'tokens' as *;
 
-.pantalla { display: flex; flex-direction: column; gap: $espacio-4; h1 { font-size: 30px; } }
-.encabezado { display: flex; justify-content: space-between; align-items: flex-end; }
-.sub { margin: 2px 0 0; color: $color-texto-suave; font-size: 14px; }
-
-.cuerpo { display: grid; grid-template-columns: 1.5fr 1fr; gap: $espacio-4; align-items: start; }
+// Pantalla Registrar con el diseño del home (VYTA): el contenedor lo da PantallaVyta.
+.cuerpo { display: grid; grid-template-columns: minmax(0, 906fr) minmax(0, 449fr); gap: 17px; align-items: start; }
 .form { display: flex; flex-direction: column; gap: $espacio-3; }
-.lateral { display: flex; flex-direction: column; gap: $espacio-4; }
+.lateral { display: flex; flex-direction: column; gap: 13px; }
 
 // ── Botones y campos ───────────────────────────────────
 .boton {
-  display: inline-block;
-  background: transparent;
-  border: 1px solid $color-borde;
-  color: $color-texto;
-  border-radius: $radio-s;
-  padding: 9px 16px;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: #0c2031;
+  border: 1px solid #29536a;
+  color: #f3f6ff;
+  border-radius: 10px;
+  padding: 8px 14px;
   font: inherit;
-  font-size: 14px;
-  font-weight: 600;
+  font-size: 13px;
+  font-weight: 500;
   text-decoration: none;
   cursor: pointer;
-  &:hover:not(:disabled) { background: $color-superficie-2; }
+  transition: border-color 0.15s, box-shadow 0.15s;
+  &:hover:not(:disabled) { border-color: #17e7f6; }
   &:disabled { opacity: 0.45; cursor: not-allowed; }
 }
-.primario { background: $color-acento; color: $color-fondo; border-color: $color-acento; &:hover:not(:disabled) { background: $color-acento; filter: brightness(1.1); } }
-.ia { border-color: $color-ia; color: $color-ia; }
+.primario {
+  background: linear-gradient(100deg, #9770ff, #6e48ad);
+  border-color: #9e7bff;
+  color: #fff;
+  padding: 10px 20px;
+  box-shadow: 0 0 13px #9770ff44;
+  &:hover:not(:disabled) { border-color: #c4adff; box-shadow: 0 0 22px #9770ff77; }
+}
+.ia { border-color: #6e48ad; color: #d9ccff; background: linear-gradient(100deg, #211e46, #111b31); &:hover:not(:disabled) { border-color: #a078ff; } }
 
 .campo {
   width: 84px;
-  background: $color-fondo;
-  border: 1px solid $color-borde;
-  border-radius: $radio-s;
+  background: #0c1b2c;
+  border: 1px solid #24435a;
+  border-radius: 8px;
   color: $color-texto;
   padding: 8px 10px;
   font: inherit;
+  font-size: 14px;
   text-align: right;
+  &:focus { border-color: #17e7f6; outline: none; box-shadow: 0 0 0 2px #17e7f633; }
   &[readonly] { background: transparent; border-style: dashed; color: $color-texto-suave; }
 }
 select.campo { width: auto; text-align: left; }
@@ -44,14 +53,14 @@ select.campo { width: auto; text-align: left; }
 
 .numero { display: inline-flex; flex-direction: column; gap: 2px; }
 .par { display: flex; align-items: center; gap: $espacio-2; }
-.unidad { color: $color-texto-suave; font-size: 13px; min-width: 44px; }
-.watch { font-size: 12px; background: rgba($color-acento, 0.15); color: $color-acento; border-radius: 999px; padding: 2px 10px; }
-.camaraBadge { font-size: 12px; background: rgba($color-verde, 0.15); color: $color-verde; border-radius: 999px; padding: 2px 10px; }
+.unidad { color: $color-texto-suave; font-size: 12px; min-width: 44px; }
+.watch { font-size: 11px; background: #0a3545; color: #9cfff0; border: 1px solid #15574e; border-radius: 999px; padding: 2px 10px; }
+.camaraBadge { font-size: 11px; background: #05232c; color: $color-verde; border: 1px solid #15574e; border-radius: 999px; padding: 2px 10px; }
 
 // ── Filas del formulario ───────────────────────────────
-.fila { padding: $espacio-3 0; border-bottom: 1px solid $color-borde; &:last-child { border-bottom: 0; } }
+.fila { padding: 11px 0; border-bottom: 1px solid #1c344a; &:last-child { border-bottom: 0; } }
 .filaTop { display: grid; grid-template-columns: 150px 1fr 32px; align-items: center; gap: $espacio-3; }
-.etiqueta { font-weight: 600; }
+.etiqueta { font-weight: 500; font-size: 14px; color: #f3f6ff; }
 .controles { display: flex; align-items: center; gap: $espacio-2; flex-wrap: wrap; }
 
 .info {
@@ -69,7 +78,8 @@ select.campo { width: auto; text-align: left; }
 .ficha {
   margin: $espacio-3 0 0;
   padding: $espacio-3 $espacio-4;
-  background: $color-superficie-2;
+  background: linear-gradient(110deg, #111d34, #081f2b);
+  border: 1px solid #19354b;
   border-radius: $radio-s;
   font-size: 13px;
   dt { font-weight: 700; color: $color-acento; margin-top: $espacio-2; &:first-child { margin-top: 0; } }
@@ -94,7 +104,7 @@ select.campo { width: auto; text-align: left; }
 .elegida { border-color: $color-acento; background: $color-superficie-2; filter: none; }
 
 .pie { display: flex; align-items: center; gap: $espacio-4; }
-.nota { color: $color-texto-suave; font-size: 13px; }
+.nota { color: $color-texto-suave; font-size: 12px; }
 
 // ── Lateral ────────────────────────────────────────────
 .texto { margin: 0 0 $espacio-3; font-size: 14px; color: $color-texto-suave; strong { color: $color-texto; } }
@@ -360,4 +370,12 @@ select.campo { width: auto; text-align: left; }
   flex: 1;
   display: grid;
   place-items: center;
+}
+
+@media (max-width: 1100px) {
+  .cuerpo { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 600px) {
+  .filaTop { grid-template-columns: 1fr 32px; }
+  .controles { grid-column: 1 / -1; grid-row: 2; }
 }
