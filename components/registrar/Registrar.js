@@ -7,14 +7,10 @@ import Card from '@/components/Card';
 import PantallaVyta from '@/components/layout/PantallaVyta';
 import { INFO, CARAS } from '@/lib/content/indicadores';
 import { useLecturas, guardarLecturas } from '@/lib/datos/lecturas';
-import { useEstadoMision } from '@/lib/datos/demo';
 import { guardarFoto, guardarSintoma } from '@/lib/datos/sintomas';
-import { formatearNotaPvt } from '@/lib/pvt/metricas';
 import { SOL_ACTUAL } from '@/lib/mock/mision';
 import { WATCH, valoresDelDia } from '@/lib/mock/indicadores';
 import FotoPiel from './FotoPiel';
-import TestReaccion from './TestReaccion';
-import TestVision from './TestVision';
 import styles from './Registrar.module.scss';
 
 // Rango válido de cada campo editable.
@@ -35,15 +31,10 @@ const num = (s) => Number(String(s).replace(',', '.'));
 export default function Registrar() {
   const router = useRouter();
   const lecturas = useLecturas();
-  const { astronauta } = useEstadoMision();
-  const baselineReaccion = astronauta?.baseline?.reaction_ms ?? null;
   const base = valoresDelDia(lecturas, SOL_ACTUAL);
 
   const [edit, setEdit] = useState({}); // solo lo que se tocó: { clave: texto }
   const [foto, setFoto] = useState(null); // { blob, code, severity }
-  const [reaccion, setReaccion] = useState(null); // { ms, intentos, estabilidadVor, ... }
-  const [mareo, setMareo] = useState(0); // 0 = no, 1 = leve, 2 = moderado
-  const [vision, setVision] = useState(null); // { puntos, niveles, borrosa }
   const [guardando, setGuardando] = useState(false);
   const [errorGuardado, setErrorGuardado] = useState(null);
 
@@ -62,9 +53,7 @@ export default function Registrar() {
   const cambios = Object.keys(LIMITES).filter(
     (k) => edit[k] !== undefined && edit[k] !== '' && !error(k) && num(edit[k]) !== base[k]?.valor,
   );
-  const nada = cambios.length === 0 && !foto && !reaccion && !vision;
-  const lecturasExtra = (reaccion ? 1 : 0) + (vision ? 1 : 0);
-  const sintomasExtra = (foto ? 1 : 0) + (vision?.borrosa ? 1 : 0);
+  const nada = cambios.length === 0 && !foto;
 
   async function guardar(e) {
     e.preventDefault();
@@ -72,25 +61,9 @@ export default function Registrar() {
     setGuardando(true);
 
     const nuevas = cambios.map((k) => ({ indicator: k, value: num(edit[k]), sol: SOL_ACTUAL }));
-    if (reaccion) {
-      nuevas.push({
-        indicator: 'reaction_ms',
-        value: reaccion.ms,
-        sol: SOL_ACTUAL,
-        source: reaccion.modoEntrada === 'camara' ? 'camera' : 'manual',
-        note: formatearNotaPvt(reaccion),
-      });
-    }
-    if (vision) nuevas.push({ indicator: 'visual_acuity', value: vision.puntos, sol: SOL_ACTUAL });
 
     try {
       if (nuevas.length) await guardarLecturas(nuevas);
-      if (mareo > 0) {
-        await guardarSintoma({ bodyZone: 'inner_ear', code: 'dizzy_standing', severity: mareo, sol: SOL_ACTUAL });
-      }
-      if (vision?.borrosa) {
-        await guardarSintoma({ bodyZone: 'eyes', code: 'blurred_vision', severity: 2, sol: SOL_ACTUAL });
-      }
       if (foto) {
         const photoBlobId = await guardarFoto(foto.blob);
         await guardarSintoma({ bodyZone: 'immune', code: foto.code, severity: foto.severity, sol: SOL_ACTUAL, photoBlobId });
@@ -220,26 +193,21 @@ export default function Registrar() {
                 ? 'Revisá los valores marcados.'
                 : nada
                   ? 'No hay cambios para guardar.'
-                  : `Se ${cambios.length + lecturasExtra === 1 ? 'guardará 1 lectura' : `guardarán ${cambios.length + lecturasExtra} lecturas`}${foto ? ' y 1 foto' : ''}${
-                      vision?.borrosa ? ' y el síntoma "visión borrosa"' : ''
-                    }.`}
+                  : `Se ${cambios.length === 1 ? 'guardará 1 lectura' : `guardarán ${cambios.length} lecturas`}${foto ? ' y 1 foto' : ''}.`}
             </span>
           </div>
         </form>
 
         <div className={styles.lateral}>
+          <Card titulo="¿Cómo me veo hoy?" acento="ia">
+            <p className={styles.texto}>
+              Compará tu cara de hoy con tu foto base: parpadeo para detectar fatiga, pulso por cámara y una observación de Vega.
+            </p>
+            <Link href="/cara" className={`${styles.boton} ${styles.primario}`}>
+              <span aria-hidden="true">📷</span> Abrir chequeo facial
+            </Link>
+          </Card>
           <FotoPiel valor={foto} onChange={setFoto} />
-          <TestReaccion
-            resultado={reaccion}
-            baselineMs={baselineReaccion}
-            mareo={mareo}
-            onMareo={setMareo}
-            onTerminar={(m) => {
-              setReaccion(m);
-              setMareo(0);
-            }}
-          />
-          <TestVision resultado={vision} onTerminar={setVision} />
         </div>
       </div>
     </PantallaVyta>

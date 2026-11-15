@@ -1,23 +1,7 @@
 @use 'tokens' as *;
 
 .pantalla {
-  display: flex;
-  flex-direction: column;
   gap: $espacio-4;
-  h1 { font-size: 30px; }
-}
-
-.encabezado {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  gap: $espacio-4;
-}
-
-.sub {
-  margin: 2px 0 0;
-  color: $color-texto-suave;
-  font-size: 14px;
 }
 
 .vozToggle {

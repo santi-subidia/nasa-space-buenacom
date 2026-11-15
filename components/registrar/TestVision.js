@@ -33,7 +33,8 @@ export function puntajeVision(nivelesSuperados) {
   return Math.round((Math.max(0, Math.min(nivelesSuperados, TAMANOS_PX.length)) / TAMANOS_PX.length) * 100);
 }
 
-export default function TestVision({ resultado, onTerminar }) {
+// `className` deja que la pantalla que lo usa (Actividad · Ejercicios cognitivos) ajuste la tarjeta.
+export default function TestVision({ resultado, onTerminar, className }) {
   const [corriendo, setCorriendo] = useState(false);
   const [nivel, setNivel] = useState(0);
   const [direccion, setDireccion] = useState('derecha');
@@ -100,7 +101,7 @@ export default function TestVision({ resultado, onTerminar }) {
   const tam = TAMANOS_PX[nivel];
 
   return (
-    <Card titulo="Test visual · SANS" id="vision">
+    <Card titulo="Test visual · SANS" id="vision" className={className}>
       {!corriendo && (
         <>
           <p className={styles.texto}>
@@ -117,7 +118,7 @@ export default function TestVision({ resultado, onTerminar }) {
           {resultado && (
             <p className={styles.resultado}>
               Agudeza: <strong>{resultado.puntos} puntos</strong> ({resultado.niveles} de {TAMANOS_PX.length} niveles){' '}
-              <TrafficLight nivel={EVALUAR.visual_acuity(resultado.puntos)} /> · se guarda con el chequeo
+              <TrafficLight nivel={EVALUAR.visual_acuity(resultado.puntos)} /> · se guarda al confirmar
             </p>
           )}
           <p className={styles.nota}>Orienta, no diagnostica. Si la visión empeora o ves borroso, avisá al oficial médico.</p>

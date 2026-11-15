@@ -1,6 +1,6 @@
 'use client';
 
-import { Fragment, useState } from 'react';
+import { Fragment, useMemo, useState } from 'react';
 import Link from 'next/link';
 import Card from '@/components/Card';
 import PantallaVyta from '@/components/layout/PantallaVyta';
@@ -12,8 +12,10 @@ import {
   reiniciarReloj,
   useJornada,
 } from '@/lib/datos/jornada';
+import { HITOS_NOTIFICACION_SOL } from '@/lib/notificaciones/logicaNotificaciones';
 import {
   DIAS_SEMANA,
+  DURACION_SOL_MIN,
   ETIQUETAS_DIA,
   estadoTareaRespectoAHora,
 } from '@/lib/reloj/relojMision';
@@ -26,44 +28,55 @@ const FILTROS = [
   { id: 'event', etiqueta: 'Por evento' },
 ];
 
-const ETIQUETA_RECURRENCIA = {
-  daily: 'Diaria',
-  weekly: 'Semanal',
-  event: 'Por evento',
-};
-
-const ETIQUETA_ESTADO = {
-  hecha: 'Hecha',
-  ahora: 'Ahora',
-  pendiente: 'Pendiente',
-  pasada: 'Pasada',
-};
+const ETIQUETA_RECURRENCIA = { weekly: 'Semanal', event: 'Por evento' };
 
 const ETIQUETA_RUTA = {
   '/': 'Inicio',
   '/registrar': 'Registrar',
-  '/cara': '¿Cómo me ves?',
+  '/cara': 'Abrir cámara',
   '/entrenador': 'Entrenador',
   '/enlace': 'Enlace Tierra',
   '/vega': 'Vega',
   '/registrar#vision': 'Test visual',
 };
 
-function claseEstado(estado) {
-  switch (estado) {
-    case 'hecha':
-      return styles.estadoHecha;
-    case 'ahora':
-      return styles.estadoAhora;
-    case 'pasada':
-      return styles.estadoPasada;
-    default:
-      return styles.estadoPendiente;
-  }
+const BLOQUES = [
+  { id: 'despertar', nombre: 'Despertar', rango: '06:30 – 08:00', desde: 0, hasta: 480 },
+  { id: 'manana', nombre: 'Mañana', rango: '08:00 – 12:30', desde: 480, hasta: 750 },
+  { id: 'tarde', nombre: 'Tarde', rango: '12:30 – 18:00', desde: 750, hasta: 1080 },
+  { id: 'noche', nombre: 'Noche', rango: '18:00 – 24:37', desde: 1080, hasta: DURACION_SOL_MIN },
+];
+
+// Horas con aviso programado por el motor de notificaciones (campana en la fila).
+const HORAS_CON_AVISO = new Set(HITOS_NOTIFICACION_SOL.map((h) => h.hora));
+
+function duracion(min) {
+  const h = Math.floor(min / 60);
+  const m = min % 60;
+  if (!h) return `${m} min`;
+  return m ? `${h} h ${m} min` : `${h} h`;
+}
+
+function IconoCheck() {
+  return (
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M20 6 9 17l-5-5" />
+    </svg>
+  );
+}
+
+function IconoCampana() {
+  return (
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" />
+      <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" />
+    </svg>
+  );
 }
 
 export default function JornadaPantalla() {
   const [filtro, setFiltro] = useState('all');
+  const [simuladorAbierto, setSimuladorAbierto] = useState(false);
   const {
     reloj,
     sol,
@@ -78,6 +91,13 @@ export default function JornadaPantalla() {
     cambiarDiaSemana,
   } = useJornada();
 
+
+  const estados = useMemo(() => {
+    const mapa = {};
+    for (const t of tareas) mapa[t.id] = estadoTareaRespectoAHora(t, reloj.minutos);
+    return mapa;
+  }, [tareas, reloj.minutos]);
+
   const conteos = {
     all: tareas.length,
     daily: tareas.filter((t) => t.recurrence === 'daily').length,
@@ -85,12 +105,37 @@ export default function JornadaPantalla() {
     event: tareas.filter((t) => t.recurrence === 'event').length,
   };
 
-  const tareasFiltradas =
-    filtro === 'all' ? tareas : tareas.filter((t) => t.recurrence === filtro);
+  const tareasFiltradas = filtro === 'all' ? tareas : tareas.filter((t) => t.recurrence === filtro);
 
-  const indiceMarcador = tareasFiltradas.findIndex((t) => reloj.minutos < t.horaMin);
+  const grupos = BLOQUES.map((b) => {
+    const lista = tareasFiltradas.filter((t) => t.horaMin >= b.desde && t.horaMin < b.hasta);
+    const contieneAhora = reloj.minutos >= b.desde && reloj.minutos < b.hasta;
+    return {
+      ...b,
+      lista,
+      hechas: lista.filter((t) => t.done).length,
+      contieneAhora,
+      indiceAhora: contieneAhora ? lista.findIndex((t) => t.horaMin > reloj.minutos) : -2,
+    };
+  }).filter((g) => g.lista.length > 0);
+
+  // Lo que toca: la tarea en ventana "ahora" o, si no hay, la atrasada más reciente.
+  const enVentana = tareas.find((t) => estados[t.id] === 'ahora');
+  const atrasadas = tareas.filter((t) => estados[t.id] === 'pasada');
+  const actual = enVentana || atrasadas[atrasadas.length - 1] || null;
+  const actualAtrasada = actual && estados[actual.id] === 'pasada';
+  const siguiente = tareas.find((t) => estados[t.id] === 'pendiente');
+  const otrasAtrasadas = atrasadas.filter((t) => t.id !== actual?.id);
+
   const hayEventos = conteos.event > 0;
   const nivelGlobal = evaluacion?.globalLevel || 'green';
+  const horasEvento = tareas.filter((t) => t.recurrence === 'event').map((t) => t.missionTime);
+
+  const estadoReloj = reloj.suenoProtegido
+    ? { clase: styles.chipSueno, texto: 'Sueño protegido · solo alertas rojas' }
+    : reloj.pausado
+      ? { clase: styles.chipPausa, texto: 'Reloj en pausa' }
+      : { clase: styles.chipCorriendo, texto: reloj.acelerado ? 'Reloj corriendo · 1 min = 1 h' : 'Reloj en tiempo real' };
 
   return (
     <PantallaVyta
@@ -98,204 +143,219 @@ export default function JornadaPantalla() {
       icono="/figma/salud/target.svg"
       subtitulo={`${astronauta?.name || 'Ana Ríos'} · Sol marciano de 24 h 37 min · ${ETIQUETAS_DIA[diaSemana] || 'Jueves'}`}
       acciones={
-        <div className={styles.relojCaja}>
-          <div className={styles.relojLectura} aria-label="Reloj de misión marciano">
-            <span className={styles.relojSol}>Sol {sol} ·</span>
-            <span className={styles.relojHora}>{reloj.horaFormateada}</span>
-            <span className={styles.relojTotal}>/ 24:37</span>
-          </div>
-
-          <div className={styles.badgesReloj}>
-            {reloj.suenoProtegido && (
-              <span className={styles.badgeSueno} role="status">
-                ☾ Sueño protegido (22:00–06:30)
-              </span>
-            )}
-            <span className={styles.badgeActivo}>
-              {reloj.pausado ? '⏸ En pausa' : reloj.acelerado ? '▶ Corriendo (1 min = 1 h)' : '▶ Tiempo real'}
-            </span>
-          </div>
-        </div>
+        <>
+          <span className={`${styles.chipEstado} ${estadoReloj.clase}`} role="status">
+            <span className={styles.chipPunto} aria-hidden="true" />
+            {estadoReloj.texto}
+          </span>
+          <button
+            type="button"
+            className={`${styles.boton} ${simuladorAbierto ? styles.botonActivo : ''}`}
+            onClick={() => setSimuladorAbierto((v) => !v)}
+            aria-expanded={simuladorAbierto}
+            aria-controls="simulador-reloj"
+          >
+            Simulador de reloj
+          </button>
+        </>
       }
     >
-
-      <Card titulo="Controles del reloj marciano">
-        <div className={styles.controlesCard}>
-          <div className={styles.botonesReloj}>
-            <button
-              type="button"
-              onClick={() => alternarPausa()}
-              className={`${styles.boton} ${styles.botonPrimario}`}
-            >
-              {reloj.pausado ? '▶ Iniciar' : '⏸ Pausar'}
-            </button>
-
-            <button
-              type="button"
-              onClick={() => alternarAcelerado()}
-              className={`${styles.boton} ${reloj.acelerado ? styles.botonAceleradoActivo : ''}`}
-              aria-pressed={reloj.acelerado}
-            >
-              {reloj.acelerado ? '⚡ Acelerado 1 min = 1 h' : '⏱ Tiempo real 1:1'}
-            </button>
-
-            <button type="button" onClick={() => adelantarMinutos(15)} className={styles.boton}>
-              +15 min
-            </button>
-            <button type="button" onClick={() => adelantarMinutos(60)} className={styles.boton}>
-              +1 h
-            </button>
-            <button type="button" onClick={() => adelantarMinutos(240)} className={styles.boton}>
-              +4 h
-            </button>
-            <button type="button" onClick={() => reiniciarReloj()} className={styles.boton}>
-              ↺ 06:30
-            </button>
-          </div>
-
-          <label className={styles.selectorDia}>
-            <span>Día semanal:</span>
-            <select
-              value={diaSemana}
-              onChange={(e) => cambiarDiaSemana(e.target.value)}
-              aria-label="Día semanal para probar tareas semanales"
-            >
-              {DIAS_SEMANA.map((d) => (
-                <option key={d} value={d}>
-                  {ETIQUETAS_DIA[d]}
-                </option>
-              ))}
-            </select>
-          </label>
-        </div>
-      </Card>
-
-      <div className={styles.filaResumen}>
-        <Card titulo="Progreso del sol">
-          <div className={styles.progresoHeader}>
-            <strong>
-              {completadas} de {total} tareas completadas
-            </strong>
-            <span>{progresoPct} %</span>
-          </div>
-          <div className={styles.barra} aria-hidden="true">
-            <span style={{ width: `${progresoPct}%` }} />
+      {simuladorAbierto && (
+        <Card titulo="Simulador del reloj marciano" id="simulador-reloj">
+          <div className={styles.controlesCard}>
+            <div className={styles.botonesReloj}>
+              <button type="button" onClick={() => alternarPausa()} className={`${styles.boton} ${styles.botonPrimario}`}>
+                {reloj.pausado ? '▶ Iniciar' : '⏸ Pausar'}
+              </button>
+              <button
+                type="button"
+                onClick={() => alternarAcelerado()}
+                className={`${styles.boton} ${reloj.acelerado ? styles.botonAceleradoActivo : ''}`}
+                aria-pressed={reloj.acelerado}
+              >
+                {reloj.acelerado ? 'Acelerado 1 min = 1 h' : 'Tiempo real 1:1'}
+              </button>
+              <button type="button" onClick={() => adelantarMinutos(15)} className={styles.boton}>+15 min</button>
+              <button type="button" onClick={() => adelantarMinutos(60)} className={styles.boton}>+1 h</button>
+              <button type="button" onClick={() => adelantarMinutos(240)} className={styles.boton}>+4 h</button>
+              <button type="button" onClick={() => reiniciarReloj()} className={styles.boton}>↺ 06:30</button>
+            </div>
+            <label className={styles.selectorDia}>
+              <span>Día semanal:</span>
+              <select
+                value={diaSemana}
+                onChange={(e) => cambiarDiaSemana(e.target.value)}
+                aria-label="Día semanal para probar tareas semanales"
+              >
+                {DIAS_SEMANA.map((d) => (
+                  <option key={d} value={d}>{ETIQUETAS_DIA[d]}</option>
+                ))}
+              </select>
+            </label>
           </div>
         </Card>
+      )}
 
-        <Card titulo="Contexto clínico" acento={nivelGlobal}>
-          <div className={styles.estadoClinico}>
+      <div className={styles.columna}>
+        <div className={styles.filaFoco}>
+          <section
+            className={`${styles.ahora} ${actualAtrasada ? styles.ahoraAtrasada : ''}`}
+            aria-label="Lo que toca ahora"
+          >
+            {actual ? (
+              <>
+                <div className={styles.ahoraTexto}>
+                  <p className={styles.ahoraEyebrow}>
+                    {actualAtrasada ? `Atrasada · era a las ${actual.missionTime}` : `Ahora · ${actual.missionTime}`}
+                  </p>
+                  <h2>{actual.title}</h2>
+                </div>
+                <div className={styles.ahoraAcciones}>
+                  {actual.ruta && (
+                    <Link href={actual.ruta} className={styles.botonCta}>
+                      {ETIQUETA_RUTA[actual.ruta] || 'Abrir'} →
+                    </Link>
+                  )}
+                  <button type="button" className={styles.boton} onClick={() => alternarTarea(actual)}>
+                    Marcar hecha
+                  </button>
+                </div>
+              </>
+            ) : (
+              <div className={styles.ahoraTexto}>
+                <p className={styles.ahoraEyebrow}>{reloj.suenoProtegido ? 'Sueño protegido' : 'Al día'}</p>
+                <h2>{reloj.suenoProtegido ? 'Descansá' : 'Nada pendiente por ahora'}</h2>
+              </div>
+            )}
+            <div className={styles.ahoraPie}>
+              {siguiente ? (
+                <span>
+                  Siguiente: <strong>{siguiente.title} · {siguiente.missionTime}</strong> (en{' '}
+                  {duracion(siguiente.horaMin - reloj.minutos)})
+                </span>
+              ) : (
+                <span>No quedan tareas por delante en este sol.</span>
+              )}
+              {otrasAtrasadas.length > 0 && (
+                <span className={styles.textoAtrasada}>
+                  {otrasAtrasadas.length === 1
+                    ? `1 atrasada más: ${otrasAtrasadas[0].title} (${otrasAtrasadas[0].missionTime})`
+                    : `${otrasAtrasadas.length} atrasadas más`}
+                </span>
+              )}
+            </div>
+          </section>
+
+          <Card titulo="Contexto clínico" acento={nivelGlobal}>
             <div className={styles.estadoFila}>
               <TrafficLight nivel={nivelGlobal} />
-              <span>
-                {evaluacion?.alerts?.[0]?.title || 'Sin alertas activas en este sol'}
-              </span>
+              <span>{evaluacion?.alerts?.[0]?.title || 'Sin alertas activas en este sol'}</span>
             </div>
-            {hayEventos ? (
-              <p className={styles.notaEvento}>
-                Se sumaron tareas por evento ({conteos.event}) según tu evaluación actual.
-              </p>
-            ) : (
-              <p className={styles.notaNormal}>
-                Sincronizá el Watch o registrá mediciones para autocompletar tareas.
-              </p>
-            )}
-          </div>
-        </Card>
-      </div>
-
-      <Card titulo="Línea de tiempo del sol">
-        <div className={styles.barraFiltros}>
-          <div className={styles.filtros} role="tablist" aria-label="Filtrar tareas de la jornada">
-            {FILTROS.map((f) => (
-              <button
-                key={f.id}
-                type="button"
-                role="tab"
-                aria-selected={filtro === f.id}
-                onClick={() => setFiltro(f.id)}
-                className={`${styles.filtro} ${filtro === f.id ? styles.filtroActivo : ''}`}
-              >
-                {f.etiqueta} ({conteos[f.id]})
-              </button>
-            ))}
-          </div>
+            <p className={hayEventos ? styles.notaEvento : styles.notaNormal}>
+              {hayEventos
+                ? `Se sumaron ${conteos.event} tareas por evento (${horasEvento.join(' y ')}) según tu evaluación actual.`
+                : 'Sincronizá el Watch o registrá mediciones para autocompletar tareas.'}
+            </p>
+          </Card>
         </div>
 
-        <ol className={styles.timeline} style={{ marginTop: 16 }}>
-          {tareasFiltradas.length === 0 ? (
-            <li className={styles.vacio}>No hay tareas en esta categoría para el día seleccionado.</li>
-          ) : (
-            <>
-              {tareasFiltradas.map((tarea, idx) => {
-                const estado = estadoTareaRespectoAHora(tarea, reloj.minutos);
-                const mostrarMarcadorAntes = indiceMarcador === idx;
-                const recClase =
-                  tarea.recurrence === 'event'
-                    ? styles.recurrenciaEvent
-                    : tarea.recurrence === 'weekly'
-                      ? styles.recurrenciaWeekly
-                      : '';
+          <Card titulo="Plan del sol">
+            <div className={styles.cabeceraPlan}>
+              <span className={styles.progresoTexto}>
+                {completadas} de {total} hechas · {progresoPct} %
+              </span>
+              <div className={styles.filtros} role="tablist" aria-label="Filtrar tareas de la jornada">
+                {FILTROS.map((f) => (
+                  <button
+                    key={f.id}
+                    type="button"
+                    role="tab"
+                    aria-selected={filtro === f.id}
+                    onClick={() => setFiltro(f.id)}
+                    className={`${styles.filtro} ${filtro === f.id ? styles.filtroActivo : ''}`}
+                  >
+                    {f.etiqueta} ({conteos[f.id]})
+                  </button>
+                ))}
+              </div>
+            </div>
 
-                return (
-                  <Fragment key={tarea.id}>
-                    {mostrarMarcadorAntes && (
-                      <li className={styles.marcadorAhora} aria-label="Hora actual de misión">
-                        <span className={styles.puntoAhora} aria-hidden="true" />
-                        <span>Ahora · Sol {sol} · {reloj.horaFormateada}</span>
-                      </li>
-                    )}
-                    <li
-                      className={`${styles.item} ${estado === 'ahora' ? styles.itemAhora : ''} ${tarea.done ? styles.itemHecha : ''}`}
-                    >
-                      <span className={styles.hora}>{tarea.missionTime}</span>
+            {grupos.length === 0 && (
+              <p className={styles.vacio}>No hay tareas en esta categoría para el día seleccionado.</p>
+            )}
 
-                      <input
-                        type="checkbox"
-                        className={styles.check}
-                        checked={tarea.done}
-                        onChange={() => alternarTarea(tarea)}
-                        aria-label={`Marcar "${tarea.title}" como completada`}
-                      />
-
-                      <div className={styles.detalle}>
-                        <div className={styles.tituloFila}>
-                          <span
-                            className={`${styles.tituloTarea} ${tarea.done ? styles.tituloTachado : ''}`}
-                          >
-                            {tarea.title}
+            {grupos.map((g) => (
+              <div key={g.id} className={styles.grupo}>
+                <div className={styles.grupoCabecera}>
+                  <h3>{g.nombre}</h3>
+                  <span className={styles.grupoRango}>{g.rango}</span>
+                  <span className={styles.grupoResumen}>{g.hechas} / {g.lista.length}</span>
+                </div>
+                <ol className={styles.lista}>
+                  {g.lista.map((tarea, idx) => {
+                    const estado = estados[tarea.id];
+                    const accionVisible =
+                      tarea.ruta && !tarea.done && (estado === 'ahora' || estado === 'pasada' || tarea.recurrence === 'event');
+                    return (
+                      <Fragment key={tarea.id}>
+                        {g.indiceAhora === idx && <MarcadorAhora sol={sol} hora={reloj.horaFormateada} />}
+                        <li
+                          id={`tarea-${tarea.id}`}
+                          className={`${styles.fila} ${estado === 'ahora' ? styles.filaAhora : ''}`}
+                        >
+                          <span className={styles.hora}>{tarea.missionTime}</span>
+                          <span className={styles.checkCaja}>
+                            <input
+                              type="checkbox"
+                              className={`${styles.check} ${styles[`check_${estado}`] || ''}`}
+                              checked={tarea.done}
+                              onChange={() => alternarTarea(tarea)}
+                              aria-label={`Marcar "${tarea.title}" como completada`}
+                            />
+                            <IconoCheck />
                           </span>
-                          <span className={`${styles.recurrencia} ${recClase}`}>
-                            {ETIQUETA_RECURRENCIA[tarea.recurrence] || 'Tarea'}
+                          <span className={styles.detalle}>
+                            <span className={`${styles.titulo} ${tarea.done ? styles.tituloHecha : ''}`}>{tarea.title}</span>
+                            {ETIQUETA_RECURRENCIA[tarea.recurrence] && (
+                              <span className={`${styles.chip} ${tarea.recurrence === 'event' ? styles.chipEvento : styles.chipSemanal}`}>
+                                {ETIQUETA_RECURRENCIA[tarea.recurrence]}
+                              </span>
+                            )}
+                            {HORAS_CON_AVISO.has(tarea.missionTime) && (
+                              <span className={styles.aviso} title="Tiene aviso programado">
+                                <IconoCampana />
+                                <span className={styles.oculto}>Con aviso</span>
+                              </span>
+                            )}
                           </span>
-                        </div>
-                      </div>
-
-                      <div className={styles.accionesItem}>
-                        <span className={`${styles.estadoBadge} ${claseEstado(estado)}`}>
-                          {ETIQUETA_ESTADO[estado]}
-                        </span>
-                        {tarea.ruta && (
-                          <Link href={tarea.ruta} className={styles.enlaceRuta}>
-                            {ETIQUETA_RUTA[tarea.ruta] || 'Abrir'} →
-                          </Link>
-                        )}
-                      </div>
-                    </li>
-                  </Fragment>
-                );
-              })}
-
-              {indiceMarcador === -1 && (
-                <li className={styles.marcadorAhora} aria-label="Hora actual de misión">
-                  <span className={styles.puntoAhora} aria-hidden="true" />
-                  <span>Ahora · Sol {sol} · {reloj.horaFormateada}</span>
-                </li>
-              )}
-            </>
-          )}
-        </ol>
-      </Card>
+                          <span className={styles.accionesFila}>
+                            {estado === 'pasada' && <span className={styles.textoAtrasada}>Atrasada</span>}
+                            {estado === 'ahora' && !tarea.done && <span className={styles.textoAhora}>Ahora</span>}
+                            {accionVisible && (
+                              <Link href={tarea.ruta} className={styles.enlaceRuta}>
+                                {ETIQUETA_RUTA[tarea.ruta] || 'Abrir'} →
+                              </Link>
+                            )}
+                            {tarea.done && <span className={styles.textoHecha}>Hecha</span>}
+                          </span>
+                        </li>
+                      </Fragment>
+                    );
+                  })}
+                  {g.indiceAhora === -1 && <MarcadorAhora sol={sol} hora={reloj.horaFormateada} />}
+                </ol>
+              </div>
+            ))}
+        </Card>
+      </div>
     </PantallaVyta>
+  );
+}
+
+function MarcadorAhora({ sol, hora }) {
+  return (
+    <li className={styles.marcadorAhora} aria-label="Hora actual de misión">
+      <span>Ahora · Sol {sol} · {hora}</span>
+    </li>
   );
 }

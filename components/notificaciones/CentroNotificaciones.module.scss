@@ -1,7 +1,13 @@
 @use 'tokens' as *;
 
-:global(body:has([data-dashboard])) .contenedor {
+// En pantallas VYTA la campana vive en la cabecera de misión (CabeceraMision):
+// acá solo se oculta la pastilla flotante, nunca los toasts ni el panel.
+:global(body:has([data-dashboard])) .barraSuperior {
   display: none;
+}
+
+:global(body:has([data-dashboard])) .contenedor {
+  top: 112px;
 }
 
 .contenedor {

@@ -18,12 +18,11 @@ export default function ActividadPantalla() {
         <span className={styles.iconoOpcion}><img src="/figma/salud/dumbbell.svg" width="64" height="64" alt="" /></span>
         <p>Rutinas para fortalecer los músculos y mantener la movilidad.</p>
       </Link>
-      <button type="button" className={styles.opcion} disabled aria-label="Ejercicios cognitivos. Próximamente, todavía no disponible." title="Próximamente">
+      <Link href="/actividad/cognitivos" className={styles.opcion}>
         <h2>Ejercicios cognitivos</h2>
         <span className={styles.iconoOpcion}><img src="/figma/salud/brain.svg" width="64" height="64" alt="" /></span>
-        <p>Actividades para entrenar la memoria, la atención y la concentración.</p>
-        <span className={styles.proximamente}>Próximamente</span>
-      </button>
+        <p>Tests de atención, equilibrio y visión para seguir tu rendimiento en la misión.</p>
+      </Link>
       <EjerciciosPendientes tareas={tareas} cargando={cargando} />
     </div>
   </div>;

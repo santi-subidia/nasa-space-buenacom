@@ -1,0 +1,103 @@
+@use 'vyta' as v;
+@use 'tokens' as *;
+
+// Ejercicios cognitivos con el diseño del home (VYTA): una tarjeta grande por test.
+.tests { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 17px; align-items: stretch; }
+
+.test {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+  padding: 22px 24px;
+  border: 1px solid #45436d;
+  border-radius: 16px;
+  background: linear-gradient(110deg, #11152c, #061a25);
+}
+
+.cabecera {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  h2 { font-size: 22px; font-weight: 600; line-height: 1.2; margin: 0; }
+}
+
+.icono {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: #22254a;
+  img { filter: brightness(0) saturate(100%) invert(71%) sepia(27%) saturate(2415%) hue-rotate(207deg) brightness(102%) contrast(101%); }
+}
+
+.duracion {
+  display: inline-block;
+  margin-top: 6px;
+  padding: 2px 10px;
+  border-radius: 999px;
+  border: 1px solid #315a75;
+  background: #0a2a37;
+  color: #9cfff0;
+  font-size: 12px;
+}
+
+.ficha {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 6px 14px;
+  margin: 0;
+  padding: 12px 16px;
+  border: 1px solid #1c344a;
+  border-radius: 12px;
+  background: #0b1628;
+  font-size: 13px;
+  dt { color: #a78aff; font-weight: 600; }
+  dd { margin: 0; color: #d3deee; }
+}
+
+.cuerpoTest { flex: 1; display: flex; flex-direction: column; }
+
+// La tarjeta del test va sin marco propio: el marco lo da .test.
+.cuerpoTest > .interna {
+  flex: 1;
+  padding: 0;
+  border: 0;
+  background: none;
+  > h2:first-of-type { display: none; }
+}
+
+.volver {
+  color: #b9cbe2;
+  font-size: 13px;
+  text-decoration: none;
+  &:hover { color: #f3f6ff; }
+}
+
+.pie { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+.guardar {
+  background: linear-gradient(100deg, #9770ff, #6e48ad);
+  border: 1px solid #9e7bff;
+  color: #fff;
+  border-radius: 10px;
+  padding: 10px 20px;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  box-shadow: 0 0 13px #9770ff44;
+  &:hover:not(:disabled) { border-color: #c4adff; box-shadow: 0 0 22px #9770ff77; }
+  &:disabled { opacity: 0.45; cursor: not-allowed; }
+}
+.nota { color: $color-texto-suave; font-size: 12px; }
+
+@media (max-width: 1100px) {
+  .tests { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 600px) {
+  .test { padding: 16px; }
+  .ficha { grid-template-columns: 1fr; dt { margin-top: 4px; } }
+}
