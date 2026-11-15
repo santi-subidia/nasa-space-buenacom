@@ -10,21 +10,20 @@ import VytaVoz from './VytaVoz';
 import CabeceraMision from '@/components/layout/CabeceraMision';
 import OrigenUmbral from '@/components/OrigenUmbral';
 import { SOL_ACTUAL, useEstadoMision } from '@/lib/datos/demo';
+import { useCheckinDiario } from '@/lib/datos/checkin';
 import { MISION } from '@/lib/mock/mision';
-import { CHEQUEO, valoresDelDia } from '@/lib/mock/indicadores';
 import { NIVELES } from '@/lib/niveles';
 import { rutaZona } from '@/lib/content/rutaZona';
-import { lecturasParaInicio, metricasDesdeLecturas } from './metricas';
+import { calcularPuntajeSalud, lecturasParaInicio, metricasDesdeLecturas } from './metricas';
 import styles from './InicioPantalla.module.scss';
 
 export default function InicioPantalla() {
   const { astronauta, lecturas, evaluacion } = useEstadoMision(null, SOL_ACTUAL);
-  const vals = valoresDelDia(lecturas, SOL_ACTUAL);
+  const checkin = useCheckinDiario();
   const nivelGeneral = evaluacion.globalLevel || 'green';
+  const puntajeSalud = calcularPuntajeSalud(evaluacion);
   const tarjetas = metricasDesdeLecturas(lecturas, evaluacion, astronauta?.baseline || {}, SOL_ACTUAL);
   const ultimaLectura = lecturasParaInicio(lecturas, SOL_ACTUAL).at(-1);
-  const chequeo = CHEQUEO.map((c) => ({ ...c, hecho: c.claves.every((k) => vals[k]?.hoy) }));
-  const hechos = chequeo.filter((c) => c.hecho).length;
 
   return (
     <div className={styles.pantalla} data-dashboard>
@@ -32,7 +31,7 @@ export default function InicioPantalla() {
       <h1 className={styles.oculto}>Vista general · {astronauta?.name || MISION.astronauta.nombre}</h1>
       <div className={styles.paneles}>
         <div className={styles.columnaPrincipal}>
-          <EstadoGeneral nivel={nivelGeneral} alertas={evaluacion.alerts || []} hechos={hechos} total={chequeo.length} ultimaLectura={ultimaLectura} />
+          <EstadoGeneral nivel={nivelGeneral} puntaje={puntajeSalud} alertas={evaluacion.alerts || []} checkin={checkin} ultimaLectura={ultimaLectura} />
           <section aria-label="Métricas de salud" className={styles.indicadores}>
             {tarjetas.map((tarjeta) => <TarjetaIndicador key={tarjeta.id} tarjeta={tarjeta} />)}
           </section>
@@ -48,8 +47,10 @@ export default function InicioPantalla() {
 }
 
 
-function EstadoGeneral({ nivel, alertas, hechos, total, ultimaLectura }) {
+function EstadoGeneral({ nivel, puntaje, alertas, checkin, ultimaLectura }) {
   const principal = alertas[0] || null;
+  const tienePuntaje = puntaje.valor !== null;
+  const tieneEvaluacion = tienePuntaje || Boolean(principal);
   return (
     <Card className={styles.estado}>
       <div className={styles.ventanaHero} aria-hidden="true" />
@@ -58,26 +59,38 @@ function EstadoGeneral({ nivel, alertas, hechos, total, ultimaLectura }) {
         <span className={styles.actualizacion}><i aria-hidden="true" /><span>Última lectura<small>{ultimaLectura ? `Sol ${ultimaLectura.sol}` : 'Sin datos'}</small></span></span>
       </div>
       <div className={styles.estadoCuerpo}>
-        <div className={styles.anillo} aria-hidden="true">
-          <svg viewBox="0 0 200 200" width="200" height="200" fill="none">
+        <div
+          className={styles.anillo}
+          role={tienePuntaje ? 'meter' : 'img'}
+          aria-label={tienePuntaje ? 'Puntaje total de salud' : 'Puntaje de salud sin datos'}
+          aria-valuemin={tienePuntaje ? 0 : undefined}
+          aria-valuemax={tienePuntaje ? 100 : undefined}
+          aria-valuenow={tienePuntaje ? puntaje.valor : undefined}
+          title={puntaje.detalle}
+        >
+          <svg viewBox="0 0 200 200" width="200" height="200" fill="none" aria-hidden="true">
             <defs><linearGradient id="anillo-vyta" x1="0" y1="0" x2="1" y2="1"><stop stopColor="#66ffe3" /><stop offset="1" stopColor="#0bd8ff" /></linearGradient></defs>
             <circle cx="100" cy="100" r="90.68" stroke="#1a2c40" strokeWidth="15.77" />
-            <circle className={styles.arco} cx="100" cy="100" r="90.68" stroke="url(#anillo-vyta)" strokeWidth="15.77" strokeLinecap="round" strokeDasharray="478 570" transform="rotate(-90 100 100)" />
+            <circle className={styles.arco} cx="100" cy="100" r="90.68" pathLength="100" stroke="url(#anillo-vyta)" strokeWidth="15.77" strokeLinecap={puntaje.valor ? 'round' : 'butt'} strokeDasharray="100" strokeDashoffset={100 - (puntaje.valor ?? 0)} transform="rotate(-90 100 100)" />
           </svg>
-          <div><strong>{NIVELES[nivel]?.etiqueta || 'Normal'}</strong><small>Estado actual</small></div>
+          <div aria-hidden="true"><strong>{puntaje.valor ?? '—'}</strong><small>/ 100</small></div>
         </div>
         <div className={styles.resumenEstado}>
           <svg className={styles.ecg} viewBox="0 0 54 30" width="54" height="30" fill="none" aria-hidden="true"><path d="M1 17h10l4-7 4 13 5-22 5 27 4-17 5 6h15" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" /></svg>
           <div className={styles.estadoNivel}>
-            <h3>{nivel === 'green' ? 'Estable' : NIVELES[nivel]?.etiqueta}</h3>
-            <span className={styles.estadoPildora}><TrafficLight nivel={nivel} /></span>
+            <h3>{tieneEvaluacion ? nivel === 'green' ? 'Estable' : NIVELES[nivel]?.etiqueta : 'Sin datos'}</h3>
+            {tieneEvaluacion && <span className={styles.estadoPildora}><TrafficLight nivel={nivel} /></span>}
           </div>
-          <p>{principal ? principal.why : 'Tus signos vitales se mantienen dentro de los rangos esperados. Buen estado general para continuar con las actividades de la misión.'}</p>
+          <p>{principal ? principal.why : tienePuntaje ? 'Tus signos vitales se mantienen dentro de los rangos esperados. Buen estado general para continuar con las actividades de la misión.' : 'Registrá tus mediciones para calcular el puntaje de salud.'}</p>
         </div>
-        <Link href="/registrar" className={styles.checkin} aria-label={`Chequeo diario: ${hechos} de ${total} completados. Ir a registrar`}>
+        <Link href="/registrar" className={`${styles.checkin} ${checkin.completado ? styles.checkinCompletado : ''}`} aria-label={`Check-in diario ${checkin.completado ? 'completado hoy' : 'pendiente'}. Ver chequeo diario`}>
           <span>Check-in diario</span>
-          <span className={styles.relojArena}><Image src="/figma/reloj-arena.png" width={36} height={36} alt="" /></span>
-          <small><i aria-hidden="true" /> {hechos === total ? 'Completado' : 'Pendiente'}</small>
+          <span className={styles.relojArena}>
+            {checkin.completado
+              ? <svg viewBox="0 0 36 36" width="36" height="36" fill="none" aria-hidden="true"><path d="m8 18 7 7L29 11" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
+              : <Image src="/figma/reloj-arena.png" width={36} height={36} alt="" />}
+          </span>
+          <small role="status"><i aria-hidden="true" /> {checkin.cargando ? 'Cargando…' : checkin.completado ? 'Completado' : 'Pendiente'}</small>
         </Link>
       </div>
     </Card>

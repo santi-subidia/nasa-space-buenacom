@@ -6,7 +6,7 @@ import { MISION, SOL_ACTUAL } from '@/lib/mock/mision';
 import { alternarPanelNotificaciones, useNotificaciones } from '@/lib/datos/notificaciones';
 import styles from '@/components/inicio/InicioPantalla.module.scss';
 
-export default function CabeceraMision({ nombre, titulo }) {
+export default function CabeceraMision({ nombre, titulo, mostrarNotificaciones = true }) {
   const [ahora, setAhora] = useState(null);
   const [enLinea, setEnLinea] = useState(true);
   const { items: notificaciones } = useNotificaciones();
@@ -36,7 +36,7 @@ export default function CabeceraMision({ nombre, titulo }) {
         <small>{MISION.entorno} · Sol {SOL_ACTUAL}</small>
       </div>
       <div className={styles.tierra} aria-hidden="true" />
-      <button
+      {mostrarNotificaciones && <button
         type="button"
         className={`${styles.campana} ${hayCritica ? styles.campanaCritica : ''}`}
         onClick={alternarPanelNotificaciones}
@@ -48,7 +48,7 @@ export default function CabeceraMision({ nombre, titulo }) {
         {notificaciones.length > 0 && (
           <span className={styles.campanaContador}>{notificaciones.length}</span>
         )}
-      </button>
+      </button>}
       <div className={styles.fecha}>
         <span>{ahora ? ahora.toLocaleDateString('es-AR', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'America/Argentina/Buenos_Aires' }) : '—'}</span>
         <span>{ahora ? `${ahora.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'UTC' })} UTC` : '—'}</span>
