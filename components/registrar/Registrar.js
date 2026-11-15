@@ -152,8 +152,7 @@ export default function Registrar() {
               <strong className={styles.valorRango}>{String(valor('sleep_h') || '—').replace('.', ',')} h</strong>
             </Fila>
 
-            <Fila id="spo2" etiqueta="SpO₂" watch={base.spo2?.source === 'watch_sim'}>
-              {base.spo2?.source === 'watch_sim' && <span className={styles.watch}>⌚ Watch</span>}
+            <Fila id="spo2" etiqueta="SpO₂">
               <Numero k="spo2" label="SpO₂" valor={valor('spo2') || (base.spo2 ? String(base.spo2.valor) : '')} onChange={cambiar} error={error('spo2')} />
               <span className={styles.unidad}>%</span>
             </Fila>
@@ -251,7 +250,7 @@ function Numero({ k, label, valor, onChange, error }) {
 }
 
 // Una fila del formulario con su botón ⓘ (qué es, por qué en el espacio, cómo medirlo, cuándo preocuparse).
-function Fila({ id, etiqueta, children, watch }) {
+function Fila({ id, etiqueta, children }) {
   const [abierta, setAbierta] = useState(false);
   const info = INFO[id];
   return (
