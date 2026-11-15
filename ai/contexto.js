@@ -20,7 +20,7 @@ export const PRESUPUESTO_POR_DEFECTO = 60_000;
 
 /** Qué fuentes originales acompañan a la ficha. */
 export const NIVELES_FUENTES = ['todas', 'principales', 'ninguna'];
-const TIPOS_PRINCIPALES = new Set(['hrp', 'hsrb']);
+const TIPOS_PRINCIPALES = new Set(['hrp', 'hsrb', 'protocolo']);
 
 /** Raíz del repo (donde está doc/). Se puede cambiar con ASTROVITALS_DOC_ROOT o con `opciones.raiz`. */
 const RAIZ_POR_DEFECTO = process.env.ASTROVITALS_DOC_ROOT
@@ -114,7 +114,7 @@ function construir(ids, nivel, raiz) {
  * @param {string[]} riesgos  ids de riesgo, p. ej. ['inmunidad', 'sueno-horarios'] (ver listarRiesgos()).
  * @param {object}  [opciones]
  * @param {'todas'|'principales'|'ninguna'} [opciones.fuentes='principales']
- *        'principales' = página del HRP + registro del HSRB; 'todas' suma investigaciones y artículos.
+ *        'principales' = página del HRP + registro del HSRB + protocolos médicos de la NASA; 'todas' suma investigaciones y artículos.
  * @param {number}  [opciones.presupuesto=60000]  Tokens máximos del contexto. Si se pasa, se bajan las
  *        fuentes de nivel (todas → principales → ninguna); si aun sin fuentes no entra, lanza error.
  * @param {string}  [opciones.raiz]  Carpeta que contiene doc/.

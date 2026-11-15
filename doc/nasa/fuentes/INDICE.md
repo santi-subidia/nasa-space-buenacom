@@ -109,6 +109,14 @@ Páginas descargadas de nasa.gov el 2026-11-14 (texto original en inglés, sin n
 - [Risk of Altered Sensorimotor/Vestibular Function Impacting Critical Mission Tasks, Human Health, and Long-Term Health (Sensorimotor Risk)](05-human-system-risk-board/sensorimotor-risk.md) — <https://www.nasa.gov/directorates/esdmd/hhp/sensorimotor-risk/>
 - [Risk of In-Mission Performance and Behavioral Health Decrements Due to Inadequate Cooperation, Coordination, Communication, and Psychosocial Adaptation within a Team (Team Risk)](05-human-system-risk-board/team-risk.md) — <https://www.nasa.gov/directorates/esdmd/hhp/team-risk/>
 
+## 06-operaciones-medicas
+
+Extractos de documentos en PDF (agregados el 2026-11-15). Son la base de los protocolos locales de VYTA (`ai/vega/protocolos.js`) y de la ficha [emergencias-medicas](../riesgos/operaciones/emergencias-medicas.md).
+
+- [ISS Medical Checklist — Emergency Procedures (1.101–1.108)](06-operaciones-medicas/iss-emergency-medical-procedures.md) — <https://www.governmentattic.org/19docs/NASA-ISSmedicalEmergManual_2016.pdf> (NASA JSC, liberado por FOIA 16-JSC-F-00174)
+- [Spaceflight Experience and Medical Care (OCHMO-TB-033 Rev C)](06-operaciones-medicas/spaceflight-experience-and-medical-care.md) — <https://www.nasa.gov/wp-content/uploads/2023/07/ochmo-tb-033-spaceflight-experience-medical-care-rev-c.pdf>
+- [Earth-Independent Medical Operations (EIMO) ConOps](06-operaciones-medicas/eimo-concept-of-operations.md) — <https://ntrs.nasa.gov/api/citations/20240001402/downloads/2024_IWS_EIMO_ConOps_FINAL.pdf>
+
 ## PDFs y documentos técnicos enlazados (evidence reports, risk records, DAGs)
 
 - [ cancer](https://humanresearchroadmap.nasa.gov/evidence/reports/Cancer.pdf?rnd=0.592505168445644)

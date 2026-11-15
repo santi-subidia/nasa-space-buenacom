@@ -28,6 +28,8 @@ El HRP identifica **17 riesgos de divulgación** en tres grupos. Sus efectos **v
 
 ⭐⭐⭐ = núcleo del MVP · ⭐⭐ = deseable · ⭐ = mención o extra
 
+Además de los 17, hay una ficha operativa que no es un riesgo del HRP sino **cómo responder**: [emergencias-medicas](operaciones/emergencias-medicas.md). Resume la checklist médica de emergencia de la ISS, el estándar NASA-STD-3001 y el plan EIMO para Marte, y define el triaje en tres niveles (emergencia, urgente, aviso) que usa VYTA.
+
 ## Riesgos adicionales del Human System Risk Board (lista técnica completa)
 
 La lista oficial del HSRB tiene ~30 riesgos. Además de los anteriores, incluye estos, que conviene **usar en la app**:

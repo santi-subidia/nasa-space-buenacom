@@ -217,10 +217,17 @@ test('cancelar una respuesta hablada detiene el audio y una señal roja dispara 
   await pausa();
   assert.equal(avisos.length, 1);
   assert.equal(avisos[0].nivel, 'alta');
-  // Primero termina la lectura del aviso local, luego se lee la respuesta de Claude.
-  urgente.discursos[0].onend?.();
-  await pausa();
-  urgente.discursos[1].onend?.();
+  // Primero termina la lectura del aviso local (los pasos del protocolo se leen en varios fragmentos),
+  // luego se lee la respuesta de Claude.
+  let terminado = false;
+  turnoUrgente.then(() => { terminado = true; });
+  for (let i = 0; i < 30 && !terminado; i++) {
+    urgente.discursos[i]?.onend?.();
+    await pausa();
+  }
+  assert.equal(terminado, true);
+  assert.match(urgente.discursos[0].text, /dolor de pecho/i);
+  assert.match(urgente.discursos.at(-1).text, /rutina de descanso/); // la respuesta de Claude va última
   await turnoUrgente;
 });
 

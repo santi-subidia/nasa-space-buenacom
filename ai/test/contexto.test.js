@@ -78,7 +78,7 @@ test('cada zona y cada especialista apuntan solo a riesgos que existen', () => {
 });
 
 test('todos los riesgos de doc/nasa/riesgos están indexados', () => {
-  assert.equal(listarRiesgos().length, 17);
+  assert.equal(listarRiesgos().length, 18); // 17 del HRP + emergencias-medicas (protocolos de la ISS)
 });
 
 test('las instrucciones de Vega cubren voz corta, citas, no diagnosticar y escalar', () => {
