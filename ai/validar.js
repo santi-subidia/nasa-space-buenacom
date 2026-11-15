@@ -33,6 +33,20 @@ export function datosComoTexto(datos) {
   return texto;
 }
 
+export function validarHistorial(historial = []) {
+  if (historial === undefined || historial === null) return [];
+  if (!Array.isArray(historial) || historial.length > 20 || historial.length % 2 !== 0) {
+    throw new ErrorDePeticion('"historial" debe ser una lista par de hasta 20 turnos');
+  }
+  return historial.map((item, index) => {
+    const rolEsperado = index % 2 === 0 ? 'user' : 'assistant';
+    if (!item || item.role !== rolEsperado || typeof item.text !== 'string' || !item.text.trim() || item.text.length > 4000) {
+      throw new ErrorDePeticion('"historial" contiene un turno inválido');
+    }
+    return { role: item.role, text: item.text.trim() };
+  });
+}
+
 const TIPOS_DE_IMAGEN = ['image/jpeg', 'image/png', 'image/webp'];
 const MAX_CARACTERES_IMAGEN = 2_500_000; // ~1,8 MB de imagen en base64
 const BASE64 = /^[A-Za-z0-9+/]+={0,2}$/;

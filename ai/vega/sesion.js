@@ -15,17 +15,29 @@ export const MENSAJE_SIN_CONEXION =
 
 const TIEMPO_MAXIMO_MS = 40_000;
 
+function esFraseDeCierre(texto) {
+  const limpio = normalizar(texto).replace(/[¿?¡!.,;:]+/g, ' ').replace(/\s+/g, ' ').trim();
+  if (!limpio) return false;
+  return /^(chau|adios|hasta luego|pausa|silencio|detener|apagate|terminar|cortar|listo)(\s+(vyta|vega))?$/.test(limpio)
+    || /\b(chau vyta|hasta luego|apagate|terminar charla|cortar charla)\b/.test(limpio);
+}
+
 export function crearSesionVega({
   voz,
   alAvisarOficial = () => {},
   obtenerDatosDelDia = () => undefined,
+  obtenerContextoPantalla = () => undefined,
   fetchFn = globalThis.fetch?.bind(globalThis),
   url = '/api/claude',
 } = {}) {
-  let estado = { fase: 'inactivo', mensajes: [], parcial: '', error: '', sugerirAviso: false };
+  let estado = { fase: 'inactivo', mensajes: [], parcial: '', error: '', sugerirAviso: false, continuo: false };
   let numero = 0; // identifica la consulta vigente: las respuestas viejas se descartan
   let controlador = null;
   let consultando = false;
+  let escuchandoVoz = false;
+  let modoContinuo = false;
+  let cancelarMonitor = null;
+  let historial = [];
   const oyentes = new Set();
 
   const emitir = (cambios) => {
@@ -33,23 +45,48 @@ export function crearSesionVega({
     for (const oyente of oyentes) oyente();
   };
   const agregar = (mensaje) => emitir({ mensajes: [...estado.mensajes, { id: `m${estado.mensajes.length + 1}`, citas: [], ...mensaje }] });
+  const detenerMonitor = () => {
+    cancelarMonitor?.();
+    cancelarMonitor = null;
+  };
 
-  async function leerEnVoz(texto, vigente) {
-    if (!voz?.soportaSintesis || !texto) return;
+  async function leerEnVoz(texto, vigente, alInterrumpir) {
+    if (!voz?.soportaSintesis || !texto) return false;
+    let interrumpido = false;
     emitir({ fase: 'hablando' });
-    await voz.hablar(texto);
+    detenerMonitor();
+    if (modoContinuo && typeof voz?.vigilarInterrupcion === 'function') {
+      cancelarMonitor = voz.vigilarInterrupcion(() => {
+        if (!modoContinuo || !vigente()) return;
+        interrumpido = true;
+        detenerMonitor();
+        controlador?.abort();
+        voz.callar();
+        alInterrumpir?.();
+      });
+    }
+    try {
+      await voz.hablar(texto);
+    } finally {
+      detenerMonitor();
+    }
     // Si mientras hablaba se está consultando a la IA, sigue "pensando" en vez de quedar inactiva.
-    if (vigente()) emitir({ fase: consultando ? 'pensando' : 'inactivo' });
+    if (vigente() && !interrumpido) emitir({ fase: consultando ? 'pensando' : 'inactivo' });
+    return interrumpido;
   }
 
-  async function consultar(pregunta) {
+  async function consultar(pregunta, historialPrevio) {
     controlador = new AbortController();
     const temporizador = setTimeout(() => controlador.abort(), TIEMPO_MAXIMO_MS);
     try {
+      const payload = { tipo: 'answer', pregunta, datosDelDia: obtenerDatosDelDia() };
+      if (historialPrevio.length) payload.historial = historialPrevio;
+      const contextoPantalla = obtenerContextoPantalla();
+      if (contextoPantalla) payload.contextoPantalla = contextoPantalla;
       const respuesta = await fetchFn(url, {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ tipo: 'answer', pregunta, datosDelDia: obtenerDatosDelDia() }),
+        body: JSON.stringify(payload),
         signal: controlador.signal,
       });
       const cuerpo = await respuesta.json();
@@ -63,17 +100,21 @@ export function crearSesionVega({
   }
 
   async function preguntar(texto, { hablar = true } = {}) {
-    const pregunta = String(texto ?? '').trim();
+    const pregunta = String(texto ?? '').trim().slice(0, 500);
     if (!pregunta) return;
     const mio = ++numero;
     const vigente = () => mio === numero;
+    escuchandoVoz = false;
     controlador?.abort();
     voz?.callar();
 
+    const historialPrevio = historial.slice(-20);
     emitir({ error: '', parcial: '', sugerirAviso: false });
     agregar({ rol: 'usuario', texto: pregunta });
 
-    let lectura = Promise.resolve(); // la lectura del aviso local, si la hay, para no pisarla con la respuesta
+    let lectura = Promise.resolve(false); // la lectura del aviso local, si la hay, para no pisarla con la respuesta
+    let interrumpidoPorUsuario = false;
+    const marcarInterrumpido = () => { interrumpidoPorUsuario = true; };
 
     // Red de seguridad local: no depende de la IA ni de la red.
     const urgencia = detectarUrgencia(pregunta);
@@ -82,17 +123,17 @@ export function crearSesionVega({
       agregar({ rol: 'vega', texto: urgencia.mensaje, origen: 'local', urgente: true });
       emitir({ sugerirAviso: false });
       if (urgencia.nivel === 'critica') {
-        if (hablar) await leerEnVoz(urgencia.mensaje, vigente);
-        emitir({ fase: 'inactivo' });
+        if (hablar) await leerEnVoz(urgencia.mensaje, vigente, marcarInterrumpido);
+        if (vigente() && !interrumpidoPorUsuario) emitir({ fase: 'inactivo' });
         return;
       }
       // Señal alta: se lee el aviso Y se consulta a la IA a la vez (no se espera a que termine de hablar).
-      if (hablar) lectura = leerEnVoz(urgencia.mensaje, vigente);
+      if (hablar) lectura = leerEnVoz(urgencia.mensaje, vigente, marcarInterrumpido);
     }
 
     consultando = true;
     emitir({ fase: 'pensando' });
-    const cuerpo = await consultar(pregunta);
+    const cuerpo = await consultar(pregunta, historialPrevio);
     consultando = false;
     if (!vigente()) return; // llegó otra pregunta mientras tanto
 
@@ -103,35 +144,42 @@ export function crearSesionVega({
     }
 
     const textoVoz = cuerpo.textoVoz ?? textoParaVoz(cuerpo.texto);
+    historial = [...historialPrevio, { role: 'user', text: pregunta }, { role: 'assistant', text: textoVoz }].slice(-20);
     agregar({ rol: 'vega', texto: textoVoz, citas: cuerpo.citasUsadas ?? [], origen: cuerpo.origen, motivo: cuerpo.motivo });
     emitir({ fase: 'inactivo', sugerirAviso: normalizar(textoVoz).includes('oficial medico') || Boolean(urgencia) });
     if (hablar) {
-      await lectura; // primero termina el aviso, después la respuesta
-      if (vigente()) await leerEnVoz(textoVoz, vigente);
+      const cortadoEnAviso = await lectura; // primero termina el aviso, después la respuesta
+      if (!cortadoEnAviso && !interrumpidoPorUsuario && vigente()) {
+        await leerEnVoz(textoVoz, vigente, marcarInterrumpido);
+      }
     }
   }
 
-  /** Botón del micrófono: escucha una frase y la pregunta. */
+  /** Botón del micrófono / esfera: escucha una frase y la pregunta. */
   async function preguntarPorVoz() {
     if (!voz?.soportaReconocimiento) {
-      emitir({ error: 'Este navegador no reconoce voz. Usá Chrome o escribí la pregunta.' });
+      emitir({ error: 'Este navegador no reconoce voz. Probá con Safari o Chrome, o escribí la pregunta.' });
       return;
     }
     controlador?.abort();
-    ++numero;
+    const mio = ++numero;
+    escuchandoVoz = true;
     emitir({ fase: 'escuchando', error: '', parcial: '' });
     try {
       const texto = await voz.escuchar();
+      escuchandoVoz = false;
+      if (mio !== numero) return;
       emitir({ parcial: '' });
       await preguntar(texto, { hablar: true });
     } catch (e) {
-      if (e?.codigo === 'aborted') return;
+      escuchandoVoz = false;
+      if (mio !== numero || e?.codigo === 'aborted') return;
       emitir({ fase: 'inactivo', parcial: '', error: e?.mensaje ?? 'No pude usar el micrófono.' });
     }
   }
 
   /** Acción "avisar al oficial médico" desde la conversación. */
-  function avisarOficial(motivo = 'Pedido por el tripulante desde la conversación con Vega') {
+  function avisarOficial(motivo = 'Pedido por el tripulante desde la conversación con VYTA') {
     alAvisarOficial({ nivel: 'alta', categoria: 'manual', motivo, origen: 'vega', ts: new Date().toISOString() });
     agregar({ rol: 'vega', texto: 'Listo, avisé al oficial médico.', origen: 'local' });
     emitir({ sugerirAviso: false });
@@ -147,10 +195,103 @@ export function crearSesionVega({
 
   function cancelar() {
     ++numero;
+    escuchandoVoz = false;
+    consultando = false;
+    detenerMonitor();
     controlador?.abort();
     voz?.pararDeEscuchar();
     voz?.callar();
     emitir({ fase: 'inactivo', parcial: '' });
+  }
+
+  function detenerConversacionContinua() {
+    modoContinuo = false;
+    detenerMonitor();
+    emitir({ continuo: false });
+    cancelar();
+    voz?.cerrarCanalContinuo?.();
+  }
+
+  /** Inicia una charla fluida manos libres con escucha continua e interrupción (barge-in). */
+  async function iniciarConversacionContinua() {
+    if (!voz?.soportaReconocimiento) {
+      emitir({ error: 'Este navegador no reconoce voz. Probá con Safari o Chrome, o escribí la pregunta.' });
+      return;
+    }
+    if (modoContinuo) {
+      detenerConversacionContinua();
+      return;
+    }
+    modoContinuo = true;
+    emitir({ continuo: true, error: '', parcial: '' });
+
+    try {
+      await voz?.abrirCanalContinuo?.();
+    } catch (e) {
+      modoContinuo = false;
+      emitir({ continuo: false, fase: 'inactivo', error: e?.mensaje ?? 'No pude abrir el micrófono.' });
+      return;
+    }
+
+    if (!modoContinuo) {
+      voz?.cerrarCanalContinuo?.();
+      return;
+    }
+
+    try {
+      while (modoContinuo) {
+        controlador?.abort();
+        const mio = ++numero;
+        escuchandoVoz = true;
+        emitir({ fase: 'escuchando', parcial: '' });
+        try {
+          const texto = await voz.escuchar({ esperaMs: 15000, pausaSilencioMs: 1400 });
+          escuchandoVoz = false;
+          if (!modoContinuo || mio !== numero) break;
+          emitir({ parcial: '' });
+          if (esFraseDeCierre(texto)) {
+            modoContinuo = false;
+            emitir({ continuo: false });
+            agregar({ rol: 'usuario', texto });
+            const despedida = 'Perfecto, pauso la charla. Tocá la esfera cuando quieras seguir.';
+            agregar({ rol: 'vega', texto: despedida, origen: 'local' });
+            await leerEnVoz(despedida, () => true);
+            break;
+          }
+          await preguntar(texto, { hablar: true });
+        } catch (e) {
+          escuchandoVoz = false;
+          if (!modoContinuo) break;
+          if (e?.codigo === 'aborted') break;
+          if (e?.codigo === 'no-speech') {
+            emitir({ fase: 'inactivo', parcial: '' });
+            break;
+          }
+          emitir({ fase: 'inactivo', parcial: '', error: e?.mensaje ?? 'No pude usar el micrófono.' });
+          break;
+        }
+      }
+    } finally {
+      escuchandoVoz = false;
+      modoContinuo = false;
+      detenerMonitor();
+      voz?.cerrarCanalContinuo?.();
+      emitir({ continuo: false, fase: 'inactivo', parcial: '' });
+    }
+  }
+
+  function tocar() {
+    if (estado.fase === 'escuchando') terminarEscucha();
+    else if (['solicitando', 'transcribiendo', 'pensando'].includes(estado.fase)) cancelar();
+    else return preguntarPorVoz();
+  }
+
+  function tocarContinuo() {
+    if (modoContinuo) {
+      detenerConversacionContinua();
+      return;
+    }
+    return iniciarConversacionContinua();
   }
 
   return {
@@ -161,9 +302,17 @@ export function crearSesionVega({
     obtener: () => estado,
     /** El micrófono informa texto parcial mientras se habla: pasarlo con `voz.alOirParcial`. */
     ponerParcial: (parcial) => emitir({ parcial }),
+    /** Propaga fases de captura/transcripción ('solicitando'|'escuchando'|'transcribiendo') mientras escucha. */
+    ponerFaseVoz: (fase) => {
+      if (escuchandoVoz && ['solicitando', 'escuchando', 'transcribiendo'].includes(fase)) emitir({ fase });
+    },
     preguntar,
     preguntarPorVoz,
+    iniciarConversacionContinua,
+    detenerConversacionContinua,
     terminarEscucha,
+    tocar,
+    tocarContinuo,
     avisarOficial,
     cancelar,
   };

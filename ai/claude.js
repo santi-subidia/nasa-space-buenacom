@@ -41,6 +41,7 @@ export function armarParametros(peticion, modelo = MODELO) {
     instrucciones,
     contexto = '',
     variable,
+    historial = [],
     imagenes = [],
     esfuerzo = 'medium',
     maxTokens = 2048,
@@ -56,6 +57,11 @@ export function armarParametros(peticion, modelo = MODELO) {
   if (contexto) system.push({ type: 'text', text: contexto });
   system[system.length - 1].cache_control = { type: 'ephemeral' };
 
+  const previos = historial.map((item) => ({
+    role: item.role === 'assistant' ? 'assistant' : 'user',
+    content: [{ type: 'text', text: item.text }],
+  }));
+
   const content = [
     ...imagenes.map((img) => ({ type: 'image', source: { type: 'base64', media_type: img.media_type, data: img.data } })),
     { type: 'text', text: variable },
@@ -65,7 +71,7 @@ export function armarParametros(peticion, modelo = MODELO) {
     model: modelo,
     max_tokens: maxTokens,
     system,
-    messages: [{ role: 'user', content }],
+    messages: [...previos, { role: 'user', content }],
     output_config: { effort: esfuerzo, ...(formato ? { format: { type: 'json_schema', schema: formato } } : {}) },
   };
   if (herramientas?.length) parametros.tools = herramientas.map((t) => ({ ...t, strict: true }));

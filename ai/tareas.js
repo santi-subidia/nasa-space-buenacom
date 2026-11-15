@@ -7,20 +7,31 @@ import { elegirRiesgos } from './vega/riesgos.js';
 import { tareaCara } from './cara/tarea.js';
 import { tareaEntrenador } from './entrenador/tarea.js';
 import { tareaJunta } from './junta/tarea.js';
-import { datosComoTexto, ErrorDePeticion, validarEsfuerzo, validarRiesgos, validarTexto } from './validar.js';
+import { datosComoTexto, ErrorDePeticion, validarEsfuerzo, validarHistorial, validarRiesgos, validarTexto } from './validar.js';
 
 export { ErrorDePeticion };
 
 const MAX_PREGUNTA = 500;
 
 /**
- * answer: una pregunta de texto para Vega. Esfuerzo `low` por defecto (voz: la latencia importa más).
- * body: { pregunta, riesgos?: string[], datosDelDia?: object|string, esfuerzo? }
+ * answer: una pregunta de texto para VYTA/Vega. Esfuerzo `low` por defecto (voz: la latencia importa más).
+ * body: { pregunta, riesgos?: string[], datosDelDia?: object|string, contextoPantalla?: string, historial?: Array, esfuerzo? }
  */
 function tareaAnswer(body) {
   const pregunta = validarTexto(body.pregunta, 'pregunta', MAX_PREGUNTA);
-  // Si el navegador no dice qué riesgos tocan, se eligen por la pregunta (solo esas fichas, no el corpus entero).
-  const riesgos = body.riesgos === undefined ? elegirRiesgos(pregunta) : validarRiesgos(body.riesgos);
+  const historial = validarHistorial(body.historial);
+  const contextoPantalla = body.contextoPantalla === undefined ? '' : validarTexto(body.contextoPantalla, 'contextoPantalla', 600);
+  // Si el navegador no dice qué riesgos tocan, se eligen por la pregunta (y el hilo reciente en seguimientos).
+  let riesgos;
+  if (body.riesgos !== undefined) {
+    riesgos = validarRiesgos(body.riesgos);
+  } else {
+    riesgos = elegirRiesgos(pregunta);
+    if (!riesgos.length && historial.length) {
+      const recientes = historial.filter((h) => h.role === 'user').slice(-2).map((h) => h.text).join(' ');
+      if (recientes) riesgos = elegirRiesgos(recientes);
+    }
+  }
   const datos = datosComoTexto(body.datosDelDia);
   const ctx = riesgos.length ? getContext(riesgos) : null;
 
@@ -28,7 +39,11 @@ function tareaAnswer(body) {
     kind: 'answer',
     instrucciones: INSTRUCCIONES_VEGA,
     contexto: ctx?.texto ?? '',
-    variable: (datos ? `<datos_del_dia>\n${datos}\n</datos_del_dia>\n\n` : '') + `Pregunta del tripulante: ${pregunta}`,
+    historial,
+    variable:
+      (datos ? `<datos_del_dia>\n${datos}\n</datos_del_dia>\n\n` : '') +
+      (contextoPantalla ? `<contexto_pantalla>\n${contextoPantalla}\n</contexto_pantalla>\n\n` : '') +
+      `Pregunta del tripulante: ${pregunta}`,
     esfuerzo: validarEsfuerzo(body.esfuerzo, 'low'),
     maxTokens: 1500, // el razonamiento también cuenta
     entrada: { pregunta, riesgos },

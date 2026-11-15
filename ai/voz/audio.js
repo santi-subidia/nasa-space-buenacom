@@ -2,6 +2,25 @@ import { textoParaVoz } from '../vega/texto.js';
 
 export const FORMATOS_GRABACION = ['audio/webm;codecs=opus', 'audio/webm', 'audio/mp4', 'audio/ogg;codecs=opus'];
 
+const MAX_BYTES = 5 * 1024 * 1024;
+const ERRORES_MICROFONO = {
+  NotAllowedError: { codigo: 'not-allowed', mensaje: 'Permití el acceso al micrófono en el navegador para hablar.' },
+  NotFoundError: { codigo: 'audio-capture', mensaje: 'No se encontró un micrófono conectado.' },
+  NotReadableError: { codigo: 'audio-capture', mensaje: 'El micrófono está ocupado. Cerrá otras aplicaciones que lo estén usando.' },
+};
+
+const errorConCodigo = (mensaje, codigo) => Object.assign(new Error(mensaje), { codigo });
+const abortado = () => Object.assign(errorConCodigo('Turno cancelado', 'aborted'), { name: 'AbortError' });
+
+export function soportaGrabacionAudio(entorno = globalThis) {
+  return Boolean(
+    entorno?.isSecureContext !== false &&
+      entorno?.navigator?.mediaDevices?.getUserMedia &&
+      entorno?.MediaRecorder &&
+      (entorno?.AudioContext || entorno?.webkitAudioContext),
+  );
+}
+
 export function elegirVozVyta(voces = []) {
   const espanol = voces.filter((v) => /^es(?:[-_]|$)/i.test(v.lang));
   return espanol.find((v) => /Elena/i.test(v.name) && /^es[-_]AR$/i.test(v.lang))
@@ -44,4 +63,290 @@ export function crearDetectorFinDeFrase(inicio, { silencioMs = 1800, esperaMs = 
     if (!huboVoz && ahora - inicio >= esperaMs) return { terminar: true, enviar: false };
     return { terminar: false, enviar: false };
   };
+}
+
+function liberarCaptura(captura, limpiar, mantenerCanal = false) {
+  if (!captura || captura.liberada) return;
+  captura.liberada = true;
+  limpiar(captura.intervalo);
+  if (mantenerCanal) return;
+  captura.stream?.getTracks?.().forEach((track) => track.stop());
+  try { captura.source?.disconnect(); } catch { /* ya desconectado */ }
+  try { captura.contexto?.close?.()?.catch?.(() => {}); } catch { /* ya cerrado */ }
+}
+
+/** Abre un canal de micrófono persistente para modo conversación continua (evita reabrir getUserMedia en Safari). */
+export async function abrirCanalAudio({ entorno = globalThis } = {}) {
+  let stream;
+  try {
+    stream = await entorno.navigator.mediaDevices.getUserMedia({
+      audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true },
+    });
+  } catch (error) {
+    const conocido = ERRORES_MICROFONO[error?.name];
+    if (conocido) throw errorConCodigo(conocido.mensaje, conocido.codigo);
+    throw errorConCodigo(error?.message || 'No se pudo acceder al micrófono.', 'audio-capture');
+  }
+  try {
+    const Contexto = entorno.AudioContext || entorno.webkitAudioContext;
+    const contexto = new Contexto();
+    await contexto.resume();
+    const analizador = contexto.createAnalyser();
+    analizador.fftSize = 2048;
+    const source = contexto.createMediaStreamSource(stream);
+    source.connect(analizador);
+    return { stream, contexto, analizador, source, muestras: new Float32Array(analizador.fftSize), cerrado: false };
+  } catch (error) {
+    stream.getTracks?.().forEach((t) => t.stop());
+    throw error;
+  }
+}
+
+export function cerrarCanalAudio(canal) {
+  if (!canal || canal.cerrado) return;
+  canal.cerrado = true;
+  canal.stream?.getTracks?.().forEach((track) => track.stop());
+  try { canal.source?.disconnect(); } catch { /* ya desconectado */ }
+  try { canal.contexto?.close?.()?.catch?.(() => {}); } catch { /* ya cerrado */ }
+}
+
+export function medirRmsCanal(canal) {
+  if (!canal || canal.cerrado) return 0;
+  canal.analizador.getFloatTimeDomainData(canal.muestras);
+  let cuadrados = 0;
+  for (const muestra of canal.muestras) cuadrados += muestra * muestra;
+  return Math.sqrt(cuadrados / canal.muestras.length);
+}
+
+/** Vigila el micrófono mientras VYTA habla para detectar interrupción (barge-in) con eco cancelado. */
+export function iniciarMonitorBargeIn({
+  canal,
+  umbral = 0.055,
+  confirmacionMs = 220,
+  graciaMs = 350,
+  ahora = Date.now,
+  cada = setInterval,
+  limpiar = clearInterval,
+  alInterrumpir = () => {},
+  onNivel = () => {},
+} = {}) {
+  if (!canal || canal.cerrado) return () => {};
+  const inicio = ahora();
+  let anterior = inicio;
+  let vozAcumulada = 0;
+  let disparado = false;
+  const id = cada(() => {
+    if (disparado || canal.cerrado) return;
+    const t = ahora();
+    const paso = Math.min(100, Math.max(0, t - anterior));
+    anterior = t;
+    const rms = medirRmsCanal(canal);
+    onNivel(Math.min(1, rms * 10));
+    if (t - inicio < graciaMs) return;
+    if (rms >= umbral) {
+      vozAcumulada += paso;
+      if (vozAcumulada >= confirmacionMs) {
+        disparado = true;
+        limpiar(id);
+        alInterrumpir();
+      }
+    } else {
+      vozAcumulada = Math.max(0, vozAcumulada - paso * 0.5);
+    }
+  }, 50);
+  return () => {
+    disparado = true;
+    limpiar(id);
+  };
+}
+
+/** Graba una frase con MediaRecorder + AudioContext (compatible con Safari/Chrome) y corta tras el silencio. */
+export async function grabarAudio({
+  entorno = globalThis,
+  canal: canalExterno = null,
+  signal,
+  alEstado = () => {},
+  registrarControl = () => {},
+  onNivel = () => {},
+  ahora = Date.now,
+  cada = setInterval,
+  limpiar = clearInterval,
+  detectorOpciones = {},
+} = {}) {
+  if (signal?.aborted) throw abortado();
+  const esPersistente = Boolean(canalExterno && !canalExterno.cerrado);
+  let canal = esPersistente ? canalExterno : null;
+  if (!canal) {
+    alEstado('solicitando');
+    canal = await abrirCanalAudio({ entorno });
+  }
+  if (signal?.aborted) {
+    if (!esPersistente) cerrarCanalAudio(canal);
+    throw abortado();
+  }
+
+  const captura = { ...canal, enviar: true, liberada: false };
+  const terminar = (enviar = true) => {
+    if (captura.recorder?.state !== 'recording') return;
+    captura.enviar = enviar;
+    limpiar(captura.intervalo);
+    captura.recorder.stop();
+    liberarCaptura(captura, limpiar, esPersistente);
+  };
+  const cancelar = () => {
+    captura.enviar = false;
+    captura.rechazar?.(abortado());
+    if (captura.recorder?.state === 'recording') {
+      try { captura.recorder.stop(); } catch { /* ya detenido */ }
+    }
+    liberarCaptura(captura, limpiar, esPersistente);
+  };
+  registrarControl({ terminar, cancelar });
+  signal?.addEventListener?.('abort', cancelar, { once: true });
+
+  try {
+    await canal.contexto.resume?.();
+    if (signal?.aborted) throw abortado();
+
+    const mimeType = FORMATOS_GRABACION.find((tipo) => entorno.MediaRecorder.isTypeSupported(tipo));
+    if (!mimeType) throw errorConCodigo('El navegador no permite grabar un formato compatible. Probá con Safari, Chrome, Edge o Brave.', 'no-soportado');
+
+    const recorder = new entorno.MediaRecorder(canal.stream, { mimeType });
+    captura.recorder = recorder;
+    const partes = [];
+    let bytes = 0;
+    const detector = crearDetectorFinDeFrase(ahora(), detectorOpciones);
+
+    return await new Promise((resolve, reject) => {
+      captura.rechazar = reject;
+      recorder.ondataavailable = ({ data }) => {
+        if (signal?.aborted || !data?.size) return;
+        bytes += data.size;
+        if (bytes > MAX_BYTES) {
+          captura.enviar = false;
+          reject(errorConCodigo('La grabación es demasiado grande. Probá una frase más corta.', 'audio-limit'));
+          terminar(false);
+        } else {
+          partes.push(data);
+        }
+      };
+      recorder.onerror = () => {
+        reject(errorConCodigo('No se pudo grabar el audio. Revisá el micrófono y volvé a intentar.', 'audio-capture'));
+        liberarCaptura(captura, limpiar, esPersistente);
+      };
+      recorder.onstop = () => {
+        liberarCaptura(captura, limpiar, esPersistente);
+        onNivel(0);
+        if (signal?.aborted) return reject(abortado());
+        if (!captura.enviar) return reject(errorConCodigo('No se escuchó una frase. Tocá para volver a intentar.', 'no-speech'));
+        const audio = new Blob(partes, { type: recorder.mimeType || mimeType });
+        if (!audio.size) return reject(errorConCodigo('No llegó audio del micrófono. Volvé a intentar.', 'no-speech'));
+        resolve(audio);
+      };
+      recorder.start(250);
+      alEstado('escuchando');
+      captura.intervalo = cada(() => {
+        if (signal?.aborted) return;
+        const rms = medirRmsCanal(canal);
+        onNivel(Math.min(1, rms * 11));
+        const fin = detector(rms, ahora());
+        if (fin.terminar) terminar(fin.enviar);
+      }, 50);
+    });
+  } catch (error) {
+    if (captura.recorder?.state === 'recording') {
+      try { captura.recorder.stop(); } catch { /* ya detenido */ }
+    }
+    throw error;
+  } finally {
+    signal?.removeEventListener?.('abort', cancelar);
+    registrarControl(null);
+    liberarCaptura(captura, limpiar, esPersistente);
+  }
+}
+
+/** Envía un Blob de audio a /api/voz/transcribir y devuelve el texto transcrito. */
+export async function transcribirAudio({
+  audio,
+  fetchFn = globalThis.fetch?.bind(globalThis),
+  url = '/api/voz/transcribir',
+  signal,
+  timeoutMs = 30000,
+} = {}) {
+  const controller = new AbortController();
+  const abortar = () => controller.abort();
+  signal?.addEventListener?.('abort', abortar, { once: true });
+  const timer = setTimeout(abortar, timeoutMs);
+  try {
+    const respuesta = await fetchFn(url, {
+      method: 'POST',
+      headers: { 'Content-Type': audio.type || 'audio/mp4' },
+      body: audio,
+      signal: controller.signal,
+    });
+    const datos = await respuesta.json();
+    if (signal?.aborted) throw abortado();
+    if (!respuesta.ok) {
+      const codigo = respuesta.status === 422 ? 'no-speech' : respuesta.status === 503 ? 'service-unavailable' : 'network';
+      throw errorConCodigo(datos.error || 'No se pudo transcribir la voz.', codigo);
+    }
+    if (typeof datos.text !== 'string' || !datos.text.trim()) {
+      throw errorConCodigo('No se reconoció una frase. Tocá para volver a intentar.', 'no-speech');
+    }
+    return datos.text.trim();
+  } catch (error) {
+    if (error?.name === 'AbortError') throw signal?.aborted ? abortado() : errorConCodigo('La transcripción tardó demasiado. Volvé a intentar.', 'timeout');
+    throw error;
+  } finally {
+    clearTimeout(timer);
+    signal?.removeEventListener?.('abort', abortar);
+  }
+}
+
+/** Lee `texto` en fragmentos cortos con la mejor voz en español disponible (compatible con Safari). */
+export async function reproducirFragmentosVoz({
+  entorno = globalThis,
+  texto,
+  rate = 0.95,
+  alPreparar = () => {},
+  alIniciar = () => {},
+  alPulso = () => {},
+  verificarVigente = () => true,
+  registrarEnunciado = () => {},
+} = {}) {
+  const fragmentos = fragmentosParaVoz(texto);
+  if (!fragmentos.length) return;
+  const sintesis = entorno.speechSynthesis;
+  const Enunciado = entorno.SpeechSynthesisUtterance;
+  if (!sintesis || !Enunciado) return;
+  const voz = elegirVozVyta(sintesis.getVoices?.() ?? []);
+  for (const fragmento of fragmentos) {
+    if (!verificarVigente()) throw abortado();
+    await new Promise((resolve, reject) => {
+      const speech = new Enunciado(fragmento);
+      const cancelar = (err) => {
+        registrarEnunciado(null, null);
+        reject(err);
+      };
+      registrarEnunciado(speech, cancelar);
+      speech.lang = voz?.lang || 'es-AR';
+      speech.rate = rate;
+      speech.pitch = 1;
+      if (voz) speech.voice = voz;
+      speech.onstart = () => { if (verificarVigente()) alIniciar(); };
+      speech.onboundary = () => { if (verificarVigente()) alPulso(0.72); };
+      speech.onend = () => {
+        registrarEnunciado(null, null);
+        alPulso(0);
+        resolve();
+      };
+      speech.onerror = () => {
+        registrarEnunciado(null, null);
+        alPulso(0);
+        reject(errorConCodigo('No se pudo reproducir la voz. Revisá el audio del navegador y volvé a intentar.', 'tts'));
+      };
+      alPreparar();
+      sintesis.speak(speech);
+    });
+  }
 }

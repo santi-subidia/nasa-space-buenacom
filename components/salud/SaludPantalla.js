@@ -67,7 +67,7 @@ export default function SaludPantalla({ seccion }) {
               <h2 className={styles.tituloSeccion} id="titulo-fisicos">Indicadores físicos clave</h2>
               <div className={styles.grillaFisicos}>
                 {estado.indicadores.map((dato) => <Indicador key={dato.id} dato={dato} />)}
-                <VytaVoz resumen={resumen} className={styles.vozFisica} />
+                <VytaVoz seccion={seccion} resumen={resumen} className={styles.vozFisica} />
               </div>
             </section>
           </>}
@@ -78,7 +78,7 @@ export default function SaludPantalla({ seccion }) {
             </section>
             <div className={`${styles.inferior} ${styles.inferiorMental}`}>
               <Tendencia datos={datos.historia} tipo="mental" />
-              <VytaVoz resumen={resumen} />
+              <VytaVoz seccion={seccion} resumen={resumen} />
             </div>
           </>}
           {seccion === 'riesgos' && <>
@@ -93,7 +93,7 @@ export default function SaludPantalla({ seccion }) {
             </section>
             <div className={`${styles.inferior} ${styles.inferiorRiesgos}`}>
               <Tendencia datos={datos.historia} tipo="riesgos" />
-              <VytaVoz resumen={resumen} />
+              <VytaVoz seccion={seccion} resumen={resumen} />
             </div>
           </>}
         </div>

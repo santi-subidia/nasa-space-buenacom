@@ -11,7 +11,7 @@ import { evaluate } from '@/lib/motor/evaluar';
 import { parsearNotaPvt } from '@/lib/pvt/metricas';
 import { INDICADORES } from '@/lib/tipos';
 
-const INICIAL = { fase: 'inactivo', mensajes: [], parcial: '', error: '', sugerirAviso: false };
+const INICIAL = { fase: 'inactivo', mensajes: [], parcial: '', error: '', sugerirAviso: false, continuo: false };
 const sinSuscripcion = () => () => {};
 const estadoInicial = () => INICIAL;
 
@@ -40,12 +40,14 @@ export function datosDelDia(lecturas, sintomas = [], baseline = LINEA_BASE, nomb
 }
 
 /**
- * Conecta la lógica de Vega (ai/vega) con React: micrófono, consulta a /api/claude, lectura en voz alta.
- * El micrófono y la voz solo existen en el navegador, así que se crean después de montar.
+ * Conecta la lógica de VYTA/Vega (ai/vega) con React: micrófono compatible con Safari,
+ * consulta a /api/claude con datos del día e historial, lectura en voz alta.
  */
-export function useVega() {
+export function useVega({ seccion, resumen } = {}) {
   const { astronauta, lecturas, sintomas } = useEstadoMision(null, SOL_ACTUAL);
   const datosRef = useRef(null);
+  const contextoRef = useRef('');
+  const nivelRef = useRef(0);
   const [motor, setMotor] = useState(null);
 
   useEffect(() => {
@@ -58,15 +60,35 @@ export function useVega() {
   }, [astronauta, lecturas, sintomas]);
 
   useEffect(() => {
+    const partes = [];
+    if (seccion) partes.push(`Sección: ${seccion}`);
+    if (resumen) partes.push(`Resumen visible: ${resumen}`);
+    contextoRef.current = partes.join('. ').slice(0, 600);
+  }, [seccion, resumen]);
+
+  useEffect(() => {
     let sesion;
-    const voz = crearVoz({ alOirParcial: (texto) => sesion?.ponerParcial(texto) });
+    const voz = crearVoz({
+      alOirParcial: (texto) => sesion?.ponerParcial(texto),
+      alCambiar: (faseVoz) => sesion?.ponerFaseVoz(faseVoz),
+      alNivel: (n) => { nivelRef.current = n; },
+      alPulso: (n) => { nivelRef.current = n; },
+    });
     sesion = crearSesionVega({
       voz,
       obtenerDatosDelDia: () => datosRef.current ?? datosDelDia([]),
+      obtenerContextoPantalla: () => contextoRef.current || undefined,
       alAvisarOficial: guardarAviso,
     });
     setMotor({ sesion, voz });
-    return () => sesion.cancelar();
+    const alOcultar = () => {
+      if (document.hidden) sesion.detenerConversacionContinua?.();
+    };
+    document.addEventListener('visibilitychange', alOcultar);
+    return () => {
+      document.removeEventListener('visibilitychange', alOcultar);
+      sesion.detenerConversacionContinua?.();
+    };
   }, []);
 
   const estado = useSyncExternalStore(
@@ -78,12 +100,17 @@ export function useVega() {
   return {
     ...estado,
     listo: Boolean(motor),
+    nivelRef,
     voz: motor?.voz ?? null,
     soportaVoz: motor ? motor.voz.soportaReconocimiento : true,
     soportaLectura: motor ? motor.voz.soportaSintesis : true,
     preguntar: (texto) => motor?.sesion.preguntar(texto),
     preguntarPorVoz: () => motor?.sesion.preguntarPorVoz(),
+    iniciarConversacionContinua: () => motor?.sesion.iniciarConversacionContinua(),
+    detenerConversacionContinua: () => motor?.sesion.detenerConversacionContinua(),
     terminarEscucha: () => motor?.sesion.terminarEscucha(),
+    tocar: () => motor?.sesion.tocar(),
+    tocarContinuo: () => motor?.sesion.tocarContinuo(),
     avisarOficial: () => motor?.sesion.avisarOficial(),
     cancelar: () => motor?.sesion.cancelar(),
   };

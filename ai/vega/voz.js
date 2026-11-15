@@ -1,20 +1,21 @@
-// Voz de Vega con la Web Speech API del navegador (gratis, no gasta tokens).
-//   - SpeechRecognition (webkitSpeechRecognition en Chrome): oír al tripulante. En Chrome necesita internet.
-//   - speechSynthesis: leer la respuesta en voz alta, con voz en español.
-//
-// Se escribe sin tocar `window` directamente (recibe `ventana`) para poder probarlo con simulaciones.
-
-const IDIOMAS_PREFERIDOS = ['es-AR', 'es-419', 'es-MX', 'es-US', 'es-ES'];
+// Voz unificada (VYTA / Vega):
+//   - Principal (compatible con Safari, Chrome, Edge, Firefox): MediaRecorder + AudioContext → /api/voz/transcribir (Gemini).
+//   - Respaldo: SpeechRecognition cuando el entorno no ofrece MediaRecorder + AudioContext.
+//   - Síntesis: speechSynthesis con selección de voz es-AR y fragmentación segura de frases.
+import {
+  abrirCanalAudio,
+  cerrarCanalAudio,
+  elegirVozVyta,
+  grabarAudio,
+  iniciarMonitorBargeIn,
+  reproducirFragmentosVoz,
+  soportaGrabacionAudio,
+  transcribirAudio,
+} from '../voz/audio.js';
 
 /** Elige la mejor voz en español disponible; null si no hay ninguna. */
 export function elegirVoz(voces = []) {
-  const espanolas = voces.filter((v) => v.lang?.toLowerCase().startsWith('es'));
-  if (!espanolas.length) return null;
-  for (const idioma of IDIOMAS_PREFERIDOS) {
-    const exacta = espanolas.find((v) => v.lang.replace('_', '-').toLowerCase() === idioma.toLowerCase());
-    if (exacta) return exacta;
-  }
-  return espanolas[0];
+  return elegirVozVyta(voces) ?? null;
 }
 
 export const ERRORES_DE_MICROFONO = {
@@ -28,39 +29,109 @@ export const ERRORES_DE_MICROFONO = {
 
 /**
  * @param {object} [opciones]
- * @param {object} [opciones.ventana=globalThis]  donde viven SpeechRecognition y speechSynthesis
- * @param {(estado:'inactivo'|'escuchando'|'hablando', datos?:object)=>void} [opciones.alCambiar]
- * @param {(texto:string)=>void} [opciones.alOirParcial]  texto parcial mientras se habla (ondas / subtítulo)
- * @param {number} [opciones.pausaSilencioMs=2200]  silencio tras la última palabra antes de enviar
+ * @param {object} [opciones.ventana=globalThis]  donde viven MediaRecorder/AudioContext, SpeechRecognition y speechSynthesis
+ * @param {(estado:'inactivo'|'solicitando'|'escuchando'|'transcribiendo'|'hablando', datos?:object)=>void} [opciones.alCambiar]
+ * @param {(texto:string)=>void} [opciones.alOirParcial]  texto parcial mientras se habla (si usa SpeechRecognition)
+ * @param {number} [opciones.pausaSilencioMs=1800]  silencio tras la última palabra antes de enviar
  */
 export function crearVoz({
   ventana = globalThis,
   alCambiar = () => {},
   alOirParcial = () => {},
-  pausaSilencioMs = 2200,
+  alNivel = () => {},
+  alPulso = () => {},
+  pausaSilencioMs = 1800,
+  fetchFn = globalThis.fetch?.bind(globalThis),
+  urlTranscribir = '/api/voz/transcribir',
+  ahora = Date.now,
+  cada = setInterval,
+  limpiar = clearInterval,
 } = {}) {
   const Reconocimiento = ventana.SpeechRecognition ?? ventana.webkitSpeechRecognition ?? null;
   const sintesis = ventana.speechSynthesis ?? null;
   const Enunciado = ventana.SpeechSynthesisUtterance ?? null;
 
-  let reconocimiento = null;
-  let cancelarActual = null;
-  let finalizarActual = null;
-  let hablando = null; // { enunciado, resolver }
+  let escuchaActiva = null; // { cancelar, finalizar }
+  let hablando = null; // { cancelado, terminarEnunciado, resolver }
+  let canalPersistente = null;
 
-  const soportaReconocimiento = Boolean(Reconocimiento);
+  const soportaGrabacion = soportaGrabacionAudio(ventana);
+  const soportaReconocimiento = Boolean(soportaGrabacion || Reconocimiento);
   const soportaSintesis = Boolean(sintesis && Enunciado);
 
-  /** Escucha una frase. Resuelve con el texto final; rechaza con { codigo, mensaje }. */
-  function escuchar() {
-    if (!soportaReconocimiento) {
-      return Promise.reject({ codigo: 'no-soportado', mensaje: 'Este navegador no reconoce voz. Usá Chrome o escribí la pregunta.' });
-    }
-    callar();
-    detenerEscucha();
+  function escucharConGrabacion(opciones = {}) {
+    const controller = new AbortController();
+    let controlGrabacion = null;
+    const sesionEscucha = {
+      finalizar: () => controlGrabacion?.terminar?.(true),
+      cancelar: () => {
+        if (escuchaActiva !== sesionEscucha) return;
+        escuchaActiva = null;
+        controller.abort();
+        controlGrabacion?.cancelar?.();
+        alNivel(0);
+        alCambiar('inactivo');
+      },
+    };
+    escuchaActiva = sesionEscucha;
+
+    return (async () => {
+      try {
+        const audio = await grabarAudio({
+          entorno: ventana,
+          canal: canalPersistente,
+          signal: controller.signal,
+          alEstado: (estado) => {
+            if (escuchaActiva === sesionEscucha) alCambiar(estado);
+          },
+          registrarControl: (control) => {
+            controlGrabacion = control;
+          },
+          onNivel: (nivel) => {
+            if (escuchaActiva === sesionEscucha) alNivel(nivel);
+          },
+          ahora,
+          cada,
+          limpiar,
+          detectorOpciones: {
+            silencioMs: opciones.pausaSilencioMs ?? (canalPersistente ? 1500 : pausaSilencioMs),
+            ...(opciones.esperaMs ? { esperaMs: opciones.esperaMs } : {}),
+          },
+        });
+        if (controller.signal.aborted || escuchaActiva !== sesionEscucha) {
+          throw { codigo: 'aborted', mensaje: '' };
+        }
+        alCambiar('transcribiendo');
+        const texto = await transcribirAudio({
+          audio,
+          fetchFn,
+          url: urlTranscribir,
+          signal: controller.signal,
+        });
+        if (escuchaActiva === sesionEscucha) {
+          escuchaActiva = null;
+          alCambiar('inactivo');
+        }
+        return texto;
+      } catch (error) {
+        if (escuchaActiva === sesionEscucha) {
+          escuchaActiva = null;
+          alCambiar('inactivo');
+        }
+        if (error?.codigo === 'aborted' || error?.name === 'AbortError') {
+          throw { codigo: 'aborted', mensaje: '' };
+        }
+        throw {
+          codigo: error?.codigo || 'audio-capture',
+          mensaje: error?.message || error?.mensaje || 'No pude usar el micrófono.',
+        };
+      }
+    })();
+  }
+
+  function escucharConWebSpeech() {
     return new Promise((resolver, rechazar) => {
       const r = new Reconocimiento();
-      reconocimiento = r;
       r.lang = 'es-AR';
       r.interimResults = true;
       r.continuous = true;
@@ -84,7 +155,7 @@ export function crearVoz({
         if (!esContinuoReal) return;
         clearTimeout(temporizadorSilencio);
         temporizadorSilencio = setTimeout(() => {
-          if (reconocimiento !== r || abortado) return;
+          if (escuchaActiva?.instancia !== r || abortado) return;
           listoParaCerrar = true;
           try {
             r.stop();
@@ -94,38 +165,39 @@ export function crearVoz({
         }, pausaSilencioMs);
       }
 
-      finalizarActual = () => {
-        if (reconocimiento !== r || abortado) return;
-        if (!ultimoTexto.trim()) {
-          detenerEscucha();
-          return;
-        }
-        listoParaCerrar = true;
-        clearTimeout(temporizadorSilencio);
-        try {
-          if (typeof r.stop === 'function') r.stop();
-          else r.onend?.();
-        } catch {
-          r.onend?.();
-        }
+      const sesionEscucha = {
+        instancia: r,
+        finalizar: () => {
+          if (escuchaActiva?.instancia !== r || abortado) return;
+          if (!ultimoTexto.trim()) {
+            detenerEscucha();
+            return;
+          }
+          listoParaCerrar = true;
+          clearTimeout(temporizadorSilencio);
+          try {
+            if (typeof r.stop === 'function') r.stop();
+            else r.onend?.();
+          } catch {
+            r.onend?.();
+          }
+        },
+        cancelar: () => {
+          abortado = true;
+          clearTimeout(temporizadorSilencio);
+          try {
+            r.abort?.();
+          } catch {
+            /* ya estaba detenido */
+          }
+          if (escuchaActiva?.instancia === r) {
+            escuchaActiva = null;
+            alCambiar('inactivo');
+          }
+          rechazar({ codigo: 'aborted', mensaje: '' });
+        },
       };
-
-      cancelarActual = () => {
-        abortado = true;
-        clearTimeout(temporizadorSilencio);
-        try {
-          r.abort?.();
-        } catch {
-          /* ya estaba detenido */
-        }
-        if (reconocimiento === r) {
-          reconocimiento = null;
-          finalizarActual = null;
-          cancelarActual = null;
-          alCambiar('inactivo');
-        }
-        rechazar({ codigo: 'aborted', mensaje: '' });
-      };
+      escuchaActiva = sesionEscucha;
 
       r.onresult = (evento) => {
         for (let i = evento.resultIndex ?? 0; i < evento.results.length; i++) {
@@ -147,7 +219,6 @@ export function crearVoz({
         if (error === 'aborted') abortado = true;
       };
       r.onend = () => {
-        // Si Chrome cerró tras una micro-pausa antes de cumplirse el silencio completo, reanudamos y acumulamos.
         if (!abortado && !listoParaCerrar && esContinuoReal && ultimoTexto.trim() && (!error || error === 'no-speech')) {
           prefijoAcumulado = ultimoTexto.trim();
           segmentos.length = 0;
@@ -161,11 +232,8 @@ export function crearVoz({
         }
 
         clearTimeout(temporizadorSilencio);
-        // Un reconocimiento viejo (cortado con abort) no debe pisar el estado del nuevo.
-        if (reconocimiento === r) {
-          reconocimiento = null;
-          finalizarActual = null;
-          cancelarActual = null;
+        if (escuchaActiva?.instancia === r) {
+          escuchaActiva = null;
           alCambiar('inactivo');
         }
         if (abortado || error === 'aborted') rechazar({ codigo: 'aborted', mensaje: '' });
@@ -176,76 +244,126 @@ export function crearVoz({
       alCambiar('escuchando');
       try {
         r.start();
-      } catch (e) {
+      } catch {
         clearTimeout(temporizadorSilencio);
-        reconocimiento = null;
-        finalizarActual = null;
-        cancelarActual = null;
+        escuchaActiva = null;
         alCambiar('inactivo');
         rechazar({ codigo: 'start', mensaje: 'No pude empezar a escuchar.' });
       }
     });
   }
 
-  function detenerEscucha() {
-    if (cancelarActual) {
-      cancelarActual();
-      return;
+  /** Escucha una frase. Resuelve con el texto final; rechaza con { codigo, mensaje }. */
+  function escuchar(opciones = {}) {
+    if (!soportaReconocimiento) {
+      return Promise.reject({ codigo: 'no-soportado', mensaje: 'Este navegador no reconoce voz. Probá con Safari o Chrome, o escribí la pregunta.' });
     }
-    try {
-      reconocimiento?.abort?.();
-    } catch {
-      /* ya estaba detenido */
-    }
-    reconocimiento = null;
-    finalizarActual = null;
+    callar();
+    detenerEscucha();
+    // Dispara la carga de voces durante el gesto del toque (clave en Safari).
+    sintesis?.getVoices?.();
+    return soportaGrabacion ? escucharConGrabacion(opciones) : escucharConWebSpeech();
   }
 
-  /** Lee el texto en voz alta. Resuelve cuando termina (o al cortarla). Sin síntesis, resuelve al instante. */
+  async function abrirCanalContinuo() {
+    if (!soportaGrabacion) return false;
+    if (canalPersistente && !canalPersistente.cerrado) return true;
+    alCambiar('solicitando');
+    try {
+      canalPersistente = await abrirCanalAudio({ entorno: ventana });
+      return true;
+    } catch (error) {
+      alCambiar('inactivo');
+      throw {
+        codigo: error?.codigo || 'audio-capture',
+        mensaje: error?.message || error?.mensaje || 'No pude usar el micrófono.',
+      };
+    }
+  }
+
+  function cerrarCanalContinuo() {
+    if (!canalPersistente) return;
+    cerrarCanalAudio(canalPersistente);
+    canalPersistente = null;
+    alNivel(0);
+  }
+
+  function vigilarInterrupcion(alInterrumpir, opciones = {}) {
+    if (!canalPersistente || canalPersistente.cerrado) return () => {};
+    return iniciarMonitorBargeIn({
+      canal: canalPersistente,
+      ahora,
+      cada,
+      limpiar,
+      alInterrumpir,
+      ...opciones,
+    });
+  }
+
+  function detenerEscucha() {
+    const actual = escuchaActiva;
+    if (!actual) return;
+    actual.cancelar();
+  }
+
+  /** Lee el texto en voz alta en fragmentos cortos. Resuelve cuando termina (o al cortarla). */
   function hablar(texto) {
     if (!soportaSintesis || !texto?.trim()) return Promise.resolve();
     callar();
     return new Promise((resolver) => {
-      const enunciado = new Enunciado(texto);
-      enunciado.lang = 'es-AR';
-      enunciado.rate = 1.02;
-      const voz = elegirVoz(sintesis.getVoices?.() ?? []);
-      if (voz) {
-        enunciado.voice = voz;
-        enunciado.lang = voz.lang;
-      }
-      const terminar = () => {
-        // Un enunciado cancelado no debe pisar el estado del siguiente.
-        if (hablando?.enunciado === enunciado) {
+      const actual = { cancelado: false, terminarEnunciado: null, resolver };
+      hablando = actual;
+      const finalizar = () => {
+        alPulso(0);
+        if (hablando === actual) {
           hablando = null;
           alCambiar('inactivo');
         }
         resolver();
       };
-      enunciado.onend = terminar;
-      enunciado.onerror = terminar;
-      hablando = { enunciado, resolver };
-      alCambiar('hablando');
-      sintesis.speak(enunciado);
+      reproducirFragmentosVoz({
+        entorno: ventana,
+        texto,
+        rate: 0.95,
+        alPreparar: () => {
+          if (!actual.cancelado && hablando === actual) alCambiar('hablando');
+        },
+        alIniciar: () => {
+          if (!actual.cancelado && hablando === actual) alCambiar('hablando');
+        },
+        alPulso: (nivel) => {
+          if (!actual.cancelado && hablando === actual) alPulso(nivel);
+        },
+        verificarVigente: () => !actual.cancelado && hablando === actual,
+        registrarEnunciado: (_speech, cancelar) => {
+          actual.terminarEnunciado = cancelar;
+        },
+      }).then(finalizar, finalizar);
     });
   }
 
   /** Corta la lectura en curso. */
   function callar() {
     if (!hablando) return;
-    const { resolver } = hablando;
+    const actual = hablando;
+    actual.cancelado = true;
     hablando = null;
+    alPulso(0);
     sintesis?.cancel?.();
+    actual.terminarEnunciado?.(new Error('Voz detenida'));
     alCambiar('inactivo');
-    resolver();
+    actual.resolver();
   }
 
   return {
     soportaReconocimiento,
     soportaSintesis,
     escuchar,
-    finalizarEscucha: () => finalizarActual?.(),
+    finalizarEscucha: () => escuchaActiva?.finalizar?.(),
     pararDeEscuchar: detenerEscucha,
+    abrirCanalContinuo,
+    cerrarCanalContinuo,
+    vigilarInterrupcion,
     hablar,
     callar,
   };
