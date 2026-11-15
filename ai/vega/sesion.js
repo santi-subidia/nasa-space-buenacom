@@ -19,18 +19,18 @@ import {
 } from './protocolos.js';
 import { normalizar, textoParaVoz } from './texto.js';
 
-export const SUGERENCIAS = ['¿Puedo hacer la EVA de mañana?', 'Explicame mi sueño', '¿Por qué me salió herpes?', '¿Cómo sé si estoy deshidratado?'];
+export const SUGERENCIAS = ['Can I do tomorrow’s EVA?', 'Explain my sleep', 'Why did I get a cold sore?', 'How do I know if I’m dehydrated?'];
 
 export const MENSAJE_SIN_CONEXION =
-  'No puedo consultar mis fuentes en este momento. Si es algo urgente, avisá al oficial médico.';
+  "I can't check my sources right now. If this is urgent, notify the medical officer.";
 
 const TIEMPO_MAXIMO_MS = 40_000;
 
 function esFraseDeCierre(texto) {
   const limpio = normalizar(texto).replace(/[¿?¡!.,;:]+/g, ' ').replace(/\s+/g, ' ').trim();
   if (!limpio) return false;
-  return /^(chau|adios|hasta luego|pausa|silencio|detener|apagate|terminar|cortar|listo)(\s+(vyta|vega))?$/.test(limpio)
-    || /\b(chau vyta|hasta luego|apagate|terminar charla|cortar charla)\b/.test(limpio);
+  return /^(bye|goodbye|see you|pause|silence|stop|turn off|end|done|that'?s all|chau|adios|hasta luego|pausa|silencio|detener|apagate|terminar|cortar|listo)(\s+(vyta|vega))?$/.test(limpio)
+    || /\b(bye vyta|goodbye vyta|turn off|end chat|stop talking|chau vyta|hasta luego|apagate|terminar charla|cortar charla)\b/.test(limpio);
 }
 
 export function crearSesionVega({
@@ -160,8 +160,8 @@ export function crearSesionVega({
         triaje: 'urgente',
         categoria: 'senal-roja',
         protocolo: 'triaje',
-        titulo: 'Señal roja sin detallar',
-        mensaje: `Entonces lo tratamos como urgente: quedate quieto, sin esfuerzo, y que el oficial médico te tome presión, pulso y saturación ya. ${cierreSegunEnlace('urgente', retrasoMin)} Mientras tanto, contame qué sentís.`,
+        titulo: 'Unspecified red flag',
+        mensaje: `Then let's treat this as urgent: stay still, avoid exertion, and have the medical officer check blood pressure, pulse, and saturation right away. ${cierreSegunEnlace('urgente', retrasoMin)} Meanwhile, tell me what you feel.`,
         citas: [],
       };
     }
@@ -223,7 +223,7 @@ export function crearSesionVega({
   /** Botón del micrófono / esfera: escucha una frase y la pregunta. */
   async function preguntarPorVoz() {
     if (!voz?.soportaReconocimiento) {
-      emitir({ error: 'Este navegador no reconoce voz. Probá con Safari o Chrome, o escribí la pregunta.' });
+      emitir({ error: 'This browser does not support speech recognition. Try Safari or Chrome, or type your question.' });
       return;
     }
     controlador?.abort();
@@ -239,7 +239,7 @@ export function crearSesionVega({
     } catch (e) {
       escuchandoVoz = false;
       if (mio !== numero || e?.codigo === 'aborted') return;
-      emitir({ fase: 'inactivo', parcial: '', error: e?.mensaje ?? 'No pude usar el micrófono.' });
+      emitir({ fase: 'inactivo', parcial: '', error: e?.mensaje ?? 'Could not use microphone.' });
     }
   }
 
@@ -250,13 +250,13 @@ export function crearSesionVega({
       .slice(-3)
       .map((m) => m.texto)
       .join(' · ');
-    return contado ? `Pedido por el tripulante. Contó: «${contado}»` : 'Pedido por el tripulante desde la conversación con VYTA';
+    return contado ? `Requested by the crewmember. Reported: "${contado}"` : 'Requested by the crewmember from the conversation with VYTA';
   }
 
-  /** Acción "avisar al oficial médico" desde la conversación (botón o pedido por voz). */
+  /** "Notify the medical officer" action from the conversation (button or voice request). */
   function avisarOficial(motivo = motivoDelHilo(), { anunciar = true } = {}) {
     alAvisarOficial({ nivel: 'alta', categoria: 'manual', motivo, origen: 'vega', ts: new Date().toISOString() });
-    if (anunciar) agregar({ rol: 'vega', texto: 'Listo, avisé al oficial médico.', origen: 'local' });
+    if (anunciar) agregar({ rol: 'vega', texto: 'Done, I notified the medical officer.', origen: 'local' });
     emitir({ sugerirAviso: false });
   }
 
@@ -290,7 +290,7 @@ export function crearSesionVega({
   /** Inicia una charla fluida manos libres con escucha continua e interrupción (barge-in). */
   async function iniciarConversacionContinua() {
     if (!voz?.soportaReconocimiento) {
-      emitir({ error: 'Este navegador no reconoce voz. Probá con Safari o Chrome, o escribí la pregunta.' });
+      emitir({ error: 'This browser does not support speech recognition. Try Safari or Chrome, or type your question.' });
       return;
     }
     if (modoContinuo) {
@@ -304,7 +304,7 @@ export function crearSesionVega({
       await voz?.abrirCanalContinuo?.();
     } catch (e) {
       modoContinuo = false;
-      emitir({ continuo: false, fase: 'inactivo', error: e?.mensaje ?? 'No pude abrir el micrófono.' });
+      emitir({ continuo: false, fase: 'inactivo', error: e?.mensaje ?? 'Could not open microphone.' });
       return;
     }
 
@@ -328,7 +328,7 @@ export function crearSesionVega({
             modoContinuo = false;
             emitir({ continuo: false });
             agregar({ rol: 'usuario', texto });
-            const despedida = 'Perfecto, pauso la charla. Tocá la esfera cuando quieras seguir.';
+            const despedida = 'Okay, pausing the chat. Tap the sphere whenever you want to continue.';
             agregar({ rol: 'vega', texto: despedida, origen: 'local' });
             await leerEnVoz(despedida, () => true);
             break;
@@ -342,7 +342,7 @@ export function crearSesionVega({
             emitir({ fase: 'inactivo', parcial: '' });
             break;
           }
-          emitir({ fase: 'inactivo', parcial: '', error: e?.mensaje ?? 'No pude usar el micrófono.' });
+          emitir({ fase: 'inactivo', parcial: '', error: e?.mensaje ?? 'Could not use microphone.' });
           break;
         }
       }

@@ -17,10 +17,10 @@ const ACIERTOS_PARA_PASAR = 2;
 
 // Hacia dónde apuntan las patas de la E y cuánto se rota (la E dibujada apunta a la derecha).
 const DIRECCIONES = [
-  { id: 'derecha', grados: 0, flecha: '→', tecla: 'ArrowRight' },
-  { id: 'abajo', grados: 90, flecha: '↓', tecla: 'ArrowDown' },
-  { id: 'izquierda', grados: 180, flecha: '←', tecla: 'ArrowLeft' },
-  { id: 'arriba', grados: 270, flecha: '↑', tecla: 'ArrowUp' },
+  { id: 'right', grados: 0, flecha: '→', tecla: 'ArrowRight' },
+  { id: 'down', grados: 90, flecha: '↓', tecla: 'ArrowDown' },
+  { id: 'left', grados: 180, flecha: '←', tecla: 'ArrowLeft' },
+  { id: 'up', grados: 270, flecha: '↑', tecla: 'ArrowUp' },
 ];
 
 function otraDireccion(anterior) {
@@ -37,7 +37,7 @@ export function puntajeVision(nivelesSuperados) {
 export default function TestVision({ resultado, onTerminar, className }) {
   const [corriendo, setCorriendo] = useState(false);
   const [nivel, setNivel] = useState(0);
-  const [direccion, setDireccion] = useState('derecha');
+  const [direccion, setDireccion] = useState('right');
   const [borrosa, setBorrosa] = useState(resultado?.borrosa ?? false);
   const [aviso, setAviso] = useState('');
   const ronda = useRef({ intento: 0, aciertos: 0 });
@@ -101,37 +101,37 @@ export default function TestVision({ resultado, onTerminar, className }) {
   const tam = TAMANOS_PX[nivel];
 
   return (
-    <Card titulo="Test visual · SANS" id="vision" className={className}>
+    <Card titulo="Visual test · SANS" id="vision" className={className}>
       {!corriendo && (
         <>
           <p className={styles.texto}>
-            Sentate a <strong>un brazo de la pantalla</strong>, con la misma luz de siempre y tus anteojos si usás. Indicá
-            hacia dónde apuntan las patas de la <strong>E</strong>; se achica en cada nivel.
+            Sit <strong>at arm’s length from the screen</strong>, with your usual lighting and glasses if worn. Indicate
+            which way the legs of the <strong>E</strong> point; it gets smaller with each level.
           </p>
           <label className={styles.check}>
             <input type="checkbox" checked={borrosa} onChange={(e) => cambiarBorrosa(e.target.checked)} />
-            Hoy veo borroso (de lejos o de cerca)
+            My vision is blurry today (far or near)
           </label>
           <button type="button" className={styles.boton} onClick={empezar}>
-            {resultado ? 'Repetir test visual' : 'Empezar test visual'}
+            {resultado ? 'Repeat visual test' : 'Start visual test'}
           </button>
           {resultado && (
             <p className={styles.resultado}>
-              Agudeza: <strong>{resultado.puntos} puntos</strong> ({resultado.niveles} de {TAMANOS_PX.length} niveles){' '}
-              <TrafficLight nivel={evaluarConMotor('visual_acuity', resultado.puntos)} /> · se guarda al confirmar
+              Acuity: <strong>{resultado.puntos} points</strong> ({resultado.niveles} of {TAMANOS_PX.length} levels){' '}
+              <TrafficLight nivel={evaluarConMotor('visual_acuity', resultado.puntos)} /> · saved on confirm
             </p>
           )}
-          <p className={styles.nota}>Orienta, no diagnostica. Si la visión empeora o ves borroso, avisá al oficial médico.</p>
+          <p className={styles.nota}>Guidance only, not a diagnosis. If vision worsens or feels blurry, notify the medical officer.</p>
         </>
       )}
 
       {corriendo && (
         <div className={styles.test}>
           <p className={styles.texto}>
-            Nivel <strong>{nivel + 1}</strong> de {TAMANOS_PX.length} · intento {ronda.current.intento + 1} de{' '}
+            Level <strong>{nivel + 1}</strong> of {TAMANOS_PX.length} · attempt {ronda.current.intento + 1} of{' '}
             {INTENTOS_POR_NIVEL} <span aria-live="polite">{aviso}</span>
           </p>
-          <div className={styles.lienzoVision} aria-label="Letra E rotada">
+          <div className={styles.lienzoVision} aria-label="Rotated letter E">
             <svg width={tam} height={tam} viewBox="0 0 5 5" style={{ transform: `rotate(${grados}deg)` }} aria-hidden="true">
               <rect x="0" y="0" width="1" height="5" />
               <rect x="0" y="0" width="5" height="1" />
@@ -139,7 +139,7 @@ export default function TestVision({ resultado, onTerminar, className }) {
               <rect x="0" y="4" width="5" height="1" />
             </svg>
           </div>
-          <div className={styles.flechas} role="group" aria-label="Hacia dónde apunta la E">
+          <div className={styles.flechas} role="group" aria-label="Direction the E points">
             {DIRECCIONES.map((d) => (
               <button key={d.id} type="button" className={styles.boton} onClick={() => responder(d.id)} aria-label={d.id}>
                 {d.flecha}
@@ -147,7 +147,7 @@ export default function TestVision({ resultado, onTerminar, className }) {
             ))}
           </div>
           <button type="button" className={styles.enlace} onClick={() => terminar(nivel)}>
-            No la distingo
+            Cannot distinguish it
           </button>
         </div>
       )}

@@ -14,18 +14,18 @@ const CLASE_COLOR = {
 };
 
 const ETIQUETA_PERMISO = {
-  granted: 'Navegador: activo',
-  denied: 'Navegador: bloqueado',
-  default: 'Activar avisos del navegador',
-  unsupported: 'Navegador sin Notification API',
+  granted: 'Browser: active',
+  denied: 'Browser: blocked',
+  default: 'Enable browser alerts',
+  unsupported: 'Browser without Notification API',
 };
 
 const BOTONES_PRUEBA = [
-  { id: 'rutina', etiqueta: 'Rutina ●', color: 'blue' },
-  { id: 'alerta', etiqueta: 'Alerta ◆', color: 'orange' },
-  { id: 'alerta_roja_sueno', etiqueta: 'Alerta roja en sueño ■', color: 'red' },
-  { id: 'tierra', etiqueta: 'Tierra ✦', color: 'violet' },
-  { id: 'motivacion', etiqueta: 'Motivación ●', color: 'green' },
+  { id: 'rutina', etiqueta: 'Routine ●', color: 'blue' },
+  { id: 'alerta', etiqueta: 'Alert ◆', color: 'orange' },
+  { id: 'alerta_roja_sueno', etiqueta: 'Red alert during sleep ■', color: 'red' },
+  { id: 'tierra', etiqueta: 'Earth ✦', color: 'violet' },
+  { id: 'motivacion', etiqueta: 'Motivation ●', color: 'green' },
 ];
 
 export default function CentroNotificaciones() {
@@ -122,9 +122,9 @@ export default function CentroNotificaciones() {
     : toastIds.map((id) => items.find((it) => it.id === id)).filter(Boolean);
 
   return (
-    <aside className={styles.contenedor} aria-label="Centro de notificaciones">
+    <aside className={styles.contenedor} aria-label="Notification center">
       {toastsVisibles.length > 0 && (
-        <div className={styles.toasts} role="region" aria-label="Avisos recientes">
+        <div className={styles.toasts} role="region" aria-label="Recent alerts">
           {toastsVisibles.map((notif) => {
             const claseColor = CLASE_COLOR[notif.color] || styles.colorBlue;
             return (
@@ -141,8 +141,8 @@ export default function CentroNotificaciones() {
                     type="button"
                     className={styles.btnCerrar}
                     onClick={() => manejarDescartar(notif.id)}
-                    aria-label={`Descartar ${notif.titulo}`}
-                    title="Descartar"
+                    aria-label={`Dismiss ${notif.titulo}`}
+                    title="Dismiss"
                   >
                     ×
                   </button>
@@ -157,7 +157,7 @@ export default function CentroNotificaciones() {
                     className={styles.enlaceRuta}
                     onClick={() => setToastIds((prev) => prev.filter((x) => x !== notif.id))}
                   >
-                    Abrir {notif.ruta === '/' ? 'Inicio' : notif.ruta} →
+                    Open {notif.ruta === '/' ? 'Home' : notif.ruta} →
                   </Link>
                 )}
               </div>
@@ -170,21 +170,21 @@ export default function CentroNotificaciones() {
         <section
           id="panel-notificaciones"
           className={styles.panel}
-          aria-label="Panel de notificaciones"
+          aria-label="Notifications panel"
         >
           <header className={styles.panelHeader}>
             <div>
-              <h2 className={styles.panelTitulo}>Notificaciones de misión</h2>
+              <h2 className={styles.panelTitulo}>Mission notifications</h2>
               <p className={styles.panelSub}>
                 Sol {reloj.sol} · {reloj.horaFormateada}
-                {reloj.suenoProtegido ? ' · ☾ Sueño protegido (22:00–06:30)' : ''}
+                {reloj.suenoProtegido ? ' · ☾ Protected sleep (22:00–06:30)' : ''}
               </p>
             </div>
             <button
               type="button"
               className={styles.btnCerrar}
               onClick={() => setAbierto(false)}
-              aria-label="Cerrar panel de notificaciones"
+              aria-label="Close notifications panel"
             >
               ×
             </button>
@@ -197,7 +197,7 @@ export default function CentroNotificaciones() {
               onClick={alternarSonidoNotificaciones}
               aria-pressed={sonidoActivo}
             >
-              {sonidoActivo ? '🔊 Sonido activo' : '🔇 Sonido silenciado'}
+              {sonidoActivo ? '🔊 Sound on' : '🔇 Sound muted'}
             </button>
 
             <button
@@ -211,18 +211,18 @@ export default function CentroNotificaciones() {
 
             {items.length > 0 && (
               <button type="button" className={styles.btnLimpiar} onClick={manejarLimpiar}>
-                Limpiar
+                Clear
               </button>
             )}
           </div>
 
           <div className={styles.estadoSueno} role="status">
-            <span>Silenciadas en sueño protegido:</span>
+            <span>Muted during protected sleep:</span>
             <strong className={styles.silenciadasValor}>{silenciadasSueno}</strong>
           </div>
 
           <div className={styles.pruebasBloque}>
-            <span className={styles.pruebasTitulo}>Pruebas rápidas</span>
+            <span className={styles.pruebasTitulo}>Quick tests</span>
             <div className={styles.pruebasGrid}>
               {BOTONES_PRUEBA.map((btn) => (
                 <button
@@ -240,8 +240,8 @@ export default function CentroNotificaciones() {
           <div className={styles.lista}>
             {items.length === 0 ? (
               <p className={styles.vacio}>
-                Todavía no hay notificaciones visibles. Avanzá el reloj de la jornada o usá los
-                botones de prueba rápida.
+                No visible notifications yet. Advance the schedule clock or use the quick test
+                buttons.
               </p>
             ) : (
               items.map((notif) => {
@@ -262,7 +262,7 @@ export default function CentroNotificaciones() {
                         type="button"
                         className={styles.btnCerrar}
                         onClick={() => manejarDescartar(notif.id)}
-                        aria-label={`Descartar ${notif.titulo}`}
+                        aria-label={`Dismiss ${notif.titulo}`}
                       >
                         ×
                       </button>
@@ -277,7 +277,7 @@ export default function CentroNotificaciones() {
                         className={styles.enlaceRuta}
                         onClick={() => setAbierto(false)}
                       >
-                        Ir a {notif.ruta === '/' ? 'Inicio' : notif.ruta} →
+                        Go to {notif.ruta === '/' ? 'Home' : notif.ruta} →
                       </Link>
                     )}
                   </article>

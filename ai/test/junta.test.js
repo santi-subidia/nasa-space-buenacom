@@ -23,7 +23,7 @@ test('mergeLevel: la junta nunca baja el nivel del motor, pero puede subirlo', (
   assert.equal(mergeLevel('orange', 'red'), 'red');
   assert.equal(mergeLevel('green', 'yellow'), 'yellow');
   assert.equal(mergeLevel('red', undefined), 'red');
-  assert.throws(() => mergeLevel('orange', 'purple'), /Nivel desconocido/);
+  assert.throws(() => mergeLevel('orange', 'purple'), /Unknown level/);
   assert.equal(maxNivel(['green', 'orange', 'yellow']), 'orange');
   assert.equal(maxNivel([]), 'green');
 });
@@ -63,7 +63,7 @@ test('revisarSalida detecta especialistas faltantes, repetidos o niveles inváli
   const repetido = salidaValida();
   repetido.especialistas.push({ ...repetido.especialistas[0] });
   assert.match(revisarSalida(repetido), /repetidos/);
-  assert.match(revisarSalida(salidaValida({ sintesis: { nivel: 'morado' } })), /nivel válido/);
+  assert.match(revisarSalida(salidaValida({ sintesis: { nivel: 'morado' } })), /valid level/);
   assert.match(revisarSalida(null), /no es un objeto/);
 });
 
@@ -81,10 +81,10 @@ test('tarea board con los datos del sol 42: esfuerzo medium, esquema, fichas y d
   assert.equal(t.kind, 'board');
   assert.equal(t.esfuerzo, 'medium');
   assert.equal(t.formato, ESQUEMA_JUNTA);
-  assert.match(t.instrucciones, /PISO/);
+  assert.match(t.instrucciones, /FLOOR/);
   assert.match(t.contexto, /<ficha riesgo="inmunidad"/);
   assert.match(t.variable, /Sol 42/);
-  assert.match(t.variable, /viral_reactivation|Posible reactivación viral/);
+  assert.match(t.variable, /viral_reactivation|Possible viral reactivation/);
   assert.match(t.variable, /sleep_h \(h\): S36 06:45: 6 \| S37 06:45: 5.5/);
   assert.match(t.variable, /cold_sore/);
   // lo que cuesta: debe ser mucho menos que el umbral de 100K tokens
@@ -201,13 +201,13 @@ test('refusal: no lee nada y devuelve lo guardado; sin nada guardado, ok:false s
 
 // ---------- vista de la pantalla ----------
 
-test('vista: pestañas "Para Nicolás" y "Para médicos de vuelo", semáforo por especialista y aviso de respuesta guardada', async () => {
+test('vista: pestañas "For Nicolás" y "For flight surgeons", semáforo por especialista y aviso de respuesta guardada', async () => {
   const r = await pedirJunta(clienteDevolviendo(salidaValida()), crearAlmacenEnMemoria());
   const vista = armarVistaJunta(r, 'Nicolás');
-  assert.deepEqual(vista.pestanas.map((p) => p.etiqueta), ['Para Nicolás', 'Para médicos de vuelo']);
+  assert.deepEqual(vista.pestanas.map((p) => p.etiqueta), ['For Nicolás', 'For flight surgeons']);
   assert.equal(vista.especialistas.length, 5);
-  assert.equal(vista.especialistas[2].nombre, 'Conducta y sueño');
-  assert.equal(vista.accion.texto, 'Avisar al oficial médico');
+  assert.equal(vista.especialistas[2].nombre, 'Behavior & sleep');
+  assert.equal(vista.accion.texto, 'Notify medical officer');
   assert.equal(vista.guardada, false);
   assert.deepEqual(vista.pestanas[1].recordatorios[0], { titulo: 'Hisopado', sol: 44, detalle: 'Lesión labial' });
 });

@@ -3,9 +3,9 @@ import { evaluate, evaluarIndicador } from '../../lib/motor/evaluar.js';
 import { maxNivel } from '../../lib/niveles.js';
 import { rutaZona } from '../../lib/content/rutaZona.js';
 
-export const ETIQUETAS_NIVEL = { green: 'Estable', yellow: 'En seguimiento', orange: 'Alerta', red: 'Crítico' };
-const numero = (n) => n.toLocaleString('es-AR', { maximumFractionDigits: 1 });
-const VACIO = { valor: '—', unidad: '', nivel: null, estado: 'Sin datos', detalle: 'No hay una medición guardada para este indicador.' };
+export const ETIQUETAS_NIVEL = { green: 'Stable', yellow: 'Monitoring', orange: 'Alert', red: 'Critical' };
+const numero = (n) => n.toLocaleString('en-US', { maximumFractionDigits: 1 });
+const VACIO = { valor: '—', unidad: '', nivel: null, estado: 'No data', detalle: 'No saved measurement for this indicator.' };
 const MENTALES = ['mood', 'stress', 'sleep_h', 'reaction_ms'];
 
 export function esAlertaMental(alerta) {
@@ -21,7 +21,7 @@ export function datosSalud({ lecturas = [], sintomas = [], evaluacion = {}, base
     if (!l) return { ...VACIO };
     const nivel = sinUmbral ? null : evaluacion.indicatorLevels?.[id] ?? evaluarIndicador(id, l.value, baseline).level;
     return { valor: numero(l.value), valorNumerico: l.value, unidad: unidad ?? l.unit ?? '', nivel,
-      estado: ETIQUETAS_NIVEL[nivel] || 'Registrada', detalle: `Última lectura: sol ${l.sol}.`, sol: l.sol };
+      estado: ETIQUETAS_NIVEL[nivel] || 'Logged', detalle: `Latest reading: Sol ${l.sol}.`, sol: l.sol };
   };
   const zona = (zonas) => {
     const hayDatos = Object.values(evaluacion.indicators || {}).some((i) => zonas.includes(i.zone)) ||
@@ -46,9 +46,9 @@ export function datosSalud({ lecturas = [], sintomas = [], evaluacion = {}, base
     sueno.valor = `${Math.floor(minutos / 60)} h ${minutos % 60}`;
   }
   const cognicion = dato('reaction_ms', 'ms');
-  if (cognicion.valorNumerico != null) cognicion.detalle = `Tiempo de reacción del test. ${cognicion.detalle}`;
+  if (cognicion.valorNumerico != null) cognicion.detalle = `Test reaction time. ${cognicion.detalle}`;
 
-  const respiracion = dato('resp_rate', 'rpm');
+  const respiracion = dato('resp_rate', 'breaths/min');
   const musculo = dato('muscle_mass_pct', '%');
   const hueso = dato('bone_density_pct', '%');
   const adaptacion = dato('microgravity_adapt', '%');
@@ -70,8 +70,8 @@ export function datosSalud({ lecturas = [], sintomas = [], evaluacion = {}, base
         valorNumerico: dosisCab,
         unidad: 'mSv',
         nivel: nivelCab,
-        estado: ETIQUETAS_NIVEL[nivelCab] || 'Registrada',
-        detalle: `Dosímetro Curiosity/RAD en BD: sol ${cabSol.sol}.`,
+        estado: ETIQUETAS_NIVEL[nivelCab] || 'Logged',
+        detalle: `Curiosity/RAD dosimeter in DB: Sol ${cabSol.sol}.`,
         sol: cabSol.sol,
       };
     }
@@ -79,17 +79,17 @@ export function datosSalud({ lecturas = [], sintomas = [], evaluacion = {}, base
 
   const nivelMusculoOseo = zona(['bones', 'muscles']) ?? maxNivel([musculo.nivel, hueso.nivel].filter(Boolean));
   const filasRiesgo = [
-    { nombre: 'Radiación acumulada', icono: 'radiation', nivel: radiacion.nivel, estado: radiacion.estado,
-      detalle: radiacion.valorNumerico == null ? 'Sin mediciones de radiación guardadas.' : `Dosis acumulada registrada: ${radiacion.valor} mSv (límite 600 mSv).`, href: '/tendencias' },
-    { nombre: 'Pérdida ósea/muscular', icono: 'dumbbell', nivel: nivelMusculoOseo,
+    { nombre: 'Cumulative radiation', icono: 'radiation', nivel: radiacion.nivel, estado: radiacion.estado,
+      detalle: radiacion.valorNumerico == null ? 'No saved radiation measurements.' : `Recorded cumulative dose: ${radiacion.valor} mSv (limit 600 mSv).`, href: '/tendencias' },
+    { nombre: 'Bone/muscle loss', icono: 'dumbbell', nivel: nivelMusculoOseo,
       estado: ETIQUETAS_NIVEL[nivelMusculoOseo] || undefined,
-      detalle: nivelMusculoOseo == null ? 'Sin mediciones óseas o musculares.' : `Masa muscular ${musculo.valor} % · Densidad ósea ${hueso.valor} % respecto a pre-vuelo.`, href: rutaZona('bones') },
-    { nombre: 'Fatiga y recuperación', icono: 'fatigue', nivel: sueno.nivel,
-      detalle: sueno.valorNumerico == null ? 'Sin registros de sueño.' : `Último descanso: ${sueno.valor} min.`, href: rutaZona('brain') },
-    { nombre: 'Variabilidad inmunológica', icono: 'shield', nivel: zona(['immune']),
-      detalle: zona(['immune']) == null ? 'Sin registros inmunológicos.' : 'Seguimiento de los registros y síntomas guardados.', href: rutaZona('immune') },
-    { nombre: 'Aislamiento', icono: 'people', nivel: aislamiento.nivel, estado: aislamiento.estado,
-      detalle: aislamiento.valorNumerico == null ? 'Sin una evaluación de aislamiento registrada.' : `Índice de aislamiento: ${aislamiento.valor} / 10 (${aislamiento.detalle})`, href: '/salud/mental' },
+      detalle: nivelMusculoOseo == null ? 'No bone or muscle measurements.' : `Muscle mass ${musculo.valor}% · Bone density ${hueso.valor}% vs. pre-flight.`, href: rutaZona('bones') },
+    { nombre: 'Fatigue & recovery', icono: 'fatigue', nivel: sueno.nivel,
+      detalle: sueno.valorNumerico == null ? 'No sleep logs.' : `Latest rest: ${sueno.valor}.`, href: rutaZona('brain') },
+    { nombre: 'Immune variability', icono: 'shield', nivel: zona(['immune']),
+      detalle: zona(['immune']) == null ? 'No immune logs.' : 'Tracking saved logs and symptoms.', href: rutaZona('immune') },
+    { nombre: 'Isolation', icono: 'people', nivel: aislamiento.nivel, estado: aislamiento.estado,
+      detalle: aislamiento.valorNumerico == null ? 'No recorded isolation assessment.' : `Isolation index: ${aislamiento.valor} / 10 (${aislamiento.detalle})`, href: '/salud/mental' },
   ];
   const nivelFisico = disponibles.some((l) => !MENTALES.includes(l.indicator)) || fisicas.length
     ? maxNivel(fisicas.map((a) => a.level), Object.values(evaluacion.indicators || {}).filter((i) => !MENTALES.includes(i.indicator)).map((i) => i.level)) : null;
@@ -111,37 +111,37 @@ export function datosSalud({ lecturas = [], sintomas = [], evaluacion = {}, base
     return { sol: dia, animo: animo?.value ?? null, alertas: evaluacionDia?.alerts.length ?? null };
   });
   return {
-    vitales: [vital('hr_rest', 'Frecuencia cardíaca', 'heart'), vital('presion', 'Presión arterial', 'drop'),
-      vital('spo2', 'Oxígeno en sangre', 'lungs'), vital('temp', 'Temperatura corporal', 'temp'),
-      vital('hrv', 'HRV', 'pulse'), { ...respiracion, id: 'respiracion', nombre: 'Frecuencia respiratoria', icono: 'wind' }],
+    vitales: [vital('hr_rest', 'Heart rate', 'heart'), vital('presion', 'Blood pressure', 'drop'),
+      vital('spo2', 'Blood oxygen', 'lungs'), vital('temp', 'Body temperature', 'temp'),
+      vital('hrv', 'HRV', 'pulse'), { ...respiracion, id: 'respiracion', nombre: 'Respiratory rate', icono: 'wind' }],
     fisica: { nivel: nivelFisico, alertas: fisicas, estados: [
       { nombre: 'Muscular', icono: 'arm', nivel: musculo.nivel ?? zona(['muscles']) },
-      { nombre: 'Óseo', icono: 'bone', nivel: hueso.nivel ?? zona(['bones']) },
-      { nombre: 'Inmunológico', icono: 'shield', nivel: zona(['immune']) },
-      { nombre: 'Radiación', icono: 'radiation', nivel: radiacion.nivel, estado: radiacion.estado },
+      { nombre: 'Bone', icono: 'bone', nivel: hueso.nivel ?? zona(['bones']) },
+      { nombre: 'Immune', icono: 'shield', nivel: zona(['immune']) },
+      { nombre: 'Radiation', icono: 'radiation', nivel: radiacion.nivel, estado: radiacion.estado },
     ], indicadores: [
-      { ...musculo, nombre: 'Masa muscular', icono: 'arm', id: 'masa' },
-      { ...hueso, nombre: 'Densidad ósea', icono: 'bone', id: 'osea' },
-      { ...adaptacion, nombre: 'Adaptación a microgravedad', icono: 'planet', id: 'adaptacion' },
-      { ...radiacion, nombre: 'Radiación acumulada', icono: 'radiation', id: 'radiacion' },
+      { ...musculo, nombre: 'Muscle mass', icono: 'arm', id: 'masa' },
+      { ...hueso, nombre: 'Bone density', icono: 'bone', id: 'osea' },
+      { ...adaptacion, nombre: 'Microgravity adaptation', icono: 'planet', id: 'adaptacion' },
+      { ...radiacion, nombre: 'Cumulative radiation', icono: 'radiation', id: 'radiacion' },
     ] },
     mental: { nivel: nivelMental, alertas: mentales, estados: [
-      { nombre: 'Ánimo', icono: 'mood', nivel: dato('mood').nivel },
-      { nombre: 'Estrés', icono: 'bolt', nivel: estres.nivel },
-      { nombre: 'Carga cognitiva', icono: 'brain', nivel: cognicion.nivel },
-      { nombre: 'Aislamiento', icono: 'people', nivel: aislamiento.nivel },
+      { nombre: 'Mood', icono: 'mood', nivel: dato('mood').nivel },
+      { nombre: 'Stress', icono: 'bolt', nivel: estres.nivel },
+      { nombre: 'Cognitive load', icono: 'brain', nivel: cognicion.nivel },
+      { nombre: 'Isolation', icono: 'people', nivel: aislamiento.nivel },
     ], indicadores: [
-      { ...estres, nombre: 'Estrés', icono: 'bolt', id: 'estres', progreso: estres.valorNumerico == null ? null : estres.valorNumerico / 10 },
-      { ...sueno, nombre: 'Sueño y bienestar', icono: 'moon', id: 'sueno' },
-      { ...cognicion, nombre: 'Carga cognitiva', icono: 'brain', id: 'cognicion', nota: 'Tiempo de reacción' },
-      { ...aislamiento, nombre: 'Aislamiento social', icono: 'people', id: 'aislamiento', ...(aislamiento.valorNumerico == null ? {} : { progreso: aislamiento.valorNumerico / 10 }) },
+      { ...estres, nombre: 'Stress', icono: 'bolt', id: 'estres', progreso: estres.valorNumerico == null ? null : estres.valorNumerico / 10 },
+      { ...sueno, nombre: 'Sleep & wellness', icono: 'moon', id: 'sueno' },
+      { ...cognicion, nombre: 'Cognitive load', icono: 'brain', id: 'cognicion', nota: 'Reaction time' },
+      { ...aislamiento, nombre: 'Social isolation', icono: 'people', id: 'aislamiento', ...(aislamiento.valorNumerico == null ? {} : { progreso: aislamiento.valorNumerico / 10 }) },
     ] },
     riesgos: { nivel: disponibles.length || sintomas.some((s) => s.sol == null || s.sol <= sol) ? evaluacion.globalLevel : null,
       alertas, filas: filasRiesgo, estados: [
-        { nombre: 'Radiación', icono: 'radiation', nivel: radiacion.nivel, estado: radiacion.estado },
-        { nombre: 'Microgravedad', icono: 'float', nivel: adaptacion.nivel ?? zona(['bones', 'muscles']) },
-        { nombre: 'Fatiga', icono: 'fatigue', nivel: sueno.nivel },
-        { nombre: 'Factores psicológicos', icono: 'brain', nivel: nivelMental },
+        { nombre: 'Radiation', icono: 'radiation', nivel: radiacion.nivel, estado: radiacion.estado },
+        { nombre: 'Microgravity', icono: 'float', nivel: adaptacion.nivel ?? zona(['bones', 'muscles']) },
+        { nombre: 'Fatigue', icono: 'fatigue', nivel: sueno.nivel },
+        { nombre: 'Psychological factors', icono: 'brain', nivel: nivelMental },
       ] },
     historia,
   };

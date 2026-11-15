@@ -10,10 +10,10 @@ export default function Sidebar() {
 
   return (
     <aside className={styles.lateral}>
-      <Link href="/" className={styles.marca} aria-label="VYTA · Inicio">
+      <Link href="/" className={styles.marca} aria-label="VYTA · Home">
         <img src="/figma/marca.svg" width="231" height="155" alt="VYTA · Health Monitoring Software" />
       </Link>
-      <nav aria-label="Pantallas principales">
+      <nav aria-label="Primary navigation">
         <ul className={styles.lista}>
           {RUTAS.map((ruta) => {
             const activa = rutaActiva(ruta, pathname);
@@ -25,7 +25,7 @@ export default function Sidebar() {
                   {ruta.etiqueta}
                 </Link>
                 {abierto && (
-                  <ul className={styles.submenu} aria-label={`Secciones de ${ruta.etiqueta.toLowerCase()}`}>
+                  <ul className={styles.submenu} aria-label={`${ruta.etiqueta} sections`}>
                     {ruta.sub.map((subruta) => (
                       <li key={subruta.href}>
                         <Link href={subruta.href} aria-current={rutaActiva(subruta, pathname) ? 'page' : undefined}>{subruta.nombre}</Link>

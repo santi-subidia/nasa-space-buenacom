@@ -4,21 +4,21 @@
 
 const NOMBRES = {
   cardiovascular: 'Cardiovascular',
-  inmunidad: 'Inmunidad',
-  'conducta-y-sueno': 'Conducta y sueño',
-  'hueso-y-musculo': 'Hueso y músculo',
-  ambiente: 'Ambiente',
+  inmunidad: 'Immunity',
+  'conducta-y-sueno': 'Behavior & sleep',
+  'hueso-y-musculo': 'Bone & muscle',
+  ambiente: 'Environment',
 };
 
 const ACCIONES = {
-  continuar: 'Seguir con la rutina',
-  vigilar: 'Vigilar y volver a medir',
-  avisar_oficial_medico: 'Avisar al oficial médico',
-  contactar_medicos_de_vuelo: 'Contactar a los médicos de vuelo',
+  continuar: 'Continue routine',
+  vigilar: 'Monitor and re-measure',
+  avisar_oficial_medico: 'Notify medical officer',
+  contactar_medicos_de_vuelo: 'Contact flight surgeons',
 };
 
 /** @returns {object|null} null si la junta no llegó (sin respuesta guardada y sin IA). */
-export function armarVistaJunta(respuesta, nombreAstronauta = 'el tripulante') {
+export function armarVistaJunta(respuesta, nombreAstronauta = 'the crewmember') {
   if (!respuesta?.ok || !respuesta.junta) return null;
   const { junta } = respuesta;
   return {
@@ -41,14 +41,14 @@ export function armarVistaJunta(respuesta, nombreAstronauta = 'el tripulante') {
     pestanas: [
       {
         id: 'astronauta',
-        etiqueta: `Para ${nombreAstronauta}`,
+        etiqueta: `For ${nombreAstronauta}`,
         titulo: junta.informe_astronauta.titulo,
         resumen: junta.informe_astronauta.resumen,
         queHacer: junta.informe_astronauta.que_hacer,
       },
       {
         id: 'medicos',
-        etiqueta: 'Para médicos de vuelo',
+        etiqueta: 'For flight surgeons',
         resumen: junta.informe_tecnico.resumen_clinico,
         hallazgos: junta.informe_tecnico.hallazgos,
         plan: junta.informe_tecnico.plan,

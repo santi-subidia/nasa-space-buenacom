@@ -125,15 +125,15 @@ test('evaluarZonas, rachaEjercicio y resumirTendenciaParaVega reflejan únicamen
   const pulmones = zonas.find((z) => z.id === 'lungs');
   const oido = zonas.find((z) => z.id === 'inner_ear');
 
-  assert.equal(rinones.indicadores[0].valor, '2,6 L (sol 43)');
+  assert.equal(rinones.indicadores[0].valor, '2.6 L (Sol 43)');
   assert.equal(musculos.indicadores[0].valor, '90 min (plan: 90)');
-  assert.equal(musculos.indicadores[1].valor, '3 soles');
-  assert.equal(pulmones.indicadores[1].valor, '3,15 mmHg');
+  assert.equal(musculos.indicadores[1].valor, '3 sols');
+  assert.equal(pulmones.indicadores[1].valor, '3.15 mmHg');
   assert.equal(oido.indicadores[1].valor, '61 dBA');
 
   const texto = resumirTendenciaParaVega({ serie: [{ sol: 43, sleep_h: 8.1, stress: 2 }], solActual: 43, baseline: { sleep_h: 7.8 } });
-  assert.match(texto, /8,1 h/);
-  assert.ok(!texto.includes('sol 41'));
+  assert.match(texto, /8\.1 h/);
+  assert.ok(!texto.includes('Sol 41'));
   assert.ok(Object.keys(PERFILES_SIMULACION).length >= 6);
 });
 

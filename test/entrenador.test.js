@@ -47,17 +47,17 @@ test('cuenta 10 sentadillas completas', () => {
   assert.equal(hacer(e, secuencia).reps, 10);
 });
 
-test('una sentadilla a medias no cuenta y dice "Bajá más"', () => {
+test('una sentadilla a medias no cuenta y dice "Go lower"', () => {
   const e = crearEntrenamiento('sentadilla');
   const estado = hacer(e, [170, 170, ...repeticion(125)]);
   assert.equal(estado.reps, 0);
-  assert.equal(e.resumen().correcciones.find((c) => c.texto === 'Bajá más.')?.veces, 1);
+  assert.equal(e.resumen().correcciones.find((c) => c.texto === 'Go lower.')?.veces, 1);
 });
 
 test('corrige el torso inclinado al bajar', () => {
   const e = crearEntrenamiento('sentadilla');
   hacer(e, [170, 170, ...rampa(170, 90)], { tronco: 0.3 });
-  assert.ok(e.resumen().correcciones.some((c) => c.texto.includes('espalda recta')));
+  assert.ok(e.resumen().correcciones.some((c) => c.texto.includes('back straight')));
 });
 
 test('sin cuerpo a la vista no cuenta ni cambia de fase', () => {
@@ -83,7 +83,7 @@ test('plancha: suma segundos con el cuerpo en línea y corrige cuando la cadera 
   for (let i = 0; i <= 30; i++) estado = e.procesar(cuerpo(0), { t: i * 100 }); // 3 s en línea
   assert.equal(estado.segundos, 3);
   estado = e.procesar(cuerpo(0.08), { t: 3200 });
-  assert.equal(estado.correccion, 'Subí la cadera, espalda recta.');
+  assert.equal(estado.correccion, 'Lift your hips, keep your back straight.');
   assert.equal(estado.segundos, 3);
 });
 
@@ -91,7 +91,7 @@ test('armarPayloadSerie: resume las series, limita a 3 fotos e incluye el estado
   const fotos = [1, 2, 3, 4].map((i) => ({ media_type: 'image/jpeg', data: `FOTO${i}` }));
   const payload = armarPayloadSerie({
     series: [
-      { ejercicio: 'sentadilla', reps: 10, segundos: 0, correcciones: [{ texto: 'Bajá más.', veces: 2 }] },
+      { ejercicio: 'sentadilla', reps: 10, segundos: 0, correcciones: [{ texto: 'Go lower.', veces: 2 }] },
       { ejercicio: 'plancha', reps: 0, segundos: 25, correcciones: [] },
     ],
     ejercicioActual: 'plancha',
@@ -100,7 +100,7 @@ test('armarPayloadSerie: resume las series, limita a 3 fotos e incluye el estado
     fotos,
     vals: { temp: { valor: 37.6 }, sleep_h: { valor: 5.5 }, hr_rest: { valor: 74 } },
     nivelMotor: 'orange',
-    alertaTitulo: 'Posible reactivación viral',
+    alertaTitulo: 'Possible viral reactivation',
   });
   assert.equal(payload.ejercicio, 'plancha');
   assert.equal(payload.fotos.length, 3);
@@ -110,6 +110,6 @@ test('armarPayloadSerie: resume las series, limita a 3 fotos e incluye el estado
   assert.equal(payload.metricas.anguloMinimo, 86);
   assert.equal(payload.metricas.series.length, 2);
   assert.equal(payload.estado.nivelMotor, 'orange');
-  assert.match(payload.estado.resumen, /37,6 °C/);
-  assert.match(payload.estado.resumen, /Posible reactivación viral/);
+  assert.match(payload.estado.resumen, /37\.6 °C/);
+  assert.match(payload.estado.resumen, /Possible viral reactivation/);
 });

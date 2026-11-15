@@ -32,7 +32,7 @@ function leer(raiz, rutaRelativa) {
   const clave = `${raiz}::${rutaRelativa}`;
   if (!cacheArchivos.has(clave)) {
     const ruta = join(raiz, rutaRelativa);
-    if (!existsSync(ruta)) throw new Error(`No existe ${rutaRelativa} (raíz: ${raiz})`);
+    if (!existsSync(ruta)) throw new Error(`Missing ${rutaRelativa} (root: ${raiz})`);
     cacheArchivos.set(clave, readFileSync(ruta, 'utf8').replace(/\r\n/g, '\n'));
   }
   return cacheArchivos.get(clave);
@@ -42,13 +42,13 @@ function leer(raiz, rutaRelativa) {
 export const listarRiesgos = () => Object.keys(INDICE);
 
 export const riesgosDeZona = (zona) => {
-  if (!ZONAS[zona]) throw new Error(`Zona desconocida "${zona}". Válidas: ${Object.keys(ZONAS).join(', ')}`);
+  if (!ZONAS[zona]) throw new Error(`Unknown zone "${zona}". Valid: ${Object.keys(ZONAS).join(', ')}`);
   return [...ZONAS[zona]];
 };
 
 export const riesgosDeEspecialista = (especialista) => {
   if (!ESPECIALISTAS[especialista]) {
-    throw new Error(`Especialista desconocido "${especialista}". Válidos: ${Object.keys(ESPECIALISTAS).join(', ')}`);
+    throw new Error(`Unknown specialist "${especialista}". Valid: ${Object.keys(ESPECIALISTAS).join(', ')}`);
   }
   return [...ESPECIALISTAS[especialista]];
 };
@@ -125,19 +125,19 @@ export function getContext(riesgos, opciones = {}) {
   const { fuentes = 'principales', presupuesto = PRESUPUESTO_POR_DEFECTO, raiz = RAIZ_POR_DEFECTO } = opciones;
 
   if (!Array.isArray(riesgos) || riesgos.length === 0) {
-    throw new Error('getContext necesita al menos un riesgo, p. ej. getContext([\'inmunidad\'])');
+    throw new Error("getContext requires at least one risk, e.g. getContext(['inmunidad'])");
   }
   if (!NIVELES_FUENTES.includes(fuentes)) {
-    throw new Error(`Nivel de fuentes "${fuentes}" inválido. Válidos: ${NIVELES_FUENTES.join(', ')}`);
+    throw new Error(`Invalid sources level "${fuentes}". Valid: ${NIVELES_FUENTES.join(', ')}`);
   }
   if (presupuesto > UMBRAL_PRECIO_TOKENS) {
-    throw new Error(`El presupuesto (${presupuesto}) supera el umbral de ${UMBRAL_PRECIO_TOKENS} tokens donde el precio sube 5×`);
+    throw new Error(`Budget (${presupuesto}) exceeds the ${UMBRAL_PRECIO_TOKENS}-token threshold where pricing increases 5×`);
   }
 
   const ids = [...new Set(riesgos)];
   const desconocidos = ids.filter((id) => !INDICE[id]);
   if (desconocidos.length) {
-    throw new Error(`Riesgo(s) desconocido(s): ${desconocidos.join(', ')}. Válidos: ${listarRiesgos().join(', ')}`);
+    throw new Error(`Unknown risk(s): ${desconocidos.join(', ')}. Valid: ${listarRiesgos().join(', ')}`);
   }
 
   for (let nivel = NIVELES_FUENTES.indexOf(fuentes); nivel < NIVELES_FUENTES.length; nivel++) {
@@ -148,6 +148,6 @@ export function getContext(riesgos, opciones = {}) {
   }
   const minimo = construir(ids, 'ninguna', raiz).tokens;
   throw new Error(
-    `El contexto de [${ids.join(', ')}] no entra en el presupuesto: solo las fichas ya son ~${minimo} tokens y el máximo es ${presupuesto}. Pedí menos riesgos.`,
+    `Context for [${ids.join(', ')}] does not fit the budget: cards alone are ~${minimo} tokens and the max is ${presupuesto}. Request fewer risks.`,
   );
 }

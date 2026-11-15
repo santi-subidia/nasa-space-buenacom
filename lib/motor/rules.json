@@ -10,11 +10,11 @@
       "red_gte": 180,
       "red_lt": 70,
       "actions": [
-        "Repetir la toma sentado tras 5 minutos de reposo",
-        "Registrar hidratación del día y síntomas al pararse"
+        "Repeat measurement seated after 5 minutes of rest",
+        "Log daily hydration and any dizziness on standing"
       ],
       "source": "doc/nasa/fuentes/02-riesgos/risk-of-cardiovascular-adaptations.md",
-      "basis": {"type":"external","ref":"2017 ACC/AHA Guideline for High Blood Pressure in Adults (Whelton et al., Hypertension 2018;71:e13–e115)","url":"https://doi.org/10.1161/HYP.0000000000000065","note":"130–139 = HTA estadio 1, ≥ 140 = estadio 2, ≥ 180 = crisis hipertensiva. El verde hasta 129 une las categorías \"normal\" y \"elevada\" de la AHA. < 90 = hipotensión (definición clínica habitual); < 70 rojo es de diseño. La NASA no publica rangos de presión para tripulantes."}
+      "basis": {"type":"external","ref":"2017 ACC/AHA Guideline for High Blood Pressure in Adults (Whelton et al., Hypertension 2018;71:e13–e115)","url":"https://doi.org/10.1161/HYP.0000000000000065","note":"130–139 = stage 1 HTN, ≥ 140 = stage 2, ≥ 180 = hypertensive crisis. Green up to 129 merges AHA \"normal\" and \"elevated\" categories. < 90 = hypotension (standard clinical definition); < 70 red is design choice. NASA does not publish crew blood pressure bands."}
     },
     "bp_dia": {
       "zone": "heart",
@@ -25,26 +25,26 @@
       "red_gte": 120,
       "red_lt": 45,
       "actions": [
-        "Repetir la toma en reposo a la altura del corazón",
-        "Informar si persiste elevada en el siguiente control"
+        "Repeat measurement at rest with cuff at heart level",
+        "Report if elevated reading persists on next check"
       ],
       "source": "doc/nasa/fuentes/02-riesgos/risk-of-cardiovascular-adaptations.md",
-      "basis": {"type":"external","ref":"2017 ACC/AHA Guideline for High Blood Pressure in Adults (Whelton et al., Hypertension 2018;71:e13–e115)","url":"https://doi.org/10.1161/HYP.0000000000000065","note":"≥ 120 = crisis hipertensiva. Las bandas 85–89 y 90–119 son adaptación propia (la AHA usa 80–89 como estadio 1 y ≥ 90 como estadio 2). < 60 = hipotensión (definición clínica habitual)."}
+      "basis": {"type":"external","ref":"2017 ACC/AHA Guideline for High Blood Pressure in Adults (Whelton et al., Hypertension 2018;71:e13–e115)","url":"https://doi.org/10.1161/HYP.0000000000000065","note":"≥ 120 = hypertensive crisis. 85–89 and 90–119 bands are custom adaptations (AHA uses 80–89 as stage 1 and ≥ 90 as stage 2). < 60 = hypotension (standard clinical definition)."}
     },
     "hr_rest": {
       "zone": "heart",
-      "unit": "lpm",
+      "unit": "bpm",
       "green": [50, 90],
       "yellow": [[91, 100], [40, 49]],
       "orange": [[101, 120]],
       "red_gt": 120,
       "red_lt": 40,
       "actions": [
-        "Comparar con la línea base personal y revisar hidratación",
-        "Reducir carga física intensa hasta normalizar"
+        "Compare against personal baseline and check hydration",
+        "Reduce high-intensity physical load until normalized"
       ],
       "source": "doc/nasa/fuentes/02-riesgos/risk-of-cardiovascular-adaptations.md",
-      "basis": {"type":"external","ref":"American Heart Association, \"All About Heart Rate (Pulse)\": reposo normal de 60 a 100 lpm","url":"https://www.heart.org/en/health-topics/high-blood-pressure/the-facts-about-high-blood-pressure/all-about-heart-rate-pulse","note":"La app usa 50–90 como verde (adaptación propia para tripulantes entrenados); > 120 y < 40 son cortes de diseño."}
+      "basis": {"type":"external","ref":"American Heart Association, \"All About Heart Rate (Pulse)\": normal resting 60 to 100 bpm","url":"https://www.heart.org/en/health-topics/high-blood-pressure/the-facts-about-high-blood-pressure/all-about-heart-rate-pulse","note":"App uses 50–90 as green (adapted for trained crew); > 120 and < 40 are design thresholds."}
     },
     "glucose": {
       "zone": "gut",
@@ -55,11 +55,11 @@
       "red_lt": 70,
       "red_gt": 250,
       "actions": [
-        "Confirmar si la medición fue en ayunas (8 h)",
-        "Seguir protocolo nutricional y repetir control"
+        "Confirm whether measurement was fasting (8 h)",
+        "Follow nutrition protocol and repeat check"
       ],
       "source": "doc/nasa/fuentes/02-riesgos/risk-of-inadequate-food-and-nutrition.md",
-      "basis": {"type":"external","ref":"American Diabetes Association, Standards of Care in Diabetes (sección 2, diagnóstico, y sección 6, hipoglucemia)","url":"https://professional.diabetes.org/standards-of-care","note":"En ayunas: 100–125 = prediabetes, ≥ 126 = diabetes; < 70 = hipoglucemia nivel 1 (< 54 nivel 2). El corte > 250 es de diseño."}
+      "basis": {"type":"external","ref":"American Diabetes Association, Standards of Care in Diabetes (Section 2, Diagnosis, and Section 6, Hypoglycemia)","url":"https://professional.diabetes.org/standards-of-care","note":"Fasting: 100–125 = prediabetes, ≥ 126 = diabetes; < 70 = level 1 hypoglycemia (< 54 level 2). > 250 cutoff is design choice."}
     },
     "temp": {
       "zone": "immune",
@@ -69,11 +69,11 @@
       "red_gte": 38.0,
       "red_lt": 35.0,
       "actions": [
-        "Controlar temperatura cada 6 horas y registrar síntomas asociados",
-        "Priorizar descanso e higiene para reducir contagio"
+        "Monitor temperature every 6 hours and log associated symptoms",
+        "Prioritize rest and hygiene to limit spread"
       ],
       "source": "doc/nasa/fuentes/02-riesgos/risk-of-altered-immune-system-responses.md",
-      "basis": {"type":"external","ref":"Definición clínica habitual: fiebre ≥ 38,0 °C (100,4 °F) e hipotermia < 35 °C","note":"La banda amarilla 37,3–37,9 °C es de diseño. La página HRP de inmunidad no fija temperaturas."}
+      "basis": {"type":"external","ref":"Standard clinical definition: fever ≥ 38.0 °C (100.4 °F) and hypothermia < 35 °C","note":"Yellow 37.3–37.9 °C band is a design threshold. The HRP immune risk page does not specify temperatures."}
     },
     "sleep_h": {
       "zone": "brain",
@@ -82,11 +82,11 @@
       "yellow": [[5.0, 6.99]],
       "red_lt": 5.0,
       "actions": [
-        "Proteger ventana de 8 horas de sueño y bajar luz azul antes de dormir",
-        "Evitar tareas críticas de precisión si la deuda continúa"
+        "Protect an 8-hour sleep window and dim blue light before bed",
+        "Avoid high-precision critical tasks if sleep debt continues"
       ],
       "source": "doc/nasa/fuentes/02-riesgos/risk-from-inadequate-sleep-and-irregular-schedules.md",
-      "basis": {"type":"external","ref":"Watson et al., consenso AASM/SRS \"Recommended Amount of Sleep for a Healthy Adult\" (Sleep 2015;38:843–844)","url":"https://doi.org/10.5665/sleep.4716","note":"Adultos: ≥ 7 h por noche. El corte rojo < 5 h es de diseño. La página HRP de sueño describe el riesgo pero no fija horas."}
+      "basis": {"type":"external","ref":"Watson et al., AASM/SRS consensus \"Recommended Amount of Sleep for a Healthy Adult\" (Sleep 2015;38:843–844)","url":"https://doi.org/10.5665/sleep.4716","note":"Adults: ≥ 7 h per night. Red < 5 h cutoff is a design threshold. The HRP sleep page describes the risk without setting hours."}
     },
     "mood": {
       "zone": "brain",
@@ -95,11 +95,11 @@
       "yellow": [[3, 3]],
       "orange": [[1, 2]],
       "actions": [
-        "Hablar con Vega o con el oficial médico de la tripulación",
-        "Bajar carga no esencial y reservar pausa de descanso"
+        "Talk with Vega or the crew medical officer",
+        "Trim non-essential workload and take a rest break"
       ],
       "source": "doc/nasa/fuentes/02-riesgos/risk-of-behavioral-conditions-and-psychiatric-disorders.md",
-      "basis": {"type":"design","ref":"Escala propia de 1 a 5 con emojis","note":"Sin umbral oficial de la NASA; la página HRP de conducta justifica vigilar el ánimo, no los cortes."}
+      "basis": {"type":"design","ref":"Custom 1-to-5 scale with emojis","note":"No official NASA threshold; the HRP behavioral page justifies monitoring mood, not specific cutoffs."}
     },
     "spo2": {
       "zone": "lungs",
@@ -108,11 +108,11 @@
       "yellow": [[90, 94]],
       "red_lt": 90,
       "actions": [
-        "Verificar CO₂, O₂ y presión de cabina de inmediato",
-        "Permanecer en reposo y escalar si persiste por debajo de 94 %"
+        "Check cabin CO₂, O₂, and pressure immediately",
+        "Remain at rest and escalate if it stays below 94%"
       ],
       "source": "doc/nasa/fuentes/02-riesgos/risk-of-hypoxia.md",
-      "basis": {"type":"external","ref":"OMS, Pulse Oximetry Training Manual (2011): SpO₂ < 90 % = hipoxemia que requiere tratamiento","note":"El límite inferior normal de 94–95 % es criterio clínico habitual. La página HRP de hipoxia no da cifras."}
+      "basis": {"type":"external","ref":"WHO, Pulse Oximetry Training Manual (2011): SpO₂ < 90% = hypoxemia requiring treatment","note":"Normal lower bound of 94–95% is standard clinical guidance. The HRP hypoxia page gives no numeric cutoffs."}
     },
     "water_ml": {
       "zone": "kidneys",
@@ -121,11 +121,11 @@
       "yellow": [[1500, 1999]],
       "orange": [[0, 1499]],
       "actions": [
-        "Tomar al menos 2000 ml de agua distribuidos en el día",
-        "Vigilar color de orina o dolor en el flanco"
+        "Drink at least 2000 ml of water spread through the day",
+        "Watch urine color or any flank pain"
       ],
       "source": "doc/nasa/fuentes/05-human-system-risk-board/risk-of-renal-stone-formation.md",
-      "basis": {"type":"design","ref":"Meta propia de 2 L/día","note":"La página HSRB de cálculos renales cita la hidratación como contramedida sin fijar volumen. Pendiente: verificar contra los requisitos nutricionales de la NASA para la ISS."}
+      "basis": {"type":"design","ref":"Custom target of 2 L/day","note":"The HSRB renal stone page cites hydration as a countermeasure without setting a volume. Pending verification against NASA ISS nutritional requirements."}
     },
     "exercise_min": {
       "zone": "muscles",
@@ -134,11 +134,11 @@
       "green": [60, 600],
       "yellow": [[0, 59]],
       "actions": [
-        "Completar la meta diaria de 90 min con trabajo de fuerza y aeróbico",
-        "Usar el Entrenador para registrar repeticiones y postura"
+        "Complete the daily 90 min goal with resistance and aerobic work",
+        "Use the Trainer to log reps and form"
       ],
       "source": "doc/nasa/fuentes/02-riesgos/risk-of-reduced-cardiorespiratory-and-musculoskeletal-fitness.md",
-      "basis": {"type":"nasa_derived","ref":"NASA HRP, capacidad física: 1,5 h/día de fuerza y aeróbico","url":"https://www.nasa.gov/reference/risk-of-reduced-cardiorespiratory-and-musculoskeletal-fitness/","note":"La meta de 90 min es de la NASA; el verde desde 60 min es de diseño."}
+      "basis": {"type":"nasa_derived","ref":"NASA HRP, physical fitness: 1.5 h/day resistance and aerobic exercise","url":"https://www.nasa.gov/reference/risk-of-reduced-cardiorespiratory-and-musculoskeletal-fitness/","note":"The 90 min goal comes from NASA; green starting at 60 min is a design choice."}
     },
     "stress": {
       "zone": "immune",
@@ -148,11 +148,11 @@
       "yellow": [[7, 8]],
       "orange": [[9, 10]],
       "actions": [
-        "Redistribuir carga de trabajo con la tripulación si el estrés sostenido supera 7",
-        "Priorizar descanso y respiración guiada"
+        "Redistribute workload with the crew if sustained stress stays above 7",
+        "Prioritize rest and guided breathing"
       ],
       "source": "doc/nasa/fuentes/02-riesgos/risk-of-altered-immune-system-responses.md",
-      "basis": {"type":"design","ref":"Escala propia de 1 a 10","note":"Sin umbral oficial de la NASA."}
+      "basis": {"type":"design","ref":"Custom 1-to-10 scale","note":"No official NASA threshold."}
     },
     "reaction_ms": {
       "zone": "brain",
@@ -161,24 +161,24 @@
       "yellow": [[350, 449]],
       "orange": [[450, 5000]],
       "actions": [
-        "Repetir test PVT tras descansar y evitar maniobras de alto riesgo",
-        "Priorizar recuperación de sueño"
+        "Repeat PVT test after resting and avoid high-risk maneuvers",
+        "Prioritize sleep recovery"
       ],
       "source": "doc/nasa/fuentes/02-riesgos/risk-from-inadequate-sleep-and-irregular-schedules.md",
-      "basis": {"type":"design","ref":"Basner, Mollicone y Dinges, PVT-B (Acta Astronautica 2011;69:949–959), investigación del HRP de la NASA","url":"https://doi.org/10.1016/j.actaastro.2011.07.015","note":"El PVT-B define lapso como reacción ≥ 355 ms (lo usa lib/pvt/metricas.js). Las bandas de la mediana (350 y 450 ms) son de diseño."}
+      "basis": {"type":"design","ref":"Basner, Mollicone & Dinges, PVT-B (Acta Astronautica 2011;69:949–959), NASA HRP research","url":"https://doi.org/10.1016/j.actaastro.2011.07.015","note":"PVT-B defines a lapse as reaction ≥ 355 ms (used by lib/pvt/metricas.js). Median bands (350 and 450 ms) are design choices."}
     },
     "visual_acuity": {
       "zone": "eyes",
-      "unit": "puntos",
+      "unit": "pts",
       "green": [80, 100],
       "yellow": [[60, 79]],
       "orange": [[0, 59]],
       "actions": [
-        "Repetir minitest de agudeza y programar control con fondo de ojo / OCT",
-        "Reportar visión borrosa persistente"
+        "Repeat visual acuity mini-test and schedule fundoscopy / OCT check",
+        "Report persistent blurred vision"
       ],
       "source": "doc/nasa/fuentes/02-riesgos/risk-of-spaceflight-associated-neuro-ocular-syndrome-sans.md",
-      "basis": {"type":"design","ref":"Escala propia del minitest de agudeza (0–100 puntos)","note":"La NASA vigila SANS con fondo de ojo y OCT, no con esta escala."}
+      "basis": {"type":"design","ref":"Custom acuity mini-test scale (0–100 pts)","note":"NASA monitors SANS with fundoscopy and OCT rather than this scale."}
     },
     "radiation_msv": {
       "zone": "dna",
@@ -188,11 +188,11 @@
       "orange": [[480.01, 599.99]],
       "red_gte": 600,
       "actions": [
-        "Registrar dosis acumulada y verificar blindaje en alerta solar",
-        "Planificar EVA y salidas en rover según la dosis que queda hasta el límite de 600 mSv"
+        "Log cumulative dose and verify shielding during solar alerts",
+        "Plan EVAs and rover sorties based on remaining margin before 600 mSv limit"
       ],
       "source": "doc/proyecto/sintesis/cabina-y-radiacion.md",
-      "basis": {"type":"nasa_derived","ref":"NASA-STD-3001 Vol. 1 · OCHMO-TB-020 Radiation Protection: límite de carrera de 600 mSv","url":"https://www.nasa.gov/wp-content/uploads/2023/12/ochmo-tb-020-radiation-protection.pdf","note":"El rojo en 600 mSv es el límite de la NASA; el amarillo (300) y el naranja (480) son el 50 % y el 80 % del límite, de diseño."}
+      "basis": {"type":"nasa_derived","ref":"NASA-STD-3001 Vol. 1 · OCHMO-TB-020 Radiation Protection: 600 mSv career limit","url":"https://www.nasa.gov/wp-content/uploads/2023/12/ochmo-tb-020-radiation-protection.pdf","note":"Red at 600 mSv is the NASA limit; yellow (300) and orange (480) are 50% and 80% of the limit as design bands."}
     },
     "co2_mmhg": {
       "zone": "lungs",
@@ -202,11 +202,11 @@
       "orange": [[3.01, 5.3]],
       "red_gt": 5.3,
       "actions": [
-        "Revisar el depurador de CO₂ y la ventilación del módulo",
-        "Si hay dolor de cabeza, avisar y repetir oximetría"
+        "Check CO₂ scrubber and module ventilation",
+        "If headache occurs, report it and repeat pulse oximetry"
       ],
       "source": "doc/proyecto/sintesis/cabina-y-radiacion.md",
-      "basis": {"type":"nasa","ref":"NASA-STD-3001 Vol. 2 · OCHMO-TB-004 Carbon Dioxide: ≤ 3 mmHg promedio de 1 h y < 2,5 mmHg promedio de 7 días; 5,3 mmHg = SMAC de 180 días de la ISS (NTRS 20150019624)","url":"https://www.nasa.gov/wp-content/uploads/2023/12/ochmo-tb-004-carbon-dioxide.pdf","note":"La app compara la lectura actual con límites que la NASA define como promedios."}
+      "basis": {"type":"nasa","ref":"NASA-STD-3001 Vol. 2 · OCHMO-TB-004 Carbon Dioxide: ≤ 3 mmHg 1-h average and < 2.5 mmHg 7-day average; 5.3 mmHg = ISS 180-day SMAC (NTRS 20150019624)","url":"https://www.nasa.gov/wp-content/uploads/2023/12/ochmo-tb-004-carbon-dioxide.pdf","note":"The app compares the current reading against limits defined by NASA as time-weighted averages."}
     },
     "o2_pct": {
       "zone": "lungs",
@@ -216,10 +216,10 @@
       "red_lt": 18.5,
       "red_gt": 25,
       "actions": [
-        "Verificar el sistema de generación de O₂ y la presión de cabina"
+        "Verify O₂ generation system and cabin pressure"
       ],
       "source": "doc/proyecto/sintesis/cabina-y-radiacion.md",
-      "basis": {"type":"external","ref":"OSHA 29 CFR 1910.134 y 1910.146: atmósfera deficiente < 19,5 % y enriquecida > 23,5 % de O₂","url":"https://www.osha.gov/laws-regs/regulations/standardnumber/1910/1910.134","note":"Rango de seguridad laboral a presión de nivel del mar, no de la NASA. NASA-STD-3001 Vol. 2 fija la presión parcial de O₂, no el porcentaje."}
+      "basis": {"type":"external","ref":"OSHA 29 CFR 1910.134 & 1910.146: oxygen-deficient < 19.5% and oxygen-enriched > 23.5% O₂","url":"https://www.osha.gov/laws-regs/regulations/standardnumber/1910/1910.134","note":"Occupational safety range at sea-level pressure, non-NASA. NASA-STD-3001 Vol. 2 specifies partial pressure of O₂ rather than percentage."}
     },
     "noise_dba": {
       "zone": "inner_ear",
@@ -228,26 +228,26 @@
       "yellow": [[55.01, 60]],
       "orange": [[60.01, 200]],
       "actions": [
-        "Usar protección auditiva y alejarse de la fuente de ruido",
-        "Reportar el equipo ruidoso para mantenimiento"
+        "Wear hearing protection and move away from the noise source",
+        "Report noisy equipment for maintenance"
       ],
       "source": "doc/proyecto/sintesis/cabina-y-radiacion.md",
-      "basis": {"type":"nasa_derived","ref":"NASA-STD-3001 · OCHMO-TB-035 Acoustics: curva NC-50 en zonas de trabajo","url":"https://www.nasa.gov/wp-content/uploads/2023/12/ochmo-tb-035-acoustics.pdf","note":"Pasar NC-50 a ≈ 55 dBA es una aproximación propia; el corte de 60 dBA es de diseño."}
+      "basis": {"type":"nasa_derived","ref":"NASA-STD-3001 · OCHMO-TB-035 Acoustics: NC-50 curve in work zones","url":"https://www.nasa.gov/wp-content/uploads/2023/12/ochmo-tb-035-acoustics.pdf","note":"Mapping NC-50 to ≈ 55 dBA is an approximation; the 60 dBA threshold is a design cutoff."}
     },
     "resp_rate": {
       "zone": "lungs",
-      "unit": "rpm",
+      "unit": "breaths/min",
       "green": [12, 20],
       "yellow": [[9, 11.99], [20.01, 24]],
       "orange": [[7, 8.99], [24.01, 30]],
       "red_lt": 7,
       "red_gt": 30,
       "actions": [
-        "Revisar nivel de CO₂ de cabina y oximetría (SpO₂)",
-        "Controlar en reposo durante 1 minuto completo"
+        "Check cabin CO₂ levels and oximetry (SpO₂)",
+        "Measure at rest for 1 full minute"
       ],
       "source": "doc/nasa/fuentes/02-riesgos/risk-of-hypoxia.md",
-      "basis": {"type":"external","ref":"Frecuencia respiratoria normal en adultos en reposo (12–20 rpm); taquipnea > 20 / > 24 rpm","note":"Artefacto NASA equivalente: banda torácica Bio-Monitor / Astroskin o EDR desde PPG; respuesta ventilatoria acoplada al CO₂."}
+      "basis": {"type":"external","ref":"Normal adult resting respiratory rate (12–20 breaths/min); tachypnea > 20 / > 24","note":"NASA artifact equivalent: Bio-Monitor / Astroskin chest strap or PPG-derived EDR; ventilatory response coupled to CO₂."}
     },
     "muscle_mass_pct": {
       "zone": "muscles",
@@ -256,11 +256,11 @@
       "yellow": [[90, 94.99]],
       "orange": [[0, 89.99]],
       "actions": [
-        "Priorizar entrenamiento resistivo diario en ARED/T2 (meta 90 min/día)",
-        "Verificar ingesta proteica y calórica completa"
+        "Prioritize daily resistive training on ARED/T2 (90 min/day target)",
+        "Verify full protein and calorie intake"
       ],
       "source": "doc/nasa/fuentes/02-riesgos/risk-of-reduced-cardiorespiratory-and-musculoskeletal-fitness.md",
-      "basis": {"type":"nasa_derived","ref":"NASA HRP, capacidad física: pérdida de masa/fuerza muscular de 10–12 % sin contramedidas","note":"100 % = línea base pre-vuelo; amarillo < 95 % y naranja < 90 % son cortes derivados del rango HRP."}
+      "basis": {"type":"nasa_derived","ref":"NASA HRP, physical fitness: 10–12% muscle mass/strength loss without countermeasures","note":"100% = preflight baseline; yellow < 95% and orange < 90% are derived from the HRP range."}
     },
     "bone_density_pct": {
       "zone": "bones",
@@ -270,11 +270,11 @@
       "orange": [[90, 93.99]],
       "red_lt": 90,
       "actions": [
-        "Sostener carga mecánica en ARED y ejercicio de impacto",
-        "Controlar vitamina D, calcio y biomarcadores de resorción ósea"
+        "Maintain mechanical loading on ARED and impact exercise",
+        "Check vitamin D, calcium, and bone resorption biomarkers"
       ],
       "source": "doc/nasa/fuentes/02-riesgos/risk-of-spaceflight-induced-bone-changes.md",
-      "basis": {"type":"nasa_derived","ref":"NASA HRP, pérdida de densidad mineral ósea DXA de 1–1,5 % por mes en microgravedad","note":"100 % = DXA pre-vuelo; cortes amarillo (< 97 %), naranja (< 94 %) y rojo (< 90 %) son derivados del perfil HRP."}
+      "basis": {"type":"nasa_derived","ref":"NASA HRP, DXA bone mineral density loss of 1–1.5% per month in microgravity","note":"100% = preflight DXA; yellow (< 97%), orange (< 94%), and red (< 90%) cutoffs are derived from the HRP profile."}
     },
     "microgravity_adapt": {
       "zone": "inner_ear",
@@ -284,11 +284,11 @@
       "yellow": [[60, 79.99]],
       "orange": [[0, 59.99]],
       "actions": [
-        "Evitar giros bruscos de cabeza y movimientos rápidos durante transiciones gravitacionales",
-        "Repetir control vestibular VOR y equilibrio postural"
+        "Avoid sudden head turns and rapid movements during gravity transitions",
+        "Repeat VOR vestibular and postural balance check"
       ],
       "source": "doc/nasa/fuentes/02-riesgos/risk-of-altered-sensorimotor-and-vestibular-function.md",
-      "basis": {"type":"design","ref":"Estabilidad sensorimotora y reflejo vestibulo-ocular (VOR ≥ 60–80 %)","note":"Alineado al corte VOR < 60 % de vestibular_instability."}
+      "basis": {"type":"design","ref":"Sensorimotor and vestibulo-ocular reflex stability (VOR ≥ 60–80%)","note":"Aligned with the VOR < 60% cutoff in vestibular_instability."}
     },
     "isolation_score": {
       "zone": "brain",
@@ -298,11 +298,11 @@
       "orange": [[7, 8]],
       "red_gte": 9,
       "actions": [
-        "Programar contacto personal diferido con Tierra y pausa social con la tripulación",
-        "Conversar de forma confidencial con el CMO o con Vega"
+        "Schedule delayed personal contact with Earth and social time with crew",
+        "Have a confidential check-in with the CMO or Vega"
       ],
       "source": "doc/nasa/fuentes/02-riesgos/risk-of-behavioral-conditions-and-psychiatric-disorders.md",
-      "basis": {"type":"design","ref":"Índice compuesto de aislamiento/cohesión de equipo (1–10)","note":"Modelado sobre riesgo conductual y autonomía de comunicación NASA HRP."}
+      "basis": {"type":"design","ref":"Composite isolation/team cohesion index (1–10)","note":"Modeled after NASA HRP behavioral risk and communication autonomy."}
     }
   },
   "baselineDelta": {
@@ -311,49 +311,49 @@
       "yellow": 10,
       "orange": 20,
       "zone": "heart",
-      "why": "Frecuencia cardíaca en reposo elevada respecto a tu línea base previa al vuelo",
+      "why": "Elevated resting heart rate relative to your preflight baseline",
       "actions": [
-        "Revisar hidratación, fiebre y calidad del descanso nocturno",
-        "Repetir medición en reposo absoluto"
+        "Check hydration, temperature, and overnight sleep quality",
+        "Repeat measurement at complete rest"
       ],
       "source": "doc/nasa/fuentes/02-riesgos/risk-of-cardiovascular-adaptations.md",
-      "basis": {"type":"design","ref":"Variación sobre la línea base personal: +10 / +20 lpm","note":"Cortes de diseño; la NASA compara con la base previa al vuelo pero no publica estos deltas."}
+      "basis": {"type":"design","ref":"Change over personal baseline: +10 / +20 bpm","note":"Design cutoffs; NASA compares against preflight baseline but does not publish these exact deltas."}
     },
     "temp": {
       "direction": "up",
       "yellow": 0.6,
       "orange": 1.2,
       "zone": "immune",
-      "why": "Temperatura corporal por encima de tu línea base personal",
+      "why": "Body temperature above your personal baseline",
       "actions": [
-        "Vigilar síntomas inmunes o cutáneos y controlar cada 6 horas"
+        "Monitor immune or skin symptoms and recheck every 6 hours"
       ],
       "source": "doc/nasa/fuentes/02-riesgos/risk-of-altered-immune-system-responses.md",
-      "basis": {"type":"design","ref":"Variación sobre la línea base personal: +0,6 / +1,2 °C","note":"Cortes de diseño."}
+      "basis": {"type":"design","ref":"Change over personal baseline: +0.6 / +1.2 °C","note":"Design cutoffs."}
     },
     "reaction_ms": {
       "direction": "up",
       "yellow": 60,
       "orange": 120,
       "zone": "brain",
-      "why": "Tiempo de reacción más lento que tu línea base",
+      "why": "Slower reaction time compared to your baseline",
       "actions": [
-        "Posponer tareas de alta precisión y priorizar 8 h de sueño"
+        "Defer high-precision tasks and prioritize 8 h of sleep"
       ],
       "source": "doc/nasa/fuentes/02-riesgos/risk-from-inadequate-sleep-and-irregular-schedules.md",
-      "basis": {"type":"design","ref":"Variación sobre la línea base personal: +60 / +120 ms","note":"Cortes de diseño."}
+      "basis": {"type":"design","ref":"Change over personal baseline: +60 / +120 ms","note":"Design cutoffs."}
     },
     "visual_acuity": {
       "direction": "down",
       "yellow": 10,
       "orange": 20,
       "zone": "eyes",
-      "why": "Agudeza visual por debajo de tu línea base previa al vuelo",
+      "why": "Visual acuity below your preflight baseline",
       "actions": [
-        "Programar control visual / OCT por posible desplazamiento de fluidos (SANS)"
+        "Schedule eye exam / OCT for potential fluid shift (SANS)"
       ],
       "source": "doc/nasa/fuentes/02-riesgos/risk-of-spaceflight-associated-neuro-ocular-syndrome-sans.md",
-      "basis": {"type":"design","ref":"Variación sobre la línea base personal: −10 / −20 puntos","note":"Cortes de diseño."}
+      "basis": {"type":"design","ref":"Change from personal baseline: −10 / −20 pts","note":"Design cutoffs."}
     }
   },
   "composite": [
@@ -362,148 +362,148 @@
       "level": "orange",
       "zone": "immune",
       "escalate": "cmo",
-      "title": "Posible reactivación viral",
+      "title": "Possible viral reactivation",
       "actions": [
-        "Higiene estricta de manos y no compartir utensilios ni toallas",
-        "Priorizar 8 horas de sueño y bajar la carga operativa",
-        "Avisar al oficial médico de la tripulación y vigilar fiebre o nuevas lesiones"
+        "Strict hand hygiene and avoid sharing utensils or towels",
+        "Prioritize 8 hours of sleep and reduce operational workload",
+        "Notify the crew medical officer and watch for fever or new lesions"
       ],
       "source": "doc/nasa/fuentes/02-riesgos/risk-of-altered-immune-system-responses.md",
-      "basis": {"type":"design","ref":"Patrón inspirado en el DAG del riesgo inmune del HSRB (estrés y sueño → reactivación viral)","note":"Las ventanas y cortes (3 días, sueño < 6 h, estrés ≥ 7) son de diseño."}
+      "basis": {"type":"design","ref":"Pattern inspired by the HSRB immune risk DAG (stress and sleep → viral reactivation)","note":"Windows and cutoffs (3 days, sleep < 6 h, stress ≥ 7) are design choices."}
     },
     {
       "id": "orthostatic_pre_landing",
       "level": "yellow",
       "zone": "heart",
       "escalate": "self",
-      "title": "Riesgo de mareo al aterrizar",
+      "title": "Pre-landing dizziness risk",
       "actions": [
-        "Beber líquidos y electrolitos según el protocolo previo al descenso",
-        "Preparar la prenda de compresión y levantarse despacio"
+        "Drink fluids and electrolytes per pre-descent protocol",
+        "Prepare compression garment and stand up slowly"
       ],
       "source": "doc/nasa/fuentes/02-riesgos/risk-of-cardiovascular-adaptations.md",
-      "basis": {"type":"design","ref":"Patrón inspirado en el riesgo cardiovascular del HRP (intolerancia ortostática al aterrizar)","note":"Cortes de diseño (72 h, < 1500 ml); < 90 mmHg = hipotensión según criterio clínico."}
+      "basis": {"type":"design","ref":"Pattern inspired by the HRP cardiovascular risk (post-landing orthostatic intolerance)","note":"Design cutoffs (72 h, < 1500 ml); < 90 mmHg = standard clinical hypotension."}
     },
     {
       "id": "jugular_vte",
       "level": "red",
       "zone": "heart",
       "escalate": "flight_surgeon",
-      "title": "Posible trombo venoso",
+      "title": "Possible venous thrombosis",
       "actions": [
-        "No hacer esfuerzo físico ni ejercicio intenso",
-        "Realizar ecografía guiada del cuello o brazo afectado",
-        "Contactar de inmediato con los médicos de vuelo"
+        "Avoid physical exertion or intense exercise",
+        "Perform guided ultrasound of the affected neck or arm",
+        "Contact flight surgeons immediately"
       ],
       "source": "doc/nasa/fuentes/05-human-system-risk-board/concern-of-venous-thromboembolism.md",
-      "basis": {"type":"design","ref":"HSRB, Concern of VTE: flujo yugular anómalo en 6 de 11 tripulantes (55 %)","note":"La regla dispara por síntoma (hinchazón de cuello o brazo); no hay umbral numérico."}
+      "basis": {"type":"design","ref":"HSRB, Concern of VTE: abnormal jugular flow in 6 of 11 crew members (55%)","note":"Rule triggers on symptom (neck or arm swelling); no numeric threshold."}
     },
     {
       "id": "sleep_deficit_streak",
       "level": "yellow",
       "zone": "brain",
       "escalate": "self",
-      "title": "Deuda de sueño sostenida",
+      "title": "Sustained sleep debt",
       "actions": [
-        "Proteger 8 horas de descanso y evitar maniobras críticas hasta recuperar ritmo",
-        "Revisar iluminación y ruido del módulo de descanso"
+        "Protect 8 hours of rest and avoid critical maneuvers until rhythm recovers",
+        "Check lighting and noise in crew quarters"
       ],
       "source": "doc/nasa/fuentes/02-riesgos/risk-from-inadequate-sleep-and-irregular-schedules.md",
-      "basis": {"type":"design","ref":"Watson et al., consenso AASM/SRS \"Recommended Amount of Sleep for a Healthy Adult\" (Sleep 2015;38:843–844)","url":"https://doi.org/10.5665/sleep.4716","note":"Tres noches seguidas por debajo de 6 h: la ventana y el corte son de diseño, partiendo de la recomendación de ≥ 7 h."}
+      "basis": {"type":"design","ref":"Watson et al., AASM/SRS consensus \"Recommended Amount of Sleep for a Healthy Adult\" (Sleep 2015;38:843–844)","url":"https://doi.org/10.5665/sleep.4716","note":"Three consecutive nights under 6 h: window and cutoff are design choices based on the ≥ 7 h recommendation."}
     },
     {
       "id": "mood_low_streak",
       "level": "orange",
       "zone": "brain",
       "escalate": "cmo",
-      "title": "Ánimo sostenidamente bajo",
+      "title": "Persistently low mood",
       "actions": [
-        "Conversar de forma confidencial con el oficial médico o con Vega",
-        "Programar contacto con apoyo psicológico en Tierra"
+        "Speak confidentially with the crew medical officer or Vega",
+        "Schedule contact with Earth psychological support"
       ],
       "source": "doc/nasa/fuentes/02-riesgos/risk-of-behavioral-conditions-and-psychiatric-disorders.md",
-      "basis": {"type":"design","ref":"Ánimo ≤ 2/5 durante 3 días","note":"Cortes de diseño sobre la escala propia."}
+      "basis": {"type":"design","ref":"Mood ≤ 2/5 for 3 days","note":"Design cutoffs on custom scale."}
     },
     {
       "id": "exercise_deficit_week",
       "level": "yellow",
       "zone": "muscles",
       "escalate": "self",
-      "title": "Ejercicio por debajo del plan",
+      "title": "Exercise below target",
       "actions": [
-        "Retomar la meta de 90 min diarios con fuerza y aeróbico: el Entrenador te guía",
-        "Sin carga de ejercicio se pierde hueso (1–1,5 % por mes) y músculo (10–12 %)"
+        "Resume the 90 min daily goal with strength and cardio: the Trainer guides you",
+        "Without exercise load, bone loss (1–1.5%/mo) and muscle loss (10–12%) accelerate"
       ],
       "source": "doc/nasa/fuentes/02-riesgos/risk-of-reduced-cardiorespiratory-and-musculoskeletal-fitness.md",
-      "basis": {"type":"nasa_derived","ref":"NASA HRP, capacidad física: 1,5 h/día de ejercicio","url":"https://www.nasa.gov/reference/risk-of-reduced-cardiorespiratory-and-musculoskeletal-fitness/","note":"Dispara con < 45 min/día en 7 días, el 50 % de la meta de la NASA (corte de diseño)."}
+      "basis": {"type":"nasa_derived","ref":"NASA HRP, physical fitness: 1.5 h/day of exercise","url":"https://www.nasa.gov/reference/risk-of-reduced-cardiorespiratory-and-musculoskeletal-fitness/","note":"Triggers at < 45 min/day over 7 days, 50% of NASA's target (design cutoff)."}
     },
     {
       "id": "sans_visual_change",
       "level": "orange",
       "zone": "eyes",
       "escalate": "cmo",
-      "title": "Posible cambio visual por SANS",
+      "title": "Possible SANS visual change",
       "actions": [
-        "Avisar al oficial médico de la tripulación y programar fondo de ojo / OCT",
-        "Repetir el test de agudeza visual mañana a la misma distancia y con la misma luz",
-        "Evitar tareas de precisión visual hasta la evaluación"
+        "Notify the crew medical officer and schedule fundoscopy / OCT",
+        "Repeat the visual acuity test tomorrow at the same distance and lighting",
+        "Avoid precision visual tasks until evaluated"
       ],
       "source": "doc/nasa/fuentes/02-riesgos/risk-of-spaceflight-associated-neuro-ocular-syndrome-sans.md",
-      "basis": {"type":"design","ref":"Visión borrosa + agudeza ≥ 10 puntos peor que la base","note":"Patrón inspirado en el riesgo SANS del HRP; los cortes son de diseño."}
+      "basis": {"type":"design","ref":"Blurred vision + acuity ≥ 10 pts worse than baseline","note":"Pattern inspired by the HRP SANS risk; cutoffs are design choices."}
     },
     {
       "id": "renal_stone_risk",
       "level": "red",
       "zone": "kidneys",
       "escalate": "flight_surgeon",
-      "title": "Posible cálculo renal",
+      "title": "Possible kidney stone",
       "actions": [
-        "Hidratación guiada según protocolo y control de diuresis",
-        "Contactar con los médicos de vuelo para evaluación urgente"
+        "Protocol-guided hydration and urine output monitoring",
+        "Contact flight surgeons for urgent evaluation"
       ],
       "source": "doc/nasa/fuentes/05-human-system-risk-board/risk-of-renal-stone-formation.md",
-      "basis": {"type":"design","ref":"Dolor en el flanco + agua < 1500 ml/día","note":"Patrón inspirado en el riesgo HSRB de cálculos renales; los cortes son de diseño."}
+      "basis": {"type":"design","ref":"Flank pain + water < 1500 ml/day","note":"Pattern inspired by the HSRB renal stone risk; cutoffs are design choices."}
     },
     {
       "id": "hypoxia_co2",
       "level": "orange",
       "zone": "lungs",
       "escalate": "cmo",
-      "title": "Posible hipoxia o CO₂ elevado",
+      "title": "Possible hypoxia or elevated CO₂",
       "actions": [
-        "Revisar depuradores de CO₂ y nivel de O₂ de cabina",
-        "Permanecer en reposo y repetir oximetría en 15 minutos"
+        "Inspect CO₂ scrubbers and cabin O₂ levels",
+        "Rest and repeat pulse oximetry in 15 minutes"
       ],
       "source": "doc/nasa/fuentes/02-riesgos/risk-of-hypoxia.md",
-      "basis": {"type":"external","ref":"Cefalea + SpO₂ < 94 % (criterio clínico habitual)","note":"Patrón inspirado en el riesgo HRP de hipoxia, que no da cifras de SpO₂."}
+      "basis": {"type":"external","ref":"Headache + SpO₂ < 94% (standard clinical criterion)","note":"Pattern inspired by the HRP hypoxia risk, which gives no SpO₂ cutoffs."}
     },
     {
       "id": "pvt_cognitive_fatigue",
       "level": "orange",
       "zone": "brain",
       "escalate": "cmo",
-      "title": "Fatiga cognitiva detectada en PVT",
+      "title": "Cognitive fatigue detected on PVT",
       "actions": [
-        "Posponer EVA, pilotaje o maniobras de alta precisión hasta recuperar rendimiento",
-        "Programar bloque de descanso de 8 h con higiene lumínica",
-        "Avisar al oficial médico y repetir test PVT tras el descanso"
+        "Postpone EVA, piloting, or high-precision maneuvers until performance recovers",
+        "Schedule an 8-hour rest block with light hygiene",
+        "Notify the medical officer and repeat PVT after rest"
       ],
       "source": "doc/nasa/fuentes/02-riesgos/risk-from-inadequate-sleep-and-irregular-schedules.md",
-      "basis": {"type":"design","ref":"Basner, Mollicone y Dinges, PVT-B (Acta Astronautica 2011;69:949–959), investigación del HRP de la NASA","url":"https://doi.org/10.1016/j.actaastro.2011.07.015","note":"Lapso ≥ 355 ms según el PVT-B; los conteos (≥ 4 lapsos, ≥ 2 errores No-Go) son de diseño."}
+      "basis": {"type":"design","ref":"Basner, Mollicone & Dinges, PVT-B (Acta Astronautica 2011;69:949–959), NASA HRP research","url":"https://doi.org/10.1016/j.actaastro.2011.07.015","note":"Lapse ≥ 355 ms per PVT-B; count cutoffs (≥ 4 lapses, ≥ 2 No-Go errors) are design choices."}
     },
     {
       "id": "vestibular_instability",
       "level": "yellow",
       "zone": "inner_ear",
       "escalate": "self",
-      "title": "Inestabilidad vestibular o visuo-motora",
+      "title": "Vestibular or visuomotor instability",
       "actions": [
-        "Evitar giros bruscos de cabeza y movimientos rápidos tras cambios de gravedad",
-        "Mantener fijación visual en puntos estables y repetir control vestibular en 12 h",
-        "Consultar al oficial médico si aparece vértigo o náuseas"
+        "Avoid sudden head turns and rapid movements after gravity transitions",
+        "Keep visual gaze fixed on stable targets and repeat vestibular check in 12 h",
+        "Consult the medical officer if vertigo or nausea appears"
       ],
       "source": "doc/nasa/fuentes/02-riesgos/risk-of-altered-sensorimotor-and-vestibular-function.md",
-      "basis": {"type":"design","ref":"Estabilidad VOR < 60 % en el control de cabeza y mirada","note":"Corte de diseño; patrón inspirado en el riesgo sensoriomotor del HRP."}
+      "basis": {"type":"design","ref":"VOR stability < 60% during head-and-gaze check","note":"Design cutoff; pattern inspired by the HRP sensorimotor risk."}
     }
   ],
   "envModifiers": {

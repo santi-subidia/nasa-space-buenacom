@@ -5,20 +5,20 @@ import { useVega } from './useVega';
 import styles from './InicioPantalla.module.scss';
 
 const ETIQUETAS = {
-  inactivo: 'Hablar con VYTA. Tocá una vez para charla continua.',
-  solicitando: 'Abriendo el micrófono. Tocá para pausar.',
-  escuchando: 'VYTA está escuchando en modo continuo. Tocá para pausar.',
-  transcribiendo: 'Procesando tu voz. Tocá para pausar.',
-  pensando: 'VYTA está pensando. Tocá para pausar.',
-  hablando: 'VYTA está hablando. Podés interrumpirla hablando o tocar para pausar.',
+  inactivo: 'Talk with VYTA. Tap once for continuous chat.',
+  solicitando: 'Opening microphone. Tap to pause.',
+  escuchando: 'VYTA is listening in continuous mode. Tap to pause.',
+  transcribiendo: 'Processing your voice. Tap to pause.',
+  pensando: 'VYTA is thinking. Tap to pause.',
+  hablando: 'VYTA is speaking. You can interrupt by speaking or tap to pause.',
 };
 
 const ESTADO_VIVO = {
-  solicitando: 'Abriendo micrófono…',
-  escuchando: 'Escuchando · Podés hablar',
-  transcribiendo: 'Procesando voz…',
-  pensando: 'Consultando protocolo…',
-  hablando: 'Hablando · Interrumpime cuando quieras',
+  solicitando: 'Opening microphone…',
+  escuchando: 'Listening · Go ahead',
+  transcribiendo: 'Processing voice…',
+  pensando: 'Checking protocol…',
+  hablando: 'Speaking · Interrupt anytime',
 };
 
 export default function VytaVoz({ resumen, seccion, className = '' }) {
@@ -33,7 +33,7 @@ export default function VytaVoz({ resumen, seccion, className = '' }) {
       </span>
       {continuo && (
         <span className={styles.estadoContinuo}>
-          {ESTADO_VIVO[fase] ?? 'En vivo'} · Tocá para pausar
+          {ESTADO_VIVO[fase] ?? 'Live'} · Tap to pause
         </span>
       )}
       <span className={styles.oculto} role="status">{ETIQUETAS[fase]}</span>

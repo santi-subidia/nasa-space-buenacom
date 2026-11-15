@@ -17,7 +17,7 @@ const sinSuscripcion = () => () => {};
 const estadoInicial = () => INICIAL;
 
 /** Los datos del día que Vega ve junto a la pregunta (poco texto: el servidor los manda al modelo). */
-export function datosDelDia(lecturas, sintomas = [], baseline = {}, nombre = 'Tripulante', solActual = 42, entorno = 'mars_base', diaSemana = 'jueves') {
+export function datosDelDia(lecturas, sintomas = [], baseline = {}, nombre = 'Crewmember', solActual = 42, entorno = 'mars_base', diaSemana = 'jueves') {
   const vals = valoresDelDia(lecturas, solActual);
   const ev = evaluate(lecturas, baseline, entorno, { symptoms: sintomas, sol: solActual });
   const lecturasHoy = (lecturas || []).filter((r) => r && r.sol === solActual);
@@ -34,9 +34,9 @@ export function datosDelDia(lecturas, sintomas = [], baseline = {}, nombre = 'Tr
     const def = INDICADORES[id];
     const pvt = id === 'reaction_ms' ? parsearNotaPvt(note) : null;
     const extraPvt = pvt
-      ? ` (PVT: ${pvt.lapsos} lapsos, ${pvt.erroresNoGo ?? 0} No-Go, ${pvt.estabilidadVor != null ? `VOR ${pvt.estabilidadVor} %, ` : ''}desempeño ${pvt.score} %)`
+      ? ` (PVT: ${pvt.lapsos} lapses, ${pvt.erroresNoGo ?? 0} No-Go, ${pvt.estabilidadVor != null ? `VOR ${pvt.estabilidadVor} %, ` : ''}performance ${pvt.score} %)`
       : '';
-    indicadores[def?.etiqueta ?? id] = `${valor} ${def?.unidad ?? ''}${extraPvt}${hoy ? '' : ' (último dato, no es de hoy)'}`.trim();
+    indicadores[def?.etiqueta ?? id] = `${valor} ${def?.unidad ?? ''}${extraPvt}${hoy ? '' : ' (latest reading, not from today)'}`.trim();
   }
   return {
     tripulante: nombre,
@@ -44,7 +44,7 @@ export function datosDelDia(lecturas, sintomas = [], baseline = {}, nombre = 'Tr
     dia_semana: planEjercicios.diaSemana,
     alerta_activa: alerta
       ? { nivel: alerta.level, titulo: alerta.title, por_que: alerta.why }
-      : { nivel: ev.globalLevel, titulo: 'Sin alertas activas', por_que: 'Valores dentro de rango.' },
+      : { nivel: ev.globalLevel, titulo: 'No active alerts', por_que: 'Values within expected range.' },
     plan_ejercicio_hoy: {
       intensidad: planEjercicios.intensidad,
       minutos_objetivo: planEjercicios.minutosObjetivo,
@@ -57,8 +57,8 @@ export function datosDelDia(lecturas, sintomas = [], baseline = {}, nombre = 'Tr
 }
 
 /**
- * Conecta la lógica de VYTA/Vega (ai/vega) con React: micrófono compatible con Safari,
- * consulta a /api/claude con datos del día e historial, lectura en voz alta.
+ * Connects VYTA/Vega logic (ai/vega) with React: Safari-compatible microphone,
+ * /api/claude queries with today's data and history, read-aloud TTS.
  */
 export function useVega({ seccion, resumen } = {}) {
   const { astronauta, solActual, mision, lecturas, sintomas } = useEstadoMision();
@@ -72,7 +72,7 @@ export function useVega({ seccion, resumen } = {}) {
       lecturas,
       sintomas,
       astronauta?.baseline || {},
-      astronauta?.name || 'Tripulante',
+      astronauta?.name || 'Crewmember',
       solActual,
       mision?.entorno || 'mars_base',
       mision?.diaSemana || 'jueves',
@@ -81,8 +81,8 @@ export function useVega({ seccion, resumen } = {}) {
 
   useEffect(() => {
     const partes = [];
-    if (seccion) partes.push(`Sección: ${seccion}`);
-    if (resumen) partes.push(`Resumen visible: ${resumen}`);
+    if (seccion) partes.push(`Section: ${seccion}`);
+    if (resumen) partes.push(`Visible summary: ${resumen}`);
     contextoRef.current = partes.join('. ').slice(0, 600);
   }, [seccion, resumen]);
 

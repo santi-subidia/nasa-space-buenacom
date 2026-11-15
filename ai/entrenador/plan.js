@@ -25,20 +25,20 @@ export const PLAN_NORMAL = { minutos: 90, intensidad: 'normal' };
  */
 export function limitarPlan(propuesto, nivelMotor, planActual = PLAN_NORMAL) {
   const techo = TECHO[nivelMotor];
-  if (!techo) throw new Error(`Nivel desconocido "${nivelMotor}"`);
+  if (!techo) throw new Error(`Unknown level "${nivelMotor}"`);
 
   const base = propuesto && INTENSIDADES.includes(propuesto.intensidad) ? propuesto : planActual;
   const intensidad = INTENSIDADES[Math.min(ORDEN[base.intensidad] ?? ORDEN.normal, ORDEN[techo.intensidad])];
   const minutos = intensidad === 'reposo' ? 0 : Math.max(0, Math.min(Math.round(Number(base.minutos) || 0), planActual.minutos ?? Infinity, techo.minutos));
 
   const limitadoPorMotor = intensidad !== base.intensidad || minutos !== Math.round(Number(base.minutos) || 0);
-  const motivo = propuesto?.motivo || (limitadoPorMotor ? 'Ajustado al estado de salud de hoy.' : 'Sin cambios: el estado de salud lo permite.');
+  const motivo = propuesto?.motivo || (limitadoPorMotor ? 'Adjusted to today’s health status.' : 'No changes: health status allows it.');
   return { minutos, intensidad, motivo, limitadoPorMotor };
 }
 
 /**
- * Garantiza que los ejercicios sugeridos pertenezcan exclusivamente a los 4 registrados
- * (`sentadilla`, `flexion`, `zancada`, `plancha`) y respeten el día y las alertas clínicas.
+ * Ensures suggested exercises belong exclusively to the 4 registered ones
+ * (`sentadilla`, `flexion`, `zancada`, `plancha`) and respect the day and clinical alerts.
  */
 export function sugerirEjerciciosPlan(propuestos, { diaSemana = 'jueves', nivelMotor = 'green', intensidad = 'normal', alertas = [] } = {}) {
   const nivelEfectivo = intensidad === 'reposo' ? 'red' : nivelMotor;
@@ -49,18 +49,30 @@ export function sugerirEjerciciosPlan(propuestos, { diaSemana = 'jueves', nivelM
   return filtrarEjerciciosSugeridos(propuestos, { diaSemana, evaluacion });
 }
 
-/** Comentario sin IA, con las métricas de la serie: respaldo si Claude no está disponible. */
+/** Fallback commentary without AI using set metrics: used if Claude is unavailable. */
 export function comentarioLocal({ ejercicio, metricas = {} }, plan) {
   const reps = Number(metricas.repeticiones);
   const seg = Number(metricas.tiempoPlanchaSeg);
+  const nombreEjercicio = {
+    sentadilla: 'squats',
+    flexion: 'push-ups',
+    zancada: 'lunges',
+    plancha: 'plank',
+  }[ejercicio] || ejercicio;
   const logro = Number.isFinite(reps) && reps > 0
-    ? `Terminaste ${reps} repeticiones de ${ejercicio}.`
+    ? `You finished ${reps} reps of ${nombreEjercicio}.`
     : Number.isFinite(seg) && seg > 0
-      ? `Aguantaste ${seg} segundos de ${ejercicio}.`
-      : `Terminaste la serie de ${ejercicio}.`;
+      ? `You held ${seg} seconds of ${nombreEjercicio}.`
+      : `You finished the ${nombreEjercicio} set.`;
+  const etiquetaIntensidad = {
+    normal: 'normal',
+    moderada: 'moderate',
+    liviana: 'light',
+    reposo: 'rest',
+  }[plan.intensidad] || plan.intensidad;
   const cola =
-    plan.intensidad === 'reposo' ? ' Hoy toca descansar.'
-      : plan.limitadoPorMotor ? ` Por tu estado de hoy, seguí con ${plan.minutos} minutos ${plan.intensidad}.`
-        : ' Muy bien, seguí con el plan.';
+    plan.intensidad === 'reposo' ? ' Rest today.'
+      : plan.limitadoPorMotor ? ` Based on your status today, keep going with ${plan.minutos} ${etiquetaIntensidad} minutes.`
+        : ' Great job, stick to the plan.';
   return logro + cola;
 }

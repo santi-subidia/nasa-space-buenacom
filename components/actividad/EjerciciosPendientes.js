@@ -2,10 +2,17 @@ import Link from 'next/link';
 import { ETIQUETAS_DIA } from '@/lib/reloj/relojMision';
 import styles from './Actividad.module.scss';
 
+const ETIQUETA_INTENSIDAD = {
+  normal: 'normal',
+  moderada: 'moderate',
+  liviana: 'light',
+  reposo: 'rest',
+};
+
 function etiquetaObjetivo(item) {
   if (!item) return '';
-  if (item.unidad === 'segundos') return `${item.meta} s · ~${item.minutosSugeridos} min`;
-  return `${item.meta} repeticiones · ~${item.minutosSugeridos} min`;
+  if (item.unidad === 'seconds' || item.unidad === 'segundos') return `${item.meta} s · ~${item.minutosSugeridos} min`;
+  return `${item.meta} reps · ~${item.minutosSugeridos} min`;
 }
 
 export default function EjerciciosPendientes({
@@ -23,10 +30,11 @@ export default function EjerciciosPendientes({
   const pendientesTareas = tareas.filter((tarea) => tarea.kind === 'exercise' && !tarea.done);
 
   const diaEtiqueta = ETIQUETAS_DIA[planEjercicios?.diaSemana || diaSemana] || null;
+  const intensidadLabel = ETIQUETA_INTENSIDAD[planEjercicios?.intensidad] || planEjercicios?.intensidad;
   const resumenPlan = planEjercicios
     ? planEjercicios.reposo
-      ? `${diaEtiqueta ? `${diaEtiqueta} · ` : ''}Reposo físico indicado`
-      : `${diaEtiqueta ? `${diaEtiqueta} · ` : ''}Intensidad ${planEjercicios.intensidad} · ${planEjercicios.minutosObjetivo} min${planEjercicios.limitadoPorSalud ? ' · adaptado a tu salud' : ''}`
+      ? `${diaEtiqueta ? `${diaEtiqueta} · ` : ''}Physical rest advised`
+      : `${diaEtiqueta ? `${diaEtiqueta} · ` : ''}${intensidadLabel} intensity · ${planEjercicios.minutosObjetivo} min${planEjercicios.limitadoPorSalud ? ' · adapted to your health' : ''}`
     : null;
 
   const renderItem = (item) => {
@@ -71,19 +79,19 @@ export default function EjerciciosPendientes({
   };
 
   return (
-    <section className={styles.pendientes} aria-label="Ejercicios pendientes">
+    <section className={styles.pendientes} aria-label="Pending exercises">
       {!entrenamiento && (
         <h2 className={styles.tituloPendientes}>
           <span className={styles.iconoObjetivo}>
             <img src="/figma/salud/target.svg" width="23" height="23" alt="" />
           </span>
-          Ejercicios pendientes
+          Pending exercises
         </h2>
       )}
       {resumenPlan && <p className={styles.subtituloPlan}>{resumenPlan}</p>}
 
       {cargando ? (
-        <p className={styles.sinPendientes} role="status">Cargando ejercicios…</p>
+        <p className={styles.sinPendientes} role="status">Loading exercises…</p>
       ) : pendientesPlan ? (
         planEjercicios.reposo ? (
           <p className={styles.sinPendientes}>{planEjercicios.motivo}</p>
@@ -98,14 +106,14 @@ export default function EjerciciosPendientes({
                   </span>
                   <span>
                     <strong>{cog.nombre}</strong>
-                    <small>Control cognitivo sugerido para hoy</small>
+                    <small>Suggested cognitive check for today</small>
                   </span>
                 </Link>
               </li>
             ))}
           </ul>
         ) : (
-          <p className={styles.sinPendientes}>Sin ejercicios pendientes para este sol.</p>
+          <p className={styles.sinPendientes}>No pending exercises for this sol.</p>
         )
       ) : pendientesTareas.length ? (
         <ul className={styles.listaPendientes}>
@@ -131,7 +139,7 @@ export default function EjerciciosPendientes({
           ))}
         </ul>
       ) : (
-        <p className={styles.sinPendientes}>Sin ejercicios pendientes para este sol.</p>
+        <p className={styles.sinPendientes}>No pending exercises for this sol.</p>
       )}
       {children}
     </section>

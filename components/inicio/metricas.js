@@ -3,16 +3,16 @@ import { evaluarIndicador, REGLAS } from '../../lib/motor/evaluar.js';
 
 // Composición del frame General; valores y estados leídos de la base y del motor existente.
 export const METRICAS_FIGMA = [
-  { id: 'hr_rest', claves: ['hr_rest'], nombre: 'Frecuencia cardíaca', unidad: 'lpm', icono: 'corazon', onda: 'rosa' },
+  { id: 'hr_rest', claves: ['hr_rest'], nombre: 'Heart Rate', unidad: 'bpm', icono: 'corazon', onda: 'rosa' },
   { id: 'hrv', claves: ['hrv'], nombre: 'HRV', unidad: 'ms', icono: 'corazon', onda: 'rosa' },
-  { id: 'spo2', claves: ['spo2'], nombre: 'Oxígeno en sangre', unidad: '%', icono: 'pulmones' },
-  { id: 'sleep_h', claves: ['sleep_h'], nombre: 'Promedio de Sueño', unidad: 'min', icono: 'luna' },
-  { id: 'presion', claves: ['bp_sys', 'bp_dia'], nombre: 'Presión arterial', unidad: 'mmHg', icono: 'presion' },
-  { id: 'temp', claves: ['temp'], nombre: 'Temperatura Corporal', unidad: '°C', icono: 'cerebro' },
+  { id: 'spo2', claves: ['spo2'], nombre: 'Blood Oxygen', unidad: '%', icono: 'pulmones' },
+  { id: 'sleep_h', claves: ['sleep_h'], nombre: 'Average Sleep', unidad: 'min', icono: 'luna' },
+  { id: 'presion', claves: ['bp_sys', 'bp_dia'], nombre: 'Blood Pressure', unidad: 'mmHg', icono: 'presion' },
+  { id: 'temp', claves: ['temp'], nombre: 'Body Temperature', unidad: '°C', icono: 'cerebro' },
 ];
 
 const COLORES = { green: 'menta', yellow: 'amarillo', orange: 'naranja', red: 'rosa' };
-const numero = (valor) => valor.toLocaleString('es-AR', { maximumFractionDigits: 1 });
+const numero = (valor) => valor.toLocaleString('en-US', { maximumFractionDigits: 1 });
 
 // Índice de seguimiento propio de VYTA. La gravedad del motor va de 0 a 3.
 // El promedio se convierte a 0–100 y su máximo respeta la alerta más alta.
@@ -26,7 +26,7 @@ export function calcularPuntajeSalud(evaluacion = {}) {
     (evaluacion.sol == null || indicador.sol == null || indicador.sol <= evaluacion.sol));
 
   if (!indicadores.length) {
-    return { valor: null, indicadores: 0, detalle: 'Sin mediciones evaluables para calcular el puntaje de salud.' };
+    return { valor: null, indicadores: 0, detalle: 'No evaluable measurements available to calculate the health score.' };
   }
 
   const gravedadMedia = indicadores.reduce((suma, indicador) => suma + NIVELES[indicador.level].orden, 0) / indicadores.length;
@@ -41,7 +41,7 @@ export function calcularPuntajeSalud(evaluacion = {}) {
   return {
     valor,
     indicadores: indicadores.length,
-    detalle: `Índice de seguimiento VYTA. Promedio de ${indicadores.length} indicadores según su gravedad (normal 100, atención 66,7, alerta 33,3, crítico 0). Máximo de ${MAXIMO_PUNTAJE_POR_NIVEL[nivel]} por el nivel ${NIVELES[nivel].etiqueta.toLowerCase()} del motor.`,
+    detalle: `VYTA tracking index. Average of ${indicadores.length} indicators by severity (normal 100, caution 66.7, alert 33.3, critical 0). Capped at ${MAXIMO_PUNTAJE_POR_NIVEL[nivel]} by engine level ${NIVELES[nivel].etiqueta.toLowerCase()}.`,
   };
 }
 
@@ -66,22 +66,22 @@ export function metricasDesdeLecturas(lecturas, evaluacion = {}, baseline = {}, 
   return METRICAS_FIGMA.map((tarjeta) => {
     const registros = tarjeta.claves.map((clave) => ultimas.get(clave));
     const sinDatos = registros.some((l) => !l);
-    if (sinDatos) return { ...tarjeta, valor: '—', estado: 'Sin datos', color: 'neutro', detalle: 'No hay una medición guardada para este indicador.' };
+    if (sinDatos) return { ...tarjeta, valor: '—', estado: 'No data', color: 'neutro', detalle: 'No saved measurement for this indicator.' };
 
     const nivel = tarjeta.id === 'hrv' ? null : maxNivel(tarjeta.claves.map((clave, i) =>
       evaluacion.indicatorLevels?.[clave] ?? evaluarIndicador(clave, registros[i].value, baseline).level));
     let valor = registros.map((l) => numero(l.value)).join(' / ');
-    let detalle = `Última lectura: sol ${Math.min(...registros.map((l) => l.sol))}.`;
-    let estado = nivel === 'green' ? 'Rango normal' : NIVELES[nivel]?.etiqueta || 'Registrada';
+    let detalle = `Latest reading: Sol ${Math.min(...registros.map((l) => l.sol))}.`;
+    let estado = nivel === 'green' ? 'Normal range' : NIVELES[nivel]?.etiqueta || 'Logged';
 
     if (tarjeta.id === 'sleep_h') {
       const noches = new Map(disponibles.filter((l) => l.indicator === 'sleep_h' && l.sol >= sol - 6).map((l) => [l.sol, l.value]));
-      if (!noches.size) return { ...tarjeta, valor: '—', estado: 'Sin datos recientes', color: 'neutro', detalle: 'No hay registros de sueño en los últimos 7 soles.' };
+      if (!noches.size) return { ...tarjeta, valor: '—', estado: 'No recent data', color: 'neutro', detalle: 'No sleep logs in the last 7 sols.' };
       const promedio = [...noches.values()].reduce((suma, horas) => suma + horas, 0) / noches.size;
       const minutos = Math.round(promedio * 60);
       valor = `${Math.floor(minutos / 60)} h ${minutos % 60}`;
-      detalle = `Promedio de ${noches.size} noches registradas en los últimos 7 soles.`;
-      if (nivel === 'green') estado = 'Calidad buena';
+      detalle = `Average of ${noches.size} logged nights over the last 7 sols.`;
+      if (nivel === 'green') estado = 'Good quality';
     }
     return { ...tarjeta, valor, estado, color: COLORES[nivel] || 'neutro', detalle };
   });

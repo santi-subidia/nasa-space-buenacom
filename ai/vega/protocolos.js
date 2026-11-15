@@ -44,11 +44,11 @@ export const PROTOCOLOS = [
     id: 'autolesion',
     nivel: 'emergencia',
     categoria: 'autolesion',
-    titulo: 'Riesgo de autolesión',
-    patrones: [/hacerme dano/, /lastimarme/, /matarme/, /suicid/, /quitarme la vida/, /quiero morir/, /no quiero (seguir|vivir)/, /acabar con todo/],
+    titulo: 'Self-harm risk',
+    patrones: [/hurt myself/, /harm myself/, /kill myself/, /suicid/, /end my life/, /want to die/, /don'?t want to (live|go on|keep going)/, /do not want to (live|go on|keep going)/, /hacerme dano/, /lastimarme/, /matarme/, /quitarme la vida/, /quiero morir/, /no quiero (seguir|vivir)/, /acabar con todo/],
     pasos: [
-      'Te escucho, y me importa cómo estás. No estás solo: voy a avisar ahora al oficial médico.',
-      'Si podés, quedate con alguien de la tripulación hasta que llegue.',
+      "I hear you, and I care how you're doing. You're not alone: I'm notifying the medical officer right now.",
+      'If you can, stay with a crewmate until they arrive.',
     ],
     sinCierre: true,
     fuentes: [tb033],
@@ -57,15 +57,15 @@ export const PROTOCOLOS = [
     id: 'paro',
     nivel: 'emergencia',
     categoria: 'cardiorrespiratoria',
-    titulo: 'No responde o no respira',
-    // "El sistema no responde" no habla de una persona: se descarta.
-    excluir: [/\b(sistema|pantalla|app|aplicacion|computadora|compu|tablet|radio|enlace|microfono|boton|programa|equipo|sensor|comando)\b/],
-    patrones: [/no (responde|reacciona|despierta)/, /(esta|quedo|se quedo) inconsciente/, /perdio el conocimiento/, /no respira/, /paro (cardiaco|cardiorrespiratorio)/, /(sin|no tiene) pulso/, /dejo de respirar/],
+    titulo: 'Unresponsive or not breathing',
+    // "The system isn't responding" doesn't refer to a person: ignore.
+    excluir: [/\b(system|screen|app|application|computer|tablet|radio|link|mic|microphone|button|program|device|sensor|command|sistema|pantalla|aplicacion|computadora|compu|enlace|microfono|boton|programa|equipo)\b/],
+    patrones: [/not (responding|reacting|waking up)/, /unresponsive/, /(is|fell|became) unconscious/, /lost consciousness/, /not breathing/, /stopped breathing/, /cardiac arrest/, /(no|without) pulse/, /no (responde|reacciona|despierta)/, /(esta|quedo|se quedo) inconsciente/, /perdio el conocimiento/, /no respira/, /paro (cardiaco|cardiorrespiratorio)/, /(sin|no tiene) pulso/, /dejo de respirar/],
     pasos: [
-      'Emergencia. Si no responde y no respira normal, empezá ya la reanimación: treinta compresiones fuertes en el centro del pecho y dos respiraciones.',
-      'Que otra persona traiga el desfibrilador, pegue los parches en el pecho, lo prenda y siga sus instrucciones de voz.',
-      'Apenas puedas, sujetalo en el sistema de sujeción médica para comprimir sin flotar.',
-      'Si respira pero no responde, sujetalo y dale oxígeno del paquete respiratorio.',
+      'Emergency. If unresponsive and not breathing normally, start CPR immediately: thirty firm compressions in the center of the chest and two rescue breaths.',
+      'Have someone else bring the defibrillator, place the pads on the chest, turn it on, and follow its voice prompts.',
+      'As soon as possible, strap them into the crew medical restraint system so you can compress without floating.',
+      'If breathing but unresponsive, restrain them and give oxygen from the respiratory pack.',
     ],
     fuentes: [iss('1.102', 'AED Assisted CPR'), iss('1.103', 'ALS Algorithm')],
   },
@@ -73,12 +73,12 @@ export const PROTOCOLOS = [
     id: 'atragantamiento',
     nivel: 'emergencia',
     categoria: 'via-aerea',
-    titulo: 'Atragantamiento',
-    patrones: [/atragant/, /(algo|comida) (trabad[oa]|atascad[oa]) en la garganta/, /se (le )?(trabo|atasco) (algo|la comida)/],
+    titulo: 'Choking',
+    patrones: [/chok(e|ing)/, /(something|food) stuck in (my |his |her |their |the )?throat/, /atragant/, /(algo|comida) (trabad[oa]|atascad[oa]) en la garganta/, /se (le )?(trabo|atasco) (algo|la comida)/],
     pasos: [
-      'Emergencia de vía aérea. Si está despierto, ponete detrás, el puño arriba del ombligo, y tirá fuerte hacia adentro y hacia arriba, una y otra vez, hasta que salga.',
-      'Si pierde el conocimiento, abrí la vía aérea, sacá el objeto solo si lo ves, intentá dar respiraciones y empezá la reanimación con el desfibrilador.',
-      'Cuando salga, tomale pulso, respiraciones y presión para el cirujano.',
+      'Airway emergency. If awake, stand behind them, place a fist above the navel, and pull sharply inward and upward repeatedly until clear.',
+      'If they lose consciousness, open the airway, remove the object only if visible, attempt rescue breaths, and start CPR with the defibrillator.',
+      'Once cleared, check pulse, respirations, and blood pressure for the flight surgeon.',
     ],
     fuentes: [iss('1.105', 'Choking')],
   },
@@ -86,12 +86,12 @@ export const PROTOCOLOS = [
     id: 'anafilaxia',
     nivel: 'emergencia',
     categoria: 'alergia-grave',
-    titulo: 'Reacción alérgica grave',
-    patrones: [/anafilax/, /alergi\w* (grave|fuerte|severa|muy fuerte)/, /se me (esta )?(cierra|cerrando|hincha|hinchando) la garganta/, /(garganta|lengua|labios) (muy )?hinchad/, /se le (cierra|hincha) la garganta/],
+    titulo: 'Severe allergic reaction',
+    patrones: [/anaphylax/, /anafilax/, /(severe|bad|strong) allergic reaction/, /alergi\w* (grave|fuerte|severa|muy fuerte)/, /throat (is )?(closing|swelling)/, /swollen (throat|tongue|lips)/, /se me (esta )?(cierra|cerrando|hincha|hinchando) la garganta/, /(garganta|lengua|labios) (muy )?hinchad/, /se le (cierra|hincha) la garganta/],
     pasos: [
-      'Emergencia: puede ser una reacción alérgica grave. Abrí el paquete rojo y usá la epinefrina autoinyectable.',
-      'Sacá la tapa de seguridad y clavala firme en la cara externa del muslo, sin ropa en el medio, y sostenela diez segundos.',
-      'Si los síntomas vuelven o empeoran, la checklist permite repetirla a los veinte minutos.',
+      'Emergency: this may be a severe allergic reaction. Open the red pack and use the epinephrine auto-injector.',
+      'Remove the safety cap and press firmly into the outer thigh through bare skin or light fabric, holding for ten seconds.',
+      'If symptoms return or worsen, the checklist allows repeating after twenty minutes.',
     ],
     fuentes: [iss('1.101', 'Severe Allergic Reaction')],
   },
@@ -99,13 +99,13 @@ export const PROTOCOLOS = [
     id: 'convulsion',
     nivel: 'emergencia',
     categoria: 'neurologica',
-    titulo: 'Convulsión',
-    patrones: [/convuls/, /ataque (de )?epilep/, /esta (temblando|sacudiendose) y no responde/],
+    titulo: 'Seizure',
+    patrones: [/seizur/, /convuls/, /epilep/, /(shaking|convulsing) and (not responding|unresponsive)/, /ataque (de )?epilep/, /esta (temblando|sacudiendose) y no responde/],
     pasos: [
-      'Emergencia. Protegelo de los golpes: llevalo al centro del módulo, lejos de las estructuras.',
-      'No le abras la boca ni le pongas nada adentro. Suelen durar menos de un minuto: mirá la hora.',
-      'Si dura más de cinco minutos o se repite, el oficial médico aplica la medicación del paquete marrón según la checklist.',
-      'Después dale oxígeno, poné el oxímetro y revisá golpes, lengua y dientes. Va a estar confundido unos minutos.',
+      'Emergency. Protect them from impact: move them to the center of the module, away from hardware.',
+      'Do not force their mouth open or put anything inside. Seizures usually last under a minute: note the time.',
+      'If it lasts over five minutes or repeats, the medical officer administers medication from the brown pack per the checklist.',
+      'Afterward give oxygen, attach the pulse oximeter, and check for bumps, tongue, or tooth injury. They will be confused for a few minutes.',
     ],
     fuentes: [iss('1.107', 'Seizure')],
   },
@@ -113,12 +113,12 @@ export const PROTOCOLOS = [
     id: 'acv',
     nivel: 'emergencia',
     categoria: 'neurologica',
-    titulo: 'Posible ACV',
-    patrones: [/(cara|boca) (torcida|caida)/, /no (puedo|puede) mover (el|la|un|medio) (brazo|pierna|lado|cuerpo)/, /no me salen las palabras/, /(hablo|habla) (raro|trabado)/, /se me (durmio|duerme) (medio cuerpo|un lado|la mitad)/, /peor dolor de cabeza/],
+    titulo: 'Possible stroke',
+    patrones: [/(face|mouth) (droop|twisted)/, /can'?t move (my|his|her|one|half) (arm|leg|side|body)/, /cannot move (my|his|her|one|half) (arm|leg|side|body)/, /slurred speech/, /words won'?t come out/, /(half|one side of) (my )?body (went|feels) numb/, /worst headache/, /(cara|boca) (torcida|caida)/, /no (puedo|puede) mover (el|la|un|medio) (brazo|pierna|lado|cuerpo)/, /no me salen las palabras/, /(hablo|habla) (raro|trabado)/, /se me (durmio|duerme) (medio cuerpo|un lado|la mitad)/, /peor dolor de cabeza/],
     pasos: [
-      'Esto puede ser un problema neurológico grave. Anotá la hora exacta en que empezó: es el dato más importante para el cirujano.',
-      'Que no coma ni tome nada. Poné el oxímetro y el tensiómetro del paquete azul y dale oxígeno si la saturación baja.',
-      'No lo dejes solo.',
+      'This could be a serious neurological event. Write down the exact time it started: that is the most critical piece of data for the flight surgeon.',
+      'Nothing by mouth. Put on the pulse oximeter and blood pressure cuff from the blue pack and give oxygen if saturation drops.',
+      'Do not leave them alone.',
     ],
     fuentes: [tb033],
   },
@@ -126,13 +126,13 @@ export const PROTOCOLOS = [
     id: 'dificultad-respiratoria',
     nivel: 'emergencia',
     categoria: 'cardiorrespiratoria',
-    titulo: 'Dificultad para respirar',
-    patrones: [/(no puedo|no puede|me cuesta|le cuesta|no logro) respirar/, /falta de aire/, /me falta (el )?aire/, /le falta (el )?aire/, /me ahogo/, /se (esta )?ahogando/, /asfixi/, /labios (azules|morados|grises)/],
+    titulo: 'Difficulty breathing',
+    patrones: [/(can'?t|cannot|hard to|trouble|difficulty) breath(e|ing)/, /shortness of breath/, /short of breath/, /out of breath/, /can'?t catch my breath/, /(blue|purple|gray|grey) lips/, /suffocat/, /(no puedo|no puede|me cuesta|le cuesta|no logro) respirar/, /falta de aire/, /me falta (el )?aire/, /le falta (el )?aire/, /me ahogo/, /se (esta )?ahogando/, /asfixi/, /labios (azules|morados|grises)/],
     pasos: [
-      'Que deje todo y no haga ningún esfuerzo. Abrí el paquete respiratorio y dale oxígeno con la mascarilla.',
-      'Poné el oxímetro del paquete azul y contá las respiraciones quince segundos, por cuatro.',
-      'Si tiene los labios azulados, o respira menos de doce o más de treinta veces por minuto, asistí la respiración con la bolsa AMBU.',
-      'Si a otros también les falta el aire, puede ser la atmósfera: máscaras puestas y revisen las alarmas de cabina.',
+      'Stop everything and avoid any exertion. Open the respiratory pack and give oxygen by mask.',
+      'Put on the pulse oximeter from the blue pack and count breaths for fifteen seconds times four.',
+      'If lips look bluish, or breathing rate is below twelve or above thirty per minute, assist ventilation with the AMBU bag.',
+      'If others are also short of breath, it may be the atmosphere: put masks on and check cabin alarms.',
     ],
     fuentes: [iss('1.108', 'Difficulty Breathing'), iss('1.103', 'ALS Algorithm')],
   },
@@ -140,13 +140,13 @@ export const PROTOCOLOS = [
     id: 'toxico',
     nivel: 'emergencia',
     categoria: 'toxico',
-    titulo: 'Exposición tóxica o humo',
-    patrones: [/\bhumo\b/, /olor a (quemado|amoniaco|quimico|gas)/, /amoniaco/, /hidrazina/, /(gas|vapor|liquido|producto) toxic/, /intoxic/, /\b(fuego|incendio)\b/, /(me|le) (salpico|cayo) (un )?(quimico|producto|liquido)/, /quimico en (el|los) ojos?/],
+    titulo: 'Toxic exposure or smoke',
+    patrones: [/\bsmoke\b/, /smells? like (smoke|burning|ammonia|chemical|gas)/, /ammonia/, /hydrazine/, /toxic (gas|vapor|fume|liquid|chemical)/, /poison/, /\bfire\b/, /chemical in (my |the )?eyes?/, /splashed (chemical|liquid)/, /\bhumo\b/, /olor a (quemado|amoniaco|quimico|gas)/, /amoniaco/, /hidrazina/, /(gas|vapor|liquido|producto) toxic/, /intoxic/, /\b(fuego|incendio)\b/, /(me|le) (salpico|cayo) (un )?(quimico|producto|liquido)/, /quimico en (el|los) ojos?/],
     pasos: [
-      'Emergencia. Primero protegete vos: máscara, antiparras y guantes antes de acercarte, así no hay más expuestos.',
-      'Sacalo del lugar, quitale la ropa manchada y lavá la piel con agua.',
-      'Si fue en los ojos, quitá los lentes de contacto y enjuagá ya con agua, sin parar hasta que ceda el dolor.',
-      'Si hay humo, fuego o amoníaco en el aire, es una emergencia de la nave: sigan el procedimiento de emergencia de la estación.',
+      'Emergency. Protect yourself first: mask, goggles, and gloves before approaching so no one else is exposed.',
+      'Move them out of the area, remove contaminated clothing, and flush skin with water.',
+      'If it reached the eyes, remove contact lenses and flush continuously with water until pain subsides.',
+      'If there is smoke, fire, or ammonia in the air, it is a spacecraft emergency: follow the station emergency procedure.',
     ],
     fuentes: [iss('1.106', 'Toxic Exposure')],
   },
@@ -154,12 +154,12 @@ export const PROTOCOLOS = [
     id: 'hemorragia',
     nivel: 'emergencia',
     categoria: 'hemorragia',
-    titulo: 'Sangrado abundante',
-    patrones: [/hemorragia/, /no (me |le )?para de sangrar/, /sangr\w* (mucho|muchisimo|abundante|sin parar|a chorros)/, /(mucha|un monton de) sangre/],
+    titulo: 'Severe bleeding',
+    patrones: [/hemorrhag/, /heavy bleeding/, /won'?t stop bleeding/, /bleeding (heavily|a lot|nonstop|badly)/, /lots? of blood/, /hemorragia/, /no (me |le )?para de sangrar/, /sangr\w* (mucho|muchisimo|abundante|sin parar|a chorros)/, /(mucha|un monton de) sangre/],
     pasos: [
-      'Emergencia. Apretá fuerte y directo sobre la herida con gasas del botiquín y no sueltes.',
-      'Si se empapa, poné más gasas encima sin sacar las primeras.',
-      'Controlá pulso y presión: si se pone pálido, frío o confundido, puede estar entrando en shock.',
+      'Emergency. Press hard and directly over the wound with gauze from the medical kit and do not release.',
+      'If blood soaks through, add more gauze on top without removing the first layers.',
+      'Monitor pulse and blood pressure: if they become pale, cold, or confused, they may be entering shock.',
     ],
     fuentes: [tb033],
   },
@@ -169,12 +169,12 @@ export const PROTOCOLOS = [
     id: 'dolor-pecho',
     nivel: 'urgente',
     categoria: 'cardiorrespiratoria',
-    titulo: 'Dolor de pecho',
-    patrones: [/dolor (de|en el) pecho/, /(presion|opresion|puntada) en el pecho/, /me duele el pecho/, /dolor .*brazo izquierdo/, /palpitaciones (muy )?fuertes/, /el corazon (me )?(late|va) (muy )?(rapido|fuerte|raro)/],
+    titulo: 'Chest pain',
+    patrones: [/chest pain/, /pain in (my |the )?chest/, /(pressure|tightness|stabbing) in (my |the )?chest/, /chest hurts/, /pain .*left arm/, /(strong |heavy )?palpitations/, /heart (is )?(racing|pounding|beating fast)/, /dolor (de|en el) pecho/, /(presion|opresion|puntada) en el pecho/, /me duele el pecho/, /dolor .*brazo izquierdo/, /palpitaciones (muy )?fuertes/, /el corazon (me )?(late|va) (muy )?(rapido|fuerte|raro)/],
     pasos: [
-      'El dolor de pecho siempre se revisa. Dejá lo que estás haciendo y quedate quieto, sin esfuerzo.',
-      'Que el oficial médico te tome presión, pulso y saturación con el paquete azul, y un electrocardiograma.',
-      'Tengan cerca el desfibrilador: si dejás de responder, empiezan la reanimación.',
+      'Chest pain always gets checked. Stop what you are doing and stay still without exertion.',
+      'Have the medical officer check blood pressure, pulse, and saturation from the blue pack, plus an ECG.',
+      'Keep the defibrillator nearby: if you become unresponsive, start resuscitation.',
     ],
     fuentes: [iss('1.103', 'ALS Algorithm'), tb033],
   },
@@ -182,11 +182,11 @@ export const PROTOCOLOS = [
     id: 'desmayo',
     nivel: 'urgente',
     categoria: 'cardiorrespiratoria',
-    titulo: 'Desmayo',
-    patrones: [/me desmay/, /se desmay/, /perdi el conocimiento/, /casi me desmayo/, /me (voy a|estoy por) desmayar/, /me (desvaneci|sincope)/],
+    titulo: 'Fainting',
+    patrones: [/faint(ed|ing)?/, /passed out/, /nearly (fainted|passed out)/, /about to (faint|pass out)/, /syncope/, /me desmay/, /se desmay/, /perdi el conocimiento/, /casi me desmayo/, /me (voy a|estoy por) desmayar/, /me (desvaneci|sincope)/],
     pasos: [
-      'No te muevas ni hagas esfuerzo hasta que te revisen.',
-      'Que el oficial médico te tome presión, pulso y saturación, y anote qué estabas haciendo y cuánto duró.',
+      'Do not move or exert yourself until examined.',
+      'Have the medical officer take blood pressure, pulse, and saturation, and record what you were doing and how long it lasted.',
     ],
     fuentes: [tb033],
   },
@@ -194,11 +194,11 @@ export const PROTOCOLOS = [
     id: 'trombosis',
     nivel: 'urgente',
     categoria: 'trombosis',
-    titulo: 'Posible coágulo',
-    patrones: [/(cuello|brazo|pierna) (muy )?(hinchad|inflamad)/, /hinchazon (en|del|de la) (cuello|brazo|pierna)/, /se me hincho (el|la) (cuello|brazo|pierna)/],
+    titulo: 'Possible blood clot',
+    patrones: [/swollen (neck|arm|leg)/, /swelling in (the |my )?(neck|arm|leg)/, /(neck|arm|leg) is swollen/, /(cuello|brazo|pierna) (muy )?(hinchad|inflamad)/, /hinchazon (en|del|de la) (cuello|brazo|pierna)/, /se me hincho (el|la) (cuello|brazo|pierna)/],
     pasos: [
-      'Un cuello, brazo o pierna hinchados pueden ser un coágulo, como el trombo en la yugular que la NASA detectó en la estación.',
-      'No masajees la zona. El oficial médico puede hacer una ecografía guiada desde Tierra.',
+      'A swollen neck, arm, or leg can be a blood clot, similar to the jugular thrombus NASA detected on station.',
+      'Do not massage the area. The medical officer can perform an ultrasound guided from Earth.',
     ],
     fuentes: [tb033, { id: 'HSRB', titulo: 'NASA · Human System Risk Board: Concern of Venous Thromboembolism', url: URL_VTE }],
   },
@@ -206,11 +206,11 @@ export const PROTOCOLOS = [
     id: 'dolor-abdominal',
     nivel: 'urgente',
     categoria: 'abdominal',
-    titulo: 'Dolor abdominal fuerte',
-    patrones: [/dolor (de panza|de barriga|abdominal|de estomago|en la panza)( muy)? (fuerte|intenso|insoportable|terrible)/, /me duele (mucho|muchisimo) (la panza|el abdomen|la barriga|el estomago)/, /dolor .*(abajo a la derecha|lado derecho de la panza)/, /abdomen (duro|rigido)/],
+    titulo: 'Severe abdominal pain',
+    patrones: [/(severe|intense|terrible|unbearable) (stomach|belly|abdominal) pain/, /(stomach|abdomen|belly) hurts (a lot|badly|terribly)/, /pain .*(lower right|right side of the (stomach|abdomen|belly))/, /(hard|rigid) abdomen/, /dolor (de panza|de barriga|abdominal|de estomago|en la panza)( muy)? (fuerte|intenso|insoportable|terrible)/, /me duele (mucho|muchisimo) (la panza|el abdomen|la barriga|el estomago)/, /dolor .*(abajo a la derecha|lado derecho de la panza)/, /abdomen (duro|rigido)/],
     pasos: [
-      'Un dolor de barriga fuerte se revisa ya: es uno de los escenarios que la NASA prepara para Marte.',
-      'No comas ni tomes medicación por tu cuenta. Que el oficial médico te tome temperatura y pulso y vea exactamente dónde duele.',
+      'Severe abdominal pain needs immediate review: it is one of the scenarios NASA prepares for on Mars.',
+      'Do not eat or self-medicate. Have the medical officer take temperature and pulse and pinpoint where it hurts.',
     ],
     fuentes: [tb033],
   },
@@ -218,11 +218,11 @@ export const PROTOCOLOS = [
     id: 'sangrado',
     nivel: 'urgente',
     categoria: 'general',
-    titulo: 'Sangrado',
-    patrones: [/vomit\w* sangre/, /sangre en (la orina|el pis|la caca|las heces)/, /tos\w* (con )?sangre/, /sangr(o|e|ado|ando)/],
+    titulo: 'Bleeding',
+    patrones: [/vomit(ing)? blood/, /blood in (the )?(urine|pee|stool|poop)/, /cough(ing)? (up )?blood/, /bleed(ing)?/, /vomit\w* sangre/, /sangre en (la orina|el pis|la caca|las heces)/, /tos\w* (con )?sangre/, /sangr(o|e|ado|ando)/],
     pasos: [
-      'Si es una herida, apretá con gasas del botiquín sin soltar.',
-      'Si vomitás o orinás sangre, guardá una muestra o sacale una foto para el cirujano.',
+      'If it is a wound, hold steady pressure with gauze from the medical kit.',
+      'If vomiting or urinating blood, save a sample or take a photo for the flight surgeon.',
     ],
     fuentes: [tb033],
   },
@@ -230,11 +230,11 @@ export const PROTOCOLOS = [
     id: 'fiebre-alta',
     nivel: 'urgente',
     categoria: 'general',
-    titulo: 'Fiebre alta',
-    patrones: [/fiebre (muy )?alta/, /(39|40|41)( con \w+)? (grados|de fiebre)/, /(fiebre|temperatura) de (39|40|41)/, /escalofrios (muy )?fuertes/],
+    titulo: 'High fever',
+    patrones: [/(very )?high fever/, /(39|40|41)(\.\d+| point \w+)? (degrees|c|fever)/, /(fever|temperature) of (39|40|41)/, /(severe|bad|heavy) chills/, /fiebre (muy )?alta/, /(39|40|41)( con \w+)? (grados|de fiebre)/, /(fiebre|temperatura) de (39|40|41)/, /escalofrios (muy )?fuertes/],
     pasos: [
-      'La fiebre alta en vuelo se revisa ya: el sistema inmune cambia en el espacio.',
-      'Tomá agua, medí la temperatura otra vez y que el oficial médico te haga el examen de consulta.',
+      'High fever during spaceflight requires immediate evaluation: immune function shifts in space.',
+      'Drink water, re-check your temperature, and have the medical officer run the consult exam.',
     ],
     fuentes: [tb033],
   },
@@ -242,11 +242,11 @@ export const PROTOCOLOS = [
     id: 'golpe-cabeza',
     nivel: 'urgente',
     categoria: 'trauma',
-    titulo: 'Golpe en la cabeza',
-    patrones: [/golpe (fuerte )?en la cabeza/, /me (pegue|golpee) (fuerte )?(en )?la cabeza/, /se (pego|golpeo) (fuerte )?(en )?la cabeza/, /traumatismo/],
+    titulo: 'Head impact',
+    patrones: [/hit (my|his|her) head/, /head (injury|trauma|blow)/, /banged (my|his|her) head/, /golpe (fuerte )?en la cabeza/, /me (pegue|golpee) (fuerte )?(en )?la cabeza/, /se (pego|golpeo) (fuerte )?(en )?la cabeza/, /traumatismo/],
     pasos: [
-      'Después de un golpe en la cabeza no te quedes solo las próximas horas.',
-      'Que el oficial médico revise pupilas, memoria y fuerza. Si vomitás, te da mucho sueño o ves doble, es más urgente.',
+      'After a head impact, do not stay alone for the next several hours.',
+      'Have the medical officer check pupils, memory, and strength. Vomiting, extreme drowsiness, or double vision makes it more urgent.',
     ],
     fuentes: [tb033],
   },
@@ -254,11 +254,11 @@ export const PROTOCOLOS = [
     id: 'ojo',
     nivel: 'urgente',
     categoria: 'ocular',
-    titulo: 'Problema en el ojo',
-    patrones: [/(se me metio|tengo|se le metio) algo en el ojo/, /cuerpo extrano en el ojo/, /no veo (nada|de un ojo)/, /perdi (la )?vision/, /vision (doble|borrosa) de (golpe|repente)/, /(cortina|sombra) en el ojo/],
+    titulo: 'Eye issue',
+    patrones: [/something in (my|his|her) eye/, /foreign (body|object) in (the )?eye/, /can'?t see/, /lost (my )?vision/, /sudden (double|blurry) vision/, /(se me metio|tengo|se le metio) algo en el ojo/, /cuerpo extrano en el ojo/, /no veo (nada|de un ojo)/, /perdi (la )?vision/, /vision (doble|borrosa) de (golpe|repente)/, /(cortina|sombra) en el ojo/],
     pasos: [
-      'No te frotes el ojo. Si entró algo, enjuagá con agua limpia.',
-      'Una pérdida brusca de visión se revisa ya: el oficial médico tiene el equipo de ojos del botiquín.',
+      'Do not rub your eye. If something got in, rinse with clean water.',
+      'Sudden vision loss is checked right away: the medical officer has the eye kit.',
     ],
     fuentes: [iss('1.106', 'Toxic Exposure'), tb033],
   },
@@ -266,11 +266,11 @@ export const PROTOCOLOS = [
     id: 'descompresion',
     nivel: 'urgente',
     categoria: 'descompresion',
-    titulo: 'Síntomas después de una EVA',
-    patrones: [/(dolor|hormigueo|picazon|molestia)\w* .*(despues|tras|luego) de (la )?(eva|caminata|salida)/, /(despues|tras|luego) de (la )?(eva|caminata|salida) .*(dolor|duele|hormigueo|picazon|molest)/, /enfermedad (por|de) descompresion/, /bends/],
+    titulo: 'Post-EVA symptoms',
+    patrones: [/(pain|tingling|itching|discomfort)\w* .*after (the |an )?(eva|spacewalk)/, /after (the |an )?(eva|spacewalk) .*(pain|hurts|tingling|itching)/, /decompression sickness/, /\bbends\b/, /(dolor|hormigueo|picazon|molestia)\w* .*(despues|tras|luego) de (la )?(eva|caminata|salida)/, /(despues|tras|luego) de (la )?(eva|caminata|salida) .*(dolor|duele|hormigueo|picazon|molest)/, /enfermedad (por|de) descompresion/],
     pasos: [
-      'Dolor en las articulaciones, hormigueo o picazón después de una EVA pueden ser enfermedad por descompresión.',
-      'Que el oficial médico siga el procedimiento de descompresión de la EVA y te dé oxígeno.',
+      'Joint pain, tingling, or itching after an EVA can be decompression sickness.',
+      'Have the medical officer follow the EVA decompression procedure and give you oxygen.',
     ],
     fuentes: [tb033],
   },
@@ -278,11 +278,11 @@ export const PROTOCOLOS = [
     id: 'retencion-urinaria',
     nivel: 'urgente',
     categoria: 'genitourinaria',
-    titulo: 'No puede orinar',
-    patrones: [/no (puedo|logro) (orinar|hacer pis)/, /retencion (de orina|urinaria)/],
+    titulo: 'Unable to urinate',
+    patrones: [/can'?t (urinate|pee)/, /cannot (urinate|pee)/, /urinary retention/, /no (puedo|logro) (orinar|hacer pis)/, /retencion (de orina|urinaria)/],
     pasos: [
-      'Le pasa a una parte de la tripulación al adaptarse a la ingravidez.',
-      'Si pasan horas sin orinar, el oficial médico puede colocar una sonda del botiquín.',
+      'This happens to some crewmembers while adapting to weightlessness.',
+      'If hours pass without urinating, the medical officer can place a catheter from the medical kit.',
     ],
     fuentes: [tb033],
   },
@@ -290,11 +290,11 @@ export const PROTOCOLOS = [
     id: 'colico-renal',
     nivel: 'urgente',
     categoria: 'renal',
-    titulo: 'Posible cálculo renal',
-    patrones: [/calculo (renal|en el rinon)/, /colico (renal|nefritico)/, /dolor (fuerte )?(en el|del) (costado|rinon)/],
+    titulo: 'Possible kidney stone',
+    patrones: [/kidney stone/, /renal colic/, /(severe |bad )?(flank|side|kidney) pain/, /calculo (renal|en el rinon)/, /colico (renal|nefritico)/, /dolor (fuerte )?(en el|del) (costado|rinon)/],
     pasos: [
-      'Puede ser un cálculo renal, más frecuente en vuelo por el calcio que pierde el hueso.',
-      'Tomá agua y que el oficial médico te revise.',
+      'It could be a kidney stone, which is more common in flight due to bone calcium loss.',
+      'Drink water and have the medical officer examine you.',
     ],
     fuentes: [tb033],
   },
@@ -304,12 +304,12 @@ export const PROTOCOLOS = [
     id: 'adaptacion',
     nivel: 'aviso',
     categoria: 'adaptacion',
-    titulo: 'Náuseas o mareo de adaptación',
-    patrones: [/nause/, /mareo/, /mareado/, /ganas de vomitar/, /vomit(e|o|ando)/],
+    titulo: 'Nausea or adaptation dizziness',
+    patrones: [/nause/, /dizz(y|iness)/, /feel like vomiting/, /vomit(ed|ing)?/, /throw(ing)? up/, /mareo/, /mareado/, /ganas de vomitar/, /vomit(e|o|ando)/],
     pasos: [
-      'Las náuseas y el mareo de adaptación le pasan a más de la mitad de la tripulación.',
-      'Mové la cabeza despacio, quedate quieto con una referencia visual de arriba y abajo, e hidratate.',
-      'Si a varios les pasa a la vez, revisen el dióxido de carbono de la cabina.',
+      'Nausea and adaptation dizziness affect over half of crewmembers.',
+      'Move your head slowly, stay still with a visual up/down reference, and hydrate.',
+      'If several crewmembers have it at once, check cabin carbon dioxide.',
     ],
     fuentes: [tb033],
   },
@@ -317,11 +317,11 @@ export const PROTOCOLOS = [
     id: 'dolor-cabeza',
     nivel: 'aviso',
     categoria: 'adaptacion',
-    titulo: 'Dolor de cabeza',
-    patrones: [/dolor de cabeza/, /me duele la cabeza/, /jaqueca/, /migrana/, /cefalea/],
+    titulo: 'Headache',
+    patrones: [/headache/, /head hurts/, /migraine/, /dolor de cabeza/, /me duele la cabeza/, /jaqueca/, /migrana/, /cefalea/],
     pasos: [
-      'El dolor de cabeza es más común en vuelo, por el dióxido de carbono y el cambio de líquidos hacia la cabeza.',
-      'Revisá el dióxido de carbono de la cabina, tomá agua y descansá. Si es el peor dolor de tu vida o ves raro, avisá ya.',
+      'Headaches are more common in flight due to carbon dioxide and cephalad fluid shift.',
+      'Check cabin carbon dioxide, drink water, and rest. If it is the worst headache of your life or vision changes, notify immediately.',
     ],
     fuentes: [tb033],
   },
@@ -329,42 +329,42 @@ export const PROTOCOLOS = [
     id: 'congestion',
     nivel: 'aviso',
     categoria: 'adaptacion',
-    titulo: 'Congestión',
-    patrones: [/congestion/, /nariz tapada/, /cara hinchada/, /tapado de la nariz/],
-    pasos: ['La congestión le pasa a más de la mitad de la tripulación, por el cambio de líquidos o el dióxido de carbono.'],
+    titulo: 'Congestion',
+    patrones: [/congest(ed|ion)/, /stuffy nose/, /puffy face/, /nariz tapada/, /cara hinchada/, /tapado de la nariz/],
+    pasos: ['Congestion affects over half of crewmembers due to fluid shift or carbon dioxide.'],
     fuentes: [tb033],
   },
   {
     id: 'espalda',
     nivel: 'aviso',
     categoria: 'adaptacion',
-    titulo: 'Dolor de espalda',
-    patrones: [/dolor de espalda/, /me duele (la espalda|la cintura)/, /lumbar/],
-    pasos: ['El dolor de espalda de adaptación le pasa a la mitad de la tripulación. Posición fetal, estiramientos suaves y ejercicio alivian a la mayoría.'],
+    titulo: 'Back pain',
+    patrones: [/back pain/, /back hurts/, /lower back/, /dolor de espalda/, /me duele (la espalda|la cintura)/, /lumbar/],
+    pasos: ['Adaptation back pain affects half of crewmembers. Fetal position, gentle stretching, and exercise relieve most cases.'],
     fuentes: [tb033],
   },
   {
     id: 'fiebre',
     nivel: 'aviso',
     categoria: 'general',
-    titulo: 'Fiebre',
-    patrones: [/fiebre/, /febril/, /(38)( con \w+)? grados/],
-    pasos: ['Medí la temperatura de nuevo en un rato y tomá agua. Si pasa de treinta y nueve grados o aparecen otros síntomas, avisá ya.'],
+    titulo: 'Fever',
+    patrones: [/\bfever\b/, /febrile/, /38(\.\d+| point \w+)? degrees/, /fiebre/, /febril/, /(38)( con \w+)? grados/],
+    pasos: ['Re-check your temperature soon and drink water. If it exceeds thirty-nine degrees or new symptoms appear, notify immediately.'],
     fuentes: [tb033],
   },
 ];
 
-// Frases vagas: no dicen qué pasa, así que primero se descartan las señales rojas.
-const MALESTAR_VAGO = [/me siento (muy )?(mal|raro|rara|fatal|horrible|pesimo)/, /no me siento (nada )?bien/, /algo (me )?anda mal/, /estoy (muy )?mal/, /me siento enferm/, /me siento descompuest/, /estoy descompuest/];
+// Vague complaints: unclear what is happening, so red flags must be ruled out first.
+const MALESTAR_VAGO = [/feel (really |very )?(bad|weird|awful|terrible|sick|unwell)/, /don'?t feel (well|good)/, /something is wrong/, /not feeling well/, /me siento (muy )?(mal|raro|rara|fatal|horrible|pesimo)/, /no me siento (nada )?bien/, /algo (me )?anda mal/, /estoy (muy )?mal/, /me siento enferm/, /me siento descompuest/, /estoy descompuest/];
 
 export const PREGUNTA_TRIAJE =
-  'Te escucho. Para saber si es urgente, decime: ¿te cuesta respirar, te duele el pecho, te desmayaste o estás sangrando? Si no, contame qué sentís y desde cuándo.';
+  "I'm listening. To check if this is urgent, tell me: are you having trouble breathing, chest pain, fainting, or bleeding? If not, tell me what you feel and since when.";
 
-const PEDIDO_DE_AVISO = [/avisa(le)? (al|a la) (oficial|medic|cirujan)/, /avisa(le)? a (houston|tierra)/, /llama(le)? (al|a la) (medic|cirujan|oficial)/, /(pedi|pedime|solicita) (una )?conferencia medica/, /reporta(lo)? (al|a la) (oficial|medic|cirujan)/, /^(avisale|avisa|si,? avisa|dale,? avisa)\b/];
+const PEDIDO_DE_AVISO = [/notify (the )?(medical officer|cmo|doctor|flight surgeon)/, /tell (the )?(medical officer|cmo|doctor|flight surgeon|houston|earth)/, /call (the )?(medical officer|cmo|doctor|flight surgeon|houston)/, /request (a )?private medical conference/, /report (this )?to (the )?(medical officer|cmo|doctor)/, /^(yes,? )?(notify|tell) (him|her|them|the cmo|the medical officer)\b/, /avisa(le)? (al|a la) (oficial|medic|cirujan)/, /avisa(le)? a (houston|tierra)/, /llama(le)? (al|a la) (medic|cirujan|oficial)/, /(pedi|pedime|solicita) (una )?conferencia medica/, /reporta(lo)? (al|a la) (oficial|medic|cirujan)/, /^(avisale|avisa|si,? avisa|dale,? avisa)\b/];
 
-// Una negación justo antes ("no tengo dolor de pecho", "sin fiebre", "ni sangrado") apaga la coincidencia.
-// Solo negaciones explícitas de síntoma: "no sé, me duele el pecho" o "no tengo fiebre pero me duele el pecho" siguen contando.
-const NEGACION_PREVIA = /(?:^|\s)(?:no tengo|no siento|no hay|no tuve|no noto|sin|ni|nunca)\s+(?:(?!pero\b|aunque\b|y\b|e\b)\S+\s+){0,2}$/;
+// Explicit negation right before a symptom suppresses the match.
+const NEGACION_PREVIA =
+  /(?:(?:^|\s)(?:don'?t|do not|didn'?t|not|without|never|neither|nor|no tengo|no siento|no hay|no tuve|no noto|sin|ni|nunca)\s+(?:(?!but\b|though\b|and\b|pero\b|aunque\b|y\b|e\b)\S+\s+){0,2}|(?:^|\s)no\s+)$/;
 
 function coincide(patron, texto) {
   const r = new RegExp(patron.source, patron.flags.replace('g', '') + 'g');
@@ -403,7 +403,7 @@ export function pideAviso(texto) {
 
 /** Respuesta afirmativa corta a la pregunta de triaje ("sí", "sí, un poco"). */
 export function esAfirmacion(texto) {
-  return /^(si|sip|claro|un poco|bastante|algo de eso)\b/.test(normalizar(texto).replace(/[¿?¡!.,;:]+/g, ' ').trim());
+  return /^(yes|yeah|yep|sure|a bit|a little|kind of|somewhat|some of that|si|sip|claro|un poco|bastante|algo de eso)\b/.test(normalizar(texto).replace(/[¿?¡!.,;:]+/g, ' ').trim());
 }
 
 /** Frase sobre la demora con Tierra, según el nivel. Con demora 0 (estación en órbita baja) se pide la PMC. */
@@ -412,15 +412,15 @@ export function cierreSegunEnlace(nivel, retrasoMin = RETRASO_TIERRA_POR_DEFECTO
   const hayDemora = Number.isFinite(retrasoMin) && retrasoMin >= 1;
   if (nivel === 'emergencia') {
     return hayDemora
-      ? `Ya avisé al oficial médico y mandé el aviso a Houston, pero la respuesta tarda unos ${idaYVuelta} minutos: no la esperes, sigan la checklist médica.`
-      : 'Ya avisé al oficial médico. Llamen a Houston y pidan una conferencia médica privada.';
+      ? `I have already notified the medical officer and sent the alert to Houston, but the reply takes about ${idaYVuelta} minutes: do not wait for it, follow the medical checklist.`
+      : 'I have already notified the medical officer. Call Houston and request a private medical conference.';
   }
   if (nivel === 'urgente') {
     return hayDemora
-      ? `Avisé al oficial médico y el aviso ya va a Houston; la respuesta tarda unos ${idaYVuelta} minutos, así que el oficial médico te revisa ahora.`
-      : 'Avisé al oficial médico: pidan a Houston una conferencia médica privada.';
+      ? `I notified the medical officer and the alert is on its way to Houston; the reply takes about ${idaYVuelta} minutes, so the medical officer is checking you now.`
+      : 'I notified the medical officer: ask Houston for a private medical conference.';
   }
-  return 'Si querés que lo reporte, decime "avisá al oficial médico" y lo dejo para tu próxima conferencia médica privada.';
+  return 'If you want me to report this, say "notify the medical officer" and I will log it for your next private medical conference.';
 }
 
 /** Texto completo que VYTA dice y muestra para un protocolo. */
@@ -434,6 +434,6 @@ export function mensajeDeProtocolo(protocolo, { retrasoMin = RETRASO_TIERRA_POR_
 export function mensajeAvisoEnviado(retrasoMin = RETRASO_TIERRA_POR_DEFECTO_MIN) {
   const idaYVuelta = Math.round(retrasoMin * 2 + EVALUACION_MIN);
   return retrasoMin >= 1
-    ? `Listo, avisé al oficial médico y el reporte va a Houston para tu conferencia médica privada; la respuesta tarda unos ${idaYVuelta} minutos. Si empeorás, decímelo y lo marco como urgente.`
-    : 'Listo, avisé al oficial médico y pedí una conferencia médica privada con el cirujano de vuelo.';
+    ? `Done, I notified the medical officer and the report is heading to Houston for your private medical conference; the reply takes about ${idaYVuelta} minutes. If anything gets worse, tell me and I will mark it urgent.`
+    : 'Done, I notified the medical officer and requested a private medical conference with the flight surgeon.';
 }

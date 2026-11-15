@@ -66,7 +66,7 @@ test('generarTareasJornada genera las 12 tareas diarias y las semanales según e
     lunes.some(
       (t) =>
         t.recurrence === 'weekly' &&
-        t.title === 'Glucosa en ayunas' &&
+        t.title === 'Fasting glucose' &&
         t.ruta === '/registrar',
     ),
   );
@@ -76,7 +76,7 @@ test('generarTareasJornada genera las 12 tareas diarias y las semanales según e
     miercoles.some(
       (t) =>
         t.recurrence === 'weekly' &&
-        t.title === 'Test visual SANS' &&
+        t.title === 'SANS visual test' &&
         t.ruta === '/actividad/cognitivos#vision',
     ),
   );
@@ -86,14 +86,14 @@ test('generarTareasJornada genera las 12 tareas diarias y las semanales según e
     viernes.some(
       (t) =>
         t.recurrence === 'weekly' &&
-        t.title.includes('Masa corporal y aceptabilidad de comida'),
+        t.title.includes('Body mass & meal acceptability'),
     ),
   );
 
   const domingo = generarTareasJornada({ diaSemana: 'domingo' });
   assert.ok(
     domingo.some(
-      (t) => t.recurrence === 'weekly' && t.title === 'Encuesta de equipo',
+      (t) => t.recurrence === 'weekly' && t.title === 'Team survey',
     ),
   );
 });
@@ -264,7 +264,7 @@ test('sincroniza check-in parcial/foto, tests cognitivos/visuales, cara, agua, e
     ],
   });
   assert.equal(lunesSoloDemo.find((t) => t.missionTime === '09:30').done, false);
-  assert.equal(lunesSoloDemo.find((t) => t.title === 'Glucosa en ayunas').done, false);
+  assert.equal(lunesSoloDemo.find((t) => t.title === 'Fasting glucose').done, false);
 });
 
 test('controles de temperatura por evento no se marcan con la fiebre inicial y sí con mediciones posteriores', () => {

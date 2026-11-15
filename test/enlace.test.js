@@ -20,10 +20,10 @@ test('constantes de retraso e hitos de enlace Tierra–Marte', () => {
   assert.deepEqual(
     HITOS_ENLACE.map((h) => h.etiqueta),
     [
-      'Enviado desde Base Marte',
-      'Llega a Houston',
-      'Evaluación de médica de vuelo',
-      'Llega a Base Marte',
+      'Sent from Mars Base',
+      'Arrives in Houston',
+      'Flight Surgeon Review',
+      'Arrives at Mars Base',
     ],
   );
 });
@@ -91,11 +91,11 @@ test('calcularEstadoEnvio cubre las 5 etapas del recorrido con retraso de 14 min
 });
 
 test('RESPUESTA_MEDICA_SOL42 y TRADUCCION_VEGA_SOL42 tienen contenido clínico y simple del Sol 42', () => {
-  assert.equal(RESPUESTA_MEDICA_SOL42.remitente, 'Dra. Elena Vance · Médica de vuelo (Houston)');
+  assert.equal(RESPUESTA_MEDICA_SOL42.remitente, 'Dr. Elena Vance · Flight Surgeon (Houston)');
   assert.equal(RESPUESTA_MEDICA_SOL42.sol, 42);
   assert.equal(RESPUESTA_MEDICA_SOL42.nivelRecomendado, 'orange');
   assert.ok(RESPUESTA_MEDICA_SOL42.asunto.length > 0);
-  assert.ok(RESPUESTA_MEDICA_SOL42.resumenTecnico.includes('reactivación viral'));
+  assert.ok(RESPUESTA_MEDICA_SOL42.resumenTecnico.includes('viral reactivation'));
   assert.ok(Array.isArray(RESPUESTA_MEDICA_SOL42.indicaciones) && RESPUESTA_MEDICA_SOL42.indicaciones.length >= 3);
 
   assert.ok(TRADUCCION_VEGA_SOL42.titulo.length > 0);
@@ -121,8 +121,8 @@ test('construirRecordatoriosDeRespuesta genera 3 Task válidas con recurrence ev
     assert.equal(new Date(ms).toISOString(), tarea.missionTime);
   }
 
-  assert.ok(tareas.some((t) => /temperatura/i.test(t.title)));
-  assert.ok(tareas.some((t) => /ejercicio suave/i.test(t.title)));
+  assert.ok(tareas.some((t) => /temperature/i.test(t.title)));
+  assert.ok(tareas.some((t) => /light exercise/i.test(t.title)));
   assert.ok(tareas.some((t) => /sol 44/i.test(t.title)));
 });
 

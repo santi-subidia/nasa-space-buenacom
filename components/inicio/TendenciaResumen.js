@@ -20,18 +20,18 @@ export default function TendenciaResumen({ lecturas, solActual = SOL_ACTUAL }) {
   const datos = [...porSol.values()].sort((a, b) => a.sol - b.sol);
 
   return (
-    <Card className={styles.tendencia} aria-label="Tendencia de signos vitales">
+    <Card className={styles.tendencia} aria-label="Vital signs trend">
       <div className={styles.tendenciaCabecera}>
         <div className={styles.tituloConIcono}>
           <span className={styles.iconoTendencia} aria-hidden="true">⌁</span>
-          <div><h2>Tendencia de signos vitales</h2><p>Últimos 7 soles</p></div>
+          <div><h2>Vital signs trend</h2><p>Last 7 sols</p></div>
         </div>
-        <select aria-label="Indicador de la tendencia" value={indicador} onChange={(event) => setIndicador(event.target.value)}>
+        <select aria-label="Trend indicator" value={indicador} onChange={(event) => setIndicador(event.target.value)}>
           {METRICAS_FIGMA.map((t) => <option key={t.id} value={t.claves[0]}>{t.nombre}</option>)}
         </select>
       </div>
       {datos.length > 0 ? (
-        <div className={styles.grafico} role="img" aria-label={`${tarjeta.nombre} en ${indicador === 'sleep_h' ? 'h' : tarjeta.unidad}, del sol ${datos[0].sol} al ${datos.at(-1).sol}`}>
+        <div className={styles.grafico} role="img" aria-label={`${tarjeta.nombre} in ${indicador === 'sleep_h' ? 'h' : tarjeta.unidad}, from Sol ${datos[0].sol} to ${datos.at(-1).sol}`}>
           <ResponsiveContainer width="100%" height="100%" initialDimension={{ width: 700, height: 160 }}>
             <AreaChart data={datos} margin={{ top: 12, right: 16, left: -24, bottom: 0 }} accessibilityLayer>
               <defs>
@@ -43,12 +43,12 @@ export default function TendenciaResumen({ lecturas, solActual = SOL_ACTUAL }) {
               <CartesianGrid stroke="#173044" strokeDasharray="2 4" vertical={false} />
               <XAxis dataKey="sol" tickFormatter={(sol) => `Sol ${sol}`} stroke="#294051" tick={{ fill: '#aac0df', fontSize: 10 }} tickLine={false} minTickGap={20} />
               <YAxis domain={['auto', 'auto']} stroke="#294051" tick={{ fill: '#aac0df', fontSize: 10 }} tickLine={false} tickCount={4} />
-              <Tooltip labelFormatter={(sol) => `Sol ${sol}`} formatter={(valor) => [`${Number(valor).toLocaleString('es-AR')} ${indicador === 'sleep_h' ? 'h' : tarjeta.unidad}`, tarjeta.nombre]} contentStyle={{ background: '#0b2031', border: '1px solid #2b5970', borderRadius: 9, fontSize: 12, color: '#f1f5ff' }} />
+              <Tooltip labelFormatter={(sol) => `Sol ${sol}`} formatter={(valor) => [`${Number(valor).toLocaleString('en-US')} ${indicador === 'sleep_h' ? 'h' : tarjeta.unidad}`, tarjeta.nombre]} contentStyle={{ background: '#0b2031', border: '1px solid #2b5970', borderRadius: 9, fontSize: 12, color: '#f1f5ff' }} />
               <Area type="monotone" dataKey="valor" stroke="#20d5f6" strokeWidth={1.8} fill="url(#inicio-tendencia)" dot={{ r: 2.5, fill: '#8beeff', stroke: '#21b8e5' }} activeDot={{ r: 4, stroke: '#c3fbff' }} isAnimationActive={false} />
             </AreaChart>
           </ResponsiveContainer>
         </div>
-      ) : <p className={styles.sinDatos}>Todavía no hay lecturas de este indicador en los últimos 7 soles.</p>}
+      ) : <p className={styles.sinDatos}>No readings for this indicator in the last 7 sols yet.</p>}
     </Card>
   );
 }

@@ -47,7 +47,7 @@ test('con los datos del sol 41 sale "Posible reactivación viral" en naranja en 
   assert.equal(sol41.zoneLevels.immune, 'orange');
   const viral = sol41.alerts.find((a) => a.ruleId === 'viral_reactivation');
   assert.ok(viral);
-  assert.equal(viral.title, 'Posible reactivación viral');
+  assert.equal(viral.title, 'Possible viral reactivation');
   assert.equal(viral.level, 'orange');
   assert.equal(viral.zone, 'immune');
   assert.equal(viral.escalate, 'cmo');
@@ -109,7 +109,7 @@ test('déficit de ejercicio: promedio semanal < 45 min (50 % del plan) da amaril
   assert.equal(alerta.level, 'yellow');
   assert.equal(alerta.zone, 'muscles');
   assert.equal(alerta.escalate, 'self');
-  assert.match(alerta.why, /30 min\/día/);
+  assert.match(alerta.why, /30 min\/day/);
 
   const cumple = evaluate(
     [1, 2, 3, 4, 5, 6, 7].map((sol) => ({ indicator: 'exercise_min', value: 80, sol })),
@@ -131,7 +131,7 @@ test('SANS: visión borrosa + agudeza 10 puntos peor que la base da naranja en o
   assert.equal(alerta.level, 'orange');
   assert.equal(alerta.escalate, 'cmo');
   assert.equal(sans.zoneLevels.eyes, 'orange');
-  assert.match(alerta.why, /-12 respecto a tu base de 92/);
+  assert.match(alerta.why, /-12 vs\. your baseline of 92/);
 
   // Sin síntoma no dispara la compuesta (queda el aviso por línea base).
   const sinSintoma = evaluate([{ indicator: 'visual_acuity', value: 80, sol: 10 }], { visual_acuity: 92 }, 'mars_base', { sol: 10 });

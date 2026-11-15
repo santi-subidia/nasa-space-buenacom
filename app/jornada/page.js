@@ -1,8 +1,8 @@
 import JornadaPantalla from '@/components/jornada/JornadaPantalla';
 
 export const metadata = {
-  title: 'Jornada · VYTA',
-  description: 'Reloj de misión marciano de 24 h 37 min y línea de tiempo de tareas del astronauta.',
+  title: 'Schedule · VYTA',
+  description: '24 h 37 min Martian mission clock and astronaut task timeline.',
 };
 
 export default function JornadaPage() {

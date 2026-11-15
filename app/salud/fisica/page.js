@@ -1,6 +1,6 @@
 import SaludPantalla from '@/components/salud/SaludPantalla';
 
-export const metadata = { title: 'Salud Física · VYTA' };
+export const metadata = { title: 'Physical Health · VYTA' };
 
 export default async function Fisica({ searchParams }) {
   const { zona } = await searchParams;

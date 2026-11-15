@@ -172,7 +172,7 @@ async function sembrarTripulantesYDatos() {
       tormenta: false,
       enRefugio: false,
       source: 'cabin_sensors',
-      note: `Telemetría Base Marte · Sol ${sol}`,
+      note: `Mars Base Telemetry · Sol ${sol}`,
     };
   });
 
@@ -274,10 +274,10 @@ async function sembrarUsuariosDemo() {
       password: 'ares4-marte',
       email_confirm: true,
       user_metadata: {
-        nombre: 'Cmdt. Nicolás Méndez',
+        nombre: 'Cmdr. Nicolás Méndez',
         rol: 'tripulante',
         astronautId: 'ana',
-        titulo: 'Comandante · Base Marte (Ares IV)',
+        titulo: 'Commander · Mars Base (Ares IV)',
       },
     },
     {
@@ -288,7 +288,7 @@ async function sembrarUsuariosDemo() {
         nombre: 'Dr. Marcos Silva',
         rol: 'cmo',
         astronautId: 'marcos',
-        titulo: 'Oficial Médico de a Bordo (CMO · Base Marte)',
+        titulo: 'Crew Medical Officer (CMO · Mars Base)',
       },
     },
     {
@@ -296,10 +296,10 @@ async function sembrarUsuariosDemo() {
       password: 'houston-jsc',
       email_confirm: true,
       user_metadata: {
-        nombre: 'Dra. Elena Vance',
+        nombre: 'Dr. Elena Vance',
         rol: 'houston',
         astronautId: null,
-        titulo: 'Médica de Vuelo · Control de Misión (Houston JSC)',
+        titulo: 'Flight Surgeon · Mission Control (Houston JSC)',
       },
     },
   ];
@@ -316,7 +316,7 @@ async function sembrarUsuariosDemo() {
 }
 
 async function main() {
-  console.log('Sembrando Supabase (astrovitals)...');
+  console.log('Seeding Supabase (astrovitals)...');
   const datos = await sembrarTripulantesYDatos();
   const transmisiones = await sembrarTransmisionInicial();
   const docsRag = await sembrarDocumentosRag();
@@ -332,6 +332,6 @@ async function main() {
 }
 
 main().catch((err) => {
-  console.error('Error sembrando Supabase:', err);
+  console.error('Error seeding Supabase:', err);
   process.exit(1);
 });

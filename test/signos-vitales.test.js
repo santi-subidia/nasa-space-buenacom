@@ -39,7 +39,7 @@ test('carga manual: los signos vitales se guardan con unidad y origen y se leen 
   assert.ok(guardadas.every((l) => l.id && l.source === 'manual'));
   assert.deepEqual(
     Object.fromEntries(guardadas.map((l) => [l.indicator, l.unit])),
-    { bp_sys: 'mmHg', bp_dia: 'mmHg', hr_rest: 'lpm', temp: '°C', spo2: '%' },
+    { bp_sys: 'mmHg', bp_dia: 'mmHg', hr_rest: 'bpm', temp: '°C', spo2: '%' },
   );
 
   const leidas = await getReadings('ana');
@@ -61,17 +61,17 @@ test('carga manual: los vitales guardados aparecen en las tarjetas de Inicio y S
   assert.equal(tarjeta(inicio, 'hr_rest').valor, '64');
   assert.equal(tarjeta(inicio, 'presion').valor, '118 / 76');
   assert.equal(tarjeta(inicio, 'spo2').valor, '98');
-  assert.equal(tarjeta(inicio, 'temp').valor, '36,7');
+  assert.equal(tarjeta(inicio, 'temp').valor, '36.7');
   assert.equal(tarjeta(inicio, 'hrv').valor, '48');
   for (const id of ['hr_rest', 'presion', 'spo2', 'temp']) {
-    assert.equal(tarjeta(inicio, id).estado, 'Rango normal', `${id} en rango normal`);
+    assert.equal(tarjeta(inicio, id).estado, 'Normal range', `${id} en rango normal`);
   }
 
   const vitales = Object.fromEntries(salud.vitales.map((v) => [v.id, v]));
   assert.equal(vitales.hr_rest.valor, '64');
   assert.equal(vitales.presion.valor, '118 / 76');
   assert.equal(vitales.spo2.valor, '98');
-  assert.equal(vitales.temp.valor, '36,7');
+  assert.equal(vitales.temp.valor, '36.7');
   assert.equal(vitales.hrv.valor, '48');
   assert.equal(vitales.hr_rest.nivel, 'green');
   assert.equal(vitales.respiracion.valor, '—', 'la frecuencia respiratoria no se mide todavía');
@@ -81,7 +81,7 @@ test('la presión arterial sólo se muestra cuando están cargadas la sistólica
   await cargar('ana', [{ indicator: 'bp_sys', value: 120, sol: SOL, ts: ts(0) }]);
   let { inicio } = pantallas(await getReadings('ana'));
   assert.equal(tarjeta(inicio, 'presion').valor, '—');
-  assert.equal(tarjeta(inicio, 'presion').estado, 'Sin datos');
+  assert.equal(tarjeta(inicio, 'presion').estado, 'No data');
 
   await cargar('ana', [{ indicator: 'bp_dia', value: 80, sol: SOL, ts: ts(1) }]);
   ({ inicio } = pantallas(await getReadings('ana')));
@@ -93,13 +93,13 @@ test('una nueva carga reemplaza a la anterior y un vital fuera de rango deja de 
   await cargar('ana', [{ indicator: 'temp', value: 38.6, sol: SOL, ts: ts(0) }]);
   const { inicio, salud } = pantallas(await getReadings('ana'));
 
-  assert.equal(tarjeta(inicio, 'temp').valor, '38,6');
-  assert.notEqual(tarjeta(inicio, 'temp').estado, 'Rango normal');
+  assert.equal(tarjeta(inicio, 'temp').valor, '38.6');
+  assert.notEqual(tarjeta(inicio, 'temp').estado, 'Normal range');
   assert.notEqual(salud.vitales.find((v) => v.id === 'temp').nivel, 'green');
 });
 
 test('rechaza un signo vital desconocido sin guardar nada', async () => {
-  await assert.rejects(cargar('ana', [{ indicator: 'pulso_inventado', value: 70, sol: SOL }]), /Indicador desconocido/);
+  await assert.rejects(cargar('ana', [{ indicator: 'pulso_inventado', value: 70, sol: SOL }]), /Unknown indicator/);
   assert.deepEqual(await getReadings('ana'), []);
 });
 
@@ -113,8 +113,8 @@ test('Sincronizar Watch carga FC, HRV, SpO₂ y temperatura y re-evalúa las ale
   assert.equal(tarjeta(inicio, 'hr_rest').valor, '74');
   assert.equal(tarjeta(inicio, 'hrv').valor, '34', 'el HRV sale de la nota del Watch');
   assert.equal(tarjeta(inicio, 'spo2').valor, '97');
-  assert.equal(tarjeta(inicio, 'temp').valor, '37,6');
-  assert.equal(salud.vitales.find((v) => v.id === 'temp').valor, '37,6');
+  assert.equal(tarjeta(inicio, 'temp').valor, '37.6');
+  assert.equal(salud.vitales.find((v) => v.id === 'temp').valor, '37.6');
 
   const alertas = await getAlerts('ana');
   assert.ok(Array.isArray(alertas), 'las alertas quedan guardadas tras sincronizar');

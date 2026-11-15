@@ -49,13 +49,13 @@ export async function POST(request) {
   try {
     cuerpo = await request.json();
   } catch {
-    return json({ ok: false, error: 'JSON inválido' }, 400);
+    return json({ ok: false, error: 'Invalid JSON' }, 400);
   }
 
   const consulta = String(cuerpo?.consulta ?? '').trim();
   const limite = Math.max(1, Math.min(8, Number(cuerpo?.limite ?? 4)));
   if (!consulta) {
-    return json({ ok: false, error: 'Escribí una consulta clínica para buscar.' }, 400);
+    return json({ ok: false, error: 'Enter a clinical query to search.' }, 400);
   }
 
   const vector = generarEmbedding384(consulta);

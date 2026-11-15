@@ -42,7 +42,7 @@ export function crearComoMeVes({ voz, fetchFn = globalThis.fetch?.bind(globalThi
         aviso: AVISO_NO_DIAGNOSTICO,
         resumen: fatiga ? fatiga.mensaje : 'Ahora no puedo comparar las fotos.',
         observaciones: [],
-        accion: 'Si algo te preocupa, medí tu temperatura o avisá al oficial médico.',
+        accion: 'If anything worries you, measure your temperature or notify the medical officer.',
         zonas: fatiga && fatiga.nivel !== 'normal' ? ['brain'] : [],
         sugerirAvisoAlOficial: false,
         fatiga,

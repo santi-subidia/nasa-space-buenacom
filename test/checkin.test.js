@@ -46,7 +46,7 @@ test('el cambio de fecha terrestre mantiene el bloqueo del mismo sol y avanzar e
   assert.equal((await guardarCheckinPorSol(chequeo(), despues)).guardado, false);
   assert.equal((await guardarCheckinPorSol(chequeo(), new Date('2026-11-20T14:00:00Z'))).guardado, false);
   assert.equal(await getCheckinPorSol('ana', 43), null);
-  await assert.rejects(guardarCheckinPorSol({ ...chequeo(), sol: 43 }, despues), /Cómo me ves hoy/);
+  await assert.rejects(guardarCheckinPorSol({ ...chequeo(), sol: 43 }, despues), /How do I look today/);
   await completarCara('ana', 43);
   assert.equal((await guardarCheckinPorSol({ ...chequeo(), sol: 43 }, despues)).guardado, true);
   assert.equal((await getReadings('ana')).length, 2);
@@ -77,8 +77,8 @@ test('las confirmaciones anteriores por fecha se reconocen en su sol y conservan
 test('las mediciones o fotos de lesiones no sustituyen al chequeo facial obligatorio', async () => {
   await addReading({ astronautId: 'ana', indicator: 'hr_rest', value: 70, sol: 42, source: 'camera' });
   const foto = { astronautId: 'ana', sol: 42, sintoma: { bodyZone: 'immune', code: 'rash', photoBlobId: 'foto-hoy' } };
-  await assert.rejects(guardarCheckinPorSol(chequeo(), ahora), /Cómo me ves hoy/);
-  await assert.rejects(guardarCheckinPorSol(foto, ahora), /Cómo me ves hoy/);
+  await assert.rejects(guardarCheckinPorSol(chequeo(), ahora), /How do I look today/);
+  await assert.rejects(guardarCheckinPorSol(foto, ahora), /How do I look today/);
   assert.equal(await getCheckinPorSol('ana', 42), null);
   assert.equal((await getReadings('ana')).length, 1);
   assert.equal((await getSymptoms('ana')).length, 0);
@@ -91,7 +91,7 @@ test('el análisis facial es exclusivo del tripulante y sol y permite completar 
   await completarCara('marcos', 42);
   await completarCara('ana', 41);
   assert.equal(await getChequeoFacialPorSol('ana', 42), null);
-  await assert.rejects(guardarCheckinPorSol(chequeo(), ahora), /Cómo me ves hoy/);
+  await assert.rejects(guardarCheckinPorSol(chequeo(), ahora), /How do I look today/);
   await completarCara();
   assert.ok(await getChequeoFacialPorSol('ana', 42));
   assert.equal((await guardarCheckinPorSol({ astronautId: 'ana', sol: 42 }, ahora)).guardado, true);
@@ -99,7 +99,7 @@ test('el análisis facial es exclusivo del tripulante y sol y permite completar 
 
 test('un análisis fallido o sin resultados no completa el requisito y el análisis local de parpadeo sí lo hace', async () => {
   for (const resultado of [{ ok: false }, { ok: true, comparacionDeIA: false, fatiga: null }]) {
-    assert.throws(() => guardarChequeoFacial({ astronautId: 'ana', sol: 42, resultado }), /análisis facial/);
+    assert.throws(() => guardarChequeoFacial({ astronautId: 'ana', sol: 42, resultado }), /facial scan/);
   }
   assert.equal(await getDb().aiResults.count(), 0);
   const local = await guardarChequeoFacial({ astronautId: 'ana', sol: 42, resultado: { ok: true, comparacionDeIA: false, fatiga: { nivel: 'normal', mensaje: 'Parpadeo normal.' } } });

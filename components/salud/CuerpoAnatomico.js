@@ -19,10 +19,10 @@ export const SISTEMA = {
 };
 
 export const CAPAS = [
-  { id: 'todo', nombre: 'Todo' },
-  { id: 'organos', nombre: 'Órganos' },
-  { id: 'musculos', nombre: 'Músculos' },
-  { id: 'esqueleto', nombre: 'Esqueleto' },
+  { id: 'todo', nombre: 'All' },
+  { id: 'organos', nombre: 'Organs' },
+  { id: 'musculos', nombre: 'Muscles' },
+  { id: 'esqueleto', nombre: 'Skeleton' },
 ];
 
 // ── Silueta ────────────────────────────────────────────
@@ -222,7 +222,7 @@ export default function CuerpoAnatomico({ zonas, propias, elegida, onElegir, cap
   const ordenadas = orden.map((id) => zonas.find((z) => z.id === id)).filter(Boolean);
 
   return (
-    <svg viewBox={`0 0 ${ANCHO} ${ALTO}`} className={styles.svg} data-capa={capa} role="group" aria-label="Cuerpo humano con las zonas de salud">
+    <svg viewBox={`0 0 ${ANCHO} ${ALTO}`} className={styles.svg} data-capa={capa} role="group" aria-label="Human body with health zones">
       <defs>
         <linearGradient id="vyta-cuerpo" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stopColor="#1b4a73" stopOpacity="0.55" />
@@ -276,7 +276,7 @@ export default function CuerpoAnatomico({ zonas, propias, elegida, onElegir, cap
         const textoX = izq ? 150 : 370;
         const sel = z.id === elegida;
         const clases = [styles.etiqueta, sel && styles.sel, z.id === resaltada && styles.resaltada, !visible(z) && styles.apagada, !enCapa(z) && styles.fuera].filter(Boolean).join(' ');
-        const estado = ETIQUETAS_NIVEL[z.nivel] || 'Sin datos';
+        const estado = ETIQUETAS_NIVEL[z.nivel] || 'No data';
         return (
           <g
             key={z.id}

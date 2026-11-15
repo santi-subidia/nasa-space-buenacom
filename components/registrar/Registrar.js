@@ -50,7 +50,7 @@ export default function Registrar() {
     if (edit[k] === undefined || edit[k] === '') return null;
     const n = num(edit[k]);
     const [min, max] = LIMITES[k];
-    return Number.isNaN(n) || n < min || n > max ? `Entre ${min} y ${max}` : null;
+    return Number.isNaN(n) || n < min || n > max ? `Between ${min} and ${max}` : null;
   };
   const hayError = Object.keys(LIMITES).some((k) => error(k));
 
@@ -83,7 +83,7 @@ export default function Registrar() {
       router.push('/');
     } catch (err) {
       console.error(err);
-      setErrorGuardado(err?.message || 'No se pudo guardar en este equipo. Probá de nuevo.');
+      setErrorGuardado(err?.message || 'Could not save on this device. Please try again.');
       guardandoRef.current = false;
       setGuardando(false);
     } finally {
@@ -93,63 +93,63 @@ export default function Registrar() {
 
   return (
     <PantallaVyta
-      titulo="Check-in por sol"
-      subtitulo={`Un chequeo por sol · Sol ${solActual}`}
+      titulo="Check-in by sol"
+      subtitulo={`One check-in per sol · Sol ${solActual}`}
       icono="/figma/nav-registrar.svg"
     >
-      {checkin.cargando ? <p role="status" className={styles.texto}>Consultando el check-in del sol actual…</p> : checkin.completado ? (
+      {checkin.cargando ? <p role="status" className={styles.texto}>Checking current sol check-in…</p> : checkin.completado ? (
         <Card className={styles.completado}>
           <span className={styles.tickCompletado} aria-hidden="true">✓</span>
-          <div><h2>Check-in del Sol {solActual} completado</h2><p>Ya guardaste tu chequeo de este sol. Podés registrar el próximo cuando avance el sol de la misión.</p></div>
-          <Link href="/" className={`${styles.boton} ${styles.primario}`}>Volver a Vista General</Link>
+          <div><h2>Sol {solActual} check-in completed</h2><p>You have already saved your check-in for this sol. You can log the next one when the mission sol advances.</p></div>
+          <Link href="/" className={`${styles.boton} ${styles.primario}`}>Back to Overview</Link>
         </Card>
       ) : <div className={styles.cuerpo}>
         <form className={styles.form} onSubmit={guardar} noValidate>
           {checkin.error && <p className={styles.error} role="alert">{checkin.error}</p>}
           <fieldset className={styles.campos} disabled={guardando || Boolean(checkin.error)}>
-          <Card titulo={`Mediciones del Sol ${solActual}`}>
-            <Fila id="presion" etiqueta="Presión arterial">
+          <Card titulo={`Sol ${solActual} Measurements`}>
+            <Fila id="presion" etiqueta="Blood pressure">
               <div className={styles.par}>
-                <Numero k="bp_sys" label="Sistólica" valor={valor('bp_sys')} onChange={cambiar} error={error('bp_sys')} />
+                <Numero k="bp_sys" label="Systolic" valor={valor('bp_sys')} onChange={cambiar} error={error('bp_sys')} />
                 <span>/</span>
-                <Numero k="bp_dia" label="Diastólica" valor={valor('bp_dia')} onChange={cambiar} error={error('bp_dia')} />
+                <Numero k="bp_dia" label="Diastolic" valor={valor('bp_dia')} onChange={cambiar} error={error('bp_dia')} />
                 <span className={styles.unidad}>mmHg</span>
               </div>
             </Fila>
 
-            <Fila id="hr_rest" etiqueta="Frecuencia cardíaca">
-              <Numero k="hr_rest" label="Frecuencia cardíaca" valor={valor('hr_rest')} onChange={cambiar} error={error('hr_rest')} />
-              <span className={styles.unidad}>lpm</span>
+            <Fila id="hr_rest" etiqueta="Heart rate">
+              <Numero k="hr_rest" label="Heart rate" valor={valor('hr_rest')} onChange={cambiar} error={error('hr_rest')} />
+              <span className={styles.unidad}>bpm</span>
               {base.hr_rest?.hoy && base.hr_rest?.source === 'camera' && (
-                <span className={styles.camaraBadge}>📷 Cámara</span>
+                <span className={styles.camaraBadge}>📷 Camera</span>
               )}
               <Link href="/cara" className={styles.boton}>
-                Medir con cámara
+                Measure with camera
               </Link>
             </Fila>
 
-            <Fila id="glucose" etiqueta="Glucosa">
-              <Numero k="glucose" label="Glucosa" valor={valor('glucose')} onChange={cambiar} error={error('glucose')} />
+            <Fila id="glucose" etiqueta="Glucose">
+              <Numero k="glucose" label="Glucose" valor={valor('glucose')} onChange={cambiar} error={error('glucose')} />
               <span className={styles.unidad}>mg/dL</span>
             </Fila>
 
-            <Fila id="temp" etiqueta="Temperatura">
-              <Numero k="temp" label="Temperatura" valor={valor('temp')} onChange={cambiar} error={error('temp')} />
+            <Fila id="temp" etiqueta="Temperature">
+              <Numero k="temp" label="Temperature" valor={valor('temp')} onChange={cambiar} error={error('temp')} />
               <span className={styles.unidad}>°C</span>
             </Fila>
 
-            <Fila id="sleep_h" etiqueta="Sueño">
+            <Fila id="sleep_h" etiqueta="Sleep">
               <input
                 type="range"
                 min="0"
                 max="12"
                 step="0.5"
                 className={styles.rango}
-                aria-label="Horas de sueño"
+                aria-label="Hours of sleep"
                 value={valor('sleep_h') || 7}
                 onChange={(e) => cambiar('sleep_h', e.target.value)}
               />
-              <strong className={styles.valorRango}>{String(valor('sleep_h') || '—').replace('.', ',')} h</strong>
+              <strong className={styles.valorRango}>{String(valor('sleep_h') || '—')} h</strong>
             </Fila>
 
             <Fila id="spo2" etiqueta="SpO₂">
@@ -157,30 +157,30 @@ export default function Registrar() {
               <span className={styles.unidad}>%</span>
             </Fila>
 
-            <Fila id="water_ml" etiqueta="Agua">
-              <Numero k="water_ml" label="Agua" valor={valor('water_ml')} onChange={cambiar} error={error('water_ml')} />
+            <Fila id="water_ml" etiqueta="Water">
+              <Numero k="water_ml" label="Water" valor={valor('water_ml')} onChange={cambiar} error={error('water_ml')} />
               <span className={styles.unidad}>ml</span>
               <button type="button" className={styles.boton} onClick={() => setEdit((e) => ({ ...e, water_ml: String((Number(e.water_ml ?? valor('water_ml')) || 0) + 250) }))}>
                 + 250 ml
               </button>
             </Fila>
 
-            <Fila id="stress" etiqueta="Estrés">
+            <Fila id="stress" etiqueta="Stress">
               <input
                 type="range"
                 min="1"
                 max="10"
                 step="1"
                 className={styles.rango}
-                aria-label="Estrés de 1 a 10"
+                aria-label="Stress from 1 to 10"
                 value={valor('stress') || 5}
                 onChange={(e) => cambiar('stress', e.target.value)}
               />
               <strong className={styles.valorRango}>{valor('stress') || '—'} / 10</strong>
             </Fila>
 
-            <Fila id="mood" etiqueta="Ánimo">
-              <div className={styles.caras} role="radiogroup" aria-label="Ánimo">
+            <Fila id="mood" etiqueta="Mood">
+              <div className={styles.caras} role="radiogroup" aria-label="Mood">
                 {CARAS.map((c) => (
                   <button
                     key={c.valor}
@@ -201,29 +201,29 @@ export default function Registrar() {
 
           <div className={styles.pie}>
             <button type="submit" className={`${styles.boton} ${styles.primario}`} disabled={!checkin.facialCompletado || hayError || guardando}>
-              {guardando ? 'Guardando…' : 'Guardar chequeo'}
+              {guardando ? 'Saving…' : 'Save check-in'}
             </button>
             <span className={styles.nota}>
               {errorGuardado
                 ? errorGuardado
                 : hayError
-                ? 'Revisá los valores marcados.'
+                ? 'Review the highlighted values.'
                 : !checkin.facialCompletado
-                  ? `Completá «Cómo me ves hoy» para el Sol ${solActual} antes de guardar.`
-                  : `Se guardará el check-in del Sol ${solActual}${cambios.length ? ` con ${cambios.length} ${cambios.length === 1 ? 'lectura' : 'lecturas'}` : ''}${foto ? ' y 1 foto' : ''}.`}
+                  ? `Complete "How do I look today" for Sol ${solActual} before saving.`
+                  : `Will save check-in for Sol ${solActual}${cambios.length ? ` with ${cambios.length} ${cambios.length === 1 ? 'reading' : 'readings'}` : ''}${foto ? ' and 1 photo' : ''}.`}
             </span>
           </div>
           </fieldset>
         </form>
 
         <div className={styles.lateral}>
-          <Card titulo="¿Cómo me ves hoy?" acento="ia">
+          <Card titulo="How do I look today?" acento="ia">
             <p className={styles.texto}>
-              Compará tu cara con tu foto base y completá el análisis facial. Es obligatorio para guardar el check-in de cada sol.
+              Compare your face with your baseline photo and complete the facial analysis. It is required to save each sol’s check-in.
             </p>
-            <p className={styles.texto} role="status">{checkin.facialCompletado ? `✓ Chequeo facial completado · Sol ${solActual}` : `Pendiente · Sol ${solActual}`}</p>
+            <p className={styles.texto} role="status">{checkin.facialCompletado ? `✓ Facial check-in completed · Sol ${solActual}` : `Pending · Sol ${solActual}`}</p>
             <Link href="/cara" className={`${styles.boton} ${styles.primario}`}>
-              <span aria-hidden="true">📷</span> Abrir chequeo facial
+              <span aria-hidden="true">📷</span> Open facial check-in
             </Link>
           </Card>
           <FotoPiel valor={foto} onChange={setFoto} />
@@ -263,7 +263,7 @@ function Fila({ id, etiqueta, children }) {
           className={styles.info}
           aria-expanded={abierta}
           aria-controls={`info-${id}`}
-          aria-label={`Qué es ${etiqueta}`}
+          aria-label={`What is ${etiqueta}`}
           onClick={() => setAbierta(!abierta)}
         >
           ⓘ
@@ -271,13 +271,13 @@ function Fila({ id, etiqueta, children }) {
       </div>
       {abierta && (
         <dl id={`info-${id}`} className={styles.ficha}>
-          <dt>Qué es</dt>
+          <dt>What it is</dt>
           <dd>{info.que}</dd>
-          <dt>Por qué en el espacio</dt>
+          <dt>Why in space</dt>
           <dd>{info.espacio}</dd>
-          <dt>Cómo medirlo</dt>
+          <dt>How to measure</dt>
           <dd>{info.medir}</dd>
-          <dt>Cuándo preocuparse</dt>
+          <dt>When to be concerned</dt>
           <dd>{info.preocuparse}</dd>
         </dl>
       )}

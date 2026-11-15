@@ -24,7 +24,7 @@ function estable(valor) {
 export const claveDeEntrada = (entrada) => createHash('sha256').update(estable(entrada)).digest('hex').slice(0, 16);
 
 function validarKind(kind) {
-  if (!KINDS.includes(kind)) throw new Error(`kind "${kind}" inválido. Válidos: ${KINDS.join(', ')}`);
+  if (!KINDS.includes(kind)) throw new Error(`Invalid kind "${kind}". Valid: ${KINDS.join(', ')}`);
 }
 
 /** Lógica común sobre un arreglo de AiResult; `persistir` se llama tras cada cambio. */

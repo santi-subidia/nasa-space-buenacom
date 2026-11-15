@@ -49,8 +49,8 @@ export function armarParametros(peticion, modelo = MODELO) {
     herramientas,
   } = peticion;
 
-  if (!ESFUERZOS.includes(esfuerzo)) throw new Error(`Esfuerzo "${esfuerzo}" inválido. Válidos: ${ESFUERZOS.join(', ')}`);
-  if (!variable) throw new Error('Falta la parte variable del mensaje (pregunta, datos del día…)');
+  if (!ESFUERZOS.includes(esfuerzo)) throw new Error(`Invalid effort "${esfuerzo}". Valid: ${ESFUERZOS.join(', ')}`);
+  if (!variable) throw new Error('Missing variable part of the message (question, daily data…)');
 
   // El breakpoint de caché va en el ÚLTIMO bloque fijo: cachea instrucciones + fichas juntas.
   const system = [{ type: 'text', text: instrucciones }];

@@ -15,18 +15,18 @@ const TESTS = [
   {
     id: 'reaccion',
     icono: '/figma/salud/brain.svg',
-    titulo: 'Atención y equilibrio',
+    titulo: 'Attention and balance',
     duracion: '30 s',
-    mide: 'Tiempo de reacción, lapsos de atención y estabilidad de la mirada al girar la cabeza.',
-    porque: 'La falta de sueño y la adaptación vestibular a la gravedad afectan el pilotaje y las tareas finas.',
+    mide: 'Reaction time, attention lapses, and gaze stability when turning your head.',
+    porque: 'Sleep loss and vestibular gravity adaptation affect piloting and fine motor tasks.',
   },
   {
     id: 'vision',
     icono: '/figma/salud/target.svg',
-    titulo: 'Agudeza visual',
+    titulo: 'Visual acuity',
     duracion: '1–2 min',
-    mide: 'Cuántos niveles de la letra E distinguís a un brazo de la pantalla.',
-    porque: 'El síndrome neuro-ocular (SANS) puede cambiar la visión de a poco durante misiones largas.',
+    mide: 'How many E-chart levels you can distinguish at arm’s length from the screen.',
+    porque: 'Spaceflight-associated neuro-ocular syndrome (SANS) can gradually alter vision on long missions.',
   },
 ];
 
@@ -75,16 +75,16 @@ export default function Cognitivos() {
     }
   }
 
-  const resumen = [reaccion && 'atención y equilibrio', vision && 'agudeza visual'].filter(Boolean).join(' y ');
+  const resumen = [reaccion && 'attention and balance', vision && 'visual acuity'].filter(Boolean).join(' and ');
 
   return (
     <PantallaVyta
-      titulo="Ejercicios cognitivos"
-      subtitulo={`Atención, equilibrio y visión · Sol ${solActual}`}
+      titulo="Cognitive exercises"
+      subtitulo={`Attention, balance & vision · Sol ${solActual}`}
       icono="/figma/nav-actividad.svg"
       acciones={
         <Link href="/actividad" className={styles.volver}>
-          ← Actividad
+          ← Activity
         </Link>
       }
     >
@@ -101,9 +101,9 @@ export default function Cognitivos() {
               </div>
             </header>
             <dl className={styles.ficha}>
-              <dt>Qué mide</dt>
+              <dt>What it measures</dt>
               <dd>{t.mide}</dd>
-              <dt>Por qué en el espacio</dt>
+              <dt>Why in space</dt>
               <dd>{t.porque}</dd>
             </dl>
             <div className={styles.cuerpoTest}>
@@ -137,16 +137,16 @@ export default function Cognitivos() {
 
       <div className={styles.pie}>
         <button type="button" className={styles.guardar} disabled={nada || estado === 'guardando'} onClick={guardar}>
-          {estado === 'guardando' ? 'Guardando…' : 'Guardar resultados'}
+          {estado === 'guardando' ? 'Saving…' : 'Save results'}
         </button>
         <span className={styles.nota} aria-live="polite">
           {estado === 'error'
-            ? 'No se pudo guardar en este equipo. Probá de nuevo.'
+            ? 'Could not save on this device. Please try again.'
             : estado === 'guardado'
-              ? 'Resultados guardados. Los ves en Analítica y en tu chequeo del día.'
+              ? 'Results saved. You can view them in Trends and your daily check-in.'
               : nada
-                ? 'Hacé al menos un test para guardar el resultado.'
-                : `Se guardará el resultado de ${resumen}${vision?.borrosa ? ' y el síntoma "visión borrosa"' : ''}.`}
+                ? 'Complete at least one test to save the result.'
+                : `Will save ${resumen}${vision?.borrosa ? ' and the symptom "blurred vision"' : ''}.`}
         </span>
       </div>
     </PantallaVyta>

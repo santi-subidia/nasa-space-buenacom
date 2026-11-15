@@ -28,8 +28,8 @@ test('Informes usa las mediciones guardadas del tripulante y las indicaciones de
   const evaluacion = evaluate(lecturas, {}, 'mars_base', { sol: 42 });
   const informe = informeDesdeRegistros({ astronauta: ana, lecturas, evaluacion, sol: 42 });
   assert.match(informe.resumen, /Nicolás Méndez/);
-  assert.match(informe.resumen, /37,8/);
-  assert.doesNotMatch(informe.resumen, /36,5|121\/78|herpes/i);
+  assert.match(informe.resumen, /37\.8/);
+  assert.doesNotMatch(informe.resumen, /36\.5|121\/78|herpes|cold sore/i);
   assert.deepEqual(informe.hallazgos, evaluacion.alerts.map((a) => a.why));
   assert.deepEqual(informe.plan, [...new Set(evaluacion.alerts.flatMap((a) => a.actions))]);
   assert.equal(informe.disponible, true);

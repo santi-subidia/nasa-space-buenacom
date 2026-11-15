@@ -45,18 +45,18 @@ const MODELO_MANO =
   'https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task';
 
 const ETIQUETA_NIVEL = {
-  green: '● Óptimo',
-  yellow: '▲ Seguimiento',
-  orange: '◆ Fatiga / Alerta',
-  red: '■ Crítico',
+  green: '● Optimal',
+  yellow: '▲ Monitoring',
+  orange: '◆ Fatigue / Alert',
+  red: '■ Critical',
 };
 
 const TITULO_FASE = {
-  cargando: 'Preparando sensores',
-  esperando_dedo: 'Calibración · Mostrá tu dedo',
-  cuenta_regresiva: 'Dedo detectado · Preparate',
-  bloque1: 'Bloque 1 · Pilotaje Go/No-Go',
-  bloque2: 'Bloque 2 · Estabilidad Vestibular VOR',
+  cargando: 'Preparing sensors',
+  esperando_dedo: 'Calibration · Show your finger',
+  cuenta_regresiva: 'Finger detected · Get ready',
+  bloque1: 'Block 1 · Go/No-Go Piloting',
+  bloque2: 'Block 2 · VOR Vestibular Stability',
 };
 
 const CANVAS_W = 800;
@@ -138,14 +138,14 @@ function dibujarCalibracion(ctx, m, ahora) {
     ctx.textBaseline = 'middle';
     ctx.fillStyle = '#e8edf7';
     ctx.font = '700 21px sans-serif';
-    ctx.fillText('Mostrá tu dedo índice frente a la cámara', cx, cy + 84);
+    ctx.fillText('Show your index finger to the camera', cx, cy + 84);
 
     ctx.fillStyle = m.calibracion.dedoPerdido ? '#facc15' : '#9aa6c4';
     ctx.font = '500 15px sans-serif';
     ctx.fillText(
       m.calibracion.dedoPerdido
-        ? 'Se perdió el dedo · Volvé a ubicarlo para iniciar la cuenta regresiva'
-        : 'El test de 30 s comenzará tras una cuenta regresiva al detectarlo',
+        ? 'Finger lost · Position it again to start the countdown'
+        : 'The 30 s test will begin after a countdown once detected',
       cx,
       cy + 116,
     );
@@ -190,7 +190,7 @@ function dibujarCalibracion(ctx, m, ahora) {
   ctx.fillStyle = '#e8edf7';
   ctx.font = '600 17px sans-serif';
   ctx.fillText(
-    m.reticle.detectada ? '¡Dedo detectado! Mantené la mano firme…' : 'Mantené el dedo frente a la cámara',
+    m.reticle.detectada ? 'Finger detected! Hold your hand steady…' : 'Hold your finger in front of the camera',
     cx,
     cy + 102,
   );
@@ -310,7 +310,7 @@ export default function TestReaccion({ resultado, baselineMs = null, mareo = 0, 
     if (metricas.intentos > 0) {
       onTerminar(metricas);
     } else {
-      setAviso('No interceptaste ninguna baliza verde en el Bloque 1. Probá de nuevo.');
+      setAviso('You did not intercept any green beacon in Block 1. Please try again.');
     }
   }, [baselineMs, liberarRecursos, onTerminar]);
 
@@ -398,7 +398,7 @@ export default function TestReaccion({ resultado, baselineMs = null, mareo = 0, 
       ctx.fillStyle = '#9aa6c4';
       ctx.textAlign = 'center';
       ctx.fillText(
-        m.modoCamara ? 'Mantené la vista en el punto central y girá la cabeza' : 'Seguí el marcador azul suavemente con el puntero',
+        m.modoCamara ? 'Keep your eyes on the center dot and turn your head' : 'Follow the blue marker smoothly with the pointer',
         CANVAS_W / 2,
         42,
       );
@@ -438,8 +438,8 @@ export default function TestReaccion({ resultado, baselineMs = null, mareo = 0, 
       ctx.font = '700 18px monospace';
       ctx.fillText(
         m.modoCamara
-          ? `Yaw: ${realDeg >= 0 ? '+' : ''}${realDeg.toFixed(0)}°  ${m.cabezaVivo.ojosAbiertos ? '· Ojos OK' : '· Abrí ojos'}`
-          : `Seguimiento: ${enZona ? 'Alineado' : 'Ajustando'}`,
+          ? `Yaw: ${realDeg >= 0 ? '+' : ''}${realDeg.toFixed(0)}°  ${m.cabezaVivo.ojosAbiertos ? '· Eyes OK' : '· Open eyes'}`
+          : `Tracking: ${enZona ? 'Aligned' : 'Adjusting'}`,
         CANVAS_W / 2,
         barraY + 40,
       );
@@ -499,7 +499,7 @@ export default function TestReaccion({ resultado, baselineMs = null, mareo = 0, 
           m.cuentaUi = null;
           setRestante(DURACION_PVT_S);
           setFase('bloque1');
-          setPistaVivo('Dedo detectado · interceptá GO, evitá NO-GO');
+          setPistaVivo('Finger detected · hit GO, avoid NO-GO');
         } else {
           const cambioFase = m.fase !== paso.estado.fase;
           if (cambioFase) {
@@ -515,11 +515,11 @@ export default function TestReaccion({ resultado, baselineMs = null, mareo = 0, 
             if (m.fase === 'esperando_dedo') {
               setPistaVivo(
                 m.calibracion.dedoPerdido
-                  ? 'Se perdió el dedo · volvé a mostrar tu índice frente a la cámara'
-                  : 'Mostrá tu dedo índice frente a la cámara para iniciar la cuenta regresiva',
+                  ? 'Finger lost · hold your index finger up to the camera again'
+                  : 'Hold your index finger up to the camera to start the countdown',
               );
             } else {
-              setPistaVivo(`Dedo detectado · el test comienza en ${paso.segundosRestantes} s`);
+              setPistaVivo(`Finger detected · test starts in ${paso.segundosRestantes} s`);
             }
           }
 
@@ -583,7 +583,7 @@ export default function TestReaccion({ resultado, baselineMs = null, mareo = 0, 
               );
               m.eventos.push({ tipo: 'ok', rtMs, capturaMs, precisionPct, tsMs: Math.round(transcurridoMs) });
               m.flash = {
-                texto: rtMs >= UMBRAL_LAPSO_MS ? `LAPSO ${rtMs} ms` : `${rtMs} ms`,
+                texto: rtMs >= UMBRAL_LAPSO_MS ? `LAPSE ${rtMs} ms` : `${rtMs} ms`,
                 color: rtMs >= UMBRAL_LAPSO_MS ? '#fb923c' : '#4ade80',
                 hastaMs: ahora + 650,
                 x: b.x,
@@ -591,7 +591,7 @@ export default function TestReaccion({ resultado, baselineMs = null, mareo = 0, 
               };
             } else {
               m.eventos.push({ tipo: 'nogo_error', tsMs: Math.round(transcurridoMs) });
-              m.flash = { texto: '¡NO-GO!', color: '#f87171', hastaMs: ahora + 700, x: b.x, y: Math.max(36, b.y - 44) };
+              m.flash = { texto: 'NO-GO!', color: '#f87171', hastaMs: ahora + 700, x: b.x, y: Math.max(36, b.y - 44) };
             }
             m.baliza = null;
             m.proximoSpawnMs = ahora + ISI_MIN_MS + Math.random() * (ISI_MAX_MS - ISI_MIN_MS) * 0.5;
@@ -601,7 +601,7 @@ export default function TestReaccion({ resultado, baselineMs = null, mareo = 0, 
             m.proximoSpawnMs = ahora + 450 + Math.random() * 500;
           } else if (b.tipo === 'go' && edad >= TIMEOUT_BALIZA_MS) {
             m.eventos.push({ tipo: 'ok', rtMs: TIMEOUT_BALIZA_MS, precisionPct: 0, tsMs: Math.round(transcurridoMs) });
-            m.flash = { texto: 'TIEMPO', color: '#fb923c', hastaMs: ahora + 650, x: b.x, y: Math.max(36, b.y - 44) };
+            m.flash = { texto: 'TIMEOUT', color: '#fb923c', hastaMs: ahora + 650, x: b.x, y: Math.max(36, b.y - 44) };
             m.baliza = null;
             m.proximoSpawnMs = ahora + 450;
           }
@@ -635,15 +635,15 @@ export default function TestReaccion({ resultado, baselineMs = null, mareo = 0, 
           setPistaVivo(
             m.modoCamara
               ? m.reticle.detectada
-                ? 'Mano detectada · interceptá GO, evitá NO-GO'
-                : 'Mostrá la mano frente a la cámara (o mové el puntero)'
-              : 'Llevá la mira a las balizas verdes GO · evitá las rojas NO-GO',
+                ? 'Hand detected · hit GO, avoid NO-GO'
+                : 'Hold your hand up to the camera (or move the pointer)'
+              : 'Aim at green GO beacons · avoid red NO-GO ones',
           );
         } else {
           setPistaVivo(
             m.modoCamara
-              ? 'Mirá el punto central y girá la cabeza siguiendo el círculo azul'
-              : 'Seguí el marcador azul suavemente con el puntero',
+              ? 'Look at the center dot and turn your head following the blue circle'
+              : 'Follow the blue marker smoothly with the pointer',
           );
         }
       }
@@ -710,11 +710,11 @@ export default function TestReaccion({ resultado, baselineMs = null, mareo = 0, 
           await videoRef.current.play().catch(() => {});
         }
       } catch (err) {
-        console.error('Error iniciando cámara PVT:', err);
+        console.error('Error starting PVT camera:', err);
         liberarRecursos();
         setFase('inactivo');
         m.fase = 'inactivo';
-        setErrorCamara('No se pudo abrir la cámara o cargar MediaPipe. Podés usar el modo sin cámara.');
+        setErrorCamara('Could not open the camera or load MediaPipe. You can use the camera-free mode.');
         return;
       }
 
@@ -728,7 +728,7 @@ export default function TestReaccion({ resultado, baselineMs = null, mareo = 0, 
       setRestante(DURACION_PVT_S);
       setCuentaRegresiva(CUENTA_REGRESIVA_S);
       setFase('esperando_dedo');
-      setPistaVivo('Mostrá tu dedo índice frente a la cámara para iniciar la cuenta regresiva');
+      setPistaVivo('Hold your index finger up to the camera to start the countdown');
       m.raf = requestAnimationFrame(ejecutarCiclo);
       return;
     }
@@ -768,28 +768,28 @@ export default function TestReaccion({ resultado, baselineMs = null, mareo = 0, 
 
   const etiquetaReloj =
     fase === 'esperando_dedo'
-      ? 'Esperando dedo'
+      ? 'Waiting for finger'
       : fase === 'cuenta_regresiva'
-        ? `Inicio en ${cuentaRegresiva} s`
+        ? `Starting in ${cuentaRegresiva} s`
         : `${restante} s`;
 
   const modalAbierto = fase !== 'inactivo' && typeof document !== 'undefined';
 
   return (
     <>
-      <Card titulo="Test Cognitivo & Vestibular · 30 s" className={className}>
+      <Card titulo="Cognitive & Vestibular Test · 30 s" className={className}>
         <video ref={videoRef} playsInline muted className={styles.videoOculto} aria-hidden="true" />
 
         <p className={styles.texto}>
-          15 s de <strong>pilotaje Go/No-Go</strong> (mano en el aire o puntero) + 15 s de{' '}
-          <strong>estabilidad vestibular VOR</strong> (giro suave de cabeza con ojos al centro). Se abre en pantalla ampliada.
+          15 s of <strong>Go/No-Go piloting</strong> (hand in the air or pointer) + 15 s of{' '}
+          <strong>VOR vestibular stability</strong> (gentle head turn with eyes on center). Opens in expanded view.
         </p>
         <div className={styles.acciones}>
           <button type="button" className={`${styles.boton} ${styles.primario}`} onClick={() => iniciar(true)}>
-            📷 Con cámara (Mano + VOR)
+            📷 With camera (Hand + VOR)
           </button>
           <button type="button" className={styles.boton} onClick={() => iniciar(false)}>
-            🖱️ Sin cámara (Mouse / Táctil)
+            🖱️ Camera-free (Mouse / Touch)
           </button>
         </div>
         {errorCamara && <p className={styles.error}>{errorCamara}</p>}
@@ -803,7 +803,7 @@ export default function TestReaccion({ resultado, baselineMs = null, mareo = 0, 
                 </span>
                 {resultado.deltaBaseMs != null && (
                   <span className={styles.nota}>
-                    {resultado.deltaBaseMs >= 0 ? `+${resultado.deltaBaseMs}` : resultado.deltaBaseMs} ms vs. base ({baselineMs} ms)
+                    {resultado.deltaBaseMs >= 0 ? `+${resultado.deltaBaseMs}` : resultado.deltaBaseMs} ms vs. baseline ({baselineMs} ms)
                   </span>
                 )}
               </div>
@@ -811,38 +811,38 @@ export default function TestReaccion({ resultado, baselineMs = null, mareo = 0, 
 
             <div className={styles.pvtGrid}>
               <div className={styles.pvtDato}>
-                <span>Mediana RT</span>
+                <span>Median RT</span>
                 <strong>{resultado.medianaMs} ms</strong>
               </div>
               <div className={styles.pvtDato}>
-                <span>Lapsos (≥355 ms)</span>
+                <span>Lapses (≥ 355 ms)</span>
                 <strong>{resultado.lapsos}</strong>
               </div>
               <div className={styles.pvtDato}>
-                <span>Precisión / No-Go</span>
+                <span>Accuracy / No-Go</span>
                 <strong>
                   {resultado.precisionPct != null ? `${resultado.precisionPct} %` : '—'} · {resultado.erroresNoGo} err
                 </strong>
               </div>
               <div className={styles.pvtDato}>
-                <span>Estabilidad VOR</span>
+                <span>VOR Stability</span>
                 <strong>{resultado.estabilidadVor != null ? `${resultado.estabilidadVor} %` : '—'}</strong>
               </div>
             </div>
 
             <p className={styles.nota}>
-              Desempeño global: <strong>{resultado.score} %</strong> · {resultado.intentos} balizas ·{' '}
-              {resultado.modoEntrada === 'camara' ? 'Modo cámara' : 'Modo puntero'}
+              Overall performance: <strong>{resultado.score} %</strong> · {resultado.intentos} beacons ·{' '}
+              {resultado.modoEntrada === 'camara' ? 'Camera mode' : 'Pointer mode'}
             </p>
 
             {onMareo && (
               <div className={styles.pvtMareo}>
-                <span className={styles.nota}>¿Mareo durante el giro?</span>
+                <span className={styles.nota}>Dizziness during head turn?</span>
                 <div className={styles.acciones}>
                   {[
-                    [0, 'No'],
-                    [1, 'Leve'],
-                    [2, 'Moderado'],
+                    [0, 'None'],
+                    [1, 'Mild'],
+                    [2, 'Moderate'],
                   ].map(([val, txt]) => (
                     <button
                       key={val}
@@ -858,14 +858,14 @@ export default function TestReaccion({ resultado, baselineMs = null, mareo = 0, 
             )}
 
             {ensayosValidos.length > 1 && (
-              <div className={styles.pvtGrafico} aria-label="Tiempos de reacción por baliza">
+              <div className={styles.pvtGrafico} aria-label="Reaction times per beacon">
                 <ResponsiveContainer width="100%" height={110}>
                   <BarChart data={ensayosValidos} margin={{ top: 8, right: 4, left: -24, bottom: 0 }}>
                     <XAxis dataKey="n" stroke="var(--color-texto-suave)" fontSize={11} tickLine={false} />
                     <YAxis domain={[0, 'dataMax + 80']} stroke="var(--color-texto-suave)" fontSize={11} tickLine={false} />
                     <Tooltip
                       formatter={(v) => [`${v} ms`, 'RT']}
-                      labelFormatter={(n) => `Baliza #${n}`}
+                      labelFormatter={(n) => `Beacon #${n}`}
                       contentStyle={{
                         background: 'var(--color-superficie-2)',
                         border: '1px solid var(--color-borde)',
@@ -894,7 +894,7 @@ export default function TestReaccion({ resultado, baselineMs = null, mareo = 0, 
 
       {modalAbierto &&
         createPortal(
-          <div className={styles.pvtModalBackdrop} role="dialog" aria-modal="true" aria-label="Test Cognitivo y Vestibular">
+          <div className={styles.pvtModalBackdrop} role="dialog" aria-modal="true" aria-label="Cognitive & Vestibular Test">
             <div className={styles.pvtModal}>
               <div className={styles.pvtModalHeader}>
                 <div className={styles.pvtModalTitulo}>
@@ -902,13 +902,13 @@ export default function TestReaccion({ resultado, baselineMs = null, mareo = 0, 
                   {fase !== 'cargando' && <strong className={styles.pvtReloj}>{etiquetaReloj}</strong>}
                 </div>
                 <button type="button" className={styles.boton} onClick={cancelar}>
-                  ✕ Cerrar (Esc)
+                  ✕ Close (Esc)
                 </button>
               </div>
 
               {fase === 'cargando' ? (
                 <div className={styles.pvtModalCargando}>
-                  <p className={styles.texto}>Cargando modelos de mano y rostro (MediaPipe)…</p>
+                  <p className={styles.texto}>Loading hand and face models (MediaPipe)…</p>
                 </div>
               ) : (
                 <>
@@ -923,7 +923,7 @@ export default function TestReaccion({ resultado, baselineMs = null, mareo = 0, 
                     />
                   </div>
                   <p className={styles.pvtModalPista}>
-                    {pistaVivo || (modoCamara ? 'Seguimiento activo por cámara' : 'Mové el puntero sobre el panel')}
+                    {pistaVivo || (modoCamara ? 'Active camera tracking' : 'Move pointer over panel')}
                   </p>
                 </>
               )}

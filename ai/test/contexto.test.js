@@ -49,14 +49,14 @@ test('si no entra en el presupuesto baja el nivel de fuentes y lo avisa', () => 
 });
 
 test('si ni las fichas solas entran, falla con un mensaje claro', () => {
-  assert.throws(() => getContext(['inmunidad'], { presupuesto: 100 }), /no entra en el presupuesto/);
+  assert.throws(() => getContext(['inmunidad'], { presupuesto: 100 }), /does not fit the budget/);
 });
 
 test('rechaza riesgos desconocidos, listas vacías y presupuestos que pasan los 100K', () => {
-  assert.throws(() => getContext(['marcianos']), /desconocido.*marcianos/);
-  assert.throws(() => getContext([]), /al menos un riesgo/);
-  assert.throws(() => getContext(['inmunidad'], { presupuesto: UMBRAL_PRECIO_TOKENS + 1 }), /umbral/);
-  assert.throws(() => getContext(['inmunidad'], { fuentes: 'mucho' }), /inválido/);
+  assert.throws(() => getContext(['marcianos']), /Unknown.*marcianos/);
+  assert.throws(() => getContext([]), /at least one risk/);
+  assert.throws(() => getContext(['inmunidad'], { presupuesto: UMBRAL_PRECIO_TOKENS + 1 }), /threshold/);
+  assert.throws(() => getContext(['inmunidad'], { fuentes: 'mucho' }), /Invalid/);
 });
 
 test('ninguna consulta posible pasa de 100K tokens, ni siquiera con los 17 riesgos y todas las fuentes sin límite de nivel', () => {
@@ -74,7 +74,7 @@ test('cada zona y cada especialista apuntan solo a riesgos que existen', () => {
     for (const id of ids) assert.ok(validos.has(id), `especialista ${esp}: riesgo ${id} no existe`);
     assert.ok(getContext(riesgosDeEspecialista(esp)).tokens > 0);
   }
-  assert.throws(() => riesgosDeZona('rodilla'), /Zona desconocida/);
+  assert.throws(() => riesgosDeZona('rodilla'), /Unknown zone/);
 });
 
 test('todos los riesgos de doc/nasa/riesgos están indexados', () => {
@@ -82,7 +82,7 @@ test('todos los riesgos de doc/nasa/riesgos están indexados', () => {
 });
 
 test('las instrucciones de Vega cubren voz corta, citas, no diagnosticar y escalar', () => {
-  for (const clave of [/voz alta/, /\[F2\]/, /No diagnostic/, /oficial médico/, /hacerse daño/]) {
+  for (const clave of [/read aloud/i, /\[F2\]/, /never diagnose/i, /medical officer/i, /self-harm/i]) {
     assert.match(INSTRUCCIONES_VEGA, clave);
   }
 });

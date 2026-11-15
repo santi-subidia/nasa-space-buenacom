@@ -48,7 +48,7 @@ export function revisarSalida(json) {
   const faltan = ESPECIALISTAS_JUNTA.filter((id) => !ids.includes(id));
   if (faltan.length) return `Faltan especialistas: ${faltan.join(', ')}`;
   if (new Set(ids).size !== ids.length) return 'Hay especialistas repetidos';
-  if (!NIVELES.includes(json.sintesis?.nivel)) return 'La síntesis no tiene un nivel válido';
+  if (!NIVELES.includes(json.sintesis?.nivel)) return 'Synthesis does not have a valid level';
   if (!json.informe_astronauta?.resumen || !json.informe_tecnico?.resumen_clinico) return 'Falta alguno de los dos informes';
   return null;
 }

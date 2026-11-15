@@ -64,9 +64,9 @@ test('tarea face: consentimiento obligatorio y dos fotos válidas, base primero'
   assert.equal(t.kind, 'face');
   assert.deepEqual(t.imagenes, [BASE, HOY]);
   assert.equal(t.esfuerzo, 'medium');
-  assert.match(t.instrucciones, /consentimiento/);
-  assert.match(t.instrucciones, /No diagnosticás/);
-  assert.match(t.variable, /Imagen 1: foto base/);
+  assert.match(t.instrucciones, /consent/);
+  assert.match(t.instrucciones, /Do not diagnose/);
+  assert.match(t.variable, /Image 1: baseline photo/);
   assert.doesNotMatch(JSON.stringify(t.entrada), /QUJD/); // las fotos no se guardan: solo su huella
 
   for (const consentimiento of [undefined, false, 'si', 1]) {
@@ -84,7 +84,7 @@ test('el esquema solo admite los aspectos de la ficha y tiene todo requerido', (
 
 test('la medición de parpadeo viaja en el prompt', () => {
   const t = construirTarea({ ...PEDIDO, parpadeo: { parpadeosPorMin: 9, pctOjosCerrados: 12 } });
-  assert.match(t.variable, /9 parpadeos por minuto, 12 %/);
+  assert.match(t.variable, /9 blinks per minute, 12 %/);
   assert.match(t.variable, /atencion/);
 });
 
@@ -125,7 +125,7 @@ test('POST face: con dos fotos devuelve observaciones, una acción, el aviso fij
 
 test('el aviso "no es un diagnóstico" está aunque la IA no lo diga o diga otra cosa', async () => {
   const { cuerpo } = await pedir(clienteDevolviendo({ ...OBSERVACION, resumen: 'Tenés una infección.' }), crearAlmacenEnMemoria());
-  assert.equal(cuerpo.aviso, 'Es una observación, no un diagnóstico.');
+  assert.equal(cuerpo.aviso, 'This is an observation, not a diagnosis.');
 });
 
 test('sin consentimiento responde 400 y no llama a la IA', async () => {
@@ -192,7 +192,7 @@ test('cliente: manda el parpadeo medido, lee el resumen, la acción y el aviso e
   assert.equal(enviado.consentimiento, true);
   assert.ok(enviado.parpadeo.parpadeosPorMin > 0);
   assert.equal(r.origen, 'claude');
-  assert.equal(voz.dichas[0], 'Veo ojeras. Dormí 8 horas. Es una observación, no un diagnóstico.');
+  assert.equal(voz.dichas[0], 'Veo ojeras. Dormí 8 horas. This is an observation, not a diagnosis.');
 });
 
 test('cliente: sin servidor devuelve la lectura de fatiga del parpadeo, con el aviso', async () => {
@@ -203,5 +203,5 @@ test('cliente: sin servidor devuelve la lectura de fatiga del parpadeo, con el a
   assert.equal(r.origen, 'local');
   assert.equal(r.fatiga.nivel, 'alto');
   assert.deepEqual(r.zonas, ['brain']);
-  assert.match(voz.dichas[0], /no un diagnóstico/);
+  assert.match(voz.dichas[0], /not a diagnosis/);
 });

@@ -55,9 +55,9 @@ test('sol 42 de Ana: el grafo enciende sueño → estrés → defensas → herpe
   assert.equal(n.circadian.estado, 'activo');
   assert.equal(n.subclinical.estado, 'activo');
   assert.equal(n.illness.estado, 'activo');
-  assert.match(n.illness.valor, /Herpes labial · sol 41/);
+  assert.match(n.illness.valor, /Cold sore · Sol 41/);
   assert.equal(n.detect.nivel, 'orange');
-  assert.match(n.detect.valor, /reactivación viral/);
+  assert.match(n.detect.valor, /viral reactivation/);
   assert.equal(n.readiness.estado, 'activo');
 
   const activa = (de, a) => g.aristas.find((x) => x.de === de && x.a === a).activa;
@@ -65,7 +65,7 @@ test('sol 42 de Ana: el grafo enciende sueño → estrés → defensas → herpe
   assert.ok(activa('isolation', 'stress'));
   assert.ok(activa('stress', 'subclinical'));
   assert.ok(activa('clinical', 'illness'));
-  assert.equal(g.camino[0], `Sueño (${n.sleep.valor})`);
+  assert.equal(g.camino[0], `Sleep (${n.sleep.valor})`);
 });
 
 test('con todo en verde no se enciende la cadena', () => {

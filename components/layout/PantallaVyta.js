@@ -11,8 +11,8 @@ export default function PantallaVyta({ titulo, subtitulo, icono, acciones, child
   return (
     <div className={`${styles.pantalla} ${className}`} data-dashboard {...props}>
       <CabeceraMision
-        nombre={astronauta?.name || 'Cargando…'}
-        titulo={astronauta?.titulo || 'Tripulante de misión'}
+        nombre={astronauta?.name || 'Loading…'}
+        titulo={astronauta?.titulo || 'Mission crewmember'}
         sol={solActual}
         entorno={mision?.entorno}
       />

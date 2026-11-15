@@ -17,13 +17,13 @@ const json = (cuerpo, status = 200) =>
 export function crearManejador({ consultar = consultarClaude, construir = construirTarea } = {}) {
   return async function POST(request) {
     const largo = Number(request.headers.get('content-length') ?? 0);
-    if (largo > MAX_BYTES) return json({ ok: false, error: 'La petición es demasiado grande' }, 413);
+    if (largo > MAX_BYTES) return json({ ok: false, error: 'Request is too large' }, 413);
 
     let cuerpo;
     try {
       cuerpo = await request.json();
     } catch {
-      return json({ ok: false, error: 'El cuerpo no es JSON válido' }, 400);
+      return json({ ok: false, error: 'Request body is not valid JSON' }, 400);
     }
 
     let peticion;

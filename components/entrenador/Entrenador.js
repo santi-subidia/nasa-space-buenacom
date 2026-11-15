@@ -26,13 +26,20 @@ const MODELO =
   process.env.NEXT_PUBLIC_POSE_MODEL_URL ||
   'https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_lite/float16/1/pose_landmarker_lite.task';
 
-const TEXTO_FASE = { inicio: 'Ponete en posición', arriba: 'Arriba', bajando: 'Bajando', abajo: 'Abajo', subiendo: 'Subiendo', sosteniendo: 'Sostené', corregir: 'Corregí la postura', fuera: 'Ponete en plancha' };
+const TEXTO_FASE = { inicio: 'Get into position', arriba: 'Up', bajando: 'Lowering', abajo: 'Bottom', subiendo: 'Rising', sosteniendo: 'Hold', corregir: 'Fix your form', fuera: 'Get into plank' };
 const MAX_FOTOS = 3;
 const MAX_CARACTERES_FOTO = 2_500_000;
 
+const ETIQUETA_INTENSIDAD = {
+  normal: 'normal',
+  moderada: 'moderate',
+  liviana: 'light',
+  reposo: 'rest',
+};
+
 const ORIGEN_COMENTARIO = {
-  guardada: 'Respuesta guardada de la IA',
-  local: 'Comentario local con tus métricas de esta serie (sin conexión con la IA)',
+  guardada: 'Saved AI response',
+  local: 'Local feedback using your metrics from this set (no AI connection)',
 };
 
 function capturarFoto(video) {
@@ -116,7 +123,7 @@ export default function Entrenador() {
     if (ahora - (r.ultimaVoz ?? 0) < minimoMs) return;
     r.ultimaVoz = ahora;
     const u = new SpeechSynthesisUtterance(texto);
-    u.lang = 'es-AR';
+    u.lang = 'en-US';
     window.speechSynthesis.cancel();
     window.speechSynthesis.speak(u);
   }, [r]);
@@ -233,17 +240,17 @@ export default function Entrenador() {
       r.clave = null;
       r.repsPrevias = 0;
       setEstado({ reps: 0, fase: 'inicio', angulo: null, segundos: 0, valido: true, correccion: null });
-      hablar(`${EJERCICIOS[ejercicio].nombre}. Empezá cuando quieras.`);
+      hablar(`${EJERCICIOS[ejercicio].nombre}. Start whenever you’re ready.`);
       bucle(PoseLandmarker.POSE_CONNECTIONS);
     } catch (e) {
       apagar();
       setPantalla('error');
       setError(
         e?.name === 'NotAllowedError'
-          ? 'No hay permiso para usar la cámara. Habilitala en el navegador y probá de nuevo.'
+          ? 'Camera permission is denied. Enable it in your browser and try again.'
           : e?.name === 'NotFoundError'
-            ? 'No se encontró ninguna cámara.'
-            : `No se pudo iniciar el entrenador (${e?.message ?? 'error desconocido'}). Revisá la conexión: el modelo se descarga la primera vez.`,
+            ? 'No camera found.'
+            : `Could not start the trainer (${e?.message ?? 'unknown error'}). Check your connection: the model downloads on first use.`,
       );
     }
   }
@@ -373,7 +380,7 @@ export default function Entrenador() {
   return (
     <div className={styles.pantalla} data-dashboard>
       <CabeceraMision nombre={astronauta?.name} titulo={astronauta?.titulo} sol={solActual} />
-      <h1 className={styles.oculto}>Actividad / Ejercicios físicos</h1>
+      <h1 className={styles.oculto}>Activity / Physical exercises</h1>
 
       {pantalla !== 'resumen' && (
         <div className={styles.cuerpo}>
@@ -388,7 +395,7 @@ export default function Entrenador() {
               <div className={styles.portada}>
                 <p className={styles.consejo}>{e.consejo}</p>
                 <button type="button" className={`${styles.boton} ${styles.primario}`} onClick={empezar} disabled={pantalla === 'cargando'}>
-                  {pantalla === 'cargando' ? 'Cargando cámara y modelo…' : '📷 Empezar con la cámara'}
+                  {pantalla === 'cargando' ? 'Loading camera and model…' : '📷 Start with camera'}
                 </button>
                 {error && <p className={styles.error} role="alert">{error}</p>}
               </div>
@@ -401,17 +408,17 @@ export default function Entrenador() {
             )}
           </div>
 
-          <aside className={styles.lado} aria-label="Entrenamiento actual">
-            <div className={styles.pasoCabecera}><p>Ejercicio {indiceEjercicio + 1} de {ejercicios.length}</p><Link href="/actividad" aria-label="Volver a elegir actividad" title="Volver a Actividad">↩</Link></div>
-            <div className={styles.ejercicios} role="radiogroup" aria-label="Elegir ejercicio">
+          <aside className={styles.lado} aria-label="Current workout">
+            <div className={styles.pasoCabecera}><p>Exercise {indiceEjercicio + 1} of {ejercicios.length}</p><Link href="/actividad" aria-label="Back to activity selection" title="Back to Activity">↩</Link></div>
+            <div className={styles.ejercicios} role="radiogroup" aria-label="Choose exercise">
               {ejercicios.map((x, i) => <button key={x.id} type="button" role="radio" aria-checked={ejercicio === x.id}
                 aria-label={`${i + 1}. ${x.nombre}`} title={x.nombre} className={ejercicio === x.id ? styles.activo : ''}
                 onClick={() => cambiar(x.id)} disabled={pantalla === 'cargando'}><span className={styles.oculto}>{x.nombre}</span></button>)}
             </div>
             <h2 className={styles.nombreEjercicio}>{e.nombre}</h2>
-            <section className={styles.panelContador} aria-label={`Contador de ${e.nombre.toLowerCase()}`}>
+            <section className={styles.panelContador} aria-label={`${e.nombre} counter`}>
               <p className={styles.contador} aria-live="polite" aria-atomic="true">{valorActualContador}{metaObjetivo ? <span> / {metaObjetivo}</span> : null}</p>
-              <p className={styles.unidadContador}>{esPlancha ? 'Segundos' : 'Repeticiones'}</p>
+              <p className={styles.unidadContador}>{esPlancha ? 'Seconds' : 'Reps'}</p>
               <div className={styles.progresoContador} aria-hidden="true"><span style={{ width: metaObjetivo ? `${Math.min(100, (valorActualContador / metaObjetivo) * 100)}%` : '0%' }} /></div>
             </section>
             <EjerciciosPendientes
@@ -424,12 +431,12 @@ export default function Entrenador() {
               ejercicioActivo={ejercicio}
             >
               <div className={styles.controles}>
-                <p className={styles.fase} role="status">{activo ? TEXTO_FASE[estado.fase] ?? estado.fase : pantalla === 'cargando' ? 'Preparando la cámara…' : 'Esperando la cámara'}</p>
-                {activo && estado.angulo !== null && <p className={styles.dato}>Ángulo: {estado.angulo}°</p>}
-                {activo && !estado.valido && <p className={styles.dato}>No te veo bien: ubicate de costado.</p>}
-                <label className={styles.voz}><input type="checkbox" checked={voz} onChange={(ev) => setVoz(ev.target.checked)} /> Indicaciones por voz</label>
-                <button type="button" className={`${styles.boton} ${styles.primario}`} onClick={terminar} disabled={!activo}>Terminar y guardar</button>
-                <p className={styles.nota}>Se guardan los minutos de ejercicio de esta sesión.</p>
+                <p className={styles.fase} role="status">{activo ? TEXTO_FASE[estado.fase] ?? estado.fase : pantalla === 'cargando' ? 'Preparing camera…' : 'Waiting for camera'}</p>
+                {activo && estado.angulo !== null && <p className={styles.dato}>Angle: {estado.angulo}°</p>}
+                {activo && !estado.valido && <p className={styles.dato}>Can’t see you clearly: stand sideways.</p>}
+                <label className={styles.voz}><input type="checkbox" checked={voz} onChange={(ev) => setVoz(ev.target.checked)} /> Voice cues</label>
+                <button type="button" className={`${styles.boton} ${styles.primario}`} onClick={terminar} disabled={!activo}>Finish & save</button>
+                <p className={styles.nota}>Exercise minutes from this session are saved.</p>
               </div>
             </EjerciciosPendientes>
           </aside>
@@ -438,20 +445,20 @@ export default function Entrenador() {
 
       {pantalla === 'resumen' && resumen && (
         <div className={styles.resumenGrid}>
-          <Card titulo="Resumen" acento="green" className={styles.resumen}>
-            <h2>¡Buen trabajo!</h2>
+          <Card titulo="Summary" acento="green" className={styles.resumen}>
+            <h2>Great work!</h2>
             <ul>
-              {resumen.series.length === 0 && <li>No se contaron repeticiones esta vez.</li>}
+              {resumen.series.length === 0 && <li>No reps counted this time.</li>}
               {resumen.series.map((s, i) => (
                 <li key={i}>
-                  <strong>{EJERCICIOS[s.ejercicio].nombre}:</strong> {s.ejercicio === 'plancha' ? `${s.segundos} s` : `${s.reps} repeticiones`}
-                  {s.correcciones.length > 0 && <span className={styles.nota}> · Para mejorar: {s.correcciones.map((c) => c.texto.replace(/\.$/, '')).join('; ')}</span>}
+                  <strong>{EJERCICIOS[s.ejercicio].nombre}:</strong> {s.ejercicio === 'plancha' ? `${s.segundos} s` : `${s.reps} reps`}
+                  {s.correcciones.length > 0 && <span className={styles.nota}> · To improve: {s.correcciones.map((c) => c.texto.replace(/\.$/, '')).join('; ')}</span>}
                 </li>
               ))}
             </ul>
-            {!resumen.guardado && <p className={styles.error} role="alert">No se pudo guardar el ejercicio en este equipo.</p>}
+            {!resumen.guardado && <p className={styles.error} role="alert">Could not save the exercise on this device.</p>}
             <p>
-              Se guardaron <strong>{String(resumen.minutos).replace('.', ',')} min</strong> de ejercicio · 🔥 Racha: <strong>{resumen.racha} días</strong>
+              Saved <strong>{String(resumen.minutos)} min</strong> of exercise · 🔥 Streak: <strong>{resumen.racha} days</strong>
             </p>
             {resumen.fotos?.length > 0 && (
               <div className={styles.fotosClave}>
@@ -459,26 +466,26 @@ export default function Entrenador() {
                   <img
                     key={i}
                     src={`data:${f.media_type};base64,${f.data}`}
-                    alt={`Fotograma clave ${i + 1} de la serie`}
+                    alt={`Key frame ${i + 1} from the set`}
                   />
                 ))}
               </div>
             )}
             <div className={styles.acciones}>
               <button type="button" className={`${styles.boton} ${styles.primario}`} onClick={otraVez}>
-                Otra serie
+                Another set
               </button>
               <Link href="/" className={styles.boton}>
-                Volver al inicio
+                Back to home
               </Link>
-              <label className={styles.voz}><input type="checkbox" checked={voz} onChange={(ev) => setVoz(ev.target.checked)} /> Voz</label>
+              <label className={styles.voz}><input type="checkbox" checked={voz} onChange={(ev) => setVoz(ev.target.checked)} /> Voice</label>
             </div>
           </Card>
 
-          <Card titulo="Vega · Comentario y plan de hoy" acento="ia" className={styles.vegaCard}>
+          <Card titulo="Vega · Feedback & today’s plan" acento="ia" className={styles.vegaCard}>
             {comentarioEstado === 'cargando' && (
               <p className={styles.vegaPensando} role="status" aria-live="polite">
-                Analizando tu técnica y ajustando el plan de ejercicio según tu estado de salud…
+                Analyzing your form and adjusting today’s exercise plan based on your health status…
               </p>
             )}
 
@@ -488,26 +495,26 @@ export default function Entrenador() {
 
                 {comentarioVega.correccion && (
                   <p className={styles.vegaCorreccion}>
-                    <strong>Técnica:</strong> {comentarioVega.correccion}
+                    <strong>Form:</strong> {comentarioVega.correccion}
                   </p>
                 )}
 
                 <div className={styles.planAjustado}>
                   <div className={styles.planTop}>
-                    <span className={styles.planEtiqueta}>Plan ajustado para hoy</span>
+                    <span className={styles.planEtiqueta}>Adjusted plan for today</span>
                     {comentarioVega.plan.limitadoPorMotor && (
-                      <span className={styles.planTecho}>Limitado por tu estado de salud</span>
+                      <span className={styles.planTecho}>Limited by your health status</span>
                     )}
                   </div>
                   <p className={styles.planValor}>
                     {comentarioVega.plan.intensidad === 'reposo'
-                      ? 'Hoy toca reposo (0 min)'
-                      : `${comentarioVega.plan.minutos} min · intensidad ${comentarioVega.plan.intensidad}`}
+                      ? 'Today is a rest day (0 min)'
+                      : `${comentarioVega.plan.minutos} min · ${ETIQUETA_INTENSIDAD[comentarioVega.plan.intensidad] || comentarioVega.plan.intensidad} intensity`}
                   </p>
                   <p className={styles.planMotivo}>{comentarioVega.plan.motivo}</p>
                   {comentarioVega.plan.ejerciciosSugeridos?.length > 0 && (
                     <div className={styles.sugeridosBloque}>
-                      <span className={styles.planEtiqueta}>Ejercicios sugeridos</span>
+                      <span className={styles.planEtiqueta}>Suggested exercises</span>
                       <div className={styles.sugeridosLista}>
                         {comentarioVega.plan.ejerciciosSugeridos
                           .filter((id) => EJERCICIOS[id])

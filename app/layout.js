@@ -9,12 +9,12 @@ const inter = Inter({ subsets: ['latin'], variable: '--font-inter', display: 'sw
 
 export const metadata = {
   title: 'VYTA',
-  description: 'Compañero de salud para astronautas en misiones largas. Prototipo educativo; no es un dispositivo médico.',
+  description: 'Health companion for astronauts on long-duration missions. Educational prototype; not a medical device.',
 };
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="es" className={inter.variable}>
+    <html lang="en" className={inter.variable}>
       <body>
         <div className={styles.app}>
           <Sidebar />

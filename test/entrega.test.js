@@ -40,7 +40,7 @@ test('ai/respaldo-demo.json existe y contiene entradas válidas para answer, boa
   for (const s of SUGERENCIAS) {
     assert.ok(preguntas.includes(s), `Falta sugerencia "${s}" en respaldo-demo.json`);
   }
-  assert.ok(preguntas.includes('¿Por qué me salió herpes labial?'));
+  assert.ok(preguntas.includes('Why did I get a cold sore?'));
 
   const boards = entradas.filter((e) => e.kind === 'board');
   assert.ok(boards.length >= 1);
@@ -74,7 +74,7 @@ test('crearAlmacenEnArchivo() precarga respaldo-demo.json solo en RUTA_POR_DEFEC
 
 test('con IA_APAGADA=1 y crearAlmacenEnArchivo(), Vega responde las 4 SUGERENCIAS con coincidencia exacta y citas NASA', async () => {
   const almacen = crearAlmacenEnArchivo();
-  const preguntas = [...SUGERENCIAS, '¿Por qué me salió herpes labial?'];
+  const preguntas = [...SUGERENCIAS, 'Why did I get a cold sore?'];
 
   for (const pregunta of preguntas) {
     const tarea = construirTarea({ tipo: 'answer', pregunta });

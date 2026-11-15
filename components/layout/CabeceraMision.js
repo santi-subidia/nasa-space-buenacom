@@ -7,9 +7,9 @@ import { alternarPanelNotificaciones, useNotificaciones } from '@/lib/datos/noti
 import styles from '@/components/inicio/InicioPantalla.module.scss';
 
 const ETIQUETA_ENTORNO = {
-  mars_base: 'Base Marte',
-  transit: 'Tránsito',
-  mars_orbit: 'Órbita Marte',
+  mars_base: 'Mars Base',
+  transit: 'Transit',
+  mars_orbit: 'Mars Orbit',
 };
 
 export default function CabeceraMision({ nombre, titulo, sol, entorno, mostrarNotificaciones = true }) {
@@ -32,8 +32,8 @@ export default function CabeceraMision({ nombre, titulo, sol, entorno, mostrarNo
     };
   }, []);
 
-  const nombreMostrar = nombre || astronauta?.name || 'Cargando…';
-  const tituloMostrar = titulo || astronauta?.titulo || 'Tripulante de misión';
+  const nombreMostrar = nombre || astronauta?.name || 'Loading…';
+  const tituloMostrar = titulo || astronauta?.titulo || 'Mission crewmember';
   const solMostrar = sol ?? solActual ?? mision?.solActual ?? 42;
   const entornoRaw = entorno ?? mision?.entorno ?? 'mars_base';
   const entornoMostrar = ETIQUETA_ENTORNO[entornoRaw] ?? entornoRaw;
@@ -47,8 +47,8 @@ export default function CabeceraMision({ nombre, titulo, sol, entorno, mostrarNo
         <span><strong>{nombreMostrar}</strong><small>{tituloMostrar}</small></span>
       </div>
       <div className={styles.conexion}>
-        <span>Conexión</span>
-        <strong><i className={enLinea ? styles.enLinea : styles.sinConexion} aria-hidden="true" /> {enLinea ? 'En línea' : 'Sin conexión'}</strong>
+        <span>Connection</span>
+        <strong><i className={enLinea ? styles.enLinea : styles.sinConexion} aria-hidden="true" /> {enLinea ? 'Online' : 'Offline'}</strong>
         <small>{entornoMostrar} · Sol {solMostrar}</small>
       </div>
       <div className={styles.tierra} aria-hidden="true" />
@@ -57,8 +57,8 @@ export default function CabeceraMision({ nombre, titulo, sol, entorno, mostrarNo
         className={`${styles.campana} ${hayCritica ? styles.campanaCritica : ''}`}
         onClick={alternarPanelNotificaciones}
         aria-controls="panel-notificaciones"
-        aria-label={`Notificaciones de misión (${notificaciones.length})`}
-        title="Notificaciones de misión"
+        aria-label={`Mission notifications (${notificaciones.length})`}
+        title="Mission notifications"
       >
         <span aria-hidden="true">🔔</span>
         {notificaciones.length > 0 && (
@@ -66,8 +66,8 @@ export default function CabeceraMision({ nombre, titulo, sol, entorno, mostrarNo
         )}
       </button>}
       <div className={styles.fecha}>
-        <span>{ahora ? ahora.toLocaleDateString('es-AR', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'America/Argentina/Buenos_Aires' }) : '—'}</span>
-        <span>{ahora ? `${ahora.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'UTC' })} UTC` : '—'}</span>
+        <span>{ahora ? ahora.toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' }) : '—'}</span>
+        <span>{ahora ? `${ahora.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'UTC' })} UTC` : '—'}</span>
       </div>
       <img src="/figma/nasa.svg" width="66" height="66" alt="NASA" className={styles.insignia} />
     </header>

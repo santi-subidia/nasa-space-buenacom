@@ -43,7 +43,7 @@ test('validarMedicion rechaza lo absurdo, redondea y pone la unidad estándar', 
   assert.equal(validarMedicion({ indicador: 'mood', valor: 7 }).motivo, 'rango');
   assert.equal(validarMedicion({ indicador: 'nada', valor: 1 }).motivo, 'indicador');
   assert.equal(validarMedicion({ indicador: 'temp', valor: 'abc' }).motivo, 'valor');
-  assert.equal(describirMedicion({ indicador: 'temp', valor: 37.6, unidad: '°C' }), 'temperatura 37,6 °C');
+  assert.equal(describirMedicion({ indicador: 'temp', valor: 37.6, unidad: '°C' }), 'temperature 37.6 °C');
 });
 
 test('la herramienta registrar_medicion es estricta y solo permite indicadores conocidos', () => {
@@ -89,7 +89,7 @@ test('el chequeo matutino se completa entero por voz y registra Readings con sou
   ]);
   assert.ok(registradas.every((r) => r.source === 'voice' && r.astronautId === 'ana' && r.ts === 'T' && r.id));
   assert.equal(chequeo.obtener().fase, 'completo');
-  assert.match(voz.dichas.at(-1), /Chequeo completo/);
+  assert.match(voz.dichas.at(-1), /Check-in complete/);
   assert.equal(voz.dichas[0], PASOS_MATUTINOS[0].pregunta);
 });
 
@@ -112,7 +112,7 @@ test('un valor absurdo no se guarda: Vega pide repetir', async () => {
   const chequeo = crearChequeoPorVoz({ voz, pasos: [PASOS_MATUTINOS[1]], alRegistrar: (r) => registradas.push(r), fetchFn: sinServidor });
   await chequeo.iniciar();
   assert.deepEqual(registradas.map((r) => r.value), [37.6]);
-  assert.ok(voz.dichas.some((d) => /no parece correcto/.test(d)));
+  assert.ok(voz.dichas.some((d) => /doesn't look right/.test(d)));
 });
 
 test('si falta una de las dos cifras de la presión, Vega pregunta por la que falta', async () => {
@@ -126,7 +126,7 @@ test('si falta una de las dos cifras de la presión, Vega pregunta por la que fa
   const chequeo = crearChequeoPorVoz({ voz, pasos: [PASOS_MATUTINOS[0]], alRegistrar: (r) => registradas.push(r), fetchFn });
   assert.equal((await chequeo.iniciar()).completo, true);
   assert.deepEqual(registradas.map((r) => r.indicator), ['bp_sys', 'bp_dia']);
-  assert.ok(voz.dichas.some((d) => /Me falta presión baja/.test(d)));
+  assert.ok(voz.dichas.some((d) => /Still missing diastolic blood pressure/.test(d)));
 });
 
 test('un indicador que el paso no esperaba no se cuela en el registro', async () => {
@@ -143,13 +143,13 @@ test('"después" omite el paso y el chequeo queda incompleto, avisando qué falt
   const { completo } = await chequeo.iniciar();
   assert.equal(completo, false);
   assert.deepEqual(chequeo.obtener().omitidos, ['temperatura']);
-  assert.match(voz.dichas.at(-1), /Quedó sin anotar: temperatura/);
+  assert.match(voz.dichas.at(-1), /Left unlogged: temperatura/);
 });
 
 test('sin micrófono o con el permiso denegado no rompe y lo dice', async () => {
   const sin = crearChequeoPorVoz({ voz: { soportaReconocimiento: false }, fetchFn: sinServidor });
   assert.equal((await sin.iniciar()).completo, false);
-  assert.match(sin.obtener().error, /teclado/);
+  assert.match(sin.obtener().error, /keyboard/);
 
   const denegado = crearChequeoPorVoz({ voz: vozFalsa([{ codigo: 'not-allowed', mensaje: 'Sin permiso' }]), fetchFn: sinServidor });
   assert.equal((await denegado.iniciar()).completo, false);
@@ -163,7 +163,7 @@ test('"Anotá 37 con 6 de temperatura" en cualquier momento registra la medició
   const hechas = await chequeo.anotar('Anotá 37 con 6 de temperatura');
   assert.equal(hechas.length, 1);
   assert.equal(registradas[0].source, 'voice');
-  assert.equal(voz.dichas.at(-1), 'Anoté temperatura 37,6 °C.');
+  assert.equal(voz.dichas.at(-1), 'Logged temperature 37.6 °C.');
   assert.deepEqual(await chequeo.anotar('blablá'), []);
 });
 

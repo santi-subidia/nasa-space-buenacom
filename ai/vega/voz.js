@@ -19,11 +19,11 @@ export function elegirVoz(voces = []) {
 }
 
 export const ERRORES_DE_MICROFONO = {
-  'not-allowed': 'No tengo permiso para usar el micrófono. Permitilo en el navegador o escribí la pregunta.',
-  'service-not-allowed': 'El navegador no me deja usar el reconocimiento de voz. Escribí la pregunta.',
-  'no-speech': 'No te escuché. Probá de nuevo, un poco más cerca del micrófono.',
-  'audio-capture': 'No encuentro un micrófono conectado.',
-  network: 'El reconocimiento de voz del navegador necesita internet. Escribí la pregunta.',
+  'not-allowed': 'I do not have permission to use the microphone. Allow it in your browser or type the question.',
+  'service-not-allowed': 'The browser will not let me use speech recognition. Type your question.',
+  'no-speech': "I didn't hear you. Try again a little closer to the microphone.",
+  'audio-capture': "I can't find a connected microphone.",
+  network: 'Browser speech recognition requires an internet connection. Type your question.',
   aborted: '',
 };
 
@@ -123,7 +123,7 @@ export function crearVoz({
         }
         throw {
           codigo: error?.codigo || 'audio-capture',
-          mensaje: error?.message || error?.mensaje || 'No pude usar el micrófono.',
+          mensaje: error?.message || error?.mensaje || 'Could not use microphone.',
         };
       }
     })();
@@ -132,7 +132,7 @@ export function crearVoz({
   function escucharConWebSpeech() {
     return new Promise((resolver, rechazar) => {
       const r = new Reconocimiento();
-      r.lang = 'es-AR';
+      r.lang = 'en-US';
       r.interimResults = true;
       r.continuous = true;
       r.maxAlternatives = 3;
@@ -238,7 +238,7 @@ export function crearVoz({
         }
         if (abortado || error === 'aborted') rechazar({ codigo: 'aborted', mensaje: '' });
         else if (ultimoTexto.trim() && (!error || error === 'no-speech')) resolver(ultimoTexto.trim());
-        else if (error) rechazar({ codigo: error, mensaje: ERRORES_DE_MICROFONO[error] ?? 'No pude usar el micrófono.' });
+        else if (error) rechazar({ codigo: error, mensaje: ERRORES_DE_MICROFONO[error] ?? 'Could not use microphone.' });
         else rechazar({ codigo: 'no-speech', mensaje: ERRORES_DE_MICROFONO['no-speech'] });
       };
       alCambiar('escuchando');
@@ -256,7 +256,7 @@ export function crearVoz({
   /** Escucha una frase. Resuelve con el texto final; rechaza con { codigo, mensaje }. */
   function escuchar(opciones = {}) {
     if (!soportaReconocimiento) {
-      return Promise.reject({ codigo: 'no-soportado', mensaje: 'Este navegador no reconoce voz. Probá con Safari o Chrome, o escribí la pregunta.' });
+      return Promise.reject({ codigo: 'no-soportado', mensaje: 'This browser does not support speech recognition. Try Safari or Chrome, or type the question.' });
     }
     callar();
     detenerEscucha();
@@ -276,7 +276,7 @@ export function crearVoz({
       alCambiar('inactivo');
       throw {
         codigo: error?.codigo || 'audio-capture',
-        mensaje: error?.message || error?.mensaje || 'No pude usar el micrófono.',
+        mensaje: error?.message || error?.mensaje || 'Could not use microphone.',
       };
     }
   }

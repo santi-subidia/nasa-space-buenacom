@@ -12,10 +12,10 @@ import { normalizar } from '../vega/texto.js';
 
 /** Pasos del chequeo matutino de 90 s (el sueño llega solo del Watch simulado). Configurable. */
 export const PASOS_MATUTINOS = [
-  { id: 'presion', indicadores: ['bp_sys', 'bp_dia'], pregunta: 'Empecemos por la presión. ¿Qué cifras te dio? Decime la alta y la baja.' },
-  { id: 'temperatura', indicadores: ['temp'], pregunta: '¿Qué temperatura tenés?' },
-  { id: 'animo', indicadores: ['mood'], pregunta: '¿Cómo te sentís hoy, del uno al cinco? Cinco es muy bien.' },
-  { id: 'estres', indicadores: ['stress'], pregunta: '¿Y el estrés, del uno al diez?' },
+  { id: 'presion', indicadores: ['bp_sys', 'bp_dia'], pregunta: "Let's start with blood pressure. What readings did you get? Give me systolic and diastolic." },
+  { id: 'temperatura', indicadores: ['temp'], pregunta: 'What is your temperature?' },
+  { id: 'animo', indicadores: ['mood'], pregunta: 'How are you feeling today, from one to five? Five is very well.' },
+  { id: 'estres', indicadores: ['stress'], pregunta: 'And stress, from one to ten?' },
 ];
 
 const MAX_INTENTOS = 3;
@@ -25,8 +25,8 @@ const esComando = (texto, palabras) => {
   const t = normalizar(texto);
   return palabras.some((p) => new RegExp(`\\b${p}`).test(t));
 };
-const quiereSaltar = (t) => esComando(t, ['salte', 'saltar', 'despues', 'omiti', 'omitir', 'no se']);
-const quiereTerminar = (t) => esComando(t, ['cancel', 'terminar', 'basta', 'para ya', 'dejalo']);
+const quiereSaltar = (t) => esComando(t, ['salte', 'saltar', 'despues', 'omiti', 'omitir', 'no se', 'skip', 'next', 'later', 'omit', 'dont know']);
+const quiereTerminar = (t) => esComando(t, ['cancel', 'terminar', 'basta', 'para ya', 'dejalo', 'stop', 'end', 'quit', 'finish', 'never mind']);
 
 function nuevaReading({ indicador, valor, unidad }, astronautId, ahora) {
   const id = globalThis.crypto?.randomUUID?.() ?? `r-${Date.now()}-${Math.random().toString(16).slice(2)}`;
@@ -90,17 +90,17 @@ export function crearChequeoPorVoz({
     emitir({ hechos });
   }
 
-  const resumen = (mediciones) => mediciones.map(describirMedicion).join(' y ');
+  const resumen = (mediciones) => mediciones.map(describirMedicion).join(' and ');
 
   /** Frase suelta: "Anotá 37 con 6 de temperatura". Devuelve las mediciones registradas. */
   async function anotar(texto) {
     const resultado = await interpretar(String(texto ?? ''), []);
     if (!resultado?.mediciones.length) {
-      await decir(resultado?.problema ?? 'No entendí qué anotar. Decime el indicador y el valor, por ejemplo "temperatura 37 con 6".');
+      await decir(resultado?.problema ?? 'I did not catch what to log. Tell me the indicator and value, like "temperature 37 point 6".');
       return [];
     }
     registrar(resultado.mediciones);
-    await decir(`Anoté ${resumen(resultado.mediciones)}.`);
+    await decir(`Logged ${resumen(resultado.mediciones)}.`);
     return resultado.mediciones;
   }
 
@@ -118,10 +118,10 @@ export function crearChequeoPorVoz({
       } catch (e) {
         if (!vigente() || e?.codigo === 'aborted') return 'cancelado';
         if (e?.codigo === 'no-speech') {
-          await decir('No te escuché. Decímelo de nuevo.');
+          await decir("I didn't hear you. Say it again.");
           continue;
         }
-        emitir({ fase: 'inactivo', error: e?.mensaje ?? 'No pude usar el micrófono.' });
+        emitir({ fase: 'inactivo', error: e?.mensaje ?? 'Could not use microphone.' });
         return 'error';
       }
       if (!vigente()) return 'cancelado';
@@ -141,14 +141,14 @@ export function crearChequeoPorVoz({
           registrar(utiles);
           pendientes = pendientes.filter((id) => !utiles.some((m) => m.indicador === id));
           if (!pendientes.length) {
-            await decir(`Anoté ${resumen(utiles)}.`);
+            await decir(`Logged ${resumen(utiles)}.`);
             return 'hecho';
           }
-          await decir(`Anoté ${resumen(utiles)}. Me falta ${pendientes.map((id) => INDICADORES[id].nombre).join(' y ')}.`);
+          await decir(`Logged ${resumen(utiles)}. Still missing ${pendientes.map((id) => INDICADORES[id].nombre).join(' and ')}.`);
           continue;
         }
       }
-      await decir(resultado?.problema ?? 'No te entendí. Probá con números, por ejemplo "37 con 6".');
+      await decir(resultado?.problema ?? 'I did not understand. Try numbers, like "37 point 6".');
     }
     return 'omitido'; // demasiados intentos: se sigue con el próximo paso
   }
@@ -156,7 +156,7 @@ export function crearChequeoPorVoz({
   /** Recorre los pasos que faltan. Resuelve cuando termina o se cancela. */
   async function iniciar() {
     if (!voz?.soportaReconocimiento) {
-      emitir({ error: 'Este navegador no reconoce voz. Completá el chequeo con el teclado.' });
+      emitir({ error: 'This browser does not support speech recognition. Complete the check-in with the keyboard.' });
       return { completo: false };
     }
     const mio = ++corrida;
@@ -175,7 +175,7 @@ export function crearChequeoPorVoz({
 
     const completo = estado.omitidos.length === 0;
     emitir({ fase: 'completo', pasoActual: null });
-    await decir(completo ? 'Chequeo completo. Que tengas un buen día.' : `Chequeo terminado. Quedó sin anotar: ${estado.omitidos.join(', ')}.`);
+    await decir(completo ? 'Check-in complete. Have a good sol.' : `Check-in finished. Left unlogged: ${estado.omitidos.join(', ')}.`);
     return { completo };
   }
 

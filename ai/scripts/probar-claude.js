@@ -8,20 +8,20 @@ import { construirTarea } from '../tareas.js';
 
 const peticion = construirTarea({
   tipo: 'answer',
-  pregunta: '¿Por qué me salió herpes labial?',
+  pregunta: 'Why did I get a cold sore?',
   riesgos: ['inmunidad', 'sueno-horarios'],
   datosDelDia: { sol: 42, sueno_horas: 5.3, estres: 8, temperatura_c: 37.2 },
 });
 const { citas, ...paraClaude } = peticion;
 
-console.log('Clave configurada:', process.env.ANTHROPIC_API_KEY ? 'sí' : 'NO (se usará la respuesta guardada)');
+console.log('Configured key:', process.env.ANTHROPIC_API_KEY ? 'yes' : 'NO (saved response will be used)');
 
 for (const vuelta of [1, 2]) {
   const t0 = Date.now();
   const r = await consultarClaude(paraClaude);
-  console.log(`\n--- Consulta ${vuelta} (${Date.now() - t0} ms) ---`);
-  console.log('ok:', r.ok, '· origen:', r.origen, '· motivo:', r.motivo);
-  if (r.texto) console.log('Respuesta:', r.texto);
-  if (r.uso) console.log('Uso:', r.uso, vuelta === 2 && r.uso.cacheLectura > 0 ? '← el caché funciona' : '');
+  console.log(`\n--- Query ${vuelta} (${Date.now() - t0} ms) ---`);
+  console.log('ok:', r.ok, '· source:', r.origen, '· reason:', r.motivo);
+  if (r.texto) console.log('Response:', r.texto);
+  if (r.uso) console.log('Usage:', r.uso, vuelta === 2 && r.uso.cacheLectura > 0 ? '<- cache works' : '');
 }
-console.log('\nCitas disponibles:', citas.map((c) => `${c.id}: ${c.titulo}`).join(' | '));
+console.log('\nAvailable citations:', citas.map((c) => `${c.id}: ${c.titulo}`).join(' | '));

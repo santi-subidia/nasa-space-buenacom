@@ -60,23 +60,23 @@ for (const ruta of listarFichas()) {
   for (const [, , destino] of lineaFuentes.matchAll(/\[([^\]]+)\]\(([^)]+)\)/g)) {
     const absoluta = resolve(dirname(ruta), destino);
     if (!existsSync(absoluta)) {
-      problemas.push(`${rel(ruta)}: la fuente ${destino} no existe`);
+      problemas.push(`${rel(ruta)}: source ${destino} does not exist`);
       continue;
     }
     const rutaDoc = aPosix(relative(DOC, absoluta));
     const { titulo: t, url } = leerFuente(absoluta);
-    if (!url) problemas.push(`${rutaDoc}: no tiene línea "> Fuente: <url>"`);
+    if (!url) problemas.push(`${rutaDoc}: missing line "> Fuente: <url>"`);
     fuentes.push({ archivo: `doc/${rutaDoc}`, titulo: t, url, tipo: tipoDeFuente(rutaDoc) });
   }
-  if (fuentes.length === 0) problemas.push(`${rel(ruta)}: no se encontraron fuentes`);
+  if (fuentes.length === 0) problemas.push(`${rel(ruta)}: no sources found`);
 
   riesgos[id] = { id, grupo, titulo, peligros, ficha: rel(ruta), fuentes };
 }
 
 if (problemas.length) {
-  console.error('Problemas al generar el índice:\n- ' + problemas.join('\n- '));
+  console.error('Errors generating the index:\n- ' + problemas.join('\n- '));
   process.exit(1);
 }
 
 writeFileSync(SALIDA, JSON.stringify({ generadoDesde: 'doc/nasa/riesgos', riesgos }, null, 2) + '\n');
-console.log(`OK: ${Object.keys(riesgos).length} riesgos -> ${rel(SALIDA)}`);
+console.log(`OK: ${Object.keys(riesgos).length} risks -> ${rel(SALIDA)}`);

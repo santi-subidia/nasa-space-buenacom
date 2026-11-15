@@ -1,6 +1,6 @@
 import SaludPantalla from '@/components/salud/SaludPantalla';
 
-export const metadata = { title: 'Salud Mental · VYTA' };
+export const metadata = { title: 'Mental Health · VYTA' };
 
 export default async function Mental({ searchParams }) {
   const { zona } = await searchParams;

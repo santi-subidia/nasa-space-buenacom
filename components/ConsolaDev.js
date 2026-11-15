@@ -16,7 +16,7 @@ export default function ConsolaDev() {
   useEffect(() => {
     silenciarLogsMediaPipe();
     window.astro = { db, tipos, motor, demo };
-    demo.asegurarDemo().catch((e) => console.error('No se pudieron inicializar los datos de demo', e));
+    demo.asegurarDemo().catch((e) => console.error('Failed to initialize demo data', e));
   }, []);
   return null;
 }

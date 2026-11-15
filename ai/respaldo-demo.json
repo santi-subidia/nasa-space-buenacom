@@ -2,9 +2,9 @@
   {
     "id": "demo-answer-eva-sol42",
     "kind": "answer",
-    "clave": "c7f70efa7a87aba0",
+    "clave": "33431bf8e7682e83",
     "input": {
-      "pregunta": "¿Puedo hacer la EVA de mañana?",
+      "pregunta": "Can I do tomorrow’s EVA?",
       "riesgos": [
         "eva",
         "descompresion",
@@ -12,7 +12,7 @@
       ]
     },
     "output": {
-      "texto": "Hoy no conviene confirmar la EVA porque estás en nivel naranja: dormiste cinco horas y tres décimas, tenés treinta y siete con seis grados y estrés alto, factores que aumentan la fatiga y el riesgo dentro del traje [F1][F2]. Avisá hoy al oficial médico para evaluar si corresponde reprogramar la salida [F2].",
+      "texto": "It is best not to confirm the EVA today because you are at orange level: you slept 5.3 hours, have a temperature of 37.6 °C, and high stress, all of which increase fatigue and risk inside the suit [F1][F2]. Notify the medical officer today to evaluate whether the spacewalk should be rescheduled [F2].",
       "json": null,
       "llamadas": []
     },
@@ -21,15 +21,15 @@
   {
     "id": "demo-answer-sueno-sol42",
     "kind": "answer",
-    "clave": "39b97285bd374a9a",
+    "clave": "6cb0f24dc96e5d5c",
     "input": {
-      "pregunta": "Explicame mi sueño",
+      "pregunta": "Explain my sleep",
       "riesgos": [
         "sueno-horarios"
       ]
     },
     "output": {
-      "texto": "En los últimos tres soles promediaste unas cinco horas y dos décimas de sueño, por debajo del rango óptimo de siete a nueve horas [F1]. En Marte el sol dura veinticuatro horas con treinta y siete minutos y la sobrecarga desajusta el reloj biológico, afectando tu alerta y tus defensas [F2]. Priorizá el sueño protegido esta noche.",
+      "texto": "Over the last three sols you averaged about 5.2 hours of sleep, below the optimal 7 to 9 hour range [F1]. On Mars a sol lasts 24 hours and 37 minutes, and overload shifts your biological clock, affecting your alertness and immune defenses [F2]. Prioritize protected sleep tonight.",
       "json": null,
       "llamadas": []
     },
@@ -38,15 +38,15 @@
   {
     "id": "15ff565e-6e4b-4545-812e-22a48fdc66c6",
     "kind": "answer",
-    "clave": "46e6050216683f10",
+    "clave": "fa18eb2ed8a3920c",
     "input": {
-      "pregunta": "¿Por qué me salió herpes?",
+      "pregunta": "Why did I get a cold sore?",
       "riesgos": [
         "inmunidad"
       ]
     },
     "output": {
-      "texto": "Puede ser una reactivación de un virus que ya tenías latente en el cuerpo. El estrés, el mal sueño y los cambios del entorno en el espacio pueden despertarlo [F1]. En tu caso se juntan dormir unas cinco horas y media, estrés alto y treinta y siete con seis grados, por eso la alerta está en naranja [F2]. Avisá hoy al oficial médico y, mientras tanto, no compartas utensilios.",
+      "texto": "It may be a reactivation of a latent virus you already carried. Stress, poor sleep, and environmental changes in space can trigger it [F1]. In your case, sleeping around 5.5 hours, high stress, and 37.6 °C are combining, which is why the alert is at orange [F2]. Notify the medical officer today and avoid sharing utensils in the meantime.",
       "json": null,
       "llamadas": []
     },
@@ -55,15 +55,15 @@
   {
     "id": "demo-answer-deshidratado-sol42",
     "kind": "answer",
-    "clave": "08a85ae7a00ab0ec",
+    "clave": "601dfd569f5693cd",
     "input": {
-      "pregunta": "¿Cómo sé si estoy deshidratado?",
+      "pregunta": "How do I know if I’m dehydrated?",
       "riesgos": [
         "nutricion"
       ]
     },
     "output": {
-      "texto": "Fijate en la sed, el color de la orina, el cansancio y cuánto líquido venís sumando frente a tu meta diaria [F1]. Hoy llevás mil novecientos mililitros de agua, por debajo de tu base habitual, y una hidratación baja junto con menos ejercicio eleva el riesgo de cálculos renales [F2]. Tomá agua de a poco durante el sol.",
+      "texto": "Watch for thirst, urine color, fatigue, and how much fluid you have logged compared to your daily target [F1]. Today you are at 1900 ml of water, below your usual baseline, and low hydration combined with less exercise raises the risk of kidney stones [F2]. Sip water steadily throughout the sol.",
       "json": null,
       "llamadas": []
     },
@@ -72,15 +72,15 @@
   {
     "id": "demo-answer-herpes-labial-sol42",
     "kind": "answer",
-    "clave": "18eab395ba07b882",
+    "clave": "fae54c037c370f5e",
     "input": {
-      "pregunta": "¿Por qué me salió herpes labial?",
+      "pregunta": "Why did I get a lip cold sore?",
       "riesgos": [
         "inmunidad"
       ]
     },
     "output": {
-      "texto": "Puede deberse a la reactivación de un virus latente favorecida por el estrés sostenido, la falta de sueño y el entorno cerrado de la misión [F1]. Como además tenés treinta y siete con seis grados, el motor marcó nivel naranja [F2]. Avisá hoy al oficial médico y no compartas vasos ni cubiertos mientras tanto.",
+      "texto": "It may be due to latent virus reactivation favored by sustained stress, lack of sleep, and the closed mission environment [F1]. Since you also have 37.6 °C, the rules engine flagged orange level [F2]. Notify the medical officer today and do not share glasses or cutlery in the meantime.",
       "json": null,
       "llamadas": []
     },
@@ -99,13 +99,13 @@
       ]
     },
     "output": {
-      "texto": "{\"especialistas\":[{\"id\":\"cardiovascular\",\"nivel\":\"yellow\",\"opinion\":\"La frecuencia cardíaca en reposo subió de 62 a 70 lpm en 7 soles, mientras la presión se mantiene estable (121/78 mmHg), sin síntomas cardiovasculares. Conviene vigilar la tendencia a diario, porque puede reflejar desacondicionamiento, estrés o infección.\",\"fuentes\":[\"F5\",\"F6\"]},{\"id\":\"inmunidad\",\"nivel\":\"orange\",\"opinion\":\"Herpes labial reportado (gravedad 2), temperatura en ascenso de 36,8 a 37,6 °C y estrés de 8/10 sostenido sugieren una posible reactivación viral. Podría haber contagio a la tripulación, por lo que hay que evaluar con el oficial médico. Todavía no hay fiebre (≥ 38 °C).\",\"fuentes\":[\"F1\",\"F2\"]},{\"id\":\"conducta-y-sueno\",\"nivel\":\"orange\",\"opinion\":\"El sueño promedió 5,2 h en los últimos 3 soles, con ánimo de 2/5 durante 3 días seguidos y estrés de 8. Esta combinación cumple la regla de riesgo de sueño y de ánimo, y puede estar debilitando las defensas. Hace falta un plan de descanso y de apoyo confidencial.\",\"fuentes\":[\"F8\",\"F9\",\"F16\",\"F17\"]},{\"id\":\"hueso-y-musculo\",\"nivel\":\"yellow\",\"opinion\":\"El ejercicio de resistencia bajó de 90 a 40 min por día y el consumo de agua bajó de 2400 a 1900 ml. Esa combinación aumenta el riesgo de cálculo renal por el calcio liberado del hueso, así que hay que reforzar la hidratación y revisar la dieta con calcio y vitamina D.\",\"fuentes\":[\"F10\",\"F12\"]},{\"id\":\"ambiente\",\"nivel\":\"orange\",\"opinion\":\"Las lesiones de herpes labial pueden transmitirse por utensilios compartidos. Conviene mantener la higiene, usar utensilios individuales y limpiar superficies comunes hasta aclarar el cuadro.\",\"fuentes\":[\"F3\",\"F4\"]}],\"desacuerdos\":[{\"tema\":\"Causa del cuadro: reactivación viral o efecto del sueño insuficiente\",\"posiciones\":[{\"especialista\":\"inmunidad\",\"postura\":\"El herpes labial y el aumento de temperatura sugieren una reactivación viral que podría contagiarse, y hay que descartar infección.\"},{\"especialista\":\"conducta-y-sueno\",\"postura\":\"El sueño de 5,2 h y el estrés alto pueden estar debilitando la inmunidad y explicar parte del malestar.\"}],\"resolucion\":\"Las dos lecturas son compatibles y se suman. Se trata como orange con dos frentes: higiene y no compartir utensilios por el posible contagio, y plan de sueño de 7 a 8 h. No se diagnostica; el oficial médico decide si corresponde hisopado u otros estudios.\"}],\"sintesis\":{\"nivel\":\"orange\",\"accion\":\"avisar_oficial_medico\",\"decision\":\"Avisar hoy al oficial médico, mantener higiene estricta con utensilios individuales y priorizar entre 7 y 8 h de sueño, sin señales rojas presentes.\",\"razones\":[\"El piso del motor es orange y la evidencia lo sostiene: herpes labial, temperatura en ascenso y 3 días de sueño menor a 6 h con estrés 8.\",\"Posible reactivación viral con riesgo de contagio a la tripulación.\",\"Ánimo en 2/5 durante 3 días seguidos, que requiere seguimiento confidencial.\",\"No hay dolor de pecho, falta de aire, hinchazón de cuello o brazo ni ideas de autolesión, así que no corresponde escalar a red.\"]},\"informe_astronauta\":{\"titulo\":\"Cuidándote esta semana\",\"resumen\":\"Nicolás, esta semana tu cuerpo viene con más carga: dormiste poco, el estrés está alto y apareció el herpes labial. Por eso te pedimos que avises hoy al oficial médico. No es una emergencia, pero queremos cuidarte y evitar que se contagie alguien más. También vemos que tomás menos agua y hacés menos ejercicio, así que vamos a ajustar eso con calma.\",\"que_hacer\":[\"Avisá hoy al oficial médico y contale cómo te sentís.\",\"Usá tus propios utensilios y no compartas vasos, cubiertos ni toallas.\",\"Intentá dormir entre 7 y 8 horas, con horarios parecidos cada día.\",\"Tomá agua de a poco durante el día y medí tu temperatura cada mañana.\"]},\"informe_tecnico\":{\"resumen_clinico\":\"Tripulante Nicolás, sol 42, mars_base. Herpes labial reportado S41 07:10 (gravedad 2). Temperatura 37,6 °C (S42 06:45), en ascenso desde 36,8 °C (S36). Sueño promedio 5,2 h en S40-S42. Estrés 8/10 y ánimo 2/5 durante 3 días. FC en reposo 70 lpm (S42), en ascenso desde 62 lpm (S36). TA 121/78 mmHg, estable. Ejercicio 40 min/día (desde 90). Agua 1900 ml/día (desde 2400). Sin fiebre ni señales rojas. Nivel del motor orange, mantenido.\",\"hallazgos\":[\"Posible reactivación viral (herpes labial) con riesgo de contagio a la tripulación.\",\"Temperatura 37,6 °C, sin fiebre, con tendencia ascendente en 7 soles.\",\"Privación crónica de sueño (5,2 h promedio) con estrés 8/10 y ánimo 2/5 sostenidos.\",\"FC en reposo en aumento de 8 lpm en 7 soles, con TA normal.\",\"Descenso de ingesta hídrica (-500 ml/día) y de ejercicio de resistencia, factores de riesgo para cálculo renal.\"],\"plan\":[\"Aviso al oficial médico en el día para evaluación.\",\"Considerar hisopado o estudio de lesión según criterio médico.\",\"Aislamiento de utensilios y limpieza de superficies compartidas.\",\"Plan de sueño de 7 a 8 h y registro diario de horas de sueño.\",\"Recuperar hidratación (objetivo a definir por médico) y registrar ingesta diaria.\",\"Monitoreo diario de temperatura, FC en reposo y checklist de síntomas, con reevaluación si T ≥ 38 °C o aparecen síntomas nuevos.\"],\"recordatorios\":[{\"titulo\":\"Control de temperatura y síntomas\",\"sol\":43,\"detalle\":\"Medir temperatura, revisar lesiones y completar checklist de síntomas.\"},{\"titulo\":\"Revisión de sueño y ánimo\",\"sol\":43,\"detalle\":\"Revisar horas de sueño de las últimas 3 noches y la escala de ánimo con el oficial médico.\"},{\"titulo\":\"Hisopado de lesión si el médico lo indica\",\"sol\":44,\"detalle\":\"Hisopado dentro de 2 soles, según criterio del oficial médico.\"},{\"titulo\":\"Reevaluación de tendencias\",\"sol\":45,\"detalle\":\"Revisar FC en reposo, TA, hidratación y ejercicio, y decidir si se mantiene o baja el nivel.\"}]}}",
+      "texto": "{\"especialistas\":[{\"id\":\"cardiovascular\",\"nivel\":\"yellow\",\"opinion\":\"Resting heart rate rose from 62 to 70 bpm over 7 sols, while blood pressure remains stable (121/78 mmHg) with no cardiovascular symptoms. Daily trend monitoring is warranted, as this may reflect deconditioning, stress, or infection.\",\"fuentes\":[\"F5\",\"F6\"]},{\"id\":\"inmunidad\",\"nivel\":\"orange\",\"opinion\":\"Reported cold sore (severity 2), rising temperature from 36.8 to 37.6 °C, and sustained 8/10 stress suggest possible viral reactivation. Crew transmission could occur, so evaluation with the medical officer is needed. No fever yet (>= 38 °C).\",\"fuentes\":[\"F1\",\"F2\"]},{\"id\":\"conducta-y-sueno\",\"nivel\":\"orange\",\"opinion\":\"Sleep averaged 5.2 h over the last 3 sols, with mood at 2/5 for 3 consecutive days and stress at 8. This combination triggers both sleep and mood risk rules and may be weakening immune defenses. A rest plan and confidential support are needed.\",\"fuentes\":[\"F8\",\"F9\",\"F16\",\"F17\"]},{\"id\":\"hueso-y-musculo\",\"nivel\":\"yellow\",\"opinion\":\"Resistance exercise dropped from 90 to 40 min/day and water intake dropped from 2400 to 1900 ml. This combination raises kidney stone risk from bone calcium release, so hydration should be reinforced and calcium/vitamin D intake reviewed.\",\"fuentes\":[\"F10\",\"F12\"]},{\"id\":\"ambiente\",\"nivel\":\"orange\",\"opinion\":\"Cold sore lesions can spread via shared utensils. Maintain hygiene, use dedicated utensils, and sanitize common surfaces until the episode resolves.\",\"fuentes\":[\"F3\",\"F4\"]}],\"desacuerdos\":[{\"tema\":\"Cause of findings: viral reactivation vs. insufficient sleep effect\",\"posiciones\":[{\"especialista\":\"inmunidad\",\"postura\":\"The cold sore and rising temperature suggest viral reactivation that could spread, so infection must be ruled out.\"},{\"especialista\":\"conducta-y-sueno\",\"postura\":\"Sleep of 5.2 h and high stress may be suppressing immunity and explaining part of the malaise.\"}],\"resolucion\":\"Both interpretations are compatible and additive. Manage as orange on two fronts: hygiene and dedicated utensils for possible contagion, plus a 7 to 8 h sleep plan. Do not diagnose; the medical officer will decide whether a swab or further workup is needed.\"}],\"sintesis\":{\"nivel\":\"orange\",\"accion\":\"avisar_oficial_medico\",\"decision\":\"Notify the medical officer today, maintain strict hygiene with dedicated utensils, and prioritize 7 to 8 h of sleep; no red flags are present.\",\"razones\":[\"The engine floor is orange and the evidence supports it: cold sore, rising temperature, and 3 days of sleep under 6 h with stress 8.\",\"Possible viral reactivation with transmission risk to the crew.\",\"Mood at 2/5 for 3 consecutive days requiring confidential follow-up.\",\"No chest pain, shortness of breath, neck/arm swelling, or self-harm thoughts, so escalation to red is not warranted.\"]},\"informe_astronauta\":{\"titulo\":\"Looking after you this week\",\"resumen\":\"Nicolas, your body has been carrying extra load this week: you slept less, stress is high, and a cold sore appeared. That is why we ask you to notify the medical officer today. It is not an emergency, but we want to look after you and prevent spreading it to anyone else. We also see lower water intake and exercise, so we will adjust that steadily.\",\"que_hacer\":[\"Notify the medical officer today and share how you feel.\",\"Use your own utensils and do not share glasses, cutlery, or towels.\",\"Aim for 7 to 8 hours of sleep on a consistent schedule each day.\",\"Sip water steadily throughout the day and measure your temperature every morning.\"]},\"informe_tecnico\":{\"resumen_clinico\":\"Crewmember Nicolas, Sol 42, mars_base. Cold sore reported S41 07:10 (severity 2). Temperature 37.6 °C (S42 06:45), trending up from 36.8 °C (S36). Mean sleep 5.2 h across S40-S42. Stress 8/10 and mood 2/5 for 3 days. Resting HR 70 bpm (S42), up from 62 bpm (S36). BP 121/78 mmHg, stable. Exercise 40 min/day (down from 90). Water 1900 ml/day (down from 2400). No fever or red flags. Engine level orange, maintained.\",\"hallazgos\":[\"Possible viral reactivation (cold sore) with transmission risk to the crew.\",\"Temperature 37.6 °C, afebrile, with upward trend over 7 sols.\",\"Chronic sleep restriction (5.2 h mean) with sustained stress 8/10 and mood 2/5.\",\"Resting HR up by 8 bpm over 7 sols, with normal BP.\",\"Reduced fluid intake (-500 ml/day) and resistance exercise, raising kidney stone risk.\"],\"plan\":[\"Notify the medical officer today for clinical evaluation.\",\"Consider lesion swab or further testing per medical officer judgment.\",\"Isolate utensils and sanitize shared surfaces.\",\"7 to 8 h sleep plan with daily sleep duration logging.\",\"Restore hydration (target set by medical officer) and log daily intake.\",\"Daily monitoring of temperature, resting HR, and symptom checklist; re-evaluate if T >= 38 °C or new symptoms appear.\"],\"recordatorios\":[{\"titulo\":\"Temperature and symptom check\",\"sol\":43,\"detalle\":\"Measure temperature, inspect lesions, and complete the symptom checklist.\"},{\"titulo\":\"Sleep and mood review\",\"sol\":43,\"detalle\":\"Review sleep hours from the last 3 nights and mood scale with the medical officer.\"},{\"titulo\":\"Lesion swab if ordered by physician\",\"sol\":44,\"detalle\":\"Perform swab within 2 sols if indicated by the medical officer.\"},{\"titulo\":\"Trend reassessment\",\"sol\":45,\"detalle\":\"Review resting HR, BP, hydration, and exercise, and decide whether to maintain or step down the alert level.\"}]}}",
       "json": {
         "especialistas": [
           {
             "id": "cardiovascular",
             "nivel": "yellow",
-            "opinion": "La frecuencia cardíaca en reposo subió de 62 a 70 lpm en 7 soles, mientras la presión se mantiene estable (121/78 mmHg), sin síntomas cardiovasculares. Conviene vigilar la tendencia a diario, porque puede reflejar desacondicionamiento, estrés o infección.",
+            "opinion": "Resting heart rate rose from 62 to 70 bpm over 7 sols, while blood pressure remains stable (121/78 mmHg) with no cardiovascular symptoms. Daily trend monitoring is warranted, as this may reflect deconditioning, stress, or infection.",
             "fuentes": [
               "F5",
               "F6"
@@ -114,7 +114,7 @@
           {
             "id": "inmunidad",
             "nivel": "orange",
-            "opinion": "Herpes labial reportado (gravedad 2), temperatura en ascenso de 36,8 a 37,6 °C y estrés de 8/10 sostenido sugieren una posible reactivación viral. Podría haber contagio a la tripulación, por lo que hay que evaluar con el oficial médico. Todavía no hay fiebre (≥ 38 °C).",
+            "opinion": "Reported cold sore (severity 2), rising temperature from 36.8 to 37.6 °C, and sustained 8/10 stress suggest possible viral reactivation. Crew transmission could occur, so evaluation with the medical officer is needed. No fever yet (>= 38 °C).",
             "fuentes": [
               "F1",
               "F2"
@@ -123,7 +123,7 @@
           {
             "id": "conducta-y-sueno",
             "nivel": "orange",
-            "opinion": "El sueño promedió 5,2 h en los últimos 3 soles, con ánimo de 2/5 durante 3 días seguidos y estrés de 8. Esta combinación cumple la regla de riesgo de sueño y de ánimo, y puede estar debilitando las defensas. Hace falta un plan de descanso y de apoyo confidencial.",
+            "opinion": "Sleep averaged 5.2 h over the last 3 sols, with mood at 2/5 for 3 consecutive days and stress at 8. This combination triggers both sleep and mood risk rules and may be weakening immune defenses. A rest plan and confidential support are needed.",
             "fuentes": [
               "F8",
               "F9",
@@ -134,7 +134,7 @@
           {
             "id": "hueso-y-musculo",
             "nivel": "yellow",
-            "opinion": "El ejercicio de resistencia bajó de 90 a 40 min por día y el consumo de agua bajó de 2400 a 1900 ml. Esa combinación aumenta el riesgo de cálculo renal por el calcio liberado del hueso, así que hay que reforzar la hidratación y revisar la dieta con calcio y vitamina D.",
+            "opinion": "Resistance exercise dropped from 90 to 40 min/day and water intake dropped from 2400 to 1900 ml. This combination raises kidney stone risk from bone calcium release, so hydration should be reinforced and calcium/vitamin D intake reviewed.",
             "fuentes": [
               "F10",
               "F12"
@@ -143,7 +143,7 @@
           {
             "id": "ambiente",
             "nivel": "orange",
-            "opinion": "Las lesiones de herpes labial pueden transmitirse por utensilios compartidos. Conviene mantener la higiene, usar utensilios individuales y limpiar superficies comunes hasta aclarar el cuadro.",
+            "opinion": "Cold sore lesions can spread via shared utensils. Maintain hygiene, use dedicated utensils, and sanitize common surfaces until the episode resolves.",
             "fuentes": [
               "F3",
               "F4"
@@ -152,78 +152,78 @@
         ],
         "desacuerdos": [
           {
-            "tema": "Causa del cuadro: reactivación viral o efecto del sueño insuficiente",
+            "tema": "Cause of findings: viral reactivation vs. insufficient sleep effect",
             "posiciones": [
               {
                 "especialista": "inmunidad",
-                "postura": "El herpes labial y el aumento de temperatura sugieren una reactivación viral que podría contagiarse, y hay que descartar infección."
+                "postura": "The cold sore and rising temperature suggest viral reactivation that could spread, so infection must be ruled out."
               },
               {
                 "especialista": "conducta-y-sueno",
-                "postura": "El sueño de 5,2 h y el estrés alto pueden estar debilitando la inmunidad y explicar parte del malestar."
+                "postura": "Sleep of 5.2 h and high stress may be suppressing immunity and explaining part of the malaise."
               }
             ],
-            "resolucion": "Las dos lecturas son compatibles y se suman. Se trata como orange con dos frentes: higiene y no compartir utensilios por el posible contagio, y plan de sueño de 7 a 8 h. No se diagnostica; el oficial médico decide si corresponde hisopado u otros estudios."
+            "resolucion": "Both interpretations are compatible and additive. Manage as orange on two fronts: hygiene and dedicated utensils for possible contagion, plus a 7 to 8 h sleep plan. Do not diagnose; the medical officer will decide whether a swab or further workup is needed."
           }
         ],
         "sintesis": {
           "nivel": "orange",
           "accion": "avisar_oficial_medico",
-          "decision": "Avisar hoy al oficial médico, mantener higiene estricta con utensilios individuales y priorizar entre 7 y 8 h de sueño, sin señales rojas presentes.",
+          "decision": "Notify the medical officer today, maintain strict hygiene with dedicated utensils, and prioritize 7 to 8 h of sleep; no red flags are present.",
           "razones": [
-            "El piso del motor es orange y la evidencia lo sostiene: herpes labial, temperatura en ascenso y 3 días de sueño menor a 6 h con estrés 8.",
-            "Posible reactivación viral con riesgo de contagio a la tripulación.",
-            "Ánimo en 2/5 durante 3 días seguidos, que requiere seguimiento confidencial.",
-            "No hay dolor de pecho, falta de aire, hinchazón de cuello o brazo ni ideas de autolesión, así que no corresponde escalar a red."
+            "The engine floor is orange and the evidence supports it: cold sore, rising temperature, and 3 days of sleep under 6 h with stress 8.",
+            "Possible viral reactivation with transmission risk to the crew.",
+            "Mood at 2/5 for 3 consecutive days requiring confidential follow-up.",
+            "No chest pain, shortness of breath, neck/arm swelling, or self-harm thoughts, so escalation to red is not warranted."
           ]
         },
         "informe_astronauta": {
-          "titulo": "Cuidándote esta semana",
-          "resumen": "Nicolás, esta semana tu cuerpo viene con más carga: dormiste poco, el estrés está alto y apareció el herpes labial. Por eso te pedimos que avises hoy al oficial médico. No es una emergencia, pero queremos cuidarte y evitar que se contagie alguien más. También vemos que tomás menos agua y hacés menos ejercicio, así que vamos a ajustar eso con calma.",
+          "titulo": "Looking after you this week",
+          "resumen": "Nicolas, your body has been carrying extra load this week: you slept less, stress is high, and a cold sore appeared. That is why we ask you to notify the medical officer today. It is not an emergency, but we want to look after you and prevent spreading it to anyone else. We also see lower water intake and exercise, so we will adjust that steadily.",
           "que_hacer": [
-            "Avisá hoy al oficial médico y contale cómo te sentís.",
-            "Usá tus propios utensilios y no compartas vasos, cubiertos ni toallas.",
-            "Intentá dormir entre 7 y 8 horas, con horarios parecidos cada día.",
-            "Tomá agua de a poco durante el día y medí tu temperatura cada mañana."
+            "Notify the medical officer today and share how you feel.",
+            "Use your own utensils and do not share glasses, cutlery, or towels.",
+            "Aim for 7 to 8 hours of sleep on a consistent schedule each day.",
+            "Sip water steadily throughout the day and measure your temperature every morning."
           ]
         },
         "informe_tecnico": {
-          "resumen_clinico": "Tripulante Nicolás, sol 42, mars_base. Herpes labial reportado S41 07:10 (gravedad 2). Temperatura 37,6 °C (S42 06:45), en ascenso desde 36,8 °C (S36). Sueño promedio 5,2 h en S40-S42. Estrés 8/10 y ánimo 2/5 durante 3 días. FC en reposo 70 lpm (S42), en ascenso desde 62 lpm (S36). TA 121/78 mmHg, estable. Ejercicio 40 min/día (desde 90). Agua 1900 ml/día (desde 2400). Sin fiebre ni señales rojas. Nivel del motor orange, mantenido.",
+          "resumen_clinico": "Crewmember Nicolas, Sol 42, mars_base. Cold sore reported S41 07:10 (severity 2). Temperature 37.6 °C (S42 06:45), trending up from 36.8 °C (S36). Mean sleep 5.2 h across S40-S42. Stress 8/10 and mood 2/5 for 3 days. Resting HR 70 bpm (S42), up from 62 bpm (S36). BP 121/78 mmHg, stable. Exercise 40 min/day (down from 90). Water 1900 ml/day (down from 2400). No fever or red flags. Engine level orange, maintained.",
           "hallazgos": [
-            "Posible reactivación viral (herpes labial) con riesgo de contagio a la tripulación.",
-            "Temperatura 37,6 °C, sin fiebre, con tendencia ascendente en 7 soles.",
-            "Privación crónica de sueño (5,2 h promedio) con estrés 8/10 y ánimo 2/5 sostenidos.",
-            "FC en reposo en aumento de 8 lpm en 7 soles, con TA normal.",
-            "Descenso de ingesta hídrica (-500 ml/día) y de ejercicio de resistencia, factores de riesgo para cálculo renal."
+            "Possible viral reactivation (cold sore) with transmission risk to the crew.",
+            "Temperature 37.6 °C, afebrile, with upward trend over 7 sols.",
+            "Chronic sleep restriction (5.2 h mean) with sustained stress 8/10 and mood 2/5.",
+            "Resting HR up by 8 bpm over 7 sols, with normal BP.",
+            "Reduced fluid intake (-500 ml/day) and resistance exercise, raising kidney stone risk."
           ],
           "plan": [
-            "Aviso al oficial médico en el día para evaluación.",
-            "Considerar hisopado o estudio de lesión según criterio médico.",
-            "Aislamiento de utensilios y limpieza de superficies compartidas.",
-            "Plan de sueño de 7 a 8 h y registro diario de horas de sueño.",
-            "Recuperar hidratación (objetivo a definir por médico) y registrar ingesta diaria.",
-            "Monitoreo diario de temperatura, FC en reposo y checklist de síntomas, con reevaluación si T ≥ 38 °C o aparecen síntomas nuevos."
+            "Notify the medical officer today for clinical evaluation.",
+            "Consider lesion swab or further testing per medical officer judgment.",
+            "Isolate utensils and sanitize shared surfaces.",
+            "7 to 8 h sleep plan with daily sleep duration logging.",
+            "Restore hydration (target set by medical officer) and log daily intake.",
+            "Daily monitoring of temperature, resting HR, and symptom checklist; re-evaluate if T >= 38 °C or new symptoms appear."
           ],
           "recordatorios": [
             {
-              "titulo": "Control de temperatura y síntomas",
+              "titulo": "Temperature and symptom check",
               "sol": 43,
-              "detalle": "Medir temperatura, revisar lesiones y completar checklist de síntomas."
+              "detalle": "Measure temperature, inspect lesions, and complete the symptom checklist."
             },
             {
-              "titulo": "Revisión de sueño y ánimo",
+              "titulo": "Sleep and mood review",
               "sol": 43,
-              "detalle": "Revisar horas de sueño de las últimas 3 noches y la escala de ánimo con el oficial médico."
+              "detalle": "Review sleep hours from the last 3 nights and mood scale with the medical officer."
             },
             {
-              "titulo": "Hisopado de lesión si el médico lo indica",
+              "titulo": "Lesion swab if ordered by physician",
               "sol": 44,
-              "detalle": "Hisopado dentro de 2 soles, según criterio del oficial médico."
+              "detalle": "Perform swab within 2 sols if indicated by the medical officer."
             },
             {
-              "titulo": "Reevaluación de tendencias",
+              "titulo": "Trend reassessment",
               "sol": 45,
-              "detalle": "Revisar FC en reposo, TA, hidratación y ejercicio, y decidir si se mantiene o baja el nivel."
+              "detalle": "Review resting HR, BP, hydration, and exercise, and decide whether to maintain or step down the alert level."
             }
           ]
         }
@@ -246,14 +246,14 @@
       "nivelMotor": "orange"
     },
     "output": {
-      "texto": "{\"comentario\":\"Muy bien, completaste doce repeticiones de sentadilla con buena profundidad. Como hoy estás con febrícula y nivel naranja, ajustamos el resto del entrenamiento a veinte minutos de intensidad liviana.\",\"correccion\":\"Mantené la espalda recta al subir para proteger la zona lumbar.\",\"plan\":{\"minutos\":20,\"intensidad\":\"liviana\",\"motivo\":\"Febrícula de 37,6 °C y poco sueño en Sol 42: hoy 20 minutos de intensidad liviana.\"}}",
+      "texto": "{\"comentario\":\"Great job, you completed twelve squats with solid depth. Since you have a mild temperature elevation and orange level today, we adjusted the rest of your workout to twenty minutes at light intensity.\",\"correccion\":\"Keep your back straight as you stand up to protect your lower back.\",\"plan\":{\"minutos\":20,\"intensidad\":\"liviana\",\"motivo\":\"Mild fever at 37.6 °C and low sleep on Sol 42: 20 minutes of light intensity today.\"}}",
       "json": {
-        "comentario": "Muy bien, completaste doce repeticiones de sentadilla con buena profundidad. Como hoy estás con febrícula y nivel naranja, ajustamos el resto del entrenamiento a veinte minutos de intensidad liviana.",
-        "correccion": "Mantené la espalda recta al subir para proteger la zona lumbar.",
+        "comentario": "Great job, you completed twelve squats with solid depth. Since you have a mild temperature elevation and orange level today, we adjusted the rest of your workout to twenty minutes at light intensity.",
+        "correccion": "Keep your back straight as you stand up to protect your lower back.",
         "plan": {
           "minutos": 20,
           "intensidad": "liviana",
-          "motivo": "Febrícula de 37,6 °C y poco sueño en Sol 42: hoy 20 minutos de intensidad liviana."
+          "motivo": "Mild fever at 37.6 °C and low sleep on Sol 42: 20 minutes of light intensity today."
         }
       },
       "llamadas": []

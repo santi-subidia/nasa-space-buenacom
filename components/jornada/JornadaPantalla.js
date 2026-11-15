@@ -28,35 +28,35 @@ import {
 import styles from './JornadaPantalla.module.scss';
 
 const FILTROS = [
-  { id: 'all', etiqueta: 'Todas' },
-  { id: 'daily', etiqueta: 'Diarias' },
-  { id: 'weekly', etiqueta: 'Semanales' },
-  { id: 'event', etiqueta: 'Por evento' },
+  { id: 'all', etiqueta: 'All' },
+  { id: 'daily', etiqueta: 'Daily' },
+  { id: 'weekly', etiqueta: 'Weekly' },
+  { id: 'event', etiqueta: 'Event-driven' },
 ];
 
-const ETIQUETA_RECURRENCIA = { weekly: 'Semanal', event: 'Por evento' };
+const ETIQUETA_RECURRENCIA = { weekly: 'Weekly', event: 'Event' };
 
 const ETIQUETA_RUTA = {
-  '/': 'Inicio',
-  '/registrar': 'Registrar',
-  '/cara': 'Abrir cámara',
-  '/entrenador': 'Entrenador',
-  '/enlace': 'Enlace Tierra',
+  '/': 'Home',
+  '/registrar': 'Log',
+  '/cara': 'Open camera',
+  '/entrenador': 'Trainer',
+  '/enlace': 'Ground link',
   '/actividad/cognitivos': 'Tests',
-  '/actividad/cognitivos#vision': 'Test visual',
-  '/registrar#vision': 'Test visual',
+  '/actividad/cognitivos#vision': 'Visual test',
+  '/registrar#vision': 'Visual test',
 };
 
 function etiquetaRuta(ruta) {
-  if (!ruta) return 'Abrir';
-  return ETIQUETA_RUTA[ruta] || ETIQUETA_RUTA[ruta.split('?')[0]] || 'Abrir';
+  if (!ruta) return 'Open';
+  return ETIQUETA_RUTA[ruta] || ETIQUETA_RUTA[ruta.split('?')[0]] || 'Open';
 }
 
 const BLOQUES = [
-  { id: 'despertar', nombre: 'Despertar', rango: '06:30 – 08:00', desde: 0, hasta: 480 },
-  { id: 'manana', nombre: 'Mañana', rango: '08:00 – 12:30', desde: 480, hasta: 750 },
-  { id: 'tarde', nombre: 'Tarde', rango: '12:30 – 18:00', desde: 750, hasta: 1080 },
-  { id: 'noche', nombre: 'Noche', rango: '18:00 – 24:37', desde: 1080, hasta: DURACION_SOL_MIN },
+  { id: 'despertar', nombre: 'Wake up', rango: '06:30 – 08:00', desde: 0, hasta: 480 },
+  { id: 'manana', nombre: 'Morning', rango: '08:00 – 12:30', desde: 480, hasta: 750 },
+  { id: 'tarde', nombre: 'Afternoon', rango: '12:30 – 18:00', desde: 750, hasta: 1080 },
+  { id: 'noche', nombre: 'Evening', rango: '18:00 – 24:37', desde: 1080, hasta: DURACION_SOL_MIN },
 ];
 
 // Horas con aviso programado por el motor de notificaciones (campana en la fila).
@@ -114,10 +114,10 @@ export default function JornadaPantalla() {
       const astroId = astronauta?.id ?? 'ana';
       const ev = res.evaluacionesPorTripulante[astroId];
       setUltimoResumenSim(
-        `Avanzó de Sol ${res.solAnterior} a Sol ${res.solNuevo} (${res.lecturasGeneradas} lecturas NASA guardadas en BD). Nivel actual: ${ev?.globalLevel ?? 'green'}${ev?.alerts?.[0] ? ` · Alerta: ${ev.alerts[0].title}` : ' · Sin alertas'}.`,
+        `Advanced from Sol ${res.solAnterior} to Sol ${res.solNuevo} (${res.lecturasGeneradas} NASA readings saved to DB). Current level: ${ev?.globalLevel ?? 'green'}${ev?.alerts?.[0] ? ` · Alert: ${ev.alerts[0].title}` : ' · No alerts'}.`,
       );
     } catch (e) {
-      setUltimoResumenSim(`Error al simular: ${e?.message ?? 'desconocido'}`);
+      setUltimoResumenSim(`Simulation error: ${e?.message ?? 'unknown'}`);
     } finally {
       setSimulando(false);
     }
@@ -134,10 +134,10 @@ export default function JornadaPantalla() {
         perfil: perfilSim,
       });
       setUltimoResumenSim(
-        `Artefacto "${ARTEFACTOS_NASA[artefactoId]?.nombre}" cargado en Sol ${res.sol} (${res.lecturas.length} lecturas). Evaluación: ${res.evaluacion.globalLevel}${res.evaluacion.alerts[0] ? ` · ${res.evaluacion.alerts[0].title}` : ''}.`,
+        `Artifact "${ARTEFACTOS_NASA[artefactoId]?.nombre}" loaded on Sol ${res.sol} (${res.lecturas.length} readings). Evaluation: ${res.evaluacion.globalLevel}${res.evaluacion.alerts[0] ? ` · ${res.evaluacion.alerts[0].title}` : ''}.`,
       );
     } catch (e) {
-      setUltimoResumenSim(`Error al inyectar artefacto: ${e?.message ?? 'desconocido'}`);
+      setUltimoResumenSim(`Artifact injection error: ${e?.message ?? 'unknown'}`);
     } finally {
       setSimulando(false);
     }
@@ -184,16 +184,16 @@ export default function JornadaPantalla() {
   const horasEvento = tareas.filter((t) => t.recurrence === 'event').map((t) => t.missionTime);
 
   const estadoReloj = reloj.suenoProtegido
-    ? { clase: styles.chipSueno, texto: 'Sueño protegido · solo alertas rojas' }
+    ? { clase: styles.chipSueno, texto: 'Protected sleep · red alerts only' }
     : reloj.pausado
-      ? { clase: styles.chipPausa, texto: 'Reloj en pausa' }
-      : { clase: styles.chipCorriendo, texto: reloj.acelerado ? 'Reloj corriendo · 1 min = 1 h' : 'Reloj en tiempo real' };
+      ? { clase: styles.chipPausa, texto: 'Clock paused' }
+      : { clase: styles.chipCorriendo, texto: reloj.acelerado ? 'Clock running · 1 min = 1 h' : 'Real-time clock' };
 
   return (
     <PantallaVyta
-      titulo="Jornada del sol"
+      titulo="Sol schedule"
       icono="/figma/salud/target.svg"
-      subtitulo={`${astronauta?.name || 'Nicolás Méndez'} · Sol marciano de 24 h 37 min · ${ETIQUETAS_DIA[diaSemana] || 'Jueves'}`}
+      subtitulo={`${astronauta?.name || 'Nicolás Méndez'} · 24 h 37 min Martian sol · ${ETIQUETAS_DIA[diaSemana] || 'Thursday'}`}
       acciones={
         <>
           <span className={`${styles.chipEstado} ${estadoReloj.clase}`} role="status">
@@ -207,17 +207,17 @@ export default function JornadaPantalla() {
             aria-expanded={simuladorAbierto}
             aria-controls="simulador-reloj"
           >
-            Simulador de reloj
+            Clock simulator
           </button>
         </>
       }
     >
       {simuladorAbierto && (
-        <Card titulo="Simulador del reloj marciano" id="simulador-reloj">
+        <Card titulo="Martian clock simulator" id="simulador-reloj">
           <div className={styles.controlesCard}>
             <div className={styles.botonesReloj}>
               <button type="button" onClick={() => alternarPausa()} className={`${styles.boton} ${styles.botonPrimario}`}>
-                {reloj.pausado ? '▶ Iniciar' : '⏸ Pausar'}
+                {reloj.pausado ? '▶ Start' : '⏸ Pause'}
               </button>
               <button
                 type="button"
@@ -225,7 +225,7 @@ export default function JornadaPantalla() {
                 className={`${styles.boton} ${reloj.acelerado ? styles.botonAceleradoActivo : ''}`}
                 aria-pressed={reloj.acelerado}
               >
-                {reloj.acelerado ? 'Acelerado 1 min = 1 h' : 'Tiempo real 1:1'}
+                {reloj.acelerado ? 'Accelerated 1 min = 1 h' : 'Real time 1:1'}
               </button>
               <button type="button" onClick={() => adelantarMinutos(15)} className={styles.boton}>+15 min</button>
               <button type="button" onClick={() => adelantarMinutos(60)} className={styles.boton}>+1 h</button>
@@ -233,11 +233,11 @@ export default function JornadaPantalla() {
               <button type="button" onClick={() => reiniciarReloj()} className={styles.boton}>↺ 06:30</button>
             </div>
             <label className={styles.selectorDia}>
-              <span>Día semanal:</span>
+              <span>Day of week:</span>
               <select
                 value={diaSemana}
                 onChange={(e) => cambiarDiaSemana(e.target.value)}
-                aria-label="Día semanal para probar tareas semanales"
+                aria-label="Day of week to test weekly tasks"
               >
                 {DIAS_SEMANA.map((d) => (
                   <option key={d} value={d}>{ETIQUETAS_DIA[d]}</option>
@@ -247,11 +247,11 @@ export default function JornadaPantalla() {
           </div>
           <div className={styles.controlesCard} style={{ marginTop: 12, paddingTop: 12, borderTop: '1px solid rgba(130, 175, 220, 0.2)' }}>
             <label className={styles.selectorDia}>
-              <span>Simular futuro (NASA):</span>
+              <span>Simulate future (NASA):</span>
               <select
                 value={perfilSim}
                 onChange={(e) => setPerfilSim(e.target.value)}
-                aria-label="Perfil de simulación por artefactos NASA"
+                aria-label="Simulation profile by NASA artifacts"
               >
                 {Object.values(PERFILES_SIMULACION).map((p) => (
                   <option key={p.id} value={p.id}>{p.etiqueta}</option>
@@ -260,11 +260,11 @@ export default function JornadaPantalla() {
             </label>
             <div className={styles.botonesReloj}>
               <button type="button" disabled={simulando} onClick={() => ejecutarSimulacion(1)} className={`${styles.boton} ${styles.botonPrimario}`}>
-                {simulando ? 'Simulando…' : 'Simular +1 Sol'}
+                {simulando ? 'Simulating…' : 'Simulate +1 Sol'}
               </button>
-              <button type="button" disabled={simulando} onClick={() => ejecutarSimulacion(3)} className={styles.boton}>+3 Soles</button>
-              <button type="button" disabled={simulando} onClick={() => ejecutarSimulacion(7)} className={styles.boton}>+7 Soles</button>
-              <button type="button" disabled={simulando} onClick={() => simularArtefacto('cabina_eclss')} className={styles.boton}>🛰️ Cabina ECLSS</button>
+              <button type="button" disabled={simulando} onClick={() => ejecutarSimulacion(3)} className={styles.boton}>+3 Sols</button>
+              <button type="button" disabled={simulando} onClick={() => ejecutarSimulacion(7)} className={styles.boton}>+7 Sols</button>
+              <button type="button" disabled={simulando} onClick={() => simularArtefacto('cabina_eclss')} className={styles.boton}>🛰️ ECLSS Cabin</button>
               <button type="button" disabled={simulando} onClick={() => simularArtefacto('cognitivo_camara')} className={styles.boton}>🧠 PVT + SANS</button>
             </div>
           </div>
@@ -278,13 +278,13 @@ export default function JornadaPantalla() {
         <div className={styles.filaFoco}>
           <section
             className={`${styles.ahora} ${actualAtrasada ? styles.ahoraAtrasada : ''}`}
-            aria-label="Lo que toca ahora"
+            aria-label="Up now"
           >
             {actual ? (
               <>
                 <div className={styles.ahoraTexto}>
                   <p className={styles.ahoraEyebrow}>
-                    {actualAtrasada ? `Atrasada · era a las ${actual.missionTime}` : `Ahora · ${actual.missionTime}`}
+                    {actualAtrasada ? `Overdue · was at ${actual.missionTime}` : `Now · ${actual.missionTime}`}
                   </p>
                   <h2>{actual.title}</h2>
                 </div>
@@ -295,54 +295,54 @@ export default function JornadaPantalla() {
                     </Link>
                   )}
                   <button type="button" className={styles.boton} onClick={() => alternarTarea(actual)}>
-                    Marcar hecha
+                    Mark done
                   </button>
                 </div>
               </>
             ) : (
               <div className={styles.ahoraTexto}>
-                <p className={styles.ahoraEyebrow}>{reloj.suenoProtegido ? 'Sueño protegido' : 'Al día'}</p>
-                <h2>{reloj.suenoProtegido ? 'Descansá' : 'Nada pendiente por ahora'}</h2>
+                <p className={styles.ahoraEyebrow}>{reloj.suenoProtegido ? 'Protected sleep' : 'All caught up'}</p>
+                <h2>{reloj.suenoProtegido ? 'Rest' : 'Nothing pending right now'}</h2>
               </div>
             )}
             <div className={styles.ahoraPie}>
               {siguiente ? (
                 <span>
-                  Siguiente: <strong>{siguiente.title} · {siguiente.missionTime}</strong> (en{' '}
+                  Next: <strong>{siguiente.title} · {siguiente.missionTime}</strong> (in{' '}
                   {duracion(siguiente.horaMin - reloj.minutos)})
                 </span>
               ) : (
-                <span>No quedan tareas por delante en este sol.</span>
+                <span>No remaining tasks for this sol.</span>
               )}
               {otrasAtrasadas.length > 0 && (
                 <span className={styles.textoAtrasada}>
                   {otrasAtrasadas.length === 1
-                    ? `1 atrasada más: ${otrasAtrasadas[0].title} (${otrasAtrasadas[0].missionTime})`
-                    : `${otrasAtrasadas.length} atrasadas más`}
+                    ? `1 more overdue: ${otrasAtrasadas[0].title} (${otrasAtrasadas[0].missionTime})`
+                    : `${otrasAtrasadas.length} more overdue`}
                 </span>
               )}
             </div>
           </section>
 
-          <Card titulo="Contexto clínico" acento={nivelGlobal}>
+          <Card titulo="Clinical context" acento={nivelGlobal}>
             <div className={styles.estadoFila}>
               <TrafficLight nivel={nivelGlobal} />
-              <span>{evaluacion?.alerts?.[0]?.title || 'Sin alertas activas en este sol'}</span>
+              <span>{evaluacion?.alerts?.[0]?.title || 'No active alerts on this sol'}</span>
             </div>
             <p className={hayEventos ? styles.notaEvento : styles.notaNormal}>
               {hayEventos
-                ? `Se sumaron ${conteos.event} tareas por evento (${horasEvento.join(' y ')}) según tu evaluación actual.`
-                : 'Registrá mediciones para autocompletar tareas.'}
+                ? `${conteos.event} event-driven tasks added (${horasEvento.join(' & ')}) based on your current evaluation.`
+                : 'Log measurements to auto-complete tasks.'}
             </p>
           </Card>
         </div>
 
-          <Card titulo="Plan del sol">
+          <Card titulo="Sol plan">
             <div className={styles.cabeceraPlan}>
               <span className={styles.progresoTexto}>
-                {completadas} de {total} hechas · {progresoPct} %
+                {completadas} of {total} done · {progresoPct}%
               </span>
-              <div className={styles.filtros} role="tablist" aria-label="Filtrar tareas de la jornada">
+              <div className={styles.filtros} role="tablist" aria-label="Filter schedule tasks">
                 {FILTROS.map((f) => (
                   <button
                     key={f.id}
@@ -359,7 +359,7 @@ export default function JornadaPantalla() {
             </div>
 
             {grupos.length === 0 && (
-              <p className={styles.vacio}>No hay tareas en esta categoría para el día seleccionado.</p>
+              <p className={styles.vacio}>No tasks in this category for the selected day.</p>
             )}
 
             {grupos.map((g) => (
@@ -388,7 +388,7 @@ export default function JornadaPantalla() {
                               className={`${styles.check} ${styles[`check_${estado}`] || ''}`}
                               checked={tarea.done}
                               onChange={() => alternarTarea(tarea)}
-                              aria-label={`Marcar "${tarea.title}" como completada`}
+                              aria-label={`Mark "${tarea.title}" as completed`}
                             />
                             <IconoCheck />
                           </span>
@@ -400,21 +400,21 @@ export default function JornadaPantalla() {
                               </span>
                             )}
                             {HORAS_CON_AVISO.has(tarea.missionTime) && (
-                              <span className={styles.aviso} title="Tiene aviso programado">
+                              <span className={styles.aviso} title="Scheduled notification">
                                 <IconoCampana />
-                                <span className={styles.oculto}>Con aviso</span>
+                                <span className={styles.oculto}>With alert</span>
                               </span>
                             )}
                           </span>
                           <span className={styles.accionesFila}>
-                            {estado === 'pasada' && <span className={styles.textoAtrasada}>Atrasada</span>}
-                            {estado === 'ahora' && !tarea.done && <span className={styles.textoAhora}>Ahora</span>}
+                            {estado === 'pasada' && <span className={styles.textoAtrasada}>Overdue</span>}
+                            {estado === 'ahora' && !tarea.done && <span className={styles.textoAhora}>Now</span>}
                             {accionVisible && (
                               <Link href={tarea.ruta} className={styles.enlaceRuta}>
                                 {etiquetaRuta(tarea.ruta)} →
                               </Link>
                             )}
-                            {tarea.done && <span className={styles.textoHecha}>Hecha</span>}
+                            {tarea.done && <span className={styles.textoHecha}>Done</span>}
                           </span>
                         </li>
                       </Fragment>
@@ -432,8 +432,8 @@ export default function JornadaPantalla() {
 
 function MarcadorAhora({ sol, hora }) {
   return (
-    <li className={styles.marcadorAhora} aria-label="Hora actual de misión">
-      <span>Ahora · Sol {sol} · {hora}</span>
+    <li className={styles.marcadorAhora} aria-label="Current mission time">
+      <span>Now · Sol {sol} · {hora}</span>
     </li>
   );
 }

@@ -4,21 +4,21 @@ import { normalizar } from '../vega/texto.js';
 
 // [indicador(es), pista en la frase]. El orden importa: lo más específico primero.
 const PISTAS = [
-  [['bp_sys', 'bp_dia'], /presion|tension/],
-  [['spo2'], /oxigeno|saturacion|spo2/],
-  [['hr_rest'], /pulso|frecuencia cardiaca|latidos|pulsaciones/],
-  [['temp'], /temperatura|fiebre|grados/],
-  [['stress'], /estres/],
-  [['mood'], /animo|me siento/],
-  [['sleep_h'], /dormi|sueno|horas de sueno/],
-  [['water_ml'], /\bagua\b|\bml\b|mililitro|litro/],
-  [['mass_kg'], /\bpeso\b|\bmasa\b|kilos?|\bkg\b/],
-  [['glucose'], /glucosa|azucar/],
-  [['exercise_min'], /ejercicio|entren/],
+  [['bp_sys', 'bp_dia'], /blood pressure|pressure|presion|tension|\bbp\b/],
+  [['spo2'], /oxygen|oxigeno|saturation|saturacion|spo2/],
+  [['hr_rest'], /pulse|pulso|heart rate|frecuencia cardiaca|beats|latidos|pulsaciones|\bbpm\b/],
+  [['temp'], /temperature|temperatura|fever|fiebre|degrees|grados|\btemp\b/],
+  [['stress'], /stress|estres/],
+  [['mood'], /mood|animo|i feel|me siento/],
+  [['sleep_h'], /sleep|slept|dormi|sueno|hours of sleep|horas de sueno/],
+  [['water_ml'], /\bwater\b|\bagua\b|\bml\b|milliliter|mililitro|liter|litro/],
+  [['mass_kg'], /\bweight\b|\bmass\b|\bpeso\b|\bmasa\b|kilos?|\bkg\b/],
+  [['glucose'], /glucose|glucosa|sugar|azucar/],
+  [['exercise_min'], /exercise|ejercicio|workout|entren/],
 ];
 
-const PRESION = /(\d{2,3})\s*(?:sobre|\/|-|y|con|de)\s*(\d{2,3})/;
-const DECIMAL = /(\d{1,3})\s*(?:con|coma|punto|\.)\s*(\d{1,2})\b/;
+const PRESION = /(\d{2,3})\s*(?:over|sobre|\/|-|and|y|con|de)\s*(\d{2,3})/;
+const DECIMAL = /(\d{1,3})\s*(?:point|dot|con|coma|punto|\.)\s*(\d{1,2})\b/;
 const NUMERO = /\d+(?:\.\d+)?/g;
 
 /**
@@ -54,8 +54,8 @@ export function interpretarLocal(texto, { esperado = [] } = {}) {
     valor = Number(numeros[0]);
   }
 
-  if (indicador === 'sleep_h' && /y media/.test(t) && Number.isInteger(valor)) valor += 0.5;
-  if (indicador === 'water_ml' && /litro/.test(t) && valor < 20) valor = Math.round(valor * 1000);
+  if (indicador === 'sleep_h' && /and a half|y media/.test(t) && Number.isInteger(valor)) valor += 0.5;
+  if (indicador === 'water_ml' && /lit(?:er|re|ro)/.test(t) && valor < 20) valor = Math.round(valor * 1000);
 
   return [{ indicador, valor }];
 }

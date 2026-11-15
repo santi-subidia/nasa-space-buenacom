@@ -23,10 +23,10 @@ import styles from './Tendencias.module.scss';
 function periodosParaSol(solActual, maxSerie, totalSoles = 60) {
   const techo = Math.max(totalSoles, maxSerie, solActual);
   return [
-    { id: '7', texto: '7 días', desde: Math.max(1, solActual - 6), hasta: solActual },
-    { id: '14', texto: '14 días', desde: Math.max(1, solActual - 13), hasta: solActual },
-    { id: 'mision', texto: 'Hasta hoy', desde: 1, hasta: solActual },
-    { id: '60', texto: `${techo} soles`, desde: 1, hasta: techo },
+    { id: '7', texto: '7 days', desde: Math.max(1, solActual - 6), hasta: solActual },
+    { id: '14', texto: '14 days', desde: Math.max(1, solActual - 13), hasta: solActual },
+    { id: 'mision', texto: 'To date', desde: 1, hasta: solActual },
+    { id: '60', texto: `${techo} sols`, desde: 1, hasta: techo },
   ];
 }
 
@@ -53,16 +53,16 @@ const ZONAS = {
   reaction_ms: [[449.5, C.naranja], [349.5, C.amarillo], [-Infinity, C.verde]],
 };
 
-const coma = (n, d = 1) => n.toFixed(d).replace('.', ',');
+const coma = (n, d = 1) => n.toFixed(d);
 const prom = (xs) => (xs.length ? xs.reduce((a, b) => a + b, 0) / xs.length : 0);
 
 // Qué muestra el tooltip de cada indicador.
 const SERIES = {
-  sleep_h: { clave: 'sleep_h', nombre: 'Sueño', fmt: (v) => `${coma(v)} h` },
-  stress: { clave: 'stress', nombre: 'Estrés', fmt: (v) => `${v} / 10` },
-  temp: { clave: 'temp', nombre: 'Temperatura', fmt: (v) => `${coma(v)} °C` },
-  mood: { clave: 'mood', nombre: 'Ánimo', fmt: (v) => `${v} / 5` },
-  reaction_ms: { clave: 'reaction_ms', nombre: 'Mediana PVT', fmt: (v) => `${Math.round(v)} ms` },
+  sleep_h: { clave: 'sleep_h', nombre: 'Sleep', fmt: (v) => `${coma(v)} h` },
+  stress: { clave: 'stress', nombre: 'Stress', fmt: (v) => `${v} / 10` },
+  temp: { clave: 'temp', nombre: 'Temperature', fmt: (v) => `${coma(v)} °C` },
+  mood: { clave: 'mood', nombre: 'Mood', fmt: (v) => `${v} / 5` },
+  reaction_ms: { clave: 'reaction_ms', nombre: 'PVT median', fmt: (v) => `${Math.round(v)} ms` },
 };
 
 const EJE = { stroke: '#678198', tick: { fill: '#b9cbe2', fontSize: 11 }, tickLine: false };
@@ -234,11 +234,11 @@ export default function Tendencias() {
 
   return (
     <PantallaVyta
-      titulo="Tendencias"
+      titulo="Trends"
       icono="/figma/nav-analitica.svg"
-      subtitulo={`Cómo vienen tus indicadores · ${periodo === '60' ? `serie completa (${rango.hasta} soles)` : `hasta el sol ${solActual}`}`}
+      subtitulo={`How your indicators are trending · ${periodo === '60' ? `full series (${rango.hasta} sols)` : `through Sol ${solActual}`}`}
       acciones={
-        <div className={styles.periodos} role="group" aria-label="Período y simulación futura">
+        <div className={styles.periodos} role="group" aria-label="Period and future simulation">
           {periodos.map((p) => (
             <button
               key={p.id}
@@ -252,7 +252,7 @@ export default function Tendencias() {
             </button>
           ))}
           <select
-            aria-label="Escenario de simulación futura"
+            aria-label="Future simulation scenario"
             value={perfilSim}
             onChange={(e) => setPerfilSim(e.target.value)}
             style={{ background: '#0b2031', color: '#e6f0ff', border: '1px solid #2b5970', borderRadius: 8, padding: '6px 8px', fontSize: 12 }}
@@ -273,18 +273,18 @@ export default function Tendencias() {
               }
             }}
           >
-            {simulando ? 'Simulando…' : '+1 Sol futuro'}
+            {simulando ? 'Simulating…' : '+1 Future Sol'}
           </button>
         </div>
       }
     >
       <Card acento="ia" className={styles.vega}>
-        <p className={styles.vegaTitulo}><span aria-hidden="true">✦</span> Lectura de Vega</p>
+        <p className={styles.vegaTitulo}><span aria-hidden="true">✦</span> Vega’s Reading</p>
         <p>{lecturaVega}</p>
       </Card>
 
       <div className={styles.graficos}>
-        <Card titulo="Sueño (h)">
+        <Card titulo="Sleep (h)">
           <Grafico onEnter={() => setEnfocado('sueno')}>
             <AreaChart {...comunes}>
               <defs>
@@ -296,7 +296,7 @@ export default function Tendencias() {
               <ReferenceArea y1={6} y2={7} fill={C.amarillo} fillOpacity={BANDA} />
               <ReferenceArea y1={5} y2={6} fill={C.naranja} fillOpacity={BANDA} />
               <ReferenceArea y1={3} y2={5} fill={C.rojo} fillOpacity={BANDA} />
-              <ReferenceLine y={sleepBase} stroke={C.texto} strokeDasharray="6 4" label={{ value: 'tu base', fill: C.texto, fontSize: 11, position: 'insideTopRight' }} />
+              <ReferenceLine y={sleepBase} stroke={C.texto} strokeDasharray="6 4" label={{ value: 'your baseline', fill: C.texto, fontSize: 11, position: 'insideTopRight' }} />
               {marcaEvento}
               <XAxis {...ejeX} />
               <YAxis domain={[3, 9]} ticks={[3, 5, 6, 7, 9]} {...EJE} />
@@ -307,7 +307,7 @@ export default function Tendencias() {
           <Leyenda items={[['verde', '7–9 h'], ['amarillo', '6–7 h'], ['naranja', '5–6 h'], ['rojo', '< 5 h']]} />
         </Card>
 
-        <Card titulo="Sueño vs. estrés">
+        <Card titulo="Sleep vs. stress">
           <div onPointerEnter={() => setEnfocado('relacion')}>
             <Grafico alto={96}>
               <AreaChart {...comunes} margin={{ ...MARGEN, top: 14, bottom: 2 }}>
@@ -321,7 +321,7 @@ export default function Tendencias() {
                     x2={caidaHasta}
                     fill="#b896ff"
                     fillOpacity={0.1}
-                    label={{ value: 'sueño ↓ · estrés ↑', fill: '#c9b2ff', fontSize: 10, position: 'insideTopLeft' }}
+                    label={{ value: 'sleep ↓ · stress ↑', fill: '#c9b2ff', fontSize: 10, position: 'insideTopLeft' }}
                   />
                 )}
                 {conEvento && <ReferenceLine x={solEvento} stroke={C.naranja} strokeDasharray="4 4" />}
@@ -347,12 +347,12 @@ export default function Tendencias() {
             </Grafico>
           </div>
           <p className={styles.leyenda}>
-            <span><i style={{ background: C.acento }} aria-hidden="true" /> Sueño (h)</span>
-            <span><i style={{ background: C.naranja }} aria-hidden="true" /> Estrés (/10)</span>
+            <span><i style={{ background: C.acento }} aria-hidden="true" /> Sleep (h)</span>
+            <span><i style={{ background: C.naranja }} aria-hidden="true" /> Stress (/10)</span>
           </p>
         </Card>
 
-        <Card titulo="Temperatura (°C)">
+        <Card titulo="Temperature (°C)">
           <Grafico onEnter={() => setEnfocado('temp')}>
             <AreaChart {...comunes}>
               <defs>
@@ -370,10 +370,10 @@ export default function Tendencias() {
               <Area type="monotone" dataKey="temp" stroke={temp.trazo} strokeWidth={2.5} fill={`url(#${relleno}-t)`} dot={punto} activeDot={PUNTO_ACTIVO} {...ANIMACION} />
             </AreaChart>
           </Grafico>
-          <Leyenda items={[['verde', '36,1–37,2'], ['amarillo', '37,3–37,9'], ['rojo', '≥ 38,0']]} />
+          <Leyenda items={[['verde', '36.1–37.2'], ['amarillo', '37.3–37.9'], ['rojo', '>= 38.0']]} />
         </Card>
 
-        <Card titulo="Ánimo (1–5)">
+        <Card titulo="Mood (1–5)">
           <Grafico onEnter={() => setEnfocado('animo')}>
             <AreaChart {...comunes}>
               <defs>
@@ -395,7 +395,7 @@ export default function Tendencias() {
         </Card>
 
         {hayPvt && (
-          <Card titulo="Tiempo de reacción · PVT (ms)" className={styles.anchoCompleto}>
+          <Card titulo="Reaction time · PVT (ms)" className={styles.anchoCompleto}>
             <Grafico onEnter={() => setEnfocado('pvt')}>
               <AreaChart {...comunes} margin={{ ...MARGEN, left: -10 }}>
                 <defs>
@@ -411,7 +411,7 @@ export default function Tendencias() {
                     y={reactionBase}
                     stroke={C.texto}
                     strokeDasharray="6 4"
-                    label={{ value: 'tu base', fill: C.texto, fontSize: 11, position: 'insideTopRight' }}
+                    label={{ value: 'your baseline', fill: C.texto, fontSize: 11, position: 'insideTopRight' }}
                   />
                 )}
                 {marcaEvento}

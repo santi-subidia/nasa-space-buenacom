@@ -5,9 +5,9 @@ import Card from '@/components/Card';
 import styles from './Registrar.module.scss';
 
 const CODIGOS = [
-  { id: 'rash', texto: 'Erupción' },
-  { id: 'cold_sore', texto: 'Herpes labial' },
-  { id: 'other', texto: 'Otra lesión' },
+  { id: 'rash', texto: 'Rash' },
+  { id: 'cold_sore', texto: 'Cold sore' },
+  { id: 'other', texto: 'Other lesion' },
 ];
 
 // Foto de la piel o de una lesión con la webcam. Se guarda como Symptom con photoBlobId al guardar el chequeo.
@@ -38,7 +38,7 @@ export default function FotoPiel({ valor, onChange }) {
         if (videoRef.current) videoRef.current.srcObject = stream;
       });
     } catch {
-      setError('No se pudo abrir la cámara. Revisá el permiso del navegador.');
+      setError('Could not open the camera. Check browser permission.');
     }
   }
 
@@ -66,12 +66,12 @@ export default function FotoPiel({ valor, onChange }) {
   }
 
   return (
-    <Card titulo="Foto de piel o lesión">
+    <Card titulo="Skin or lesion photo">
       {!camara && !valor && (
         <>
-          <p className={styles.texto}>Sacá una foto con la cámara de la notebook. Se guarda en este equipo.</p>
+          <p className={styles.texto}>Take a photo with your laptop camera. Saved locally on this device.</p>
           <button type="button" className={styles.boton} onClick={abrir}>
-            📷 Abrir cámara
+            📷 Open camera
           </button>
         </>
       )}
@@ -81,10 +81,10 @@ export default function FotoPiel({ valor, onChange }) {
           <video ref={videoRef} autoPlay playsInline muted className={styles.video} />
           <div className={styles.acciones}>
             <button type="button" className={`${styles.boton} ${styles.primario}`} onClick={tomar}>
-              Tomar foto
+              Take photo
             </button>
             <button type="button" className={styles.boton} onClick={apagar}>
-              Cancelar
+              Cancel
             </button>
           </div>
         </div>
@@ -93,10 +93,10 @@ export default function FotoPiel({ valor, onChange }) {
       {valor && (
         <div className={styles.camara}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          {vista && <img src={vista} alt="Foto tomada" className={styles.video} />}
+          {vista && <img src={vista} alt="Captured photo" className={styles.video} />}
           <div className={styles.acciones}>
             <select
-              aria-label="Qué ves"
+              aria-label="What do you see"
               className={styles.campo}
               value={valor.code}
               onChange={(e) => onChange({ ...valor, code: e.target.value })}
@@ -108,17 +108,17 @@ export default function FotoPiel({ valor, onChange }) {
               ))}
             </select>
             <select
-              aria-label="Gravedad"
+              aria-label="Severity"
               className={styles.campo}
               value={valor.severity}
               onChange={(e) => onChange({ ...valor, severity: Number(e.target.value) })}
             >
-              <option value={1}>Leve</option>
-              <option value={2}>Moderada</option>
-              <option value={3}>Fuerte</option>
+              <option value={1}>Mild</option>
+              <option value={2}>Moderate</option>
+              <option value={3}>Severe</option>
             </select>
             <button type="button" className={styles.boton} onClick={quitar}>
-              Quitar
+              Remove
             </button>
           </div>
         </div>

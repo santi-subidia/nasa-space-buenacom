@@ -64,10 +64,10 @@ test('protocolos: todos citan una fuente de la NASA, tienen pasos y nunca dosis 
 
 test('mensaje: en una emergencia con demora a Tierra, no se espera a Houston', () => {
   const texto = mensajeDeProtocolo(triar('no respira').protocolo, { retrasoMin: 14 });
-  assert.match(texto, /treinta compresiones/);
-  assert.match(texto, /desfibrilador/);
-  assert.match(texto, /30 minutos: no la esperes/);
-  assert.match(cierreSegunEnlace('emergencia', 0), /conferencia médica privada/); // órbita baja: hay enlace en vivo
+  assert.match(texto, /thirty firm compressions/);
+  assert.match(texto, /defibrillator/);
+  assert.match(texto, /30 minutes: do not wait for it/);
+  assert.match(cierreSegunEnlace('emergencia', 0), /private medical conference/); // órbita baja: hay enlace en vivo
 });
 
 test('detectarUrgencia: emergencia → crítica y urgente → alta, con la cita del procedimiento', () => {
@@ -132,12 +132,12 @@ test('sesión: una emergencia da los pasos de la NASA al instante, con citas, si
   assert.equal(avisos[0].protocolo, 'paro');
   const ultimo = vega.obtener().mensajes.at(-1);
   assert.equal(ultimo.triaje, 'emergencia');
-  assert.match(ultimo.texto, /no la esperes/);
+  assert.match(ultimo.texto, /do not wait for it/);
   assert.ok(ultimo.citas.length > 0);
 
   // La pregunta siguiente lleva la emergencia en el historial.
   await vega.preguntar('¿y ahora qué hago?', { hablar: false });
-  assert.ok(llamadas[0].historial.some((h) => /reanimación/.test(h.text)));
+  assert.ok(llamadas[0].historial.some((h) => /CPR/.test(h.text)));
 });
 
 test('sesión: "avisá al oficial médico" registra el aviso con lo que contó, sin IA', async () => {
@@ -151,13 +151,13 @@ test('sesión: "avisá al oficial médico" registra el aviso con lo que contó, 
   assert.equal(llamadas.length, 1);
   assert.equal(avisos.length, 1);
   assert.match(avisos[0].motivo, /náuseas desde ayer/);
-  assert.match(vega.obtener().mensajes.at(-1).texto, /conferencia médica privada/);
+  assert.match(vega.obtener().mensajes.at(-1).texto, /private medical conference/);
 });
 
 test('sesión: sin red, un aviso leve recibe el consejo del protocolo local', async () => {
   const vega = crearSesionVega({ voz: null, fetchFn: async () => { throw new TypeError('fetch failed'); } });
   await vega.preguntar('me duele la cabeza', { hablar: false });
   const ultimo = vega.obtener().mensajes.at(-1);
-  assert.match(ultimo.texto, /dióxido de carbono/);
+  assert.match(ultimo.texto, /carbon dioxide/);
   assert.equal(ultimo.origen, 'local');
 });

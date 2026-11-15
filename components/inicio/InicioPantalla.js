@@ -27,11 +27,11 @@ export default function InicioPantalla() {
   return (
     <div className={styles.pantalla} data-dashboard>
       <CabeceraMision nombre={astronauta?.name} titulo={astronauta?.titulo} sol={solActual} entorno={mision?.entorno} />
-      <h1 className={styles.oculto}>Vista general · {astronauta?.name || 'Tripulante'}</h1>
+      <h1 className={styles.oculto}>Overview · {astronauta?.name || 'Crewmember'}</h1>
       <div className={styles.paneles}>
         <div className={styles.columnaPrincipal}>
           <EstadoGeneral nivel={nivelGeneral} puntaje={puntajeSalud} alertas={evaluacion.alerts || []} checkin={checkin} ultimaLectura={ultimaLectura} />
-          <section aria-label="Métricas de salud" className={styles.indicadores}>
+          <section aria-label="Health metrics" className={styles.indicadores}>
             {tarjetas.map((tarjeta) => <TarjetaIndicador key={tarjeta.id} tarjeta={tarjeta} />)}
           </section>
           <TendenciaResumen lecturas={lecturas} solActual={solActual} />
@@ -54,14 +54,14 @@ function EstadoGeneral({ nivel, puntaje, alertas, checkin, ultimaLectura }) {
     <Card className={styles.estado}>
       <div className={styles.ventanaHero} aria-hidden="true" />
       <div className={styles.estadoCabecera}>
-        <h2>Estado de salud general</h2>
-        <span className={styles.actualizacion}><i aria-hidden="true" /><span>Última lectura<small>{ultimaLectura ? `Sol ${ultimaLectura.sol}` : 'Sin datos'}</small></span></span>
+        <h2>Overall health status</h2>
+        <span className={styles.actualizacion}><i aria-hidden="true" /><span>Latest reading<small>{ultimaLectura ? `Sol ${ultimaLectura.sol}` : 'No data'}</small></span></span>
       </div>
       <div className={styles.estadoCuerpo}>
         <div
           className={styles.anillo}
           role={tienePuntaje ? 'meter' : 'img'}
-          aria-label={tienePuntaje ? 'Puntaje total de salud' : 'Puntaje de salud sin datos'}
+          aria-label={tienePuntaje ? 'Overall health score' : 'Health score with no data'}
           aria-valuemin={tienePuntaje ? 0 : undefined}
           aria-valuemax={tienePuntaje ? 100 : undefined}
           aria-valuenow={tienePuntaje ? puntaje.valor : undefined}
@@ -77,19 +77,19 @@ function EstadoGeneral({ nivel, puntaje, alertas, checkin, ultimaLectura }) {
         <div className={styles.resumenEstado}>
           <svg className={styles.ecg} viewBox="0 0 54 30" width="54" height="30" fill="none" aria-hidden="true"><path d="M1 17h10l4-7 4 13 5-22 5 27 4-17 5 6h15" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" /></svg>
           <div className={styles.estadoNivel}>
-            <h3>{tieneEvaluacion ? nivel === 'green' ? 'Estable' : NIVELES[nivel]?.etiqueta : 'Sin datos'}</h3>
+            <h3>{tieneEvaluacion ? nivel === 'green' ? 'Stable' : NIVELES[nivel]?.etiqueta : 'No data'}</h3>
             {tieneEvaluacion && <span className={styles.estadoPildora}><TrafficLight nivel={nivel} /></span>}
           </div>
-          <p>{principal ? principal.why : tienePuntaje ? 'Tus signos vitales se mantienen dentro de los rangos esperados. Buen estado general para continuar con las actividades de la misión.' : 'Registrá tus mediciones para calcular el puntaje de salud.'}</p>
+          <p>{principal ? principal.why : tienePuntaje ? 'Your vital signs remain within expected ranges. Good overall status to continue mission activities.' : 'Log your measurements to calculate the health score.'}</p>
         </div>
-        <Link href="/registrar" className={`${styles.checkin} ${checkin.completado ? styles.checkinCompletado : ''}`} aria-label={`Check-in del Sol ${checkin.sol ?? 'actual'} ${checkin.completado ? 'completado' : 'pendiente'}. Ver chequeo`}>
-          <span>Check-in por sol</span>
+        <Link href="/registrar" className={`${styles.checkin} ${checkin.completado ? styles.checkinCompletado : ''}`} aria-label={`Check-in for Sol ${checkin.sol ?? 'current'} ${checkin.completado ? 'completed' : 'pending'}. View check-in`}>
+          <span>Check-in by sol</span>
           <span className={styles.relojArena}>
             {checkin.completado
               ? <svg viewBox="0 0 36 36" width="36" height="36" fill="none" aria-hidden="true"><path d="m8 18 7 7L29 11" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
               : <Image src="/figma/reloj-arena.png" width={36} height={36} alt="" />}
           </span>
-          <small role="status"><i aria-hidden="true" /> {checkin.cargando ? 'Cargando…' : checkin.completado ? 'Completado' : 'Pendiente'}</small>
+          <small role="status"><i aria-hidden="true" /> {checkin.cargando ? 'Loading…' : checkin.completado ? 'Completed' : 'Pending'}</small>
         </Link>
       </div>
     </Card>
@@ -117,11 +117,11 @@ function AlertasObservaciones({ alertas, solActual }) {
   return (
     <Card className={styles.observaciones}>
       <div className={styles.observacionesTitulo}>
-        <h2><svg viewBox="0 0 24 28" width="22" height="26" fill="none" aria-hidden="true"><path d="M4 19V11a8 8 0 0 1 16 0v8l2 3H2l2-3Z" fill="currentColor" /><path d="M9 25h6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /></svg> Alertas y observaciones</h2>
-        {alertas.length > 3 && <button type="button" onClick={() => setVerTodas(!verTodas)}>{verTodas ? 'Ver menos' : 'Ver todas'} <span aria-hidden="true">→</span></button>}
+        <h2><svg viewBox="0 0 24 28" width="22" height="26" fill="none" aria-hidden="true"><path d="M4 19V11a8 8 0 0 1 16 0v8l2 3H2l2-3Z" fill="currentColor" /><path d="M9 25h6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /></svg> Alerts & observations</h2>
+        {alertas.length > 3 && <button type="button" onClick={() => setVerTodas(!verTodas)}>{verTodas ? 'Show less' : 'View all'} <span aria-hidden="true">→</span></button>}
       </div>
       {alertas.length === 0 ? (
-        <div className={styles.sinAlertas}><TrafficLight nivel="green" /><p>Sin alertas activas. Tus indicadores están dentro de los valores esperados.</p></div>
+        <div className={styles.sinAlertas}><TrafficLight nivel="green" /><p>No active alerts. Your indicators are within expected values.</p></div>
       ) : (
         <ul className={styles.listaAlertas}>
           {visibles.map((alerta, index) => (
@@ -135,11 +135,11 @@ function AlertasObservaciones({ alertas, solActual }) {
                 <div className={styles.detalleAlerta}>
                   <p>{alerta.why}</p>
                   <ul>{(alerta.actions || []).map((accion) => <li key={accion}>{accion}</li>)}</ul>
-                  {alerta.nasaSource && <p className={styles.fuente}>Fuente: {alerta.nasaSource}</p>}
+                  {alerta.nasaSource && <p className={styles.fuente}>Source: {alerta.nasaSource}</p>}
                   <OrigenUmbral basis={alerta.basis} className={styles.fuente} />
                   <div className={styles.accionesAlerta}>
-                    <Link href={rutaZona(alerta.zone)}>Ver guía →</Link>
-                    <Link href="/enlace">Avisar al oficial médico →</Link>
+                    <Link href={rutaZona(alerta.zone)}>View guide →</Link>
+                    <Link href="/enlace">Notify medical officer →</Link>
                   </div>
                 </div>
               </details>

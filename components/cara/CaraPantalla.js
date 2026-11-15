@@ -12,25 +12,25 @@ import styles from './CaraPantalla.module.scss';
 
 const FATIGA_ETIQUETA = {
   normal: { texto: 'Normal', clase: 'green' },
-  atencion: { texto: 'Atención', clase: 'yellow' },
-  alto: { texto: 'Fatiga alta', clase: 'orange' },
+  atencion: { texto: 'Attention', clase: 'yellow' },
+  alto: { texto: 'High fatigue', clase: 'orange' },
 };
 
 const ORIGEN_TEXTO = {
-  guardada: 'Respuesta guardada (mismas dos fotos).',
-  local: 'Lectura local de parpadeo sin conexión con la IA.',
+  guardada: 'Saved response (same two photos).',
+  local: 'Local blink reading without AI connection.',
 };
 
 const MOTIVO_RPPG = {
-  luz_extrema: 'Luz insuficiente o saturada; probá iluminación frontal pareja.',
-  mucho_movimiento: 'Demasiado movimiento; quedate quieto frente a la cámara.',
-  baja_calidad: 'Señal inestable; mirá de frente con luz uniforme.',
+  luz_extrema: 'Insufficient or saturated light; try even front lighting.',
+  mucho_movimiento: 'Too much movement; hold still in front of the camera.',
+  baja_calidad: 'Unstable signal; face forward with uniform lighting.',
 };
 
 const CONFIANZA_ETIQUETA = {
-  alta: 'Confianza alta',
-  media: 'Confianza media',
-  baja: 'Señal baja',
+  alta: 'High confidence',
+  media: 'Medium confidence',
+  baja: 'Low signal',
 };
 
 function OndaPulso({ puntos }) {
@@ -53,7 +53,7 @@ function OndaPulso({ puntos }) {
 
 export default function CaraPantalla() {
   const { activoId, astronauta, solActual, cargando } = useEstadoMision();
-  const nombreTripulante = astronauta?.name || 'Tripulante';
+  const nombreTripulante = astronauta?.name || 'Crewmember';
   const {
     videoRef,
     camaraEstado,
@@ -93,23 +93,23 @@ export default function CaraPantalla() {
   return (
     <PantallaVyta
       className={styles.pantalla}
-      titulo="¿Cómo me ves hoy?"
-      subtitulo={`Tu cara de hoy contra tu foto base: fatiga por parpadeo y pulso · Sol ${solActual} · ${nombreTripulante}`}
+      titulo="How do I look today?"
+      subtitulo={`Today’s face vs. your baseline photo: blink fatigue & pulse · Sol ${solActual} · ${nombreTripulante}`}
       icono="/figma/nav-registrar.svg"
       acciones={
         <>
           <Link href="/registrar" className={styles.boton}>
-            ← Check-in por sol
+            ← Check-in by sol
           </Link>
           <label className={styles.vozToggle}>
-            <input type="checkbox" checked={vozActiva} onChange={(e) => setVozActiva(e.target.checked)} /> Voz
+            <input type="checkbox" checked={vozActiva} onChange={(e) => setVozActiva(e.target.checked)} /> Voice
           </label>
         </>
       }
     >
 
       <p className={styles.avisoFijo} role="note">
-        <strong>Aviso:</strong> {AVISO_NO_DIAGNOSTICO}
+        <strong>Notice:</strong> {AVISO_NO_DIAGNOSTICO}
       </p>
 
       <div className={styles.cuerpo}>
@@ -119,7 +119,7 @@ export default function CaraPantalla() {
             {!camaraActiva && (
               <div className={styles.portada}>
                 <p className={styles.guia}>
-                  Mirá de frente a la cámara con buena luz. En 10 segundos MediaPipe mide tu parpadeo (PERCLOS) y estima tu pulso óptico sin contacto (rPPG).
+                  Look straight at the camera in good lighting. In 10 seconds MediaPipe measures your blinking (PERCLOS) and estimates contactless optical pulse (rPPG).
                 </p>
                 <button
                   type="button"
@@ -127,7 +127,7 @@ export default function CaraPantalla() {
                   onClick={iniciarCamara}
                   disabled={camaraCargando}
                 >
-                  {camaraCargando ? 'Cargando cámara y modelo facial…' : '📷 Abrir cámara'}
+                  {camaraCargando ? 'Loading camera and face model…' : '📷 Open camera'}
                 </button>
                 {errorCamara && <p className={styles.error} role="alert">{errorCamara}</p>}
               </div>
@@ -135,10 +135,10 @@ export default function CaraPantalla() {
             {camaraActiva && (
               <div className={styles.overlay}>
                 <span className={`${styles.pill} ${rostroDetectado ? styles.pillOk : styles.pillWarn}`}>
-                  {rostroDetectado ? 'Rostro detectado' : 'Ubicate frente a la cámara'}
+                  {rostroDetectado ? 'Face detected' : 'Center yourself in front of the camera'}
                 </span>
                 <span className={styles.pill}>
-                  Parpadeo: {segundosMedidos} s {segundosMedidos < 10 ? '(mín. 10 s)' : '· listo ✓'}
+                  Blinking: {segundosMedidos} s {segundosMedidos < 10 ? '(min 10 s)' : '· ready ✓'}
                 </span>
               </div>
             )}
@@ -149,55 +149,55 @@ export default function CaraPantalla() {
               <>
                 {!fotoBase ? (
                   <button type="button" className={`${styles.boton} ${styles.primario}`} onClick={capturarBase}>
-                    Guardar foto base (inicio de misión)
+                    Save baseline photo (mission start)
                   </button>
                 ) : (
                   <button type="button" className={`${styles.boton} ${styles.primario}`} onClick={capturarHoy}>
-                    Sacar foto de hoy
+                    Take today’s photo
                   </button>
                 )}
                 {fotoBase && (
                   <button type="button" className={styles.boton} onClick={capturarBase}>
-                    Actualizar foto base
+                    Update baseline photo
                   </button>
                 )}
                 <button type="button" className={styles.boton} onClick={reiniciarParpadeo}>
-                  Reiniciar medición
+                  Reset measurement
                 </button>
                 <button type="button" className={styles.boton} onClick={apagarCamara}>
-                  Cerrar cámara
+                  Close camera
                 </button>
               </>
             )}
           </div>
 
           {parpadeoEnVivo && (
-            <div className={styles.metricasParpadeo} aria-label="Medición de parpadeo en vivo">
-              <span><strong>{parpadeoEnVivo.parpadeosPorMin}</strong> parpadeos/min</span>
-              <span><strong>{parpadeoEnVivo.pctOjosCerrados} %</strong> ojos cerrados (PERCLOS)</span>
-              <span><strong>{parpadeoEnVivo.cierresLargos}</strong> cierres largos</span>
+            <div className={styles.metricasParpadeo} aria-label="Live blink measurement">
+              <span><strong>{parpadeoEnVivo.parpadeosPorMin}</strong> blinks/min</span>
+              <span><strong>{parpadeoEnVivo.pctOjosCerrados} %</strong> eyes closed (PERCLOS)</span>
+              <span><strong>{parpadeoEnVivo.cierresLargos}</strong> long closures</span>
             </div>
           )}
 
           {(camaraActiva || pulsoEnVivo) && (
-            <div className={styles.rppgBox} aria-label="Estimación de pulso sin contacto (rPPG)">
+            <div className={styles.rppgBox} aria-label="Contactless pulse estimation (rPPG)">
               <div className={styles.rppgTop}>
                 <div>
-                  <span className={styles.rppgTitulo}>Pulso óptico sin contacto (rPPG)</span>
+                  <span className={styles.rppgTitulo}>Contactless optical pulse (rPPG)</span>
                   {!pulsoEnVivo?.listo ? (
                     <p className={styles.rppgEstado}>
-                      Calibrando señal de piel… {pulsoEnVivo?.duracionSeg ?? 0} s (mín. 8 s quieto con luz frontal)
+                      Calibrating skin signal… {pulsoEnVivo?.duracionSeg ?? 0} s (min 8 s still with front lighting)
                     </p>
                   ) : pulsoEnVivo.bpm != null ? (
                     <div className={styles.rppgValorFila}>
-                      <strong className={styles.rppgBpm}>{pulsoEnVivo.bpm} lpm</strong>
+                      <strong className={styles.rppgBpm}>{pulsoEnVivo.bpm} bpm</strong>
                       <span className={`${styles.rppgBadge} ${styles[`conf_${pulsoEnVivo.confianza}`]}`}>
                         {CONFIANZA_ETIQUETA[pulsoEnVivo.confianza]} · {Math.round(pulsoEnVivo.sqi * 100)} %
                       </span>
                     </div>
                   ) : (
                     <p className={styles.rppgEstado}>
-                      {MOTIVO_RPPG[pulsoEnVivo.motivo] ?? 'Esperando señal estable…'}
+                      {MOTIVO_RPPG[pulsoEnVivo.motivo] ?? 'Waiting for stable signal…'}
                       {pulsoEnVivo.sqi > 0 ? ` (SQI ${Math.round(pulsoEnVivo.sqi * 100)} %)` : ''}
                     </p>
                   )}
@@ -207,7 +207,7 @@ export default function CaraPantalla() {
 
               <div className={styles.rppgPie}>
                 <small className={styles.rppgNota}>
-                  Estimación óptica 100 % en tu navegador; no reemplaza un oxímetro médico.
+                  100% browser optical estimate; does not replace a medical oximeter.
                 </small>
                 {pulsoEnVivo?.bpm != null && pulsoEnVivo.confianza !== 'baja' && (
                   <button
@@ -217,10 +217,10 @@ export default function CaraPantalla() {
                     disabled={guardandoPulso || pulsoGuardado}
                   >
                     {pulsoGuardado
-                      ? `✓ Pulso guardado en Sol ${solActual}`
+                      ? `✓ Pulse saved on Sol ${solActual}`
                       : guardandoPulso
-                        ? 'Guardando…'
-                        : `Guardar pulso en chequeo (Sol ${solActual})`}
+                        ? 'Saving…'
+                        : `Save pulse to check-in (Sol ${solActual})`}
                   </button>
                 )}
               </div>
@@ -229,37 +229,37 @@ export default function CaraPantalla() {
         </Card>
 
         <div className={styles.lateral}>
-          <Card titulo="Fotos para comparar" className={styles.fotosCard}>
+          <Card titulo="Photos to compare" className={styles.fotosCard}>
             <div className={styles.comparacionGrid}>
               <div className={styles.slot}>
                 <div className={styles.slotHeader}>
-                  <span>Foto base</span>
-                  {fotoBase?.id && <span className={styles.badgeBase} title={fotoBase.id}>Guardada</span>}
+                  <span>Baseline photo</span>
+                  {fotoBase?.id && <span className={styles.badgeBase} title={fotoBase.id}>Saved</span>}
                 </div>
                 {fotoBase?.url ? (
                   /* eslint-disable-next-line @next/next/no-img-element */
-                  <img src={fotoBase.url} alt="Foto base del inicio de la misión" className={styles.miniatura} />
+                  <img src={fotoBase.url} alt="Mission-start baseline photo" className={styles.miniatura} />
                 ) : (
-                  <div className={styles.vacio}>Sin foto base</div>
+                  <div className={styles.vacio}>No baseline photo</div>
                 )}
               </div>
 
               <div className={styles.slot}>
                 <div className={styles.slotHeader}>
-                  <span>Foto de hoy</span>
-                  {fotoHoy && <span className={styles.badgeHoy}>Lista</span>}
+                  <span>Today’s photo</span>
+                  {fotoHoy && <span className={styles.badgeHoy}>Ready</span>}
                 </div>
                 {fotoHoy?.url ? (
                   /* eslint-disable-next-line @next/next/no-img-element */
-                  <img src={fotoHoy.url} alt="Foto facial de hoy" className={styles.miniatura} />
+                  <img src={fotoHoy.url} alt="Today’s facial photo" className={styles.miniatura} />
                 ) : (
-                  <div className={styles.vacio}>Falta foto de hoy</div>
+                  <div className={styles.vacio}>Missing today’s photo</div>
                 )}
               </div>
             </div>
           </Card>
 
-          <Card titulo="Consentimiento y análisis" acento="ia" className={styles.consentCard}>
+          <Card titulo="Consent & analysis" acento="ia" className={styles.consentCard}>
             <label className={styles.consentimiento}>
               <input
                 type="checkbox"
@@ -267,7 +267,7 @@ export default function CaraPantalla() {
                 onChange={(e) => setConsentimiento(e.target.checked)}
               />
               <span>
-                Doy mi consentimiento para enviar estas dos fotos a la IA y comparar cambios visibles. Las fotos no se guardan en el servidor.
+                I consent to sending these two photos to the AI to compare visible changes. Photos are not stored on the server.
               </span>
             </label>
 
@@ -277,7 +277,7 @@ export default function CaraPantalla() {
               onClick={analizar}
               disabled={!puedeAnalizar}
             >
-              {analizando ? 'Comparando con foto base…' : '✦ Analizar cómo me ves hoy'}
+              {analizando ? 'Comparing with baseline photo…' : '✦ Analyze how I look today'}
             </button>
 
             {errorAccion && <p className={styles.error} role="alert">{errorAccion}</p>}
@@ -286,8 +286,8 @@ export default function CaraPantalla() {
       </div>
 
       {resultado && (
-        <Card titulo="Observación de Vega" acento="ia" className={styles.resultadoCard}>
-          {chequeoGuardado && <p role="status">✓ Chequeo facial completado para el Sol {solActual}. <Link href="/registrar">Continuar el check-in →</Link></p>}
+        <Card titulo="Vega’s observation" acento="ia" className={styles.resultadoCard}>
+          {chequeoGuardado && <p role="status">✓ Facial check-in completed for Sol {solActual}. <Link href="/registrar">Continue check-in →</Link></p>}
           <div className={styles.resultadoTop}>
             <p className={styles.resumen}>{resultado.resumen}</p>
             <p className={styles.avisoResultado}>
@@ -298,7 +298,7 @@ export default function CaraPantalla() {
           {resultado.fatiga && (
             <div className={`${styles.fatigaBox} ${styles[FATIGA_ETIQUETA[resultado.fatiga.nivel]?.clase ?? 'green']}`}>
               <div>
-                <span className={styles.fatigaNivel}>Fatiga ocular: {FATIGA_ETIQUETA[resultado.fatiga.nivel]?.texto ?? resultado.fatiga.nivel}</span>
+                <span className={styles.fatigaNivel}>Eye fatigue: {FATIGA_ETIQUETA[resultado.fatiga.nivel]?.texto ?? resultado.fatiga.nivel}</span>
                 <p>{resultado.fatiga.mensaje}</p>
               </div>
             </div>
@@ -321,7 +321,7 @@ export default function CaraPantalla() {
           )}
 
           <div className={styles.accionBox}>
-            <span className={styles.accionLabel}>Acción recomendada para hoy</span>
+            <span className={styles.accionLabel}>Recommended action for today</span>
             <p>{resultado.accion}</p>
           </div>
 
@@ -334,12 +334,12 @@ export default function CaraPantalla() {
                   onClick={avisarOficial}
                   disabled={avisoEnviado}
                 >
-                  {avisoEnviado ? '✓ Aviso registrado al oficial médico' : '◆ Avisar al oficial médico'}
+                  {avisoEnviado ? '✓ Medical officer notification logged' : '◆ Notify medical officer'}
                 </button>
               )}
               {resultado.zonas?.map((z) => (
                 <Link key={z} href={rutaZona(z)} className={styles.boton}>
-                  Ver {ZONAS_CARA[z] ?? z} en el mapa →
+                  View {ZONAS_CARA[z] ?? z} on map →
                 </Link>
               ))}
             </div>

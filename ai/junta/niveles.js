@@ -6,7 +6,7 @@ export const NIVELES = ['green', 'yellow', 'orange', 'red'];
 
 const orden = (nivel) => {
   const i = NIVELES.indexOf(nivel);
-  if (i === -1) throw new Error(`Nivel desconocido "${nivel}". Válidos: ${NIVELES.join(', ')}`);
+  if (i === -1) throw new Error(`Unknown level "${nivel}". Valid: ${NIVELES.join(', ')}`);
   return i;
 };
 

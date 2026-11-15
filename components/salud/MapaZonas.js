@@ -13,13 +13,13 @@ import styles from './MapaZonas.module.scss';
 const ICONOS = { brain: 'brain', eyes: 'target', inner_ear: 'float', heart: 'heart', lungs: 'lungs', immune: 'shield', kidneys: 'drop', muscles: 'arm', bones: 'bone' };
 
 const TITULOS = {
-  fisica: ['Mapa corporal', 'Tocá una zona del cuerpo para ver su función, riesgos, indicadores y qué hacer.'],
-  mental: ['Guía: cerebro y mente', 'Función, riesgos e indicadores de la zona que sigue tu salud mental.'],
-  riesgos: ['Mapa de peligros', 'Filtrá por peligro de la misión para ver qué zonas del cuerpo afecta.'],
+  fisica: ['Body map', 'Tap a body zone to view its function, risks, indicators, and recommended actions.'],
+  mental: ['Guide: brain & mind', 'Function, risks, and indicators for the zone tracking your mental health.'],
+  riesgos: ['Hazards map', 'Filter by mission hazard to see which body zones it affects.'],
 };
 
 function Etiqueta({ nivel, texto }) {
-  return <span className={styles.etiqueta} data-nivel={nivel || 'sin-datos'}><i aria-hidden="true" />{texto || ETIQUETAS_NIVEL[nivel] || 'Sin datos'}</span>;
+  return <span className={styles.etiqueta} data-nivel={nivel || 'sin-datos'}><i aria-hidden="true" />{texto || ETIQUETAS_NIVEL[nivel] || 'No data'}</span>;
 }
 
 /** `zona` llega del `?zona=` de la página; la clave reinicia la selección cuando un enlace pide otra. */
@@ -66,8 +66,8 @@ function MapaZonasPanel({ seccion, lecturas, sintomas, evaluacion, solActual = 4
           <p>{bajada}</p>
         </div>
         {conFiltro && (
-          <div className={styles.filtro} role="group" aria-label="Filtrar por peligro">
-            <button type="button" aria-pressed={!peligro} onClick={() => setPeligro(null)}>Todos</button>
+          <div className={styles.filtro} role="group" aria-label="Filter by hazard">
+            <button type="button" aria-pressed={!peligro} onClick={() => setPeligro(null)}>All</button>
             {Object.entries(PELIGROS).map(([k, nombre]) => (
               <button key={k} type="button" aria-pressed={peligro === k} title={nombre} onClick={() => setPeligro(peligro === k ? null : k)}>
                 <b>{k}</b> {nombre}
@@ -80,7 +80,7 @@ function MapaZonasPanel({ seccion, lecturas, sintomas, evaluacion, solActual = 4
       <div className={styles.cuerpo}>
         <div className={styles.silueta}>
           {propias.length > 1 && (
-            <div className={styles.capas} role="group" aria-label="Capas del cuerpo">
+            <div className={styles.capas} role="group" aria-label="Body layers">
               {CAPAS.map((c) => (
                 <button key={c.id} type="button" aria-pressed={capa === c.id} onClick={() => cambiarCapa(c.id)}>{c.nombre}</button>
               ))}
@@ -100,7 +100,7 @@ function MapaZonasPanel({ seccion, lecturas, sintomas, evaluacion, solActual = 4
 
         <div className={styles.detalle}>
           {propias.length > 1 && (
-            <div className={styles.chips} role="tablist" aria-label="Zonas del cuerpo" onMouseLeave={() => setResaltada(null)}>
+            <div className={styles.chips} role="tablist" aria-label="Body zones" onMouseLeave={() => setResaltada(null)}>
               {propias.map((z) => (
                 <button
                   key={z.id}
@@ -130,11 +130,11 @@ function MapaZonasPanel({ seccion, lecturas, sintomas, evaluacion, solActual = 4
 
             <div className={styles.columnas}>
               <div>
-                <h4>Indicadores</h4>
+                <h4>Indicators</h4>
                 <ul className={styles.indicadores}>
                   {zona.indicadores.map((i) => (
                     <li key={i.nombre}>
-                      <span>{i.nombre}{i.ambiental && <small> · cabina</small>}</span>
+                      <span>{i.nombre}{i.ambiental && <small> · cabin</small>}</span>
                       <strong>{i.valor}</strong>
                       <Etiqueta nivel={i.nivel} />
                     </li>
@@ -142,25 +142,25 @@ function MapaZonasPanel({ seccion, lecturas, sintomas, evaluacion, solActual = 4
                 </ul>
               </div>
               <div>
-                <h4>Riesgos</h4>
+                <h4>Risks</h4>
                 <ul className={styles.lista}>{zona.riesgos.map((r) => <li key={r}>{r}</li>)}</ul>
                 <p className={styles.peligros}>
                   {zona.peligros.map((k) => <span key={k} title={PELIGROS[k]}><b>{k}</b> {PELIGROS[k]}</span>)}
                 </p>
               </div>
               <div>
-                <h4>Qué hacer</h4>
+                <h4>What to do</h4>
                 <ul className={styles.lista}>{zona.queHacer.map((r) => <li key={r}>{r}</li>)}</ul>
               </div>
             </div>
 
             <footer className={styles.pie}>
               <p className={styles.fuente}>
-                Fuente: <a href={zona.fuente.url} target="_blank" rel="noreferrer">{zona.fuente.titulo}</a>
+                Source: <a href={zona.fuente.url} target="_blank" rel="noreferrer">{zona.fuente.titulo}</a>
               </p>
               <div className={styles.botones}>
                 {zona.enlace && <Link href={zona.enlace.href}>{zona.enlace.etiqueta} →</Link>}
-                <Link href="/tendencias">Ver tendencias →</Link>
+                <Link href="/tendencias">View trends →</Link>
               </div>
             </footer>
           </article>

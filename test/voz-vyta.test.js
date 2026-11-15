@@ -49,7 +49,7 @@ function navegadorDePrueba({
     AudioContext: Contexto,
     SpeechSynthesisUtterance: class { constructor(text) { this.text = text; } },
     speechSynthesis: {
-      getVoices: () => [{ name: 'Microsoft Elena', lang: 'es-AR' }],
+      getVoices: () => [{ name: 'Microsoft Aria', lang: 'en-US' }],
       speak: (speech) => {
         discursos.push(speech);
         speech.onstart?.();
@@ -107,9 +107,9 @@ test('VYTA detecta fin de frase por silencio y no manda una grabación sin voz',
   assert.deepEqual(ruidoCorto(0, 15000), { terminar: true, enviar: false });
 });
 
-test('VYTA elige voz argentina y fragmenta respuestas largas sin perder palabras', () => {
-  const voces = [{ name: 'English', lang: 'en-US' }, { name: 'Español', lang: 'es-ES' }, { name: 'Microsoft Elena', lang: 'es-AR' }];
-  assert.equal(elegirVozVyta(voces).name, 'Microsoft Elena');
+test('VYTA elige voz en inglés y fragmenta respuestas largas sin perder palabras', () => {
+  const voces = [{ name: 'Español', lang: 'es-ES' }, { name: 'British', lang: 'en-GB' }, { name: 'English', lang: 'en-US' }];
+  assert.equal(elegirVozVyta(voces).name, 'English');
   const texto = 'Podemos conversar con calma. '.repeat(30).trim();
   const partes = fragmentosParaVoz(texto);
   assert.ok(partes.every((p) => p.length <= 180));
@@ -146,7 +146,7 @@ test('flujo unificado (Safari audio/mp4): graba, transcribe con Gemini, consulta
   assert.equal(body1.historial, undefined);
 
   assert.equal(prueba.sesion.obtener().fase, 'hablando');
-  assert.equal(prueba.discursos[0].voice.name, 'Microsoft Elena');
+  assert.equal(prueba.discursos[0].voice.name, 'Microsoft Aria');
   assert.equal(prueba.discursos[0].rate, 0.95);
   prueba.discursos[0].onend();
   await turno1;
@@ -179,7 +179,7 @@ test('el silencio inicial se descarta y cancelar al pedir permiso libera un micr
   prueba.tick(15000, 0);
   await turno;
   assert.equal(prueba.solicitudes.length, 0);
-  assert.match(prueba.sesion.obtener().error, /No se escuchó/);
+  assert.match(prueba.sesion.obtener().error, /No phrase heard/);
 
   let resolver;
   let detenidos = 0;
@@ -226,7 +226,7 @@ test('cancelar una respuesta hablada detiene el audio y una señal roja dispara 
     await pausa();
   }
   assert.equal(terminado, true);
-  assert.match(urgente.discursos[0].text, /dolor de pecho/i);
+  assert.match(urgente.discursos[0].text, /chest pain/i);
   assert.match(urgente.discursos.at(-1).text, /rutina de descanso/); // la respuesta de Claude va última
   await turnoUrgente;
 });
@@ -300,7 +300,7 @@ test('modo continuo (Jarvis local): encadena dos turnos sin volver a tocar y cie
   prueba.tick(100, 0.2);
   prueba.tick(1500, 0);
   await pausa();
-  assert.match(prueba.discursos[2].text, /pauso la charla/i);
+  assert.match(prueba.discursos[2].text, /pausing the chat/i);
   prueba.discursos[2].onend?.();
   await charla;
 

@@ -4,13 +4,13 @@ export const FORMATOS_GRABACION = ['audio/webm;codecs=opus', 'audio/webm', 'audi
 
 const MAX_BYTES = 5 * 1024 * 1024;
 const ERRORES_MICROFONO = {
-  NotAllowedError: { codigo: 'not-allowed', mensaje: 'Permití el acceso al micrófono en el navegador para hablar.' },
-  NotFoundError: { codigo: 'audio-capture', mensaje: 'No se encontró un micrófono conectado.' },
-  NotReadableError: { codigo: 'audio-capture', mensaje: 'El micrófono está ocupado. Cerrá otras aplicaciones que lo estén usando.' },
+  NotAllowedError: { codigo: 'not-allowed', mensaje: 'Allow microphone access in your browser to speak.' },
+  NotFoundError: { codigo: 'audio-capture', mensaje: 'No connected microphone was found.' },
+  NotReadableError: { codigo: 'audio-capture', mensaje: 'Microphone is busy. Close other apps using it.' },
 };
 
 const errorConCodigo = (mensaje, codigo) => Object.assign(new Error(mensaje), { codigo });
-const abortado = () => Object.assign(errorConCodigo('Turno cancelado', 'aborted'), { name: 'AbortError' });
+const abortado = () => Object.assign(errorConCodigo('Turn canceled', 'aborted'), { name: 'AbortError' });
 
 export function soportaGrabacionAudio(entorno = globalThis) {
   return Boolean(
@@ -22,11 +22,11 @@ export function soportaGrabacionAudio(entorno = globalThis) {
 }
 
 export function elegirVozVyta(voces = []) {
-  const espanol = voces.filter((v) => /^es(?:[-_]|$)/i.test(v.lang));
-  return espanol.find((v) => /Elena/i.test(v.name) && /^es[-_]AR$/i.test(v.lang))
-    || espanol.find((v) => /^es[-_]AR$/i.test(v.lang))
-    || espanol.find((v) => /Google|Natural|Online/i.test(v.name))
-    || espanol[0];
+  const english = voces.filter((v) => /^en(?:[-_]|$)/i.test(v.lang));
+  return english.find((v) => /Samantha|Jenny|Aria|Natural/i.test(v.name) && /^en[-_]US$/i.test(v.lang))
+    || english.find((v) => /^en[-_]US$/i.test(v.lang))
+    || english.find((v) => /Google|Natural|Online/i.test(v.name))
+    || english[0];
 }
 
 export function fragmentosParaVoz(texto) {
@@ -85,7 +85,7 @@ export async function abrirCanalAudio({ entorno = globalThis } = {}) {
   } catch (error) {
     const conocido = ERRORES_MICROFONO[error?.name];
     if (conocido) throw errorConCodigo(conocido.mensaje, conocido.codigo);
-    throw errorConCodigo(error?.message || 'No se pudo acceder al micrófono.', 'audio-capture');
+    throw errorConCodigo(error?.message || 'Could not access the microphone.', 'audio-capture');
   }
   try {
     const Contexto = entorno.AudioContext || entorno.webkitAudioContext;
@@ -209,7 +209,7 @@ export async function grabarAudio({
     if (signal?.aborted) throw abortado();
 
     const mimeType = FORMATOS_GRABACION.find((tipo) => entorno.MediaRecorder.isTypeSupported(tipo));
-    if (!mimeType) throw errorConCodigo('El navegador no permite grabar un formato compatible. Probá con Safari, Chrome, Edge o Brave.', 'no-soportado');
+    if (!mimeType) throw errorConCodigo('This browser cannot record a compatible format. Try Safari, Chrome, Edge, or Brave.', 'no-soportado');
 
     const recorder = new entorno.MediaRecorder(canal.stream, { mimeType });
     captura.recorder = recorder;
@@ -224,23 +224,23 @@ export async function grabarAudio({
         bytes += data.size;
         if (bytes > MAX_BYTES) {
           captura.enviar = false;
-          reject(errorConCodigo('La grabación es demasiado grande. Probá una frase más corta.', 'audio-limit'));
+          reject(errorConCodigo('Recording is too large. Try a shorter phrase.', 'audio-limit'));
           terminar(false);
         } else {
           partes.push(data);
         }
       };
       recorder.onerror = () => {
-        reject(errorConCodigo('No se pudo grabar el audio. Revisá el micrófono y volvé a intentar.', 'audio-capture'));
+        reject(errorConCodigo('Could not record audio. Check your microphone and try again.', 'audio-capture'));
         liberarCaptura(captura, limpiar, esPersistente);
       };
       recorder.onstop = () => {
         liberarCaptura(captura, limpiar, esPersistente);
         onNivel(0);
         if (signal?.aborted) return reject(abortado());
-        if (!captura.enviar) return reject(errorConCodigo('No se escuchó una frase. Tocá para volver a intentar.', 'no-speech'));
+        if (!captura.enviar) return reject(errorConCodigo('No phrase heard. Tap to try again.', 'no-speech'));
         const audio = new Blob(partes, { type: recorder.mimeType || mimeType });
-        if (!audio.size) return reject(errorConCodigo('No llegó audio del micrófono. Volvé a intentar.', 'no-speech'));
+        if (!audio.size) return reject(errorConCodigo('No audio arrived from microphone. Try again.', 'no-speech'));
         resolve(audio);
       };
       recorder.start(250);
@@ -291,11 +291,11 @@ export async function transcribirAudio({
       throw errorConCodigo(datos.error || 'No se pudo transcribir la voz.', codigo);
     }
     if (typeof datos.text !== 'string' || !datos.text.trim()) {
-      throw errorConCodigo('No se reconoció una frase. Tocá para volver a intentar.', 'no-speech');
+      throw errorConCodigo('No phrase recognized. Tap to try again.', 'no-speech');
     }
     return datos.text.trim();
   } catch (error) {
-    if (error?.name === 'AbortError') throw signal?.aborted ? abortado() : errorConCodigo('La transcripción tardó demasiado. Volvé a intentar.', 'timeout');
+    if (error?.name === 'AbortError') throw signal?.aborted ? abortado() : errorConCodigo('Transcription took too long. Try again.', 'timeout');
     throw error;
   } finally {
     clearTimeout(timer);
@@ -329,7 +329,7 @@ export async function reproducirFragmentosVoz({
         reject(err);
       };
       registrarEnunciado(speech, cancelar);
-      speech.lang = voz?.lang || 'es-AR';
+      speech.lang = voz?.lang || 'en-US';
       speech.rate = rate;
       speech.pitch = 1;
       if (voz) speech.voice = voz;
@@ -343,7 +343,7 @@ export async function reproducirFragmentosVoz({
       speech.onerror = () => {
         registrarEnunciado(null, null);
         alPulso(0);
-        reject(errorConCodigo('No se pudo reproducir la voz. Revisá el audio del navegador y volvé a intentar.', 'tts'));
+        reject(errorConCodigo('Could not play voice audio. Check browser audio and try again.', 'tts'));
       };
       alPreparar();
       sintesis.speak(speech);

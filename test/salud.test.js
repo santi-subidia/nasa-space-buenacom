@@ -19,7 +19,7 @@ test('Salud refleja cambios de la base con las unidades originales, sin converti
   assert.equal(datos.mental.indicadores[1].valor, '6 h 30');
   assert.equal(datos.mental.indicadores[2].valor, '314');
   assert.equal(datos.mental.indicadores[2].unidad, 'ms');
-  assert.match(datos.mental.indicadores[2].detalle, /Tiempo de reacción/);
+  assert.match(datos.mental.indicadores[2].detalle, /Test reaction time/);
   await addReading(lectura('stress', 3, 42));
   datos = presentar(await getReadings('ana'));
   assert.equal(datos.mental.indicadores[0].valor, '3');
@@ -33,8 +33,8 @@ test('sin registros no afirma normalidad ni usa valores de muestra, porcentajes 
   assert.equal(datos.mental.nivel, null);
   assert.equal(datos.riesgos.nivel, null);
   assert.ok(datos.vitales.every((v) => v.valor === '—'));
-  assert.ok(datos.fisica.indicadores.every((v) => v.valor === '—' && v.estado === 'Sin datos'));
-  assert.ok(datos.mental.indicadores.every((v) => v.valor === '—' && v.estado === 'Sin datos'));
+  assert.ok(datos.fisica.indicadores.every((v) => v.valor === '—' && v.estado === 'No data'));
+  assert.ok(datos.mental.indicadores.every((v) => v.valor === '—' && v.estado === 'No data'));
   assert.ok(datos.historia.every((d) => d.animo === null && d.alertas === null));
   const conMasaCorporal = presentar([lectura('mass_kg', 73, 42)]);
   assert.equal(conMasaCorporal.fisica.indicadores[0].valor, '—', 'la masa corporal no es masa muscular');
@@ -48,7 +48,7 @@ test('vitales respeta el tripulante, descarta futuros y lee HRV desde la nota gu
   assert.equal(datos.vitales[0].valor, '72');
   assert.equal(datos.vitales[4].valor, '34');
   assert.equal(datos.vitales[4].unidad, 'ms');
-  assert.equal(datos.vitales[5].estado, 'Sin datos');
+  assert.equal(datos.vitales[5].estado, 'No data');
   assert.equal(datos.historia.at(-1).alertas, null, 'no inventa un registro del sol 42');
 });
 
@@ -88,11 +88,11 @@ test('Salud muestra respiración, músculo, hueso, microgravedad, aislamiento y 
   });
 
   assert.equal(datos.vitales[5].valor, '16');
-  assert.equal(datos.vitales[5].unidad, 'rpm');
-  assert.equal(datos.fisica.indicadores[0].valor, '97,4');
-  assert.equal(datos.fisica.indicadores[1].valor, '98,2');
+  assert.equal(datos.vitales[5].unidad, 'breaths/min');
+  assert.equal(datos.fisica.indicadores[0].valor, '97.4');
+  assert.equal(datos.fisica.indicadores[1].valor, '98.2');
   assert.equal(datos.fisica.indicadores[2].valor, '86');
-  assert.equal(datos.fisica.indicadores[3].valor, '354,7');
+  assert.equal(datos.fisica.indicadores[3].valor, '354.7');
   assert.equal(datos.mental.indicadores[3].valor, '4');
   assert.equal(datos.mental.indicadores[3].nivel, 'yellow');
   assert.equal(datos.riesgos.filas[4].nivel, 'yellow');
@@ -105,6 +105,6 @@ test('Salud muestra respiración, músculo, hueso, microgravedad, aislamiento y 
     cabina: { sol: 42, radiationTotalMsv: 354.7 },
     evaluacion: evaluate(lecturas, {}, 'mars_base', { sol: 42 }),
   });
-  assert.equal(conObjetoUnico.fisica.indicadores[3].valor, '354,7');
+  assert.equal(conObjetoUnico.fisica.indicadores[3].valor, '354.7');
   assert.equal(conObjetoUnico.riesgos.filas[0].nivel, 'yellow');
 });

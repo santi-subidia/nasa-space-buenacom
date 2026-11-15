@@ -18,32 +18,32 @@ test('Inicio conserva las seis métricas de Figma y refleja cambios guardados en
   assert.deepEqual(inicial.map((t) => t.id), ['hr_rest', 'hrv', 'spo2', 'sleep_h', 'presion', 'temp']);
   assert.equal(tarjeta(inicial, 'hr_rest').valor, '68');
   assert.equal(tarjeta(inicial, 'presion').valor, '118 / 91');
-  assert.equal(tarjeta(inicial, 'presion').estado, 'Alerta');
-  assert.equal(tarjeta(inicial, 'temp').valor, '37,6');
-  assert.equal(tarjeta(inicial, 'temp').estado, 'Atención');
+  assert.equal(tarjeta(inicial, 'presion').estado, 'Alert');
+  assert.equal(tarjeta(inicial, 'temp').valor, '37.6');
+  assert.equal(tarjeta(inicial, 'temp').estado, 'Watch');
   await addReading(lectura('hr_rest', 99, 42));
   const actualizado = metricasDesdeLecturas(await getReadings('ana'), {}, {}, 42);
   assert.equal(tarjeta(actualizado, 'hr_rest').valor, '99');
-  assert.equal(tarjeta(actualizado, 'hr_rest').estado, 'Atención');
+  assert.equal(tarjeta(actualizado, 'hr_rest').estado, 'Watch');
 });
 
 test('HRV usa la nota realmente guardada, en ms, y nunca reutiliza la frecuencia cardíaca', async () => {
   await addReading(lectura('hr_rest', 74, 41));
   const sinHrv = metricasDesdeLecturas(await getReadings('ana'), {}, {}, 42);
   assert.equal(tarjeta(sinHrv, 'hrv').valor, '—');
-  assert.equal(tarjeta(sinHrv, 'hrv').estado, 'Sin datos');
-  await addReading({ ...lectura('hr_rest', 74, 42), note: 'FC reposo +10 sobre base · HRV 34 ms', source: 'watch_sim' });
+  assert.equal(tarjeta(sinHrv, 'hrv').estado, 'No data');
+  await addReading({ ...lectura('hr_rest', 74, 42), note: 'Resting HR +10 above baseline · HRV 34 ms', source: 'watch_sim' });
   const conHrv = metricasDesdeLecturas(await getReadings('ana'), {}, {}, 42);
   assert.equal(tarjeta(conHrv, 'hrv').valor, '34');
   assert.equal(tarjeta(conHrv, 'hrv').unidad, 'ms');
-  assert.equal(tarjeta(conHrv, 'hrv').estado, 'Registrada');
+  assert.equal(tarjeta(conHrv, 'hrv').estado, 'Logged');
   const otroTripulante = metricasDesdeLecturas(await getReadings('marcos'), {}, {}, 42);
   assert.equal(tarjeta(otroTripulante, 'hrv').valor, '—');
 });
 
 test('las tarjetas vacías no inventan datos y las lecturas futuras no se muestran', () => {
   const vacias = metricasDesdeLecturas([], {}, {}, 42);
-  assert.ok(vacias.every((t) => t.valor === '—' && t.estado === 'Sin datos'));
+  assert.ok(vacias.every((t) => t.valor === '—' && t.estado === 'No data'));
   const datos = [lectura('hr_rest', 65, 41), lectura('hr_rest', 105, 60)];
   assert.equal(tarjeta(metricasDesdeLecturas(datos, {}, {}, 42), 'hr_rest').valor, '65');
   assert.equal(datos.length, 2);
@@ -60,8 +60,8 @@ test('el promedio de sueño usa la última lectura de cada noche de los últimos
   ];
   const sueno = tarjeta(metricasDesdeLecturas(datos, {}, {}, 42), 'sleep_h');
   assert.equal(sueno.valor, '6 h 30');
-  assert.equal(sueno.detalle, 'Promedio de 2 noches registradas en los últimos 7 soles.');
-  assert.equal(sueno.estado, 'Atención');
+  assert.equal(sueno.detalle, 'Average of 2 logged nights over the last 7 sols.');
+  assert.equal(sueno.estado, 'Watch');
 });
 
 test('el puntaje total refleja cambios guardados y descarta mediciones futuras', async () => {

@@ -23,44 +23,44 @@ import {
 test('TIPOS_NOTIFICACION y obtenerAspectoNotificacion cubren los 4 tipos y símbolos ●, ◆, ■, ✦', () => {
   assert.deepEqual(TIPOS_NOTIFICACION.rutina, {
     id: 'rutina',
-    etiqueta: 'Rutina',
+    etiqueta: 'Routine',
     color: 'blue',
     simbolo: '●',
   });
   assert.deepEqual(TIPOS_NOTIFICACION.alerta, {
     id: 'alerta',
-    etiqueta: 'Alerta',
+    etiqueta: 'Alert',
     color: 'orange',
     simbolo: '◆',
   });
   assert.deepEqual(TIPOS_NOTIFICACION.tierra, {
     id: 'tierra',
-    etiqueta: 'Tierra',
+    etiqueta: 'Earth',
     color: 'violet',
     simbolo: '✦',
   });
   assert.deepEqual(TIPOS_NOTIFICACION.motivacion, {
     id: 'motivacion',
-    etiqueta: 'Motivación',
+    etiqueta: 'Motivation',
     color: 'green',
     simbolo: '●',
   });
 
   assert.deepEqual(obtenerAspectoNotificacion('alerta', 'orange'), {
     id: 'alerta',
-    etiqueta: 'Alerta',
+    etiqueta: 'Alert',
     color: 'orange',
     simbolo: '◆',
   });
   assert.deepEqual(obtenerAspectoNotificacion('alerta', 'red'), {
     id: 'alerta',
-    etiqueta: 'Alerta',
+    etiqueta: 'Alert',
     color: 'red',
     simbolo: '■',
   });
   assert.deepEqual(obtenerAspectoNotificacion('alerta', 'critica'), {
     id: 'alerta',
-    etiqueta: 'Alerta',
+    etiqueta: 'Alert',
     color: 'red',
     simbolo: '■',
   });
@@ -144,8 +144,8 @@ test('evaluarHitosHorario detecta todos los hitos del sol (incl. hidratación y 
   });
   assert.equal(despertar.emitidas.length, 1);
   assert.equal(despertar.emitidas[0].horaMision, '06:30');
-  assert.equal(despertar.emitidas[0].titulo, 'Despertar · Chequeo matutino');
-  assert.equal(despertar.emitidas[0].mensaje, 'Comienza un nuevo sol. Realizá tu chequeo matutino.');
+  assert.equal(despertar.emitidas[0].titulo, 'Wake-up · Morning check-in');
+  assert.equal(despertar.emitidas[0].mensaje, 'A new sol begins. Complete your morning check-in.');
   assert.equal(despertar.emitidas[0].ruta, '/registrar');
 
   // Avance +60 min (06:30 -> 07:30): 06:45 y 07:00
@@ -212,7 +212,7 @@ test('evaluarHitosHorario detecta todos los hitos del sol (incl. hidratación y 
   });
   assert.equal(viernes.emitidas.length, 1);
   assert.equal(viernes.emitidas[0].horaMision, '12:30');
-  assert.equal(viernes.emitidas[0].titulo, 'Almuerzo de viernes');
+  assert.equal(viernes.emitidas[0].titulo, 'Friday lunch');
   assert.equal(viernes.emitidas[0].ruta, '/registrar');
 
   // Rollover de sol (21:15 Sol 43 -> 06:45 Sol 44): capta 21:30 de Sol 43 y 06:30/06:45 de Sol 44
@@ -282,7 +282,7 @@ test('constructores reactivos: aviso, Tierra y motivación respetan formato y su
   assert.equal(motivacion.color, 'green');
   assert.equal(motivacion.simbolo, '●');
   assert.equal(motivacion.ruta, '/entrenador');
-  assert.match(motivacion.titulo, /12 días/);
+  assert.match(motivacion.titulo, /12-day/);
   assert.equal(motivacion.permitido, true);
 });
 

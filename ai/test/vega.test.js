@@ -53,11 +53,11 @@ test('detectarUrgencia: señales rojas y autolesión se detectan sin IA', () => 
 
 // ---------- voz ----------
 
-test('elegirVoz prefiere es-AR y cae a cualquier español; null si no hay', () => {
+test('elegirVoz prefiere inglés y cae a cualquier en-*; null si no hay', () => {
   const v = (lang) => ({ lang, name: lang });
-  assert.equal(elegirVoz([v('en-US'), v('es-ES'), v('es-AR')]).lang, 'es-AR');
-  assert.equal(elegirVoz([v('en-US'), v('es_ES')]).lang, 'es_ES');
-  assert.equal(elegirVoz([v('en-US')]), null);
+  assert.equal(elegirVoz([v('es-ES'), v('en-GB'), v('en-US')]).lang, 'en-US');
+  assert.equal(elegirVoz([v('es-ES'), v('en_GB')]).lang, 'en_GB');
+  assert.equal(elegirVoz([v('es-ES')]), null);
 });
 
 function ventanaFalsa({ errorAlEscuchar, frase = 'por qué me salió herpes' } = {}) {
@@ -81,7 +81,7 @@ function ventanaFalsa({ errorAlEscuchar, frase = 'por qué me salió herpes' } =
     }
   }
   const speechSynthesis = {
-    getVoices: () => [{ lang: 'es-AR', name: 'Voz' }],
+    getVoices: () => [{ lang: 'en-US', name: 'Voz' }],
     speak(e) {
       registro.habladas.push(e);
       setTimeout(() => e.onend?.(), 0);
@@ -104,8 +104,8 @@ test('voz: escucha una frase, informa parciales y habla con voz en español', as
   assert.deepEqual(parciales, ['por qué', 'por qué me salió herpes']);
   assert.deepEqual(estados.slice(0, 2), ['escuchando', 'inactivo']);
 
-  await voz.hablar('Hola');
-  assert.equal(registro.habladas[0].lang, 'es-AR');
+  await voz.hablar('Hello');
+  assert.equal(registro.habladas[0].lang, 'en-US');
   assert.equal(registro.habladas[0].voice.name, 'Voz');
   assert.equal(estados.at(-2), 'hablando');
   assert.equal(estados.at(-1), 'inactivo');
@@ -113,7 +113,7 @@ test('voz: escucha una frase, informa parciales y habla con voz en español', as
 
 test('voz: errores del micrófono llegan con un mensaje claro y navegadores sin soporte no rompen', async () => {
   const { ventana } = ventanaFalsa({ errorAlEscuchar: 'not-allowed' });
-  await assert.rejects(crearVoz({ ventana }).escuchar(), (e) => e.codigo === 'not-allowed' && /permiso/.test(e.mensaje));
+  await assert.rejects(crearVoz({ ventana }).escuchar(), (e) => e.codigo === 'not-allowed' && /permission/.test(e.mensaje));
 
   const sin = crearVoz({ ventana: {} });
   assert.equal(sin.soportaReconocimiento, false);
@@ -239,7 +239,7 @@ test('sesión: una respuesta vieja no pisa a la pregunta más nueva', async () =
 test('sesión: sin reconocimiento de voz avisa en vez de romper', async () => {
   const vega = crearSesionVega({ voz: crearVoz({ ventana: {} }), fetchFn: respuestaFetch({}) });
   await vega.preguntarPorVoz();
-  assert.match(vega.obtener().error, /no reconoce voz/);
+  assert.match(vega.obtener().error, /does not support speech recognition/);
 });
 
 // ---------- servidor: de punta a punta con un cliente simulado ----------
@@ -282,22 +282,22 @@ test('sesión: ante una señal alta, consulta a la IA mientras todavía lee el a
     callar() {},
     hablar: (texto) => {
       eventos.push(`habla: ${texto.slice(0, 12)}`);
-      return texto.startsWith('El dolor de pecho') ? new Promise((r) => { terminarAviso = r; }) : Promise.resolve();
+      return texto.startsWith('Chest pain') ? new Promise((r) => { terminarAviso = r; }) : Promise.resolve();
     },
   };
   const fetchFn = async () => {
     eventos.push('consulta');
-    return { ok: true, json: async () => cuerpoDeVega('Avisá al oficial médico.') };
+    return { ok: true, json: async () => cuerpoDeVega('Notify the medical officer.') };
   };
   const vega = crearSesionVega({ voz, fetchFn });
   const hecho = vega.preguntar('tengo dolor en el pecho');
   await new Promise((r) => setTimeout(r, 10));
-  assert.deepEqual(eventos, ['habla: El dolor de ', 'consulta']); // la consulta no espera al aviso
-  assert.equal(vega.obtener().mensajes.at(-1).texto, 'Avisá al oficial médico.');
-  assert.equal(eventos.includes('habla: Avisá al ofi'), false); // la respuesta todavía no se lee
+  assert.deepEqual(eventos, ['habla: Chest pain a', 'consulta']); // la consulta no espera al aviso
+  assert.equal(vega.obtener().mensajes.at(-1).texto, 'Notify the medical officer.');
+  assert.equal(eventos.includes('habla: Notify the m'), false); // la respuesta todavía no se lee
   terminarAviso();
   await hecho;
-  assert.equal(eventos.at(-1), 'habla: Avisá al ofi');
+  assert.equal(eventos.at(-1), 'habla: Notify the m');
 });
 
 test('voz continua: conserva palabras parciales, reanuda micro-pausas y permite finalizar al instante', async () => {

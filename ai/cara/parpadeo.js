@@ -54,7 +54,7 @@ export function analizarParpadeos(muestras) {
 export function clasificarFatiga({ parpadeosPorMin, pctOjosCerrados, cierresLargos = 0 }, umbrales = {}) {
   const { pctAtencion = 8, pctAlto = 15, minParpadeosAtencion = 8 } = umbrales;
   if (pctOjosCerrados >= pctAlto || cierresLargos >= 3) {
-    return { nivel: 'alto', mensaje: 'Tus ojos pasan mucho tiempo cerrados: señal de cansancio marcado. Descansá y revisá cuánto dormiste.' };
+    return { nivel: 'alto', mensaje: 'Your eyes stay closed for long periods: a sign of marked fatigue. Rest and check how much you slept.' };
   }
   if (pctOjosCerrados >= pctAtencion || parpadeosPorMin < minParpadeosAtencion) {
     return { nivel: 'atencion', mensaje: 'Veo signos leves de cansancio en el parpadeo. Conviene una pausa corta.' };

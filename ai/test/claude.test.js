@@ -70,8 +70,8 @@ test('las imágenes van antes del texto y las herramientas salen con strict: tru
 });
 
 test('rechaza un esfuerzo inválido y una petición sin parte variable', () => {
-  assert.throws(() => armarParametros({ ...BASE, esfuerzo: 'ultra' }), /Esfuerzo/);
-  assert.throws(() => armarParametros({ ...BASE, variable: '' }), /parte variable/);
+  assert.throws(() => armarParametros({ ...BASE, esfuerzo: 'ultra' }), /Invalid effort/);
+  assert.throws(() => armarParametros({ ...BASE, variable: '' }), /variable part/);
 });
 
 test('respuesta buena: lee el texto por tipo de bloque, devuelve el uso y la guarda', async () => {

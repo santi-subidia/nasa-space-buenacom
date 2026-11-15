@@ -10,8 +10,8 @@ import { calcularEstadoEnvio, DURACION_EVALUACION_MIN, RETRASO_SOLO_IDA_MIN, RES
 import { agruparMensajesPorDia, crearTransmisionCanal, informeDesdeRegistros, mensajesDeTransmisiones } from '@/lib/enlace/informes';
 import styles from './EnlacePantalla.module.scss';
 
-const FECHA = new Intl.DateTimeFormat('es-AR', { day: '2-digit', month: 'short', year: 'numeric', timeZone: 'UTC' });
-const HORA = new Intl.DateTimeFormat('es-AR', { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'UTC' });
+const FECHA = new Intl.DateTimeFormat('en-US', { day: '2-digit', month: 'short', year: 'numeric', timeZone: 'UTC' });
+const HORA = new Intl.DateTimeFormat('en-US', { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'UTC' });
 
 function Icono({ tipo }) {
   if (tipo === 'informe') return <img src="/figma/nav-informes.svg" width="20" height="20" alt="" />;
@@ -46,7 +46,7 @@ export default function EnlacePantalla() {
         id: `${simulacionActual.id}-salida`,
         direccion: 'salida',
         remitente: simulacionActual.remitente,
-        texto: `Envío de informe correspondiente al Sol ${simulacionActual.sol}.`,
+        texto: `Report transmission for Sol ${simulacionActual.sol}.`,
         ts: simulacionActual.iniciadaEn,
         sol: simulacionActual.sol,
         enviado: enlace.iniciado,
@@ -58,7 +58,7 @@ export default function EnlacePantalla() {
       historial.push({
         id: simulacionActual.id,
         direccion: 'entrada',
-        remitente: simulacionActual.respuesta.remitente || 'Base de Control Terrestre',
+        remitente: simulacionActual.respuesta.remitente || 'Ground Control Base',
         texto: simulacionActual.respuesta.resumenTecnico,
         indicaciones: simulacionActual.respuesta.indicaciones || [],
         ts: simulacionActual.recibidaEn,
@@ -98,7 +98,7 @@ export default function EnlacePantalla() {
       if (!esInforme) setBorrador({ astronautId: activoId, texto: '' });
       sincronizarCanal(activoId).catch(() => {});
     } catch {
-      setError({ astronautId: activoId, texto: 'No se pudo guardar el envío. Intentá de nuevo.' });
+      setError({ astronautId: activoId, texto: 'Could not save the transmission. Please try again.' });
     } finally {
       bloqueoEnvio.current = false;
       setEnviando(false);
@@ -145,30 +145,30 @@ export default function EnlacePantalla() {
   return (
     <div className={styles.pantalla} data-dashboard>
       <CabeceraMision nombre={astronauta?.name} titulo={astronauta?.titulo} sol={solActual} entorno={mision?.entorno} mostrarNotificaciones={false} />
-      <h1 className={styles.oculto}>Informes</h1>
+      <h1 className={styles.oculto}>Reports</h1>
       <section className={styles.simulacion} aria-labelledby="titulo-simulacion">
         <div className={styles.cabeceraSimulacion}>
           <div>
-            <h2 id="titulo-simulacion">Simular respuesta</h2>
-            <p>{RETRASO_SOLO_IDA_MIN} min de ida · {DURACION_EVALUACION_MIN} min de evaluación · {RETRASO_SOLO_IDA_MIN} min de vuelta</p>
+            <h2 id="titulo-simulacion">Simulate reply</h2>
+            <p>{RETRASO_SOLO_IDA_MIN} min one-way · {DURACION_EVALUACION_MIN} min evaluation · {RETRASO_SOLO_IDA_MIN} min return</p>
           </div>
           <span className={styles.tiempoSimulacion}>{envioSimulado.minutosTranscurridos} / {envioSimulado.duracionTotalMin} min</span>
         </div>
         <div className={styles.controlesSimulacion}>
-          <button type="button" className={styles.enviar} onClick={() => avanzarSimulacion(0)} disabled={cargando || Boolean(simulacionActual)}>Iniciar simulación</button>
-          <button type="button" onClick={() => avanzarSimulacion(5)} disabled={cargando || envioSimulado.respuestaDisponible}>Adelantar +5 min</button>
-          <button type="button" onClick={() => avanzarSimulacion(envioSimulado.duracionTotalMin)} disabled={cargando || envioSimulado.respuestaDisponible}>Completar recorrido</button>
+          <button type="button" className={styles.enviar} onClick={() => avanzarSimulacion(0)} disabled={cargando || Boolean(simulacionActual)}>Start simulation</button>
+          <button type="button" onClick={() => avanzarSimulacion(5)} disabled={cargando || envioSimulado.respuestaDisponible}>Advance +5 min</button>
+          <button type="button" onClick={() => avanzarSimulacion(envioSimulado.duracionTotalMin)} disabled={cargando || envioSimulado.respuestaDisponible}>Complete round trip</button>
           <button type="button" onClick={alternarSimulacion} aria-pressed={Boolean(simulacionActual && enlace.autoAvance)} disabled={cargando || envioSimulado.respuestaDisponible}>
-            {simulacionActual && enlace.autoAvance ? 'Pausar auto-avance' : 'Auto-avance'}
+            {simulacionActual && enlace.autoAvance ? 'Pause auto-advance' : 'Auto-advance'}
           </button>
-          <button type="button" onClick={reiniciarSimulacion} disabled={!simulacionActual}>Reiniciar</button>
+          <button type="button" onClick={reiniciarSimulacion} disabled={!simulacionActual}>Reset</button>
         </div>
-        <div className={styles.progresoSimulacion} role="progressbar" aria-label="Recorrido de la respuesta simulada" aria-valuenow={envioSimulado.progresoPct} aria-valuemin={0} aria-valuemax={100}>
+        <div className={styles.progresoSimulacion} role="progressbar" aria-label="Simulated reply progress" aria-valuenow={envioSimulado.progresoPct} aria-valuemin={0} aria-valuemax={100}>
           <span style={{ width: `${envioSimulado.progresoPct}%` }} />
         </div>
         <div className={styles.estadoSimulacion}>
           <p role="status">{envioSimulado.etiqueta}</p>
-          <span>{envioSimulado.respuestaDisponible ? 'Respuesta simulada disponible en el chat' : `Restan ${envioSimulado.minutosRestantes} min`}</span>
+          <span>{envioSimulado.respuestaDisponible ? 'Simulated reply available in chat' : `${envioSimulado.minutosRestantes} min remaining`}</span>
         </div>
         <ol className={styles.hitosSimulacion}>
           {envioSimulado.hitos.map((hito) => <li key={hito.id} data-estado={hito.estado} aria-current={hito.activo ? 'step' : undefined}>
@@ -181,12 +181,12 @@ export default function EnlacePantalla() {
         <header className={styles.cabeceraCanal}>
           <span className={styles.iconoConexion}><Icono tipo="conexion" /></span>
           <div>
-            <h2 id="titulo-canal">Base de Control Terrestre</h2>
-            <p>Canal de comunicación con Tierra</p>
+            <h2 id="titulo-canal">Ground Control Base</h2>
+            <p>Earth communication channel</p>
           </div>
-          <span className={styles.estadoEnlace} data-conectado={conectado}><i aria-hidden="true" />{conectado ? 'Enlace activo' : 'Sin conexión con Tierra'}</span>
+          <span className={styles.estadoEnlace} data-conectado={conectado}><i aria-hidden="true" />{conectado ? 'Link active' : 'No Earth connection'}</span>
         </header>
-        <div className={styles.conversacion} ref={conversacionRef} role="log" aria-label="Mensajes con Control Terrestre" aria-relevant="additions text">
+        <div className={styles.conversacion} ref={conversacionRef} role="log" aria-label="Messages with Ground Control" aria-relevant="additions text">
           {grupos.length ? grupos.map((grupo) => (
             <div key={grupo.clave}>
               <div className={styles.fechaConversacion}><span>{grupo.ts ? `${FECHA.format(new Date(grupo.ts))} · UTC` : `Sol ${grupo.sol}`}</span></div>
@@ -194,34 +194,34 @@ export default function EnlacePantalla() {
                 {grupo.mensajes.map((mensaje) => <Mensaje key={mensaje.id} mensaje={mensaje} />)}
               </div>
             </div>
-          )) : <p className={styles.sinMensajes}>{cargando ? 'Cargando mensajes…' : 'Todavía no hay mensajes guardados con Control Terrestre.'}</p>}
+          )) : <p className={styles.sinMensajes}>{cargando ? 'Loading messages…' : 'No messages saved with Ground Control yet.'}</p>}
         </div>
         <form className={styles.compositor} onSubmit={enviarMensaje}>
-          <label className={styles.oculto} htmlFor="mensaje-control-terrestre">Mensaje para Control Terrestre</label>
+          <label className={styles.oculto} htmlFor="mensaje-control-terrestre">Message for Ground Control</label>
           <input
             id="mensaje-control-terrestre"
             value={texto}
             onChange={(evento) => setBorrador({ astronautId: activoId, texto: evento.target.value })}
-            placeholder="Escribí un mensaje para Control Terrestre…"
+            placeholder="Write a message to Ground Control…"
             autoComplete="off"
             disabled={cargando || enviando}
           />
-          <button className={styles.enviar} type="submit" disabled={cargando || enviando || !texto.trim()}><Icono tipo="enviar" />{enviando ? 'Enviando…' : 'Enviar'}</button>
-          <button className={styles.enviarInforme} type="button" onClick={() => enviar(true)} disabled={cargando || enviando || informe.disponible === false}><Icono tipo="informe" />Enviar informe</button>
+          <button className={styles.enviar} type="submit" disabled={cargando || enviando || !texto.trim()}><Icono tipo="enviar" />{enviando ? 'Sending…' : 'Send'}</button>
+          <button className={styles.enviarInforme} type="button" onClick={() => enviar(true)} disabled={cargando || enviando || informe.disponible === false}><Icono tipo="informe" />Send report</button>
           {error?.astronautId === activoId && <p className={styles.error} role="alert">{error.texto}</p>}
         </form>
       </section>
       <section className={styles.informe} aria-labelledby="titulo-informe" aria-busy={cargando}>
-        <h2 id="titulo-informe"><span className={styles.iconoInforme}><Icono tipo="informe" /></span>Informe</h2>
-        <p className={styles.resumenClinico}>{cargando ? 'Cargando los registros del tripulante…' : informe.resumen}</p>
+        <h2 id="titulo-informe"><span className={styles.iconoInforme}><Icono tipo="informe" /></span>Report</h2>
+        <p className={styles.resumenClinico}>{cargando ? 'Loading crewmember records…' : informe.resumen}</p>
         <div className={styles.detalleInforme}>
           <div>
-            <h3>Hallazgos principales</h3>
-            <ListaClinica elementos={informe.hallazgos} vacio="Sin hallazgos registrados." />
+            <h3>Key findings</h3>
+            <ListaClinica elementos={informe.hallazgos} vacio="No recorded findings." />
           </div>
           <div>
-            <h3>Plan propuesto a Houston</h3>
-            <ListaClinica elementos={informe.plan} vacio="Sin indicaciones registradas." />
+            <h3>Proposed plan for Houston</h3>
+            <ListaClinica elementos={informe.plan} vacio="No recorded instructions." />
           </div>
         </div>
       </section>
@@ -231,21 +231,21 @@ export default function EnlacePantalla() {
 
 function Mensaje({ mensaje }) {
   const fecha = Date.parse(mensaje.ts);
-  const destino = mensaje.direccion === 'salida' ? 'Tierra' : 'Base Marte';
-  const estadoEnvio = mensaje.enviado ? 'Enviado' : 'Pendiente de envío';
-  const estadoRecepcion = mensaje.recibidoEnDestino ? `Recibido en ${destino}` : `Pendiente de recepción en ${destino}`;
+  const destino = mensaje.direccion === 'salida' ? 'Earth' : 'Mars Base';
+  const estadoEnvio = mensaje.enviado ? 'Sent' : 'Pending dispatch';
+  const estadoRecepcion = mensaje.recibidoEnDestino ? `Received on ${destino}` : `Pending receipt on ${destino}`;
   const descripcionEntrega = `${estadoEnvio}. ${estadoRecepcion}.`;
   return (
     <article className={styles.mensaje} data-direccion={mensaje.direccion}>
       <div className={styles.burbuja}>
         <header>
           <strong>{mensaje.remitente}</strong>
-          {mensaje.simulada && <span className={styles.etiquetaSimulada}>Simulada</span>}
+          {mensaje.simulada && <span className={styles.etiquetaSimulada}>Simulated</span>}
           {Number.isFinite(fecha) && <time dateTime={mensaje.ts} title={`${FECHA.format(new Date(fecha))} · UTC`}>{HORA.format(new Date(fecha))}</time>}
         </header>
         <p>{mensaje.texto}</p>
         {mensaje.indicaciones?.length > 0 && <div className={styles.indicaciones}>
-          <h3>Indicaciones clínicas</h3>
+          <h3>Clinical instructions</h3>
           <ListaClinica elementos={mensaje.indicaciones} />
         </div>}
       </div>

@@ -10,7 +10,7 @@ export default function OrigenUmbral({ basis, className }) {
   const etiqueta = ORIGEN_UMBRAL[basis.type] || basis.type;
   return (
     <p className={className} data-origen={basis.type}>
-      Umbral: <strong>{etiqueta}</strong>
+      Threshold: <strong>{etiqueta}</strong>
       {basis.ref && (
         <>
           {' · '}

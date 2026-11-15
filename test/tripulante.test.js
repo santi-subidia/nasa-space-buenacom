@@ -30,11 +30,11 @@ test('Marcos ve a Nicolás en orange con Posible reactivación viral y sin medic
   const ana = vista.find((v) => v.id === 'ana');
   assert.ok(ana);
   assert.equal(ana.level, 'orange');
-  assert.equal(ana.alertaActiva?.title, 'Posible reactivación viral');
+  assert.equal(ana.alertaActiva?.title, 'Possible viral reactivation');
   assert.equal(ana.alertaActiva?.escalate, 'cmo');
   assert.equal(ana.compartioDetalles, false);
   assert.deepEqual(ana.indicadoresVisibles, []);
-  assert.match(ana.notaPrivacidad, /no compartió/i);
+  assert.match(ana.notaPrivacidad, /did not share/i);
 });
 
 test('Cuando permisosPorId.ana === true, Marcos ve los detalles compartidos de Nicolás', () => {

@@ -38,14 +38,14 @@ test('limitarPlan: el nivel del motor pone el techo y la IA solo puede bajar la 
 test('limitarPlan sin propuesta de la IA parte del plan actual; rechaza niveles desconocidos', () => {
   assert.equal(limitarPlan(null, 'orange').minutos, 30);
   assert.equal(limitarPlan({ minutos: 10, intensidad: 'extrema' }, 'green').intensidad, 'normal'); // intensidad inválida → plan actual
-  assert.throws(() => limitarPlan(null, 'morado'), /Nivel desconocido/);
+  assert.throws(() => limitarPlan(null, 'morado'), /Unknown level/);
 });
 
 test('comentarioLocal usa las métricas y refleja el ajuste', () => {
   const orange = limitarPlan(null, 'orange');
-  assert.equal(comentarioLocal(SERIE, orange), 'Terminaste 12 repeticiones de sentadilla. Por tu estado de hoy, seguí con 30 minutos liviana.');
-  assert.match(comentarioLocal({ ejercicio: 'plancha', metricas: { tiempoPlanchaSeg: 45 } }, limitarPlan(null, 'green')), /45 segundos de plancha/);
-  assert.match(comentarioLocal(SERIE, limitarPlan(null, 'red')), /descansar/);
+  assert.equal(comentarioLocal(SERIE, orange), 'You finished 12 reps of squats. Based on your status today, keep going with 30 light minutes.');
+  assert.match(comentarioLocal({ ejercicio: 'plancha', metricas: { tiempoPlanchaSeg: 45 } }, limitarPlan(null, 'green')), /45 seconds of plank/);
+  assert.match(comentarioLocal(SERIE, limitarPlan(null, 'red')), /rest/i);
 });
 
 // ---------- la tarea ----------
@@ -56,9 +56,9 @@ test('tarea exercise: fotos antes del texto, esfuerzo low, esquema y estado de s
   assert.equal(t.esfuerzo, 'low');
   assert.equal(t.imagenes.length, 2);
   assert.equal(t.formato.required.join(), 'comentario,correccion,plan');
-  assert.match(t.variable, /nivel del motor de reglas: orange/);
+  assert.match(t.variable, /rule engine level: orange/);
   assert.match(t.variable, /repeticiones: 12/);
-  assert.match(t.variable, /Fotos clave de la serie: 2/);
+  assert.match(t.variable, /Key set photos: 2/);
   assert.doesNotMatch(JSON.stringify(t.entrada), /AAAA/); // las fotos no entran en la clave
 });
 
@@ -127,7 +127,7 @@ test('sin red: comentario local con las métricas de ESTA serie y plan limitado,
   const r = await pedir(sinRed, almacen); // otras métricas
   assert.equal(r.origen, 'guardada');
   assert.equal(r.comentarioDeIA, false);
-  assert.match(r.comentario, /Terminaste 12 repeticiones de sentadilla/);
+  assert.match(r.comentario, /You finished 12 reps of squat/);
   assert.equal(r.plan.intensidad, 'liviana');
 });
 
@@ -155,5 +155,5 @@ test('cliente: si el servidor no responde, comenta con las métricas y aplica el
   assert.equal(r.origen, 'local');
   assert.equal(r.plan.intensidad, 'liviana');
   assert.equal(r.plan.minutos, 30);
-  assert.match(voz.dichas[0], /12 repeticiones/);
+  assert.match(voz.dichas[0], /12 reps/);
 });

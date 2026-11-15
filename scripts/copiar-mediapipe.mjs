@@ -13,7 +13,7 @@ const ERR_FILTRADO =
   'var err = function(...args) { var msg = typeof args[0] === "string" ? args[0].trim() : ""; if (/^(?:INFO:|WARNING:\\s*All log messages before absl|I0000\\b|W0000\\b|gl_context)/i.test(msg) || msg.includes("Created TensorFlow Lite XNNPACK delegate")) { console.debug?.(...args); return; } console.error(...args); };';
 
 if (!existsSync(origen)) {
-  console.log('[mediapipe] node_modules/@mediapipe/tasks-vision no está instalado; se omite.');
+  console.log('[mediapipe] node_modules/@mediapipe/tasks-vision is not installed; skipping.');
 } else {
   mkdirSync(destino, { recursive: true });
   cpSync(origen, destino, { recursive: true });

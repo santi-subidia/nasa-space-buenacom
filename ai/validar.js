@@ -41,7 +41,7 @@ export function validarHistorial(historial = []) {
   return historial.map((item, index) => {
     const rolEsperado = index % 2 === 0 ? 'user' : 'assistant';
     if (!item || item.role !== rolEsperado || typeof item.text !== 'string' || !item.text.trim() || item.text.length > 4000) {
-      throw new ErrorDePeticion('"historial" contiene un turno inválido');
+      throw new ErrorDePeticion('"historial" contains an invalid turn');
     }
     return { role: item.role, text: item.text.trim() };
   });
@@ -56,7 +56,7 @@ const BASE64 = /^[A-Za-z0-9+/]+={0,2}$/;
  * Solo se aceptan jpeg/png/webp y un máximo de fotos por consulta.
  */
 export function validarImagenes(imagenes = [], { max = 3, campo = 'fotos' } = {}) {
-  if (!Array.isArray(imagenes) || imagenes.length > max) throw new ErrorDePeticion(`"${campo}" debe ser una lista de hasta ${max} imágenes`);
+  if (!Array.isArray(imagenes) || imagenes.length > max) throw new ErrorDePeticion(`"${campo}" must be a list of up to ${max} images`);
   return imagenes.map((img, i) => {
     if (!TIPOS_DE_IMAGEN.includes(img?.media_type)) throw new ErrorDePeticion(`"${campo}[${i}]": el tipo debe ser ${TIPOS_DE_IMAGEN.join(', ')}`);
     if (typeof img.data !== 'string' || !img.data || img.data.length > MAX_CARACTERES_IMAGEN || !BASE64.test(img.data)) {

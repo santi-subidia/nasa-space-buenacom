@@ -43,7 +43,7 @@ function tareaAnswer(body) {
     variable:
       (datos ? `<datos_del_dia>\n${datos}\n</datos_del_dia>\n\n` : '') +
       (contextoPantalla ? `<contexto_pantalla>\n${contextoPantalla}\n</contexto_pantalla>\n\n` : '') +
-      `Pregunta del tripulante: ${pregunta}`,
+      `Crewmember question: ${pregunta}`,
     esfuerzo: validarEsfuerzo(body.esfuerzo, 'low'),
     maxTokens: 1500, // el razonamiento también cuenta
     entrada: { pregunta, riesgos },
@@ -60,14 +60,14 @@ function tareaCheck(body) {
   const texto = validarTexto(body.texto, 'texto', 300);
   const pendientes = body.pendientes ?? [];
   if (!Array.isArray(pendientes) || pendientes.some((id) => !IDS_DE_VOZ.includes(id))) {
-    throw new ErrorDePeticion('"pendientes" debe ser una lista de indicadores válidos');
+    throw new ErrorDePeticion('"pendientes" must be a list of valid indicators');
   }
   return {
     kind: 'answer',
     sinRespaldo: true,
     guardar: false,
     instrucciones: INSTRUCCIONES_CHEQUEO,
-    variable: (pendientes.length ? `Indicadores que se esperan ahora: ${pendientes.join(', ')}.\n` : '') + `Frase del tripulante: «${texto}»`,
+    variable: (pendientes.length ? `Indicators expected now: ${pendientes.join(', ')}.\n` : '') + `Crewmember utterance: "${texto}"`,
     esfuerzo: 'low',
     maxTokens: 1200,
     herramientas: [HERRAMIENTA_REGISTRAR_MEDICION],
@@ -91,6 +91,6 @@ export const TAREAS = { answer: tareaAnswer, check: tareaCheck, board: tareaJunt
 export function construirTarea(body) {
   if (!body || typeof body !== 'object' || Array.isArray(body)) throw new ErrorDePeticion('El cuerpo debe ser un objeto JSON');
   const tarea = TAREAS[body.tipo];
-  if (!tarea) throw new ErrorDePeticion(`Tipo desconocido "${body.tipo}". Válidos: ${Object.keys(TAREAS).join(', ')}`);
+  if (!tarea) throw new ErrorDePeticion(`Unknown type "${body.tipo}". Valid: ${Object.keys(TAREAS).join(', ')}`);
   return tarea(body);
 }

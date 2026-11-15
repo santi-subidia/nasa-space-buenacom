@@ -26,7 +26,7 @@ function cargarImagenDesdeArchivo(file) {
       try {
         const res = await capturarImagenJpeg(img, img.naturalWidth, img.naturalHeight);
         URL.revokeObjectURL(url);
-        if (!res) reject(new Error('No se pudo procesar la imagen.'));
+        if (!res) reject(new Error('Could not process the image.'));
         else resolve(res);
       } catch (e) {
         URL.revokeObjectURL(url);
@@ -35,7 +35,7 @@ function cargarImagenDesdeArchivo(file) {
     };
     img.onerror = () => {
       URL.revokeObjectURL(url);
-      reject(new Error('No se pudo leer el archivo de imagen.'));
+      reject(new Error('Could not read the image file.'));
     };
     img.src = url;
   });
@@ -205,10 +205,10 @@ export function useCara({ astronautId, sol }) {
       setCamaraEstado('error');
       setErrorCamara(
         e?.name === 'NotAllowedError'
-          ? 'No hay permiso para usar la cámara. Habilitala en el navegador o subí una foto.'
+          ? 'Camera permission is denied. Enable it in your browser or upload a photo.'
           : e?.name === 'NotFoundError'
-            ? 'No se encontró ninguna cámara. Podés subir las fotos desde tu equipo.'
-            : `No se pudo iniciar la cámara (${e?.message ?? 'error desconocido'}). Revisá la conexión para descargar el modelo facial.`,
+            ? 'No camera found. You can upload photos from your device.'
+            : `Could not start the camera (${e?.message ?? 'unknown error'}). Check your connection to download the face model.`,
       );
     }
   }
@@ -237,12 +237,12 @@ export function useCara({ astronautId, sol }) {
           value: pulsoEnVivo.bpm,
           sol: solDestino,
           source: 'camera',
-          note: `Estimación óptica rPPG (confianza ${pulsoEnVivo.confianza}, SQI ${Math.round(pulsoEnVivo.sqi * 100)} %)`,
+          note: `Optical rPPG estimate (confidence ${pulsoEnVivo.confianza}, SQI ${Math.round(pulsoEnVivo.sqi * 100)} %)`,
         },
       ]);
       setPulsoGuardado(true);
     } catch (e) {
-      setErrorAccion(e?.message ?? 'No se pudo guardar el pulso en el chequeo.');
+      setErrorAccion(e?.message ?? 'Could not save the pulse to the check-in.');
     } finally {
       setGuardandoPulso(false);
     }
@@ -260,7 +260,7 @@ export function useCara({ astronautId, sol }) {
     const video = videoRef.current;
     const captura = await capturarImagenJpeg(video, video?.videoWidth, video?.videoHeight);
     if (!captura) {
-      setErrorAccion('Esperá un instante a que la cámara muestre imagen antes de sacar la foto base.');
+      setErrorAccion('Wait a moment for the camera to show video before taking the baseline photo.');
       return;
     }
     await guardarComoBase(captura);
@@ -271,7 +271,7 @@ export function useCara({ astronautId, sol }) {
     const video = videoRef.current;
     const captura = await capturarImagenJpeg(video, video?.videoWidth, video?.videoHeight);
     if (!captura) {
-      setErrorAccion('Esperá un instante a que la cámara muestre imagen antes de sacar la foto de hoy.');
+      setErrorAccion('Wait a moment for the camera to show video before taking today’s photo.');
       return;
     }
     const url = URL.createObjectURL(captura.blob);
@@ -292,18 +292,18 @@ export function useCara({ astronautId, sol }) {
         setResultado(null);
       }
     } catch (e) {
-      setErrorAccion(e?.message ?? 'No se pudo cargar esa imagen.');
+      setErrorAccion(e?.message ?? 'Could not load that image.');
     }
   }
 
   async function analizar() {
     setErrorAccion('');
     if (!consentimiento) {
-      setErrorAccion('Necesitamos tu consentimiento explícito antes de analizar las fotos.');
+      setErrorAccion('Your explicit consent is required before analyzing the photos.');
       return;
     }
     if (!fotoBase?.foto || !fotoHoy?.foto) {
-      setErrorAccion('Necesitás la foto base y la foto de hoy para comparar.');
+      setErrorAccion('You need both the baseline photo and today’s photo to compare.');
       return;
     }
 
@@ -329,7 +329,7 @@ export function useCara({ astronautId, sol }) {
       setChequeoGuardado(true);
       apagarCamara();
     } catch (e) {
-      if (analisisRef.current === analisis) setErrorAccion(e?.message || 'No se pudo guardar el chequeo facial. Volvé a analizar para reintentar.');
+      if (analisisRef.current === analisis) setErrorAccion(e?.message || 'Could not save the facial check-in. Analyze again to retry.');
     } finally {
       if (analisisRef.current === analisis) setAnalizando(false);
     }
