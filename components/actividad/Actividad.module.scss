@@ -10,10 +10,13 @@ a.opcion .iconoOpcion img { filter: brightness(0) saturate(100%) invert(71%) sep
 .proximamente { position: absolute; bottom: 24px; color: #93a8c4; font-size: 11px; }
 .pendientes { display: flex; flex-direction: column; min-width: 0; padding: 11px 18px 18px; border: 1px solid #315a75; border-radius: 16px; background: linear-gradient(120deg, #0e1a2c, #05232d); }
 .tituloPendientes { display: flex; align-items: center; gap: 13px; font-size: 20px; font-weight: 500; line-height: 1.2; margin: 0 0 9px; font-family: inherit; }
+.subtituloPlan { margin: 0 0 10px; font-size: 12px; color: #8fd3e8; line-height: 1.35; }
 .iconoObjetivo { width: 36px; height: 36px; border-radius: 50%; background: #0c3748; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
 .listaPendientes { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 11px; }
-.tarea { display: flex; align-items: flex-start; gap: 18px; min-height: 70px; padding: 10px 11px; border: 1px solid #29536a; border-radius: 12px; background: linear-gradient(110deg, #0e2032, #0a2a37); }
-a.tarea:hover { border-color: #17e7f6; }
+.tarea { display: flex; align-items: flex-start; gap: 18px; min-height: 70px; padding: 10px 11px; border: 1px solid #29536a; border-radius: 12px; background: linear-gradient(110deg, #0e2032, #0a2a37); color: inherit; font: inherit; text-align: left; }
+a.tarea:hover, .tareaBoton:hover { border-color: #17e7f6; }
+.tareaBoton { width: 100%; cursor: pointer; }
+.tareaActiva { border-color: #17e7f6; box-shadow: 0 0 0 1px rgba(23, 231, 246, 0.35); }
 .iconoTarea { width: 50px; height: 50px; border-radius: 50%; background: #0a3c4b; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
 .tarea > span:last-child { min-width: 0; }
 .tarea strong { font-size: 15px; font-weight: 500; display: block; line-height: 1.3; }

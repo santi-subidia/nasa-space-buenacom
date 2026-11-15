@@ -7,6 +7,7 @@ import { guardarAviso } from '@/lib/datos/avisos';
 import { useEstadoMision } from '@/lib/datos/demo';
 import { valoresDelDia } from '@/lib/datos/indicadores';
 import { evaluate } from '@/lib/motor/evaluar';
+import { planificarEjerciciosDelDia } from '@/lib/entrenador/planificacion';
 import { parsearNotaPvt } from '@/lib/pvt/metricas';
 import { INDICADORES } from '@/lib/tipos';
 import { RETRASO_SOLO_IDA_MIN } from '@/lib/enlace/logicaEnlace';
@@ -16,9 +17,17 @@ const sinSuscripcion = () => () => {};
 const estadoInicial = () => INICIAL;
 
 /** Los datos del día que Vega ve junto a la pregunta (poco texto: el servidor los manda al modelo). */
-export function datosDelDia(lecturas, sintomas = [], baseline = {}, nombre = 'Tripulante', solActual = 42, entorno = 'mars_base') {
+export function datosDelDia(lecturas, sintomas = [], baseline = {}, nombre = 'Tripulante', solActual = 42, entorno = 'mars_base', diaSemana = 'jueves') {
   const vals = valoresDelDia(lecturas, solActual);
   const ev = evaluate(lecturas, baseline, entorno, { symptoms: sintomas, sol: solActual });
+  const lecturasHoy = (lecturas || []).filter((r) => r && r.sol === solActual);
+  const planEjercicios = planificarEjerciciosDelDia({
+    diaSemana,
+    sol: solActual,
+    evaluacion: ev,
+    lecturasHoy,
+    entorno,
+  });
   const alerta = ev.alerts[0];
   const indicadores = {};
   for (const [id, { valor, hoy, note }] of Object.entries(vals)) {
@@ -32,9 +41,17 @@ export function datosDelDia(lecturas, sintomas = [], baseline = {}, nombre = 'Tr
   return {
     tripulante: nombre,
     sol: solActual,
+    dia_semana: planEjercicios.diaSemana,
     alerta_activa: alerta
       ? { nivel: alerta.level, titulo: alerta.title, por_que: alerta.why }
       : { nivel: ev.globalLevel, titulo: 'Sin alertas activas', por_que: 'Valores dentro de rango.' },
+    plan_ejercicio_hoy: {
+      intensidad: planEjercicios.intensidad,
+      minutos_objetivo: planEjercicios.minutosObjetivo,
+      ejercicios_sugeridos: planEjercicios.sugeridos.map((e) => e.nombre),
+      pendientes: planEjercicios.pendientes.map((e) => e.nombre),
+      motivo: planEjercicios.motivo,
+    },
     indicadores,
   };
 }
@@ -58,6 +75,7 @@ export function useVega({ seccion, resumen } = {}) {
       astronauta?.name || 'Tripulante',
       solActual,
       mision?.entorno || 'mars_base',
+      mision?.diaSemana || 'jueves',
     );
   }, [astronauta, solActual, mision, lecturas, sintomas]);
 

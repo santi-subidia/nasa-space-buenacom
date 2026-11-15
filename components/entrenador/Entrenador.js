@@ -59,13 +59,14 @@ export default function Entrenador() {
   const comentarioIdRef = useRef(0);
 
   const lecturas = useLecturas();
-  const { astronauta, sol: solActual, tareas, cargando: cargandoMision } = useJornada();
+  const { astronauta, sol: solActual, diaSemana, planEjercicios, tareas, cargando: cargandoMision } = useJornada();
   const lecturasRef = useRef(lecturas);
   lecturasRef.current = lecturas;
   const solActivoRef = useRef(solActual);
   solActivoRef.current = solActual;
   const astronautaRef = useRef(astronauta);
   astronautaRef.current = astronauta;
+  const seleccionManualRef = useRef(false);
 
   const [pantalla, setPantalla] = useState('reposo'); // reposo | cargando | activo | resumen | error
   const [error, setError] = useState(null);
@@ -78,12 +79,25 @@ export default function Entrenador() {
 
   const vozRef = useRef(true);
   useEffect(() => {
+    const param = new URLSearchParams(window.location.search).get('ejercicio');
+    if (param && EJERCICIOS[param]) {
+      seleccionManualRef.current = true;
+      setEjercicio(param);
+    }
     vozVegaRef.current = crearVoz();
     return () => {
       comentarioIdRef.current += 1;
       vozVegaRef.current?.callar();
     };
   }, []);
+
+  useEffect(() => {
+    if (cargandoMision || pantalla !== 'reposo' || seleccionManualRef.current) return;
+    const recomendado = planEjercicios?.pendientes?.[0]?.id || planEjercicios?.sugeridos?.[0]?.id;
+    if (recomendado && EJERCICIOS[recomendado]) {
+      setEjercicio(recomendado);
+    }
+  }, [cargandoMision, pantalla, planEjercicios]);
 
   useEffect(() => {
     vozRef.current = voz;
@@ -235,7 +249,9 @@ export default function Entrenador() {
   }
 
   // Cambiar de ejercicio guarda lo hecho en la serie y arranca un contador nuevo.
-  function cambiar(id) {
+  function cambiar(id, { manual = true } = {}) {
+    if (!EJERCICIOS[id]) return;
+    if (manual) seleccionManualRef.current = true;
     if (pantalla === 'activo') {
       const hecho = r.entrenamiento.resumen();
       if (hecho.reps || hecho.segundos) r.serie.push(hecho);
@@ -264,12 +280,26 @@ export default function Entrenador() {
 
     const solObjetivo = solActivoRef.current ?? 42;
     const baselineActual = astronautaRef.current?.baseline || {};
+    const ejerciciosRealizados = {};
+    for (const s of series) {
+      const cantidad = s.ejercicio === 'plancha' ? s.segundos : s.reps;
+      ejerciciosRealizados[s.ejercicio] = (ejerciciosRealizados[s.ejercicio] || 0) + cantidad;
+    }
     const nota = series
       .map((s) => `${s.ejercicio === 'plancha' ? `${s.segundos} s de plancha` : `${s.reps} ${EJERCICIOS[s.ejercicio].nombre.toLowerCase()}`}`)
       .join(', ');
     let guardado = true;
     try {
-      await guardarLecturas([{ indicator: 'exercise_min', value: minutos, sol: solObjetivo, source: 'camera', note: nota || 'sin repeticiones' }]);
+      await guardarLecturas([{
+        indicator: 'exercise_min',
+        value: minutos,
+        sol: solObjetivo,
+        source: 'camera',
+        note: nota || `${EJERCICIOS[ejercicio].nombre}: sin repeticiones`,
+        meta: {
+          ejercicios: Object.keys(ejerciciosRealizados).length ? ejerciciosRealizados : [ejercicio],
+        },
+      }]);
     } catch (err) {
       console.error(err);
       guardado = false;
@@ -301,6 +331,17 @@ export default function Entrenador() {
       nivelMotor,
       alertaTitulo: ev.alerts[0]?.title || null,
     });
+    payload.diaSemana = diaSemana || 'jueves';
+    payload.estado = {
+      ...payload.estado,
+      alertas: ev.alerts.map((a) => a.id).filter(Boolean),
+    };
+    if (planEjercicios && Number.isFinite(planEjercicios.minutosObjetivo)) {
+      payload.planActual = {
+        minutos: planEjercicios.minutosObjetivo,
+        intensidad: planEjercicios.intensidad,
+      };
+    }
 
     const vozCliente = {
       hablar: (texto) => (vozRef.current ? vozVegaRef.current?.hablar(texto) : Promise.resolve()),
@@ -325,8 +366,9 @@ export default function Entrenador() {
   const activo = pantalla === 'activo';
   const ejercicios = Object.values(EJERCICIOS);
   const indiceEjercicio = ejercicios.findIndex((x) => x.id === ejercicio);
-  // Meta visual del prototipo. El contador y el cierre de cada serie siguen siendo los del entrenador.
-  const metaRepeticiones = esPlancha ? null : 15;
+  const metaPlan = planEjercicios?.sugeridos?.find((x) => x.id === ejercicio)?.meta;
+  const metaObjetivo = metaPlan > 0 ? metaPlan : (esPlancha ? 30 : 15);
+  const valorActualContador = esPlancha ? estado.segundos : estado.reps;
 
   return (
     <div className={styles.pantalla} data-dashboard>
@@ -368,11 +410,19 @@ export default function Entrenador() {
             </div>
             <h2 className={styles.nombreEjercicio}>{e.nombre}</h2>
             <section className={styles.panelContador} aria-label={`Contador de ${e.nombre.toLowerCase()}`}>
-              <p className={styles.contador} aria-live="polite" aria-atomic="true">{esPlancha ? estado.segundos : estado.reps}{metaRepeticiones && <span> / {metaRepeticiones}</span>}</p>
+              <p className={styles.contador} aria-live="polite" aria-atomic="true">{valorActualContador}{metaObjetivo ? <span> / {metaObjetivo}</span> : null}</p>
               <p className={styles.unidadContador}>{esPlancha ? 'Segundos' : 'Repeticiones'}</p>
-              <div className={styles.progresoContador} aria-hidden="true"><span style={{ width: metaRepeticiones ? `${Math.min(100, estado.reps / metaRepeticiones * 100)}%` : '0%' }} /></div>
+              <div className={styles.progresoContador} aria-hidden="true"><span style={{ width: metaObjetivo ? `${Math.min(100, (valorActualContador / metaObjetivo) * 100)}%` : '0%' }} /></div>
             </section>
-            <EjerciciosPendientes tareas={tareas} cargando={cargandoMision} entrenamiento>
+            <EjerciciosPendientes
+              tareas={tareas}
+              planEjercicios={planEjercicios}
+              diaSemana={diaSemana}
+              cargando={cargandoMision}
+              entrenamiento
+              onSeleccionarEjercicio={(id) => cambiar(id)}
+              ejercicioActivo={ejercicio}
+            >
               <div className={styles.controles}>
                 <p className={styles.fase} role="status">{activo ? TEXTO_FASE[estado.fase] ?? estado.fase : pantalla === 'cargando' ? 'Preparando la cámara…' : 'Esperando la cámara'}</p>
                 {activo && estado.angulo !== null && <p className={styles.dato}>Ángulo: {estado.angulo}°</p>}
@@ -455,6 +505,28 @@ export default function Entrenador() {
                       : `${comentarioVega.plan.minutos} min · intensidad ${comentarioVega.plan.intensidad}`}
                   </p>
                   <p className={styles.planMotivo}>{comentarioVega.plan.motivo}</p>
+                  {comentarioVega.plan.ejerciciosSugeridos?.length > 0 && (
+                    <div className={styles.sugeridosBloque}>
+                      <span className={styles.planEtiqueta}>Ejercicios sugeridos</span>
+                      <div className={styles.sugeridosLista}>
+                        {comentarioVega.plan.ejerciciosSugeridos
+                          .filter((id) => EJERCICIOS[id])
+                          .map((id) => (
+                            <button
+                              key={id}
+                              type="button"
+                              className={styles.chipSugerido}
+                              onClick={() => {
+                                cambiar(id);
+                                otraVez();
+                              }}
+                            >
+                              {EJERCICIOS[id].nombre}
+                            </button>
+                          ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
 
                 {ORIGEN_COMENTARIO[comentarioVega.origen] && (

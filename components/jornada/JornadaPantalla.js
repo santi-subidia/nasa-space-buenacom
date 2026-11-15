@@ -45,6 +45,11 @@ const ETIQUETA_RUTA = {
   '/registrar#vision': 'Test visual',
 };
 
+function etiquetaRuta(ruta) {
+  if (!ruta) return 'Abrir';
+  return ETIQUETA_RUTA[ruta] || ETIQUETA_RUTA[ruta.split('?')[0]] || 'Abrir';
+}
+
 const BLOQUES = [
   { id: 'despertar', nombre: 'Despertar', rango: '06:30 – 08:00', desde: 0, hasta: 480 },
   { id: 'manana', nombre: 'Mañana', rango: '08:00 – 12:30', desde: 480, hasta: 750 },
@@ -285,7 +290,7 @@ export default function JornadaPantalla() {
                 <div className={styles.ahoraAcciones}>
                   {actual.ruta && (
                     <Link href={actual.ruta} className={styles.botonCta}>
-                      {ETIQUETA_RUTA[actual.ruta] || 'Abrir'} →
+                      {etiquetaRuta(actual.ruta)} →
                     </Link>
                   )}
                   <button type="button" className={styles.boton} onClick={() => alternarTarea(actual)}>
@@ -405,7 +410,7 @@ export default function JornadaPantalla() {
                             {estado === 'ahora' && !tarea.done && <span className={styles.textoAhora}>Ahora</span>}
                             {accionVisible && (
                               <Link href={tarea.ruta} className={styles.enlaceRuta}>
-                                {ETIQUETA_RUTA[tarea.ruta] || 'Abrir'} →
+                                {etiquetaRuta(tarea.ruta)} →
                               </Link>
                             )}
                             {tarea.done && <span className={styles.textoHecha}>Hecha</span>}

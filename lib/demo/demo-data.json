@@ -19434,15 +19434,6 @@
       "missionTime": "2026-10-12T07:00:00.000Z",
       "recurrence": "daily",
       "done": false
-    },
-    {
-      "id": "demo-task-exercise",
-      "astronautId": "ana",
-      "kind": "exercise",
-      "title": "Completar rutina de fuerza y aeróbico (90 min)",
-      "missionTime": "2026-10-12T17:00:00.000Z",
-      "recurrence": "daily",
-      "done": false
     }
   ]
 }
