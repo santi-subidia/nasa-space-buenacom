@@ -13,7 +13,9 @@ import styles from './VegaPantalla.module.scss';
 
 const ESTADOS = {
   inactivo: 'Tocá el micrófono para hablar',
-  escuchando: 'Escuchando… hablá corrido; tocá de nuevo para enviar o esperá 2 s',
+  solicitando: 'Abriendo el micrófono…',
+  escuchando: 'Escuchando… hablá corrido; tocá de nuevo para enviar',
+  transcribiendo: 'Procesando tu voz…',
   pensando: 'Pensando…',
   hablando: 'Hablando… tocá para callarme',
 };
@@ -170,7 +172,7 @@ export default function VegaPantalla({ modoInicial = 'conversar' }) {
             {error && <p className={styles.error} role="alert">{error}</p>}
             {!soportaVoz && (
               <p className={styles.nota}>
-                Este navegador no reconoce la voz. Usá Chrome para hablar{enChequeo ? ' o completá el chequeo en Registrar.' : ', o escribí la pregunta abajo.'}
+                Este navegador no puede grabar ni reconocer voz. Probá con Safari o Chrome para hablar{enChequeo ? ' o completá el chequeo en Registrar.' : ', o escribí la pregunta abajo.'}
               </p>
             )}
           </Card>

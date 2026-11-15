@@ -1,13 +1,9 @@
 'use client';
 
-import { useEffect, useState, useSyncExternalStore } from 'react';
 import Image from 'next/image';
-import { crearSesionVoz } from '@/ai/voz/sesion';
+import { useVega } from '@/components/vega/useVega';
 import styles from './InicioPantalla.module.scss';
 
-const INICIAL = { fase: 'inactivo', error: '' };
-const sinSuscripcion = () => () => {};
-const inicial = () => INICIAL;
 const ETIQUETAS = {
   inactivo: 'Hablar con VYTA. Tocá para empezar a escuchar.',
   solicitando: 'Abriendo el micrófono. Tocá para cancelar.',
@@ -17,18 +13,10 @@ const ETIQUETAS = {
   hablando: 'VYTA está hablando. Tocá para interrumpir y hablar de nuevo.',
 };
 
-export default function VytaVoz({ resumen, className = '' }) {
-  const [sesion, setSesion] = useState(null);
-  useEffect(() => {
-    const motor = crearSesionVoz({ entorno: window });
-    setSesion(motor);
-    const alOcultar = () => { if (document.hidden) motor.cancelar(); };
-    document.addEventListener('visibilitychange', alOcultar);
-    return () => { document.removeEventListener('visibilitychange', alOcultar); motor.cancelar(); };
-  }, []);
-  const { fase, error } = useSyncExternalStore(sesion?.suscribir || sinSuscripcion, sesion?.obtener || inicial, inicial);
+export default function VytaVoz({ resumen, seccion, className = '' }) {
+  const { fase, error, listo, tocar } = useVega({ seccion, resumen });
   return (
-    <button type="button" className={`${styles.vega} ${resumen ? styles.compacta : ''} ${className}`} onClick={() => sesion?.tocar()} disabled={!sesion}
+    <button type="button" className={`${styles.vega} ${resumen ? styles.compacta : ''} ${className}`} onClick={tocar} disabled={!listo}
       data-fase={fase} aria-label={ETIQUETAS[fase]} aria-pressed={fase !== 'inactivo'} title={error || ETIQUETAS[fase]}>
       <span className={styles.vegaEncabezado}><span aria-hidden="true">✦</span> VYTA AI</span>
       <span className={resumen ? styles.cuerpoVoz : undefined}>

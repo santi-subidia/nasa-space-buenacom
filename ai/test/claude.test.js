@@ -194,9 +194,27 @@ test('construirTarea(answer): instrucciones de Vega, fichas, citas y esfuerzo lo
   assert.equal(construirTarea({ tipo: 'answer', pregunta: 'x', esfuerzo: 'medium' }).esfuerzo, 'medium');
 });
 
+test('construirTarea(answer) y armarParametros soportan historial, contextoPantalla y seguimientos', () => {
+  const t = construirTarea({
+    tipo: 'answer',
+    pregunta: '¿Y cuánto dura?',
+    contextoPantalla: 'Sección: riesgos',
+    historial: [
+      { role: 'user', text: '¿Por qué me salió herpes?' },
+      { role: 'assistant', text: 'Puede reactivarse por estrés y falta de sueño.' },
+    ],
+  });
+  assert.match(t.contexto, /<ficha riesgo="inmunidad"/);
+  assert.match(t.variable, /<contexto_pantalla>/);
+  const p = armarParametros(t);
+  assert.deepEqual(p.messages.map((m) => m.role), ['user', 'assistant', 'user']);
+  assert.equal(p.messages[0].content[0].text, '¿Por qué me salió herpes?');
+});
+
 test('construirTarea rechaza lo mal formado', () => {
   for (const mal of [null, [], { tipo: 'nada' }, { tipo: 'answer' }, { tipo: 'answer', pregunta: 'x'.repeat(501) },
-    { tipo: 'answer', pregunta: 'x', riesgos: ['marcianos'] }, { tipo: 'answer', pregunta: 'x', esfuerzo: 'max' }]) {
+    { tipo: 'answer', pregunta: 'x', riesgos: ['marcianos'] }, { tipo: 'answer', pregunta: 'x', esfuerzo: 'max' },
+    { tipo: 'answer', pregunta: 'x', historial: [{ role: 'assistant', text: 'desordenado' }] }]) {
     assert.throws(() => construirTarea(mal), ErrorDePeticion);
   }
 });

@@ -1,12 +1,19 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { crearDetectorFinDeFrase, elegirVozVyta, fragmentosParaVoz } from '../ai/voz/audio.js';
-import { crearSesionVoz } from '../ai/voz/sesion.js';
 import { crearRutasVoz } from '../ai/voz/servidor.js';
+import { crearVoz } from '../ai/vega/voz.js';
+import { crearSesionVega } from '../ai/vega/sesion.js';
 
-const pausa = async () => { for (let i = 0; i < 20; i++) await Promise.resolve(); };
+const pausa = async () => { for (let i = 0; i < 30; i++) await Promise.resolve(); };
 
-function navegadorDePrueba({ pedirMicrofono } = {}) {
+function navegadorDePrueba({
+  pedirMicrofono,
+  formato = 'audio/mp4',
+  transcripcion = '¿Cómo puedo descansar mejor?',
+  respuestaClaude = 'Podemos pensar juntos una rutina de descanso.',
+  alAvisarOficial = () => {},
+} = {}) {
   let reloj = 0;
   let rms = 0;
   let intervalo;
@@ -16,8 +23,9 @@ function navegadorDePrueba({ pedirMicrofono } = {}) {
   const solicitudes = [];
   const discursos = [];
   const stream = { getTracks: () => [{ stop: () => tracksDetenidos++ }] };
+
   class Recorder {
-    static isTypeSupported(tipo) { return tipo.startsWith('audio/webm'); }
+    static isTypeSupported(tipo) { return tipo === formato; }
     constructor(_stream, opciones) { this.mimeType = opciones.mimeType; this.state = 'inactive'; }
     start() { this.state = 'recording'; }
     stop() {
@@ -32,25 +40,53 @@ function navegadorDePrueba({ pedirMicrofono } = {}) {
     createMediaStreamSource() { return { connect() {}, disconnect() {} }; }
     async close() { contextosCerrados++; }
   }
-  const entorno = {
+
+  const ventana = {
     isSecureContext: true,
     navigator: { mediaDevices: { getUserMedia: pedirMicrofono || (async () => stream) } },
-    MediaRecorder: Recorder, AudioContext: Contexto,
+    MediaRecorder: Recorder,
+    AudioContext: Contexto,
     SpeechSynthesisUtterance: class { constructor(text) { this.text = text; } },
     speechSynthesis: {
       getVoices: () => [{ name: 'Microsoft Elena', lang: 'es-AR' }],
-      speak: (speech) => discursos.push(speech),
+      speak: (speech) => {
+        discursos.push(speech);
+        speech.onstart?.();
+      },
       cancel: () => cancelacionesVoz++,
     },
   };
-  const sesion = crearSesionVoz({
-    entorno, ahora: () => reloj,
-    cada: (fn) => { intervalo = fn; return 1; }, limpiar: () => { intervalo = null; },
+
+  let sesion;
+  const voz = crearVoz({
+    ventana,
+    ahora: () => reloj,
+    cada: (fn) => { intervalo = fn; return 1; },
+    limpiar: () => { intervalo = null; },
+    alCambiar: (fase) => sesion?.ponerFaseVoz(fase),
     fetchFn: async (url, opciones) => {
       solicitudes.push({ url, opciones, tracksDetenidos });
-      return Response.json(url.includes('transcribir') ? { text: '¿Cómo puedo descansar mejor?' } : { reply: 'Podemos pensar juntos una rutina de descanso.' });
+      if (url.includes('transcribir')) {
+        const text = typeof transcripcion === 'function' ? transcripcion() : transcripcion;
+        return Response.json({ text });
+      }
+      const reply = typeof respuestaClaude === 'function' ? respuestaClaude(JSON.parse(opciones.body)) : respuestaClaude;
+      return Response.json({ ok: true, origen: 'claude', texto: reply, textoVoz: reply, citasUsadas: [] });
     },
   });
+
+  sesion = crearSesionVega({
+    voz,
+    alAvisarOficial,
+    obtenerDatosDelDia: () => ({ tripulante: 'Ana Ríos', sol: 42, indicadores: { Sueño: '5.3 h' } }),
+    obtenerContextoPantalla: () => 'Sección: mental. Resumen visible: Sueño bajo esta semana.',
+    fetchFn: async (url, opciones) => {
+      solicitudes.push({ url, opciones, tracksDetenidos });
+      const reply = typeof respuestaClaude === 'function' ? respuestaClaude(JSON.parse(opciones.body)) : respuestaClaude;
+      return Response.json({ ok: true, origen: 'claude', texto: reply, textoVoz: reply, citasUsadas: [] });
+    },
+  });
+
   return {
     sesion, solicitudes, discursos, stream,
     tick(ms, nivel = 0) { reloj += ms; rms = nivel; intervalo?.(); },
@@ -79,44 +115,75 @@ test('VYTA elige voz argentina y fragmenta respuestas largas sin perder palabras
   assert.equal(partes.join(' '), texto);
 });
 
-test('un toque graba, el silencio envía, Gemini responde y la fase hablando sigue al audio real', async () => {
-  const prueba = navegadorDePrueba();
+test('flujo unificado (Safari audio/mp4): graba, transcribe con Gemini, consulta /api/claude con datos del día e historial y reproduce voz', async () => {
+  let turnoTexto = '¿Cómo puedo descansar mejor?';
+  const prueba = navegadorDePrueba({ formato: 'audio/mp4', transcripcion: () => turnoTexto });
   const fases = [];
-  prueba.sesion.suscribir(() => fases.push(prueba.sesion.obtener().fase));
-  const turno = prueba.sesion.tocar();
+  prueba.sesion.suscribir(() => {
+    const f = prueba.sesion.obtener().fase;
+    if (fases.at(-1) !== f) fases.push(f);
+  });
+
+  const turno1 = prueba.sesion.tocar();
   await pausa();
   assert.equal(prueba.sesion.obtener().fase, 'escuchando');
   for (let i = 0; i < 4; i++) prueba.tick(50, 0.1);
   prueba.tick(1800, 0);
   await pausa();
+
   assert.equal(prueba.solicitudes.length, 2);
   assert.ok(prueba.solicitudes[0].tracksDetenidos > 0, 'el micrófono se libera antes de enviar el audio');
-  assert.equal(prueba.solicitudes[0].opciones.body.type, 'audio/webm;codecs=opus');
-  assert.equal(JSON.parse(prueba.solicitudes[1].opciones.body).message, '¿Cómo puedo descansar mejor?');
-  assert.equal(prueba.sesion.obtener().fase, 'pensando');
-  prueba.discursos[0].onstart();
+  assert.equal(prueba.solicitudes[0].url, '/api/voz/transcribir');
+  assert.equal(prueba.solicitudes[0].opciones.body.type, 'audio/mp4');
+
+  const body1 = JSON.parse(prueba.solicitudes[1].opciones.body);
+  assert.equal(prueba.solicitudes[1].url, '/api/claude');
+  assert.equal(body1.tipo, 'answer');
+  assert.equal(body1.pregunta, '¿Cómo puedo descansar mejor?');
+  assert.equal(body1.datosDelDia.sol, 42);
+  assert.match(body1.contextoPantalla, /Sección: mental/);
+  assert.equal(body1.historial, undefined);
+
   assert.equal(prueba.sesion.obtener().fase, 'hablando');
   assert.equal(prueba.discursos[0].voice.name, 'Microsoft Elena');
   assert.equal(prueba.discursos[0].rate, 0.95);
   prueba.discursos[0].onend();
-  await turno;
+  await turno1;
   assert.equal(prueba.sesion.obtener().fase, 'inactivo');
+  assert.ok(fases.includes('solicitando'));
   assert.ok(fases.includes('transcribiendo'));
+  assert.ok(fases.includes('pensando'));
   assert.equal(prueba.contadores().contextosCerrados, 1);
+
+  // Segundo turno: envía historial de la conversación previa.
+  turnoTexto = '¿Y qué rutina recomendás?';
+  const turno2 = prueba.sesion.tocar();
+  await pausa();
+  for (let i = 0; i < 4; i++) prueba.tick(50, 0.1);
+  prueba.tick(1800, 0);
+  await pausa();
+  const body2 = JSON.parse(prueba.solicitudes[3].opciones.body);
+  assert.deepEqual(body2.historial, [
+    { role: 'user', text: '¿Cómo puedo descansar mejor?' },
+    { role: 'assistant', text: 'Podemos pensar juntos una rutina de descanso.' },
+  ]);
+  prueba.discursos[1].onend();
+  await turno2;
 });
 
 test('el silencio inicial se descarta y cancelar al pedir permiso libera un micrófono que llega tarde', async () => {
   const prueba = navegadorDePrueba();
-  const turno = prueba.sesion.iniciar();
+  const turno = prueba.sesion.tocar();
   await pausa();
   prueba.tick(15000, 0);
   await turno;
   assert.equal(prueba.solicitudes.length, 0);
   assert.match(prueba.sesion.obtener().error, /No se escuchó/);
+
   let resolver;
   let detenidos = 0;
   const tarde = navegadorDePrueba({ pedirMicrofono: () => new Promise((resolve) => { resolver = resolve; }) });
-  const pendiente = tarde.sesion.iniciar();
+  const pendiente = tarde.sesion.tocar();
   tarde.sesion.cancelar();
   resolver({ getTracks: () => [{ stop: () => detenidos++ }] });
   await pendiente;
@@ -125,46 +192,61 @@ test('el silencio inicial se descarta y cancelar al pedir permiso libera un micr
   assert.equal(tarde.sesion.obtener().fase, 'inactivo');
 });
 
-test('cancelar una respuesta hablada detiene el audio sin volver a escuchar ni dejar errores', async () => {
+test('cancelar una respuesta hablada detiene el audio y una señal roja dispara aviso al oficial médico', async () => {
   const prueba = navegadorDePrueba();
-  const turno = prueba.sesion.iniciar();
+  const turno = prueba.sesion.tocar();
   await pausa();
   prueba.sesion.terminarEscucha();
   await pausa();
-  prueba.discursos[0].onstart();
+  assert.equal(prueba.sesion.obtener().fase, 'hablando');
   prueba.sesion.cancelar();
   await turno;
   assert.equal(prueba.contadores().cancelacionesVoz, 1);
-  assert.deepEqual(prueba.sesion.obtener(), { fase: 'inactivo', error: '' });
+  assert.equal(prueba.sesion.obtener().fase, 'inactivo');
+  assert.equal(prueba.sesion.obtener().error, '');
+
+  const avisos = [];
+  const urgente = navegadorDePrueba({
+    transcripcion: 'tengo dolor en el pecho',
+    alAvisarOficial: (a) => avisos.push(a),
+  });
+  const turnoUrgente = urgente.sesion.tocar();
+  await pausa();
+  urgente.sesion.terminarEscucha();
+  await pausa();
+  assert.equal(avisos.length, 1);
+  assert.equal(avisos[0].nivel, 'alta');
+  // Primero termina la lectura del aviso local, luego se lee la respuesta de Claude.
+  urgente.discursos[0].onend?.();
+  await pausa();
+  urgente.discursos[1].onend?.();
+  await turnoUrgente;
 });
 
-test('las rutas de voz usan la configuración del proyecto de referencia y validan audio e historial', async () => {
+test('la ruta /api/voz/transcribir valida formatos (incluyendo audio/mp4 de Safari) y transcribe con Gemini', async () => {
   const llamadas = [];
   const rutas = crearRutasVoz({
-    entorno: { GEMINI_API_KEY: 'clave-de-prueba', GEMINI_MODEL: 'modelo-conversacion', GEMINI_TRANSCRIPTION_MODEL: 'modelo-transcripcion' },
+    entorno: { GEMINI_API_KEY: 'clave-de-prueba', GEMINI_TRANSCRIPTION_MODEL: 'modelo-transcripcion' },
     crearCliente: () => ({ models: { generateContent: async (peticion) => {
       llamadas.push(peticion);
-      return { text: peticion.model === 'modelo-transcripcion' ? '{"text":"Hola VYTA"}' : 'Hola, ¿cómo venís hoy?' };
+      return { text: '{"text":"Hola VYTA"}' };
     } } }),
   });
-  const texto = await rutas.transcribir(new Request('http://localhost/api/voz/transcribir', { method: 'POST', headers: { 'Content-Type': 'audio/webm;codecs=opus' }, body: 'audio' }));
+  const texto = await rutas.transcribir(new Request('http://localhost/api/voz/transcribir', {
+    method: 'POST',
+    headers: { 'Content-Type': 'audio/mp4;codecs=mp4a.40.2' },
+    body: 'audio',
+  }));
   assert.deepEqual(await texto.json(), { text: 'Hola VYTA' });
   assert.equal(llamadas[0].model, 'modelo-transcripcion');
-  const respuesta = await rutas.responder(new Request('http://localhost/api/voz/responder', { method: 'POST', body: JSON.stringify({ message: 'Hola', history: [] }) }));
-  assert.equal(respuesta.status, 200);
-  assert.equal(llamadas[1].model, 'modelo-conversacion');
-  assert.match(llamadas[1].config.systemInstruction, /español argentino/);
-  assert.match(llamadas[1].config.systemInstruction, /exclusivamente por voz/);
-  assert.equal(respuesta.headers.get('Cache-Control'), 'no-store');
+  assert.equal(texto.headers.get('Cache-Control'), 'no-store');
   const invalida = await rutas.transcribir(new Request('http://localhost', { method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: 'texto' }));
   assert.equal(invalida.status, 415);
-  const historialInvalido = await rutas.responder(new Request('http://localhost', { method: 'POST', body: JSON.stringify({ message: 'Hola', history: [{ role: 'assistant', text: 'No corresponde' }] }) }));
-  assert.equal(historialInvalido.status, 400);
 });
 
-test('sin clave Gemini las rutas devuelven un error claro y no llaman al proveedor', async () => {
+test('sin clave Gemini la transcripción devuelve un error claro y no llama al proveedor', async () => {
   const rutas = crearRutasVoz({ entorno: {}, crearCliente: () => { throw new Error('No debe llamarse'); } });
-  const respuesta = await rutas.responder(new Request('http://localhost', { method: 'POST', body: JSON.stringify({ message: 'Hola', history: [] }) }));
+  const respuesta = await rutas.transcribir(new Request('http://localhost', { method: 'POST', headers: { 'Content-Type': 'audio/webm' }, body: 'audio' }));
   assert.equal(respuesta.status, 503);
   assert.match((await respuesta.json()).error, /GEMINI_API_KEY/);
 });

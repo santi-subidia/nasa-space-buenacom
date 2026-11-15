@@ -19,6 +19,7 @@ export function crearSesionVega({
   voz,
   alAvisarOficial = () => {},
   obtenerDatosDelDia = () => undefined,
+  obtenerContextoPantalla = () => undefined,
   fetchFn = globalThis.fetch?.bind(globalThis),
   url = '/api/claude',
 } = {}) {
@@ -26,6 +27,8 @@ export function crearSesionVega({
   let numero = 0; // identifica la consulta vigente: las respuestas viejas se descartan
   let controlador = null;
   let consultando = false;
+  let escuchandoVoz = false;
+  let historial = [];
   const oyentes = new Set();
 
   const emitir = (cambios) => {
@@ -42,14 +45,18 @@ export function crearSesionVega({
     if (vigente()) emitir({ fase: consultando ? 'pensando' : 'inactivo' });
   }
 
-  async function consultar(pregunta) {
+  async function consultar(pregunta, historialPrevio) {
     controlador = new AbortController();
     const temporizador = setTimeout(() => controlador.abort(), TIEMPO_MAXIMO_MS);
     try {
+      const payload = { tipo: 'answer', pregunta, datosDelDia: obtenerDatosDelDia() };
+      if (historialPrevio.length) payload.historial = historialPrevio;
+      const contextoPantalla = obtenerContextoPantalla();
+      if (contextoPantalla) payload.contextoPantalla = contextoPantalla;
       const respuesta = await fetchFn(url, {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ tipo: 'answer', pregunta, datosDelDia: obtenerDatosDelDia() }),
+        body: JSON.stringify(payload),
         signal: controlador.signal,
       });
       const cuerpo = await respuesta.json();
@@ -63,13 +70,15 @@ export function crearSesionVega({
   }
 
   async function preguntar(texto, { hablar = true } = {}) {
-    const pregunta = String(texto ?? '').trim();
+    const pregunta = String(texto ?? '').trim().slice(0, 500);
     if (!pregunta) return;
     const mio = ++numero;
     const vigente = () => mio === numero;
+    escuchandoVoz = false;
     controlador?.abort();
     voz?.callar();
 
+    const historialPrevio = historial.slice(-20);
     emitir({ error: '', parcial: '', sugerirAviso: false });
     agregar({ rol: 'usuario', texto: pregunta });
 
@@ -83,7 +92,7 @@ export function crearSesionVega({
       emitir({ sugerirAviso: false });
       if (urgencia.nivel === 'critica') {
         if (hablar) await leerEnVoz(urgencia.mensaje, vigente);
-        emitir({ fase: 'inactivo' });
+        if (vigente()) emitir({ fase: 'inactivo' });
         return;
       }
       // Señal alta: se lee el aviso Y se consulta a la IA a la vez (no se espera a que termine de hablar).
@@ -92,7 +101,7 @@ export function crearSesionVega({
 
     consultando = true;
     emitir({ fase: 'pensando' });
-    const cuerpo = await consultar(pregunta);
+    const cuerpo = await consultar(pregunta, historialPrevio);
     consultando = false;
     if (!vigente()) return; // llegó otra pregunta mientras tanto
 
@@ -103,6 +112,7 @@ export function crearSesionVega({
     }
 
     const textoVoz = cuerpo.textoVoz ?? textoParaVoz(cuerpo.texto);
+    historial = [...historialPrevio, { role: 'user', text: pregunta }, { role: 'assistant', text: textoVoz }].slice(-20);
     agregar({ rol: 'vega', texto: textoVoz, citas: cuerpo.citasUsadas ?? [], origen: cuerpo.origen, motivo: cuerpo.motivo });
     emitir({ fase: 'inactivo', sugerirAviso: normalizar(textoVoz).includes('oficial medico') || Boolean(urgencia) });
     if (hablar) {
@@ -111,27 +121,31 @@ export function crearSesionVega({
     }
   }
 
-  /** Botón del micrófono: escucha una frase y la pregunta. */
+  /** Botón del micrófono / esfera: escucha una frase y la pregunta. */
   async function preguntarPorVoz() {
     if (!voz?.soportaReconocimiento) {
-      emitir({ error: 'Este navegador no reconoce voz. Usá Chrome o escribí la pregunta.' });
+      emitir({ error: 'Este navegador no reconoce voz. Probá con Safari o Chrome, o escribí la pregunta.' });
       return;
     }
     controlador?.abort();
-    ++numero;
+    const mio = ++numero;
+    escuchandoVoz = true;
     emitir({ fase: 'escuchando', error: '', parcial: '' });
     try {
       const texto = await voz.escuchar();
+      escuchandoVoz = false;
+      if (mio !== numero) return;
       emitir({ parcial: '' });
       await preguntar(texto, { hablar: true });
     } catch (e) {
-      if (e?.codigo === 'aborted') return;
+      escuchandoVoz = false;
+      if (mio !== numero || e?.codigo === 'aborted') return;
       emitir({ fase: 'inactivo', parcial: '', error: e?.mensaje ?? 'No pude usar el micrófono.' });
     }
   }
 
   /** Acción "avisar al oficial médico" desde la conversación. */
-  function avisarOficial(motivo = 'Pedido por el tripulante desde la conversación con Vega') {
+  function avisarOficial(motivo = 'Pedido por el tripulante desde la conversación con VYTA') {
     alAvisarOficial({ nivel: 'alta', categoria: 'manual', motivo, origen: 'vega', ts: new Date().toISOString() });
     agregar({ rol: 'vega', texto: 'Listo, avisé al oficial médico.', origen: 'local' });
     emitir({ sugerirAviso: false });
@@ -147,10 +161,18 @@ export function crearSesionVega({
 
   function cancelar() {
     ++numero;
+    escuchandoVoz = false;
+    consultando = false;
     controlador?.abort();
     voz?.pararDeEscuchar();
     voz?.callar();
     emitir({ fase: 'inactivo', parcial: '' });
+  }
+
+  function tocar() {
+    if (estado.fase === 'escuchando') terminarEscucha();
+    else if (['solicitando', 'transcribiendo', 'pensando'].includes(estado.fase)) cancelar();
+    else return preguntarPorVoz();
   }
 
   return {
@@ -161,9 +183,14 @@ export function crearSesionVega({
     obtener: () => estado,
     /** El micrófono informa texto parcial mientras se habla: pasarlo con `voz.alOirParcial`. */
     ponerParcial: (parcial) => emitir({ parcial }),
+    /** Propaga fases de captura/transcripción ('solicitando'|'escuchando'|'transcribiendo') mientras escucha. */
+    ponerFaseVoz: (fase) => {
+      if (escuchandoVoz && ['solicitando', 'escuchando', 'transcribiendo'].includes(fase)) emitir({ fase });
+    },
     preguntar,
     preguntarPorVoz,
     terminarEscucha,
+    tocar,
     avisarOficial,
     cancelar,
   };
