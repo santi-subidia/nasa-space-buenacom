@@ -376,6 +376,32 @@
         "Permanecer en reposo y repetir oximetría en 15 minutos"
       ],
       "source": "doc/nasa/fuentes/02-riesgos/risk-of-hypoxia.md"
+    },
+    {
+      "id": "pvt_cognitive_fatigue",
+      "level": "orange",
+      "zone": "brain",
+      "escalate": "cmo",
+      "title": "Fatiga cognitiva detectada en PVT",
+      "actions": [
+        "Posponer EVA, pilotaje o maniobras de alta precisión hasta recuperar rendimiento",
+        "Programar bloque de descanso de 8 h con higiene lumínica",
+        "Avisar al oficial médico y repetir test PVT tras el descanso"
+      ],
+      "source": "doc/nasa/fuentes/02-riesgos/risk-from-inadequate-sleep-and-irregular-schedules.md"
+    },
+    {
+      "id": "vestibular_instability",
+      "level": "yellow",
+      "zone": "inner_ear",
+      "escalate": "self",
+      "title": "Inestabilidad vestibular o visuo-motora",
+      "actions": [
+        "Evitar giros bruscos de cabeza y movimientos rápidos tras cambios de gravedad",
+        "Mantener fijación visual en puntos estables y repetir control vestibular en 12 h",
+        "Consultar al oficial médico si aparece vértigo o náuseas"
+      ],
+      "source": "doc/nasa/fuentes/02-riesgos/risk-of-altered-sensorimotor-and-vestibular-function.md"
     }
   ],
   "envModifiers": {

@@ -90,12 +90,14 @@ export default function Tendencias() {
   const [periodo, setPeriodo] = useState('mision');
   const rango = PERIODOS.find((p) => p.id === periodo);
   const sleepBase = astronauta?.baseline?.sleep_h ?? LINEA_BASE.sleep_h;
+  const reactionBase = astronauta?.baseline?.reaction_ms ?? null;
 
   // Arma la serie completa (60 soles desde IndexedDB) aplicando lo registrado hoy en sol 42.
   const hoy = valoresDelDia(lecturas, SOL_ACTUAL);
   const serie = construirSerie(lecturas, hoy);
   const datos = serie.filter((d) => d.sol >= rango.desde && d.sol <= rango.hasta);
   const conEvento = datos.some((d) => d.sol === SOL_EVENTO);
+  const hayPvt = datos.some((d) => d.reaction_ms != null);
 
   // Lectura de Vega calculada sobre la serie real de la misión.
   const caida = serie.filter((d) => d.sol >= 31 && d.sol <= 40 && d.sleep_h != null);
@@ -210,6 +212,33 @@ export default function Tendencias() {
           </Grafico>
           <Leyenda items={[['verde', '4–5'], ['amarillo', '3'], ['naranja', '1–2']]} />
         </Card>
+
+        {hayPvt && (
+          <Card titulo="Tiempo de reacción · PVT (ms)" className={styles.anchoCompleto}>
+            <Grafico>
+              <LineChart data={datos} margin={{ top: 16, right: 8, left: -10, bottom: 0 }}>
+                <CartesianGrid stroke={C.borde} strokeDasharray="3 3" vertical={false} />
+                <ReferenceArea y1={100} y2={349} fill={C.verde} fillOpacity={0.14} />
+                <ReferenceArea y1={350} y2={449} fill={C.amarillo} fillOpacity={0.14} />
+                <ReferenceArea y1={450} y2={700} fill={C.naranja} fillOpacity={0.14} />
+                {reactionBase != null && (
+                  <ReferenceLine
+                    y={reactionBase}
+                    stroke={C.texto}
+                    strokeDasharray="6 4"
+                    label={{ value: 'tu base', fill: C.texto, fontSize: 11, position: 'insideTopRight' }}
+                  />
+                )}
+                {marcaEvento}
+                <XAxis dataKey="sol" {...EJE} />
+                <YAxis domain={[100, 600]} {...EJE} />
+                <Tooltip {...tooltip} formatter={(v) => [`${Math.round(v)} ms`, 'Mediana PVT']} />
+                <Line type="monotone" dataKey="reaction_ms" stroke={C.acento} strokeWidth={2.5} connectNulls dot isAnimationActive={false} />
+              </LineChart>
+            </Grafico>
+            <Leyenda items={[['verde', '< 350 ms'], ['amarillo', '350–449 ms'], ['naranja', '≥ 450 ms']]} />
+          </Card>
+        )}
       </div>
     </div>
   );
