@@ -13,7 +13,7 @@ AstroVitals acompaña al astronauta en el día a día de una misión en Marte (s
 - **Framework y UI:** Next.js 16 (App Router), React 19, JavaScript ESM, Sass Modules (`@use 'tokens' as *;`), Recharts.
 - **Almacenamiento local y nube:** IndexedDB mediante **Dexie** (`lib/db.js`) offline-first sincronizado con **Supabase PostgreSQL + Auth + `pgvector`** (`supabase/migrations/` y `lib/supabase/`).
 - **Visión por computadora en el navegador:** **MediaPipe** (`@mediapipe/tasks-vision`) — *Pose Landmarker* en `/entrenador` y *Face Landmarker* (parpadeo / PERCLOS) en `/cara`.
-- **Voz en el navegador:** **Web Speech API** (`SpeechRecognition` en `es-AR` y `speechSynthesis`) en `/vega` y `/registrar`.
+- **Voz en el navegador:** **Web Speech API** (`SpeechRecognition` en `es-AR` y `speechSynthesis`) en la voz VYTA de `/` y Salud.
 - **IA en el servidor:** **Claude Haiku 5.5** (`claude-haiku-5-5`) con `@anthropic-ai/sdk`, *prompt caching*, salidas estructuradas (`output_config.format`) y *tool use* (`strict: true`), expuesto vía `POST /api/claude`.
 - **Pensado para notebook (1280×800)**, con semáforo accesible mediante forma + color (`● green`, `▲ yellow`, `◆ orange`, `■ red`).
 
@@ -70,27 +70,18 @@ Para demostraciones públicas, evaluaciones sin conexión o entornos sin clave d
 
 ---
 
-## Las 13 pantallas de AstroVitals (+ `/login` y `/causas`)
+## Pantallas de VYTA
 
-Definidas en [`lib/rutas.js`](lib/rutas.js):
+El menú lateral se define en [`lib/rutas.js`](lib/rutas.js):
 
 | Ruta | Pantalla | Qué hace |
 |---|---|---|
-| `/` | **Inicio** | Semáforo general, alerta activa, sincronización simulada del Watch, chequeo del día y resumen de racha. |
-| `/jornada` | **Jornada** | Reloj marciano de 24 h 37 min (con modo acelerado), tareas del sol y descanso protegido (22:00–06:30). |
-| `/mapa` | **Mapa corporal** | Redirige a Salud, donde vive la silueta SVG con las 9 zonas: Física (corazón, pulmones, músculos, huesos, inmune, riñones, ojos y oído interno), Mental (cerebro y mente) y Riesgos (todas, con filtro por peligro R·I·D·G·E). `?zona=` abre la zona pedida. |
-| `/registrar` | **Registrar** | Formulario del chequeo matutino, escala de ánimo, foto de piel, test de reacción y dictado por voz. |
-| `/tendencias` | **Tendencias** | Gráficos de sueño, estrés, temperatura y ánimo con bandas de referencia y línea base personal. |
-| `/cabina` | **Cabina y radiación** | Dosímetro personal contra el límite de carrera de 600 mSv (NASA-STD-3001), simulación de tormenta solar con checklist de refugio, y CO₂, O₂, presión y ruido del hábitat (sensores simulados). |
-| `/entrenador` | **Entrenador** | Webcam con esqueleto MediaPipe Pose, contador de repeticiones, correcciones en vivo y plan adaptado por IA. |
-| `/cara` | **¿Cómo me ves hoy?** | Comparación facial con foto base y medición local de fatiga por parpadeo (PERCLOS) con MediaPipe Face. |
-| `/junta` | **Junta médica** | 5 especialistas en una sola consulta estructurada, desacuerdos resueltos e informes para tripulante y médicos. |
-| `/enlace` | **Enlace con Tierra** | Simulación del retraso de comunicación Marte–Tierra (14 min solo ida), respuesta del médico de vuelo y traducción de Vega. |
-| `/houston` | **Consola Houston** | Bandeja de la médica de vuelo en Tierra (Supabase PostgreSQL), búsqueda RAG vectorial `pgvector` y envío de dictamen a Marte. |
-| `/vega` | **Hablar con Vega** | Conversación por voz y texto con citas de la NASA, sugerencias rápidas y red de seguridad local ante urgencias. |
-| `/tripulacion` | **Tripulación** | Selector de tripulante (Ana Ríos / Marcos Silva), control de consentimiento y vista confidencial del oficial médico (CMO). |
-
-Vistas complementarias: **`/login`** (cambio de rol tripulante / CMO / Médica de Vuelo con Supabase Auth) y **`/causas` · ¿Por qué pasó?** (grafo causal oficial del riesgo inmune de la NASA, HSRB).
+| `/` | **Vista General** | Estado general, alertas activas con su fuente NASA, chequeo del día y voz VYTA (conversación con citas y red de seguridad local ante urgencias). |
+| `/salud/fisica` | **Salud** | Mapa corporal con las 9 zonas repartidas en Física, Mental (`/salud/mental`) y Riesgos (`/salud/riesgos`). `?zona=` abre la zona pedida; `/mapa` redirige acá. |
+| `/actividad` | **Actividad** | Ejercicios físicos (`/entrenador`: webcam con esqueleto MediaPipe Pose, repeticiones, correcciones y plan adaptado por IA), cognitivos (`/actividad/cognitivos`) y la **Jornada** (`/jornada`: reloj marciano de 24 h 37 min y descanso protegido 22:00–06:30). |
+| `/registrar` | **Registrar** | Chequeo matutino, ánimo, foto de piel, tests de reacción y visión, y **¿Cómo me ves hoy?** (`/cara`: parpadeo/PERCLOS local con MediaPipe Face). |
+| `/tendencias` | **Analítica** | Sueño, estrés, temperatura y ánimo con bandas de referencia y línea base personal. |
+| `/enlace` | **Informes** | Enlace con Tierra con retraso de 14 min por tramo, respuesta del médico de vuelo y traducción de Vega. |
 
 ---
 
@@ -99,7 +90,7 @@ Vistas complementarias: **`/login`** (cambio de rol tripulante / CMO / Médica d
 1. **Motor determinista de reglas (`lib/motor/evaluar.js` y `lib/motor/rules.json`):** evalúa cada lectura contra umbrales, variación sobre la línea base personal (`baselineDelta`) y reglas compuestas (como `viral_reactivation` en el Sol 42: sueño promedio < 6 h + estrés ≥ 7 + síntoma cutáneo/herpes labial).
 2. **La IA orienta, nunca baja la alerta (`mergeLevel`):** en `lib/motor/evaluar.js` y `ai/junta/niveles.js`, el nivel del motor actúa como piso obligatorio (`mergeLevel(motor, junta)`). En `/entrenador`, `ai/entrenador/plan.js` (`limitarPlan`) impone techos por nivel (`orange` → máximo 30 min e intensidad `liviana`; `red` → `reposo`).
 3. **Red de seguridad local en voz (`ai/vega/urgencia.js`):** detecta señales críticas (autolesión, dolor de pecho, falta de aire, hinchazón unilateral de cuello/brazo) en el navegador sin esperar a la IA ni depender de la red.
-4. **Privacidad del oficial médico (CMO) (`lib/tripulacion/logicaTripulante.js`):** el CMO siempre ve el semáforo global y la alerta activa de cada tripulante para actuar ante emergencias, pero solo accede a las mediciones numéricas detalladas cuando el tripulante habilitó explícitamente compartirlas. En `/cara`, ninguna imagen sale del navegador sin consentimiento explícito.
+4. **Privacidad de la cámara:** en `/cara`, ninguna imagen sale del navegador sin consentimiento explícito.
 
 ---
 
@@ -127,8 +118,8 @@ Toda la lógica educativa y las citas de Vega y la Junta Médica provienen de do
 
 | Carpeta | Qué contiene |
 |---|---|
-| `app/` | Rutas Next.js (11 pantallas + `app/api/claude/route.js`) y `layout.js` |
-| `components/` | Componentes de interfaz, módulos Sass y barra lateral (`Sidebar`, `TrafficLight`, `Card`) |
+| `app/` | Rutas Next.js (pantallas VYTA + `app/api/`) y `layout.js` |
+| `components/` | Componentes de interfaz, módulos Sass barra lateral (`Sidebar`) y contenedor común `layout/PantallaVyta` |
 | `ai/` | Cliente Claude Haiku 5.5 (`claude.js`, `almacen.js`, `respaldo-demo.json`), contexto NASA y módulos de Vega, chequeo, junta, entrenador y cara (ver [`ai/README.md`](ai/README.md)) |
 | `lib/` | Motor de reglas (`motor/`), datos en Dexie (`db.js`, `datos/`), semilla de 60 soles (`demo/`), rutas, tipos y lógica pura |
 | `doc/` | `nasa/` (documentación oficial: desafío, fuentes originales y resúmenes de riesgos) y `proyecto/` (síntesis, plan final, decisiones y guion de demo) |

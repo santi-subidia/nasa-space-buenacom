@@ -1,7 +1,7 @@
 'use client';
 
 import EsferaViscosa from './EsferaViscosa';
-import { useVega } from '@/components/vega/useVega';
+import { useVega } from './useVega';
 import styles from './InicioPantalla.module.scss';
 
 const ETIQUETAS = {

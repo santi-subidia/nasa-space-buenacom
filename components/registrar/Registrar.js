@@ -81,11 +81,6 @@ export default function Registrar() {
       titulo="Check-in diario"
       subtitulo={`Chequeo matutino · Sol ${SOL_ACTUAL}`}
       icono="/figma/nav-registrar.svg"
-      acciones={
-        <Link href="/vega?modo=chequeo" className={`${styles.boton} ${styles.ia}`}>
-          <span aria-hidden="true">🎙</span> Completar por voz
-        </Link>
-      }
     >
       <div className={styles.cuerpo}>
         <form className={styles.form} onSubmit={guardar} noValidate>

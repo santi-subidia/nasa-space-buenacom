@@ -159,7 +159,6 @@ function MapaZonasPanel({ seccion, lecturas, sintomas, evaluacion, parametro }) 
               <div className={styles.botones}>
                 {zona.enlace && <Link href={zona.enlace.href}>{zona.enlace.etiqueta} →</Link>}
                 <Link href="/tendencias">Ver tendencias →</Link>
-                <Link href={`/vega?zona=${zona.id}`} className={styles.ia}><span aria-hidden="true">✦</span> Preguntar a Vega</Link>
               </div>
             </footer>
           </article>

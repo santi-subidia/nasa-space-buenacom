@@ -8,7 +8,6 @@ import OrigenUmbral from '@/components/OrigenUmbral';
 import VytaVoz from '@/components/inicio/VytaVoz';
 import { SOL_ACTUAL, useEstadoMision } from '@/lib/datos/demo';
 import { MISION } from '@/lib/mock/mision';
-import { tieneGrafo } from '@/lib/causas/grafos';
 import { rutaZona } from '@/lib/content/rutaZona';
 import { datosSalud, ETIQUETAS_NIVEL } from './datos';
 import MapaZonas from './MapaZonas';
@@ -189,8 +188,7 @@ function Alertas({ alertas, seccion, cargando }) {
             {alerta.nasaSource && <p className={styles.fuente}>Fuente: {alerta.nasaSource}</p>}
             <OrigenUmbral basis={alerta.basis} className={styles.fuente} />
             <div className={styles.accionesAlerta}>
-              {tieneGrafo(alerta.ruleId) && <Link href={`/causas?alerta=${encodeURIComponent(alerta.ruleId)}`}>¿Por qué pasó? →</Link>}
-              <Link href={rutaZona(alerta.zone)}>Ver guía →</Link><Link href="/enlace">Avisar al oficial médico →</Link><Link href="/junta">Convocar junta médica →</Link>
+              <Link href={rutaZona(alerta.zone)}>Ver guía →</Link><Link href="/enlace">Avisar al oficial médico →</Link>
             </div>
           </div>
         </details>

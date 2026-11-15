@@ -1,133 +1,19 @@
 @use 'tokens' as *;
 
+// Barra lateral VYTA (prototipo de Figma).
 .lateral {
-  width: $ancho-lateral;
+  width: 231px;
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
-  gap: $espacio-3;
-  padding: $espacio-4;
-  background: $color-superficie;
-  border-right: 1px solid $color-borde;
+  gap: 14px;
+  padding: 0 15px 20px;
+  background: #040d18;
+  border-right: 1px solid #0d1b2b;
   position: sticky;
   top: 0;
   height: 100vh;
   overflow-y: auto;
-}
-
-.marca {
-  display: flex;
-  align-items: center;
-  gap: $espacio-2;
-  padding: 0 $espacio-3;
-}
-
-.logo { color: $color-acento; font-size: 22px; }
-
-.nombre {
-  font-family: $fuente-titulo;
-  font-weight: 700;
-  font-size: 20px;
-}
-
-.lista {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: $espacio-1;
-}
-
-.enlace {
-  display: flex;
-  align-items: center;
-  gap: $espacio-3;
-  padding: $espacio-2 $espacio-3;
-  border-radius: $radio-s;
-  color: $color-texto-suave;
-  font-weight: 500;
-  font-size: 14px;
-  border-left: 3px solid transparent;
-
-  &:hover {
-    background: $color-superficie-2;
-    color: $color-texto;
-  }
-}
-
-.icono { width: 20px; text-align: center; }
-
-.activo {
-  background: $color-superficie-2;
-  color: $color-texto;
-  border-left-color: $color-acento;
-  .icono { color: $color-acento; }
-}
-
-// Vega (la IA) se distingue con su color
-.ia .icono { color: $color-ia; }
-.ia.activo { border-left-color: $color-ia; }
-
-.cuentaCard {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  padding: $espacio-2 $espacio-3;
-  border-radius: $radio-s;
-  border: 1px solid $color-borde;
-  background: $color-superficie-2;
-  color: $color-texto;
-  font-size: 12px;
-
-  &:hover {
-    border-color: $color-acento;
-  }
-}
-
-.cuentaActiva {
-  border-color: $color-acento;
-}
-
-.cuentaTop {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: $espacio-2;
-}
-
-.cuentaNombre {
-  font-weight: 600;
-  font-size: 13px;
-}
-
-.cuentaMeta {
-  color: $color-texto-suave;
-  font-size: 11px;
-}
-
-.nubeDot {
-  font-size: 10px;
-  color: $color-texto-suave;
-}
-
-.nubeOk {
-  color: $color-verde;
-}
-
-.aviso {
-  margin: auto 0 0;
-  padding: 0 $espacio-3;
-  font-size: 12px;
-  color: $color-texto-suave;
-}
-
-.prototipo {
-  width: 231px;
-  gap: 14px;
-  padding: 0 15px 20px;
-  background: #040d18;
-  border-color: #0d1b2b;
   scrollbar-width: thin;
   scrollbar-color: #24374d transparent;
   isolation: isolate;
@@ -145,39 +31,56 @@
     opacity: 0.8;
     pointer-events: none;
   }
+}
 
-  .marca { margin: 0 -15px 21px; padding: 0; }
-  .lista { gap: 16px; }
-  .lista li:first-child { margin-bottom: 39px; }
-  .enlace {
-    min-height: 54px;
-    padding: 12px;
-    color: #adc1e2;
-    font-size: 12px;
-    font-weight: 400;
-    border-left-width: 3px;
-    border-radius: 10px;
-    transition: background 0.15s, color 0.15s;
-  }
-  .icono { color: #b4caeb; font-size: 17px; }
-  .activo {
+.marca {
+  display: flex;
+  align-items: center;
+  gap: $espacio-2;
+  margin: 0 -15px 21px;
+  padding: 0;
+}
+
+.lista {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  li:first-child { margin-bottom: 39px; }
+}
+
+.enlace {
+  display: flex;
+  align-items: center;
+  gap: $espacio-3;
+  min-height: 54px;
+  padding: 12px;
+  border-radius: 10px;
+  border-left: 3px solid transparent;
+  color: #adc1e2;
+  font-size: 12px;
+  font-weight: 400;
+  transition: background 0.15s, color 0.15s;
+
+  &:hover { background: $color-superficie-2; }
+
+  &.activo {
     background: linear-gradient(100deg, #3d367e, #121d34 75%);
     border: 1px solid #293459;
     border-left: 3px solid #a078ff;
     color: #f6f4ff;
     box-shadow: -6px 0 18px -12px #a078ff;
   }
-  .activo .icono { color: #e0e3ff; }
-  .cuentaCard { background: #071321; border-color: #1b354b; }
-  .cuentaMeta, .aviso { color: #8da3c2; }
-  .aviso { font-size: 10px; }
 }
 
 @media (min-width: 1280px) {
-  .prototipo { height: 928px; }
+  .lateral { height: 928px; }
 }
 
-.prototipo:has(.grupoSalud) {
+.lateral:has(.grupoSalud) {
   .lista { gap: 10px; }
   .lista > li:first-child { margin-bottom: 10px; }
 }
@@ -203,7 +106,7 @@
 }
 
 @media (max-width: 1100px) and (min-width: 761px) {
-  .prototipo {
+  .lateral {
     width: 190px;
     .marca { overflow: hidden; justify-content: center; }
     .enlace { font-size: 11px; padding-inline: 8px; }
@@ -211,7 +114,7 @@
 }
 
 @media (max-width: 760px) {
-  .prototipo {
+  .lateral {
     position: relative;
     width: 100%;
     height: auto;
@@ -226,6 +129,5 @@
     .lista { flex-direction: row; overflow-x: auto; padding: 4px 0; }
     .lista li:first-child { margin-bottom: 0; }
     .enlace { white-space: nowrap; }
-    .cuentaCard, .aviso { display: none; }
   }
 }

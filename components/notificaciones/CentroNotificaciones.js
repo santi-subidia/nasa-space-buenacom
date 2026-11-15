@@ -123,30 +123,6 @@ export default function CentroNotificaciones() {
 
   return (
     <aside className={styles.contenedor} aria-label="Centro de notificaciones">
-      <div className={styles.barraSuperior}>
-        {reloj.suenoProtegido && (
-          <span
-            className={styles.indicadorSueno}
-            role="status"
-            title="Ventana de sueño protegido (22:00–06:30): solo suenan alertas rojas"
-          >
-            ☾ Sueño protegido
-          </span>
-        )}
-
-        <button
-          type="button"
-          className={`${styles.pastilla} ${abierto ? styles.pastillaActiva : ''}`}
-          onClick={() => setAbierto((v) => !v)}
-          aria-expanded={abierto}
-          aria-controls="panel-notificaciones"
-        >
-          <span aria-hidden="true">🔔</span>
-          <span>Avisos</span>
-          <span className={styles.contador}>{items.length}</span>
-        </button>
-      </div>
-
       {toastsVisibles.length > 0 && (
         <div className={styles.toasts} role="region" aria-label="Avisos recientes">
           {toastsVisibles.map((notif) => {

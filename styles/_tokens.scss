@@ -23,7 +23,7 @@ $fuente-texto: var(--font-inter), system-ui, sans-serif;
 // Unificado con el home: toda la app usa Inter, también en títulos.
 $fuente-titulo: var(--font-inter), system-ui, sans-serif;
 
-// ── Espaciado, radios, layout ──────────────────────────
+// ── Espaciado y radios ─────────────────────────────────
 $espacio-1: 4px;
 $espacio-2: 8px;
 $espacio-3: 12px;
@@ -34,8 +34,4 @@ $espacio-6: 32px;
 $radio-s: 8px;
 $radio-m: 16px;
 $radio-l: 20px;
-
-$ancho-pantalla: 1280px;
-$alto-pantalla: 800px;
-$ancho-lateral: 240px;
 

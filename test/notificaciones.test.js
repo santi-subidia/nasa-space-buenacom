@@ -188,7 +188,7 @@ test('evaluarHitosHorario detecta todos los hitos del sol (incl. hidratación y 
   );
   assert.equal(
     restoJueves.emitidas.find((n) => n.horaMision === '20:30')?.ruta,
-    '/vega',
+    '/',
   );
   assert.equal(
     restoJueves.emitidas.find((n) => n.horaMision === '21:30')?.ruta,
@@ -253,7 +253,7 @@ test('constructores reactivos: aviso, Tierra y motivación respetan formato y su
   );
   assert.equal(avisoCriticoSueno.color, 'red');
   assert.equal(avisoCriticoSueno.simbolo, '■');
-  assert.equal(avisoCriticoSueno.ruta, '/junta');
+  assert.equal(avisoCriticoSueno.ruta, '/enlace');
   assert.equal(avisoCriticoSueno.permitido, true);
   assert.equal(avisoCriticoSueno.conSonido, true);
 
