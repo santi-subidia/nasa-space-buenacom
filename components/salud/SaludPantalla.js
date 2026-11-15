@@ -4,6 +4,7 @@ import { useMemo, useState } from 'react';
 import Link from 'next/link';
 import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import CabeceraMision from '@/components/layout/CabeceraMision';
+import OrigenUmbral from '@/components/OrigenUmbral';
 import VytaVoz from '@/components/inicio/VytaVoz';
 import { SOL_ACTUAL, useEstadoMision } from '@/lib/datos/demo';
 import { MISION } from '@/lib/mock/mision';
@@ -182,6 +183,7 @@ function Alertas({ alertas, seccion, cargando }) {
         <details><summary><i className={styles.punto} aria-hidden="true" /><span><strong>{alerta.title}</strong><span>{alerta.why}</span></span><small>Sol {alerta.sol ?? SOL_ACTUAL}</small></summary>
           <div className={styles.detalleAlerta}><p>{alerta.why}</p><ul>{(alerta.actions || []).map((accion) => <li key={accion}>{accion}</li>)}</ul>
             {alerta.nasaSource && <p className={styles.fuente}>Fuente: {alerta.nasaSource}</p>}
+            <OrigenUmbral basis={alerta.basis} className={styles.fuente} />
             <div className={styles.accionesAlerta}>
               {tieneGrafo(alerta.ruleId) && <Link href={`/causas?alerta=${encodeURIComponent(alerta.ruleId)}`}>¿Por qué pasó? →</Link>}
               <Link href={`/mapa?zona=${alerta.zone || 'immune'}`}>Ver guía →</Link><Link href="/enlace">Avisar al oficial médico →</Link><Link href="/junta">Convocar junta médica →</Link>

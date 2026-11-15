@@ -8,6 +8,7 @@ import TrafficLight from '@/components/TrafficLight';
 import TendenciaResumen from './TendenciaResumen';
 import VytaVoz from './VytaVoz';
 import CabeceraMision from '@/components/layout/CabeceraMision';
+import OrigenUmbral from '@/components/OrigenUmbral';
 import { SOL_ACTUAL, useEstadoMision } from '@/lib/datos/demo';
 import { tieneGrafo } from '@/lib/causas/grafos';
 import { MISION } from '@/lib/mock/mision';
@@ -123,6 +124,7 @@ function AlertasObservaciones({ alertas }) {
                   <p>{alerta.why}</p>
                   <ul>{(alerta.actions || []).map((accion) => <li key={accion}>{accion}</li>)}</ul>
                   {alerta.nasaSource && <p className={styles.fuente}>Fuente: {alerta.nasaSource}</p>}
+                  <OrigenUmbral basis={alerta.basis} className={styles.fuente} />
                   <div className={styles.accionesAlerta}>
                     {tieneGrafo(alerta.ruleId) && <Link href={`/causas?alerta=${alerta.ruleId}`}>¿Por qué pasó? →</Link>}
                     <Link href={`/mapa?zona=${alerta.zone || 'immune'}`}>Ver guía →</Link>

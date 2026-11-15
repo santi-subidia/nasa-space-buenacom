@@ -4,6 +4,22 @@
 >
 > ⚠️ **Los rangos de referencia son valores clínicos generales para adultos sanos, de conocimiento médico común. No salen de las páginas de la NASA extraídas.** Úsalos en el prototipo como **valores por defecto configurables** y combínalos con la **línea base personal** previa al vuelo. No son consejo médico.
 
+## Origen de cada umbral
+
+Cada regla de [`lib/motor/rules.json`](../../../lib/motor/rules.json) tiene dos campos de trazabilidad:
+
+- **`source`**: el documento de riesgo de la NASA que explica **por qué** se vigila el indicador. Las páginas del HRP y del HSRB describen el riesgo, pero **casi nunca traen cifras de umbral**.
+- **`basis`**: de dónde sale **el número** del umbral, con `type`, `ref`, `url` opcional y `note` (qué parte es de la fuente y qué parte es adaptación propia). La app lo muestra en cada alerta.
+
+| `basis.type` | Significado | Reglas |
+|---|---|---|
+| `nasa` | Cifra tomada de un documento de la NASA | CO₂ de cabina (NASA-STD-3001 Vol. 2, OCHMO-TB-004) |
+| `nasa_derived` | Parte de una cifra NASA con cortes propios | Radiación (600 mSv), ruido (NC-50), ejercicio (1,5 h/día), `exercise_deficit_week` |
+| `external` | Guía clínica o laboral que no es de la NASA | Presión arterial (ACC/AHA 2017), FC en reposo (AHA), glucosa (ADA), temperatura, sueño (AASM/SRS 2015), SpO₂ (OMS), O₂ de cabina (OSHA), `hypoxia_co2` |
+| `design` | Criterio del equipo, sin cifra oficial | Ánimo, estrés, agua, agudeza visual, tiempo de reacción, todos los deltas de línea base y el resto de las reglas compuestas |
+
+La NASA **no publica rangos de semáforo** para presión, frecuencia cardíaca, glucosa, temperatura ni sueño de tripulantes. Por eso esos umbrales se citan a la guía clínica de la que salen, y no a la página de la NASA.
+
 ## Semáforo general
 
 - 🟢 **Normal:** dentro del rango y sin cambios relevantes respecto a la línea base.

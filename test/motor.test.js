@@ -158,3 +158,31 @@ test('mergeLevel: la IA puede subir el nivel, nunca bajarlo', () => {
   assert.equal(mergeLevel('red', undefined), 'red');
   assert.throws(() => mergeLevel('orange', 'morado'), /Nivel desconocido/);
 });
+
+test('toda regla de rules.json declara el origen de su umbral (basis) y la alerta lo expone', async () => {
+  const reglas = (await import('../lib/motor/rules.json', { with: { type: 'json' } })).default;
+  const TIPOS = new Set(['nasa', 'nasa_derived', 'external', 'design']);
+  const todas = [
+    ...Object.entries(reglas.thresholds).map(([id, r]) => [`thresholds.${id}`, r]),
+    ...Object.entries(reglas.baselineDelta).map(([id, r]) => [`baselineDelta.${id}`, r]),
+    ...reglas.composite.map((r) => [`composite.${r.id}`, r]),
+  ];
+  for (const [id, r] of todas) {
+    assert.ok(TIPOS.has(r.basis?.type), `${id}: basis.type inválido`);
+    assert.ok(r.basis.ref, `${id}: falta basis.ref`);
+    if (r.basis.url) assert.match(r.basis.url, /^https:\/\//, `${id}: basis.url debe ser https`);
+  }
+
+  // Un umbral clínico no debe presentarse como cifra NASA.
+  assert.equal(reglas.thresholds.bp_sys.basis.type, 'external');
+  assert.equal(reglas.thresholds.co2_mmhg.basis.type, 'nasa');
+
+  const r = evaluate([{ indicator: 'temp', value: 38.4, sol: 10 }], {}, 'mars_base');
+  const alerta = r.alerts.find((a) => a.ruleId === 'threshold:temp');
+  assert.equal(alerta.basis.type, 'external');
+  assert.equal(r.indicators.temp.basis.type, 'external');
+
+  // Si dispara la línea base, el origen es el del delta, no el del umbral absoluto.
+  const porBase = evaluate([{ indicator: 'hr_rest', value: 74, sol: 10 }], { hr_rest: 64 }, 'mars_base');
+  assert.equal(porBase.alerts.find((a) => a.ruleId === 'threshold:hr_rest').basis.type, 'design');
+});
