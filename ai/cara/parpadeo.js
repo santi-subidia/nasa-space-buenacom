@@ -57,7 +57,7 @@ export function clasificarFatiga({ parpadeosPorMin, pctOjosCerrados, cierresLarg
     return { nivel: 'alto', mensaje: 'Your eyes stay closed for long periods: a sign of marked fatigue. Rest and check how much you slept.' };
   }
   if (pctOjosCerrados >= pctAtencion || parpadeosPorMin < minParpadeosAtencion) {
-    return { nivel: 'atencion', mensaje: 'Veo signos leves de cansancio en el parpadeo. Conviene una pausa corta.' };
+    return { nivel: 'atencion', mensaje: 'I see mild signs of fatigue in your blinking. A short break is advisable.' };
   }
-  return { nivel: 'normal', mensaje: 'El parpadeo se ve normal.' };
+  return { nivel: 'normal', mensaje: 'Your blinking looks normal.' };
 }

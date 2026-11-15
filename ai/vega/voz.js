@@ -248,7 +248,7 @@ export function crearVoz({
         clearTimeout(temporizadorSilencio);
         escuchaActiva = null;
         alCambiar('inactivo');
-        rechazar({ codigo: 'start', mensaje: 'No pude empezar a escuchar.' });
+        rechazar({ codigo: 'start', mensaje: 'Could not start listening.' });
       }
     });
   }
@@ -350,7 +350,7 @@ export function crearVoz({
     hablando = null;
     alPulso(0);
     sintesis?.cancel?.();
-    actual.terminarEnunciado?.(new Error('Voz detenida'));
+    actual.terminarEnunciado?.(new Error('Voice stopped'));
     alCambiar('inactivo');
     actual.resolver();
   }

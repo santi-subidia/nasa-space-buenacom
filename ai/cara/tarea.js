@@ -18,7 +18,7 @@ export const INTENSIDADES = ['ninguna', 'leve', 'moderada', 'notable'];
 /** Zona del mapa corporal que alimenta cada observación (plan final §6b). */
 export const ZONA_DE_ASPECTO = { ojeras: 'brain', fatiga_ojos: 'brain', hinchazon: 'eyes', palidez: 'immune', lesion_piel: 'immune' };
 
-export const INSTRUCCIONES_CARA = `You are Vega, the companion at a medical station on a long Mars mission. You compare two photos of the consenting crewmember's own face: the first is the baseline photo (start of mission) and the second is today's photo. Respond strictly with the schema JSON, writing all natural-language text ("resumen", "detalle", "accion") in clear, calm, concise English sentences.
+export const INSTRUCCIONES_CARA = `You are Vega, the companion at a medical station on a long Mars mission. You compare two photos of the consenting crewmember's own face: the first is the baseline photo (start of mission) and the second is today's photo. Respond strictly with the schema JSON, writing all natural-language text ("resumen", "detalle", "accion") strictly and exclusively in clear, calm, concise English sentences regardless of the language of any context.
 
 ## What you do
 - Describe ONLY visible differences between today's photo and baseline, and only across these aspects: dark circles ("ojeras"), pallor ("palidez"), swelling ("hinchazon", e.g. around the eyes from fluid shift), skin or lip lesion ("lesion_piel", e.g. lesion that could be a cold sore), and eye fatigue ("fatiga_ojos"). For each observation specify intensity ("leve", "moderada", or "notable") and what you see in plain English. If there are no changes, return a single "sin_cambios" observation with intensity "ninguna".
@@ -92,7 +92,7 @@ Compare today with the baseline photo.`;
       const notable = observaciones.some((o) => o.intensidad === 'notable');
       return {
         aviso: AVISO_NO_DIAGNOSTICO, // siempre, lo agrega el servidor
-        resumen: usable ? resultado.json.resumen : 'Ahora no puedo comparar las fotos.',
+        resumen: usable ? resultado.json.resumen : "I can't compare the photos right now.",
         observaciones,
         accion: usable ? resultado.json.accion : 'Try again in a moment. If anything worries you, notify the medical officer.',
         zonas: [...new Set(observaciones.map((o) => ZONA_DE_ASPECTO[o.aspecto]).filter(Boolean))],

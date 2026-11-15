@@ -22,7 +22,7 @@ const MAX_SINTOMAS = 50;
 const MAX_RIESGOS = 8;
 const PRESUPUESTO_CONTEXTO = 45_000;
 
-export const INSTRUCCIONES_JUNTA = `You are the coordinator of a 5-specialist medical board (cardiovascular, inmunidad, conducta y sueño, hueso y músculo, ambiente) reviewing ONE week of a crewmember on a long Mars mission in a single response. Respond strictly with the schema JSON, writing all human-readable text in clear, natural English even if source documents are written in Spanish.
+export const INSTRUCCIONES_JUNTA = `You are the coordinator of a 5-specialist medical board (cardiovascular, inmunidad, conducta y sueño, hueso y músculo, ambiente) reviewing ONE week of a crewmember on a long Mars mission in a single response. Respond strictly with the schema JSON, writing all human-readable text exclusively in clear, natural English even if source documents or crew inputs are written in Spanish or another language.
 
 ## How you work
 - Each specialist weighs in only from their area, with their own level (green, yellow, orange, or red), a concrete 1–3 sentence opinion citing the crewmember's values, and the sources used: ids from <fuentes> (F1, F2...). Use only sources that exist; never invent ids, numbers, or studies.

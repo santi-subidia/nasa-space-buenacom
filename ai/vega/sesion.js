@@ -211,7 +211,8 @@ export function crearSesionVega({
     const textoVoz = cuerpo.textoVoz ?? textoParaVoz(cuerpo.texto);
     recordar(textoVoz);
     agregar({ rol: 'vega', texto: textoVoz, citas: cuerpo.citasUsadas ?? [], origen: cuerpo.origen, motivo: cuerpo.motivo });
-    emitir({ fase: 'inactivo', sugerirAviso: normalizar(textoVoz).includes('oficial medico') || Boolean(urgencia) || Boolean(leve) });
+    const textoNorm = normalizar(textoVoz);
+    emitir({ fase: 'inactivo', sugerirAviso: textoNorm.includes('medical officer') || textoNorm.includes('oficial medico') || Boolean(urgencia) || Boolean(leve) });
     if (hablar) {
       const cortadoEnAviso = await lectura; // primero termina el aviso, después la respuesta
       if (!cortadoEnAviso && !interrumpidoPorUsuario && vigente()) {

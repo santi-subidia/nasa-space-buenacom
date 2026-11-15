@@ -16,7 +16,7 @@ export function crearComoMeVes({ voz, fetchFn = globalThis.fetch?.bind(globalThi
    */
   async function observar({ fotoBase, fotoHoy, consentimiento, muestrasParpadeo }, { hablar = true } = {}) {
     if (consentimiento !== true) {
-      return { ok: false, error: 'Hace falta tu consentimiento para usar las fotos.', aviso: AVISO_NO_DIAGNOSTICO };
+      return { ok: false, error: 'Your consent is required to use the photos.', aviso: AVISO_NO_DIAGNOSTICO };
     }
     const parpadeo = muestrasParpadeo ? analizarParpadeos(muestrasParpadeo) : null;
     const fatiga = parpadeo ? clasificarFatiga(parpadeo) : null;
@@ -40,7 +40,7 @@ export function crearComoMeVes({ voz, fetchFn = globalThis.fetch?.bind(globalThi
         ok: true,
         origen: 'local',
         aviso: AVISO_NO_DIAGNOSTICO,
-        resumen: fatiga ? fatiga.mensaje : 'Ahora no puedo comparar las fotos.',
+        resumen: fatiga ? fatiga.mensaje : "I can't compare the photos right now.",
         observaciones: [],
         accion: 'If anything worries you, measure your temperature or notify the medical officer.',
         zonas: fatiga && fatiga.nivel !== 'normal' ? ['brain'] : [],

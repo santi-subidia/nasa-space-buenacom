@@ -288,7 +288,7 @@ export async function transcribirAudio({
     if (signal?.aborted) throw abortado();
     if (!respuesta.ok) {
       const codigo = respuesta.status === 422 ? 'no-speech' : respuesta.status === 503 ? 'service-unavailable' : 'network';
-      throw errorConCodigo(datos.error || 'No se pudo transcribir la voz.', codigo);
+      throw errorConCodigo(datos.error || 'Could not transcribe speech.', codigo);
     }
     if (typeof datos.text !== 'string' || !datos.text.trim()) {
       throw errorConCodigo('No phrase recognized. Tap to try again.', 'no-speech');
