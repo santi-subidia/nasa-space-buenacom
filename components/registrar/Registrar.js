@@ -6,7 +6,9 @@ import { useRouter } from 'next/navigation';
 import Card from '@/components/Card';
 import { INFO, CARAS } from '@/lib/content/indicadores';
 import { useLecturas, guardarLecturas } from '@/lib/datos/lecturas';
+import { useEstadoMision } from '@/lib/datos/demo';
 import { guardarFoto, guardarSintoma } from '@/lib/datos/sintomas';
+import { formatearNotaPvt } from '@/lib/pvt/metricas';
 import { SOL_ACTUAL } from '@/lib/mock/mision';
 import { WATCH, valoresDelDia } from '@/lib/mock/indicadores';
 import FotoPiel from './FotoPiel';
@@ -31,11 +33,14 @@ const num = (s) => Number(String(s).replace(',', '.'));
 export default function Registrar() {
   const router = useRouter();
   const lecturas = useLecturas();
+  const { astronauta } = useEstadoMision();
+  const baselineReaccion = astronauta?.baseline?.reaction_ms ?? null;
   const base = valoresDelDia(lecturas, SOL_ACTUAL);
 
   const [edit, setEdit] = useState({}); // solo lo que se tocó: { clave: texto }
   const [foto, setFoto] = useState(null); // { blob, code, severity }
-  const [reaccion, setReaccion] = useState(null); // { ms, intentos }
+  const [reaccion, setReaccion] = useState(null); // { ms, intentos, estabilidadVor, ... }
+  const [mareo, setMareo] = useState(0); // 0 = no, 1 = leve, 2 = moderado
   const [vision, setVision] = useState(null); // { puntos, niveles, borrosa }
   const [guardando, setGuardando] = useState(false);
   const [errorGuardado, setErrorGuardado] = useState(null);
@@ -65,11 +70,22 @@ export default function Registrar() {
     setGuardando(true);
 
     const nuevas = cambios.map((k) => ({ indicator: k, value: num(edit[k]), sol: SOL_ACTUAL }));
-    if (reaccion) nuevas.push({ indicator: 'reaction_ms', value: reaccion.ms, sol: SOL_ACTUAL });
+    if (reaccion) {
+      nuevas.push({
+        indicator: 'reaction_ms',
+        value: reaccion.ms,
+        sol: SOL_ACTUAL,
+        source: reaccion.modoEntrada === 'camara' ? 'camera' : 'manual',
+        note: formatearNotaPvt(reaccion),
+      });
+    }
     if (vision) nuevas.push({ indicator: 'visual_acuity', value: vision.puntos, sol: SOL_ACTUAL });
 
     try {
       if (nuevas.length) await guardarLecturas(nuevas);
+      if (mareo > 0) {
+        await guardarSintoma({ bodyZone: 'inner_ear', code: 'dizzy_standing', severity: mareo, sol: SOL_ACTUAL });
+      }
       if (vision?.borrosa) {
         await guardarSintoma({ bodyZone: 'eyes', code: 'blurred_vision', severity: 2, sol: SOL_ACTUAL });
       }
@@ -207,7 +223,16 @@ export default function Registrar() {
 
         <div className={styles.lateral}>
           <FotoPiel valor={foto} onChange={setFoto} />
-          <TestReaccion resultado={reaccion} onTerminar={setReaccion} />
+          <TestReaccion
+            resultado={reaccion}
+            baselineMs={baselineReaccion}
+            mareo={mareo}
+            onMareo={setMareo}
+            onTerminar={(m) => {
+              setReaccion(m);
+              setMareo(0);
+            }}
+          />
           <TestVision resultado={vision} onTerminar={setVision} />
         </div>
       </div>

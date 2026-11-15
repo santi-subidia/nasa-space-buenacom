@@ -130,3 +130,232 @@ select.campo { width: auto; text-align: left; }
 .enlace { align-self: center; background: none; border: 0; color: $color-texto-suave; font: inherit; font-size: 13px; text-decoration: underline; cursor: pointer; }
 .resultado + .nota, .boton + .nota { display: block; margin-top: $espacio-3; }
 .padVerde { background: $color-verde; }
+
+// ── Test Cognitivo PVT (NASA Reaction Self Test) ────────
+.pvtBarra {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  .texto { margin: 0; }
+}
+.padPvt {
+  display: grid;
+  place-items: center;
+  height: 165px;
+  border: 2px solid $color-borde;
+  background: #070b14;
+  color: $color-texto;
+  transition: border-color 80ms ease, background 80ms ease;
+}
+.padPvtEspera {
+  border-color: $color-borde;
+}
+.padPvtEstimulo {
+  border-color: $color-verde;
+  background: rgba($color-verde, 0.08);
+  color: $color-verde;
+}
+.padPvtLapso {
+  border-color: $color-naranja;
+  background: rgba($color-naranja, 0.12);
+  color: $color-naranja;
+}
+.padPvtFeedback {
+  border-color: $color-acento;
+  background: rgba($color-acento, 0.1);
+  color: $color-acento;
+}
+.padPvtError {
+  border-color: $color-rojo;
+  background: rgba($color-rojo, 0.14);
+  color: $color-rojo;
+}
+.pvtReticle {
+  font-size: 28px;
+  font-weight: 400;
+  color: $color-texto-suave;
+  opacity: 0.7;
+}
+.pvtContador {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 34px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  font-variant-numeric: tabular-nums;
+}
+.pvtFeedbackTexto {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 22px;
+  font-weight: 700;
+}
+.pvtResumen {
+  margin-top: $espacio-3;
+  display: flex;
+  flex-direction: column;
+  gap: $espacio-3;
+}
+.pvtHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $espacio-2;
+  flex-wrap: wrap;
+}
+.pvtBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+}
+.nivel_green { background: rgba($color-verde, 0.16); color: $color-verde; }
+.nivel_yellow { background: rgba($color-amarillo, 0.16); color: $color-amarillo; }
+.nivel_orange { background: rgba($color-naranja, 0.18); color: $color-naranja; }
+.nivel_red { background: rgba($color-rojo, 0.18); color: $color-rojo; }
+.pvtGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: $espacio-2;
+}
+.pvtDato {
+  background: $color-superficie-2;
+  border: 1px solid $color-borde;
+  border-radius: $radio-s;
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  span { font-size: 11px; color: $color-texto-suave; }
+  strong { font-size: 16px; color: $color-texto; font-variant-numeric: tabular-nums; }
+}
+.pvtGrafico {
+  width: 100%;
+  background: $color-fondo;
+  border: 1px solid $color-borde;
+  border-radius: $radio-s;
+  padding: 6px 4px 2px;
+}
+.videoOculto {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+.pvtCanvas {
+  width: 100%;
+  height: 220px;
+  border-radius: $radio-m;
+  border: 1px solid $color-borde;
+  background: #070b14;
+  touch-action: none;
+  cursor: crosshair;
+  display: block;
+}
+.pvtMareo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $espacio-2;
+  flex-wrap: wrap;
+}
+.botonMini {
+  background: transparent;
+  border: 1px solid $color-borde;
+  color: $color-texto-suave;
+  border-radius: 999px;
+  padding: 3px 10px;
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+  &:hover { background: $color-superficie-2; color: $color-texto; }
+}
+.botonMiniActivo {
+  border-color: $color-acento;
+  background: rgba($color-acento, 0.16);
+  color: $color-acento;
+  font-weight: 600;
+}
+
+// ── Modal adaptable a pantalla para el test PVT ────────
+.pvtModalBackdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(5, 8, 18, 0.88);
+  backdrop-filter: blur(6px);
+  display: grid;
+  place-items: center;
+  padding: clamp(10px, 2.5vw, 28px);
+}
+.pvtModal {
+  width: min(960px, 100%);
+  height: min(88dvh, 700px);
+  background: $color-superficie;
+  border: 1px solid $color-borde;
+  border-radius: $radio-l;
+  padding: clamp(12px, 2vw, 22px);
+  display: flex;
+  flex-direction: column;
+  gap: $espacio-3;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.65);
+}
+.pvtModalHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $espacio-3;
+  flex-wrap: wrap;
+}
+.pvtModalTitulo {
+  display: flex;
+  align-items: center;
+  gap: $espacio-3;
+  flex-wrap: wrap;
+}
+.pvtFaseTag {
+  font-weight: 700;
+  font-size: clamp(14px, 1.6vw, 18px);
+  color: $color-texto;
+}
+.pvtReloj {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: clamp(18px, 2vw, 24px);
+  color: $color-acento;
+  background: rgba($color-acento, 0.14);
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-variant-numeric: tabular-nums;
+}
+.pvtModalLienzo {
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  display: grid;
+  place-items: center;
+}
+.pvtCanvasModal {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  aspect-ratio: 16 / 10;
+  border-radius: $radio-m;
+  border: 1px solid $color-borde;
+  background: #070b14;
+  touch-action: none;
+  cursor: crosshair;
+  display: block;
+}
+.pvtModalPista {
+  margin: 0;
+  text-align: center;
+  font-size: clamp(13px, 1.4vw, 15px);
+  color: $color-texto-suave;
+}
+.pvtModalCargando {
+  flex: 1;
+  display: grid;
+  place-items: center;
+}

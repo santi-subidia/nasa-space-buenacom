@@ -33,6 +33,7 @@
 .vegaTitulo { color: $color-ia; font-weight: 700; margin-bottom: $espacio-1 !important; }
 
 .graficos { display: grid; grid-template-columns: 1fr 1fr; gap: $espacio-4; }
+.anchoCompleto { grid-column: 1 / -1; }
 
 .grafico { height: 190px; width: 100%; }
 
