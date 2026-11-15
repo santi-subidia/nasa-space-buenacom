@@ -1,0 +1,49 @@
+@use 'vyta' as v;
+@use 'tokens' as *;
+
+.pantalla {
+  color: v.$texto;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  width: 100%;
+  font-family: $fuente-texto;
+  h1, h2, h3, h4 { font-family: inherit; }
+}
+
+.titulo {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 10px;
+  min-height: 52px;
+
+  h1 { font-size: 24px; font-weight: 600; letter-spacing: -0.3px; line-height: 1.2; }
+  p { margin: 3px 0 0; color: #b9cbe2; font-size: 13px; }
+  > div:nth-child(1), > div:nth-child(2) { min-width: 0; }
+}
+
+.icono {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #22254a;
+}
+
+.acciones {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+@media (max-width: 600px) {
+  .titulo { flex-wrap: wrap; h1 { font-size: 20px; } }
+  .acciones { margin-left: 0; justify-content: flex-start; width: 100%; }
+}

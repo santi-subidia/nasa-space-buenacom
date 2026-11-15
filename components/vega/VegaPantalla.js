@@ -244,7 +244,9 @@ export default function VegaPantalla({ modoInicial = 'conversar' }) {
   );
 }
 
-const NOMBRES_DE_PASO = { presion: 'Presión arterial', temperatura: 'Temperatura', animo: 'Ánimo', estres: 'Estrés' };
+const ETIQUETAS_TRIAJE = { emergencia: 'Emergencia · protocolo NASA', urgente: 'Urgente · protocolo NASA' };
+
+const NOMBRES_DE_PASO ={ presion: 'Presión arterial', temperatura: 'Temperatura', animo: 'Ánimo', estres: 'Estrés' };
 const nombreDelPaso = (paso) => NOMBRES_DE_PASO[paso.id] ?? paso.id;
 
 function Mensaje({ mensaje }) {
@@ -255,7 +257,7 @@ function Mensaje({ mensaje }) {
       <span className={styles.quien}>{esVega ? 'Vega' : 'Vos'}</span>
       {mensaje.urgente && (
         <span className={styles.etiqueta}>
-          <span aria-hidden="true">◆</span> Aviso importante
+          <span aria-hidden="true">◆</span> {ETIQUETAS_TRIAJE[mensaje.triaje] ?? 'Aviso importante'}
         </span>
       )}
       <p>{mensaje.texto}</p>

@@ -29,6 +29,7 @@ function tipoDeFuente(rutaRelativaADoc) {
   if (rutaRelativaADoc.includes('fuentes/03-investigaciones/')) return 'investigacion';
   if (rutaRelativaADoc.includes('fuentes/04-articulos-profundizacion/')) return 'articulo';
   if (rutaRelativaADoc.includes('fuentes/01-peligros/')) return 'peligro';
+  if (rutaRelativaADoc.includes('fuentes/06-operaciones-medicas/')) return 'protocolo';
   return 'otra';
 }
 

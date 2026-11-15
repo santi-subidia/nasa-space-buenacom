@@ -9,7 +9,9 @@ import VytaVoz from '@/components/inicio/VytaVoz';
 import { SOL_ACTUAL, useEstadoMision } from '@/lib/datos/demo';
 import { MISION } from '@/lib/mock/mision';
 import { tieneGrafo } from '@/lib/causas/grafos';
+import { rutaZona } from '@/lib/content/rutaZona';
 import { datosSalud, ETIQUETAS_NIVEL } from './datos';
+import MapaZonas from './MapaZonas';
 import styles from './SaludPantalla.module.scss';
 
 const TITULOS = { fisica: 'Física', mental: 'Mental', riesgos: 'Riesgos' };
@@ -20,7 +22,7 @@ const PROTOCOLOS = {
     ['brain', 'Check-in de salud conductual', 'Completá el registro de ánimo, estrés y descanso.', '/registrar'],
   ],
   mental: [
-    ['bed', 'Higiene del sueño', 'Consultá tus registros de descanso y la guía de sueño.', '/mapa?zona=brain'],
+    ['bed', 'Higiene del sueño', 'Consultá tus registros de descanso y la guía de sueño.', rutaZona('brain')],
     ['people', 'Conexión y comunicación', 'Accedé al enlace con Tierra y a tus informes de seguimiento.', '/enlace'],
     ['lotus', 'Manejo del estrés', 'Registrá cómo te sentís y revisá tu evolución.', '/registrar'],
   ],
@@ -47,7 +49,7 @@ function resumenEstado(seccion, estado) {
   return 'Sin alertas activas en los registros actuales. Continuá con el seguimiento de la misión.';
 }
 
-export default function SaludPantalla({ seccion }) {
+export default function SaludPantalla({ seccion, zona = null }) {
   const { astronauta, lecturas, sintomas, evaluacion, cargando } = useEstadoMision(null, SOL_ACTUAL);
   const datos = useMemo(() => datosSalud({ lecturas, sintomas, evaluacion, baseline: astronauta?.baseline || {}, sol: SOL_ACTUAL, entorno: evaluacion.env }), [lecturas, sintomas, evaluacion, astronauta]);
   const estado = datos[seccion];
@@ -103,6 +105,8 @@ export default function SaludPantalla({ seccion }) {
           <Protocolos seccion={seccion} alertas={estado.alertas} />
         </aside>
       </div>
+      {/* Mapa corporal repartido por subcategoría: Física (cuerpo), Mental (cerebro) y Riesgos (peligros). */}
+      <MapaZonas seccion={seccion} zona={zona} lecturas={lecturas} sintomas={sintomas} evaluacion={evaluacion} />
     </div>
   );
 }
@@ -186,7 +190,7 @@ function Alertas({ alertas, seccion, cargando }) {
             <OrigenUmbral basis={alerta.basis} className={styles.fuente} />
             <div className={styles.accionesAlerta}>
               {tieneGrafo(alerta.ruleId) && <Link href={`/causas?alerta=${encodeURIComponent(alerta.ruleId)}`}>¿Por qué pasó? →</Link>}
-              <Link href={`/mapa?zona=${alerta.zone || 'immune'}`}>Ver guía →</Link><Link href="/enlace">Avisar al oficial médico →</Link><Link href="/junta">Convocar junta médica →</Link>
+              <Link href={rutaZona(alerta.zone)}>Ver guía →</Link><Link href="/enlace">Avisar al oficial médico →</Link><Link href="/junta">Convocar junta médica →</Link>
             </div>
           </div>
         </details>

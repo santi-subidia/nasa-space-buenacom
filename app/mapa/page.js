@@ -1,13 +1,8 @@
-import { Suspense } from 'react';
-import MapaCorporal from '@/components/mapa/MapaCorporal';
+import { redirect } from 'next/navigation';
+import { esZonaValida, rutaZona } from '@/lib/content/rutaZona';
 
-export const metadata = { title: 'Mapa corporal · AstroVitals' };
-
-export default function Mapa() {
-  // useSearchParams (la zona que pide la URL) necesita Suspense en el build estático.
-  return (
-    <Suspense>
-      <MapaCorporal />
-    </Suspense>
-  );
+// El mapa corporal ahora vive dentro de Salud (Física, Mental y Riesgos). Se conserva la ruta para enlaces viejos.
+export default async function Mapa({ searchParams }) {
+  const { zona } = await searchParams;
+  redirect(esZonaValida(zona) ? rutaZona(zona) : '/salud/fisica#mapa');
 }

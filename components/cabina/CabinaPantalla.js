@@ -184,7 +184,7 @@ export default function CabinaPantalla() {
         <a href={DOC} target="_blank" rel="noreferrer">
           doc/proyecto/sintesis/cabina-y-radiacion.md
         </a>
-        . La cabina es un riesgo compartido: no cambia tu semáforo personal. <Link href="/mapa?zona=lungs">Ver pulmones en el mapa</Link>
+        . La cabina es un riesgo compartido: no cambia tu semáforo personal. <Link href="/salud/fisica?zona=lungs#mapa">Ver pulmones en el mapa</Link>
       </p>
     </div>
   );

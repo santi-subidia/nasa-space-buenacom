@@ -10,6 +10,7 @@ import { LINEA_BASE, valoresDelDia } from '@/lib/mock/indicadores';
 import { evaluate } from '@/lib/motor/evaluar';
 import { parsearNotaPvt } from '@/lib/pvt/metricas';
 import { INDICADORES } from '@/lib/tipos';
+import { RETRASO_SOLO_IDA_MIN } from '@/lib/enlace/logicaEnlace';
 
 const INICIAL = { fase: 'inactivo', mensajes: [], parcial: '', error: '', sugerirAviso: false, continuo: false };
 const sinSuscripcion = () => () => {};
@@ -78,6 +79,7 @@ export function useVega({ seccion, resumen } = {}) {
       voz,
       obtenerDatosDelDia: () => datosRef.current ?? datosDelDia([]),
       obtenerContextoPantalla: () => contextoRef.current || undefined,
+      obtenerRetrasoTierraMin: () => RETRASO_SOLO_IDA_MIN,
       alAvisarOficial: guardarAviso,
     });
     setMotor({ sesion, voz });

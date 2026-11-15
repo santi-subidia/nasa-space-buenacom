@@ -493,6 +493,39 @@
         }
       ]
     },
+    "emergencias-medicas": {
+      "id": "emergencias-medicas",
+      "grupo": "operaciones",
+      "titulo": "Emergencias y condiciones médicas en vuelo (*Inflight Medical Conditions*)",
+      "peligros": "D (distancia de la Tierra), E (entorno hostil y cerrado), G (microgravedad)",
+      "ficha": "doc/nasa/riesgos/operaciones/emergencias-medicas.md",
+      "fuentes": [
+        {
+          "archivo": "doc/nasa/fuentes/06-operaciones-medicas/iss-emergency-medical-procedures.md",
+          "titulo": "ISS Medical Checklist — Emergency Procedures (1.101–1.108)",
+          "url": "https://www.governmentattic.org/19docs/NASA-ISSmedicalEmergManual_2016.pdf",
+          "tipo": "protocolo"
+        },
+        {
+          "archivo": "doc/nasa/fuentes/06-operaciones-medicas/spaceflight-experience-and-medical-care.md",
+          "titulo": "Spaceflight Experience and Medical Care (OCHMO-TB-033 Rev C)",
+          "url": "https://www.nasa.gov/wp-content/uploads/2023/07/ochmo-tb-033-spaceflight-experience-medical-care-rev-c.pdf",
+          "tipo": "protocolo"
+        },
+        {
+          "archivo": "doc/nasa/fuentes/06-operaciones-medicas/eimo-concept-of-operations.md",
+          "titulo": "Earth-Independent Medical Operations (EIMO) Concept of Operations",
+          "url": "https://ntrs.nasa.gov/api/citations/20240001402/downloads/2024_IWS_EIMO_ConOps_FINAL.pdf",
+          "tipo": "protocolo"
+        },
+        {
+          "archivo": "doc/nasa/fuentes/05-human-system-risk-board/risk-of-adverse-health-outcomes-and-decrements-in-performance-due-to-inflight-medical-conditions.md",
+          "titulo": "Risk of Adverse Health Outcomes and Decrements in Performance due to Inflight Medical Conditions",
+          "url": "https://www.nasa.gov/directorates/esdmd/hhp/risk-of-adverse-health-outcomes-and-decrements-in-performance-due-to-inflight-medical-conditions/",
+          "tipo": "hsrb"
+        }
+      ]
+    },
     "cancer-por-radiacion": {
       "id": "cancer-por-radiacion",
       "grupo": "radiacion",

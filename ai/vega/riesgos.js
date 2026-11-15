@@ -3,6 +3,8 @@
 import { normalizar } from './texto.js';
 
 const REGLAS = [
+  // Primero: ante un empate, la ficha de emergencias (protocolos de la NASA) va antes que la del órgano.
+  ['emergencias-medicas', ['emergenc', 'urgenc', 'auxilio', 'rcp', 'reanim', 'desfibril', 'desmay', 'convuls', 'atragant', 'anafilax', 'botiquin', 'sangr', 'pecho', 'inconscien', 'intoxic', 'humo', 'amoniaco', 'me siento mal', 'malestar', 'cirujano', 'oficial medico', 'evacu', 'checklist', 'triaje']],
   ['inmunidad', ['herpes', 'virus', 'viral', 'infecc', 'fiebre', 'febril', 'temperatura', 'alergi', 'erupcion', 'sarpullido', 'piel', 'resfri', 'gripe', 'inmun', 'defensa', 'zoster', 'culebrilla']],
   ['microorganismos', ['bacteria', 'microb', 'hongo', 'moho', 'contagi', 'higiene']],
   ['sueno-horarios', ['sueno', 'dormi', 'dorm', 'insomni', 'descans', 'cansanc', 'fatiga', 'circadi', 'horario', 'despert', 'siesta']],

@@ -282,7 +282,7 @@ test('sesión: ante una señal alta, consulta a la IA mientras todavía lee el a
     callar() {},
     hablar: (texto) => {
       eventos.push(`habla: ${texto.slice(0, 12)}`);
-      return texto.startsWith('Eso puede') ? new Promise((r) => { terminarAviso = r; }) : Promise.resolve();
+      return texto.startsWith('El dolor de pecho') ? new Promise((r) => { terminarAviso = r; }) : Promise.resolve();
     },
   };
   const fetchFn = async () => {
@@ -292,7 +292,7 @@ test('sesión: ante una señal alta, consulta a la IA mientras todavía lee el a
   const vega = crearSesionVega({ voz, fetchFn });
   const hecho = vega.preguntar('tengo dolor en el pecho');
   await new Promise((r) => setTimeout(r, 10));
-  assert.deepEqual(eventos, ['habla: Eso puede se', 'consulta']); // la consulta no espera al aviso
+  assert.deepEqual(eventos, ['habla: El dolor de ', 'consulta']); // la consulta no espera al aviso
   assert.equal(vega.obtener().mensajes.at(-1).texto, 'Avisá al oficial médico.');
   assert.equal(eventos.includes('habla: Avisá al ofi'), false); // la respuesta todavía no se lee
   terminarAviso();

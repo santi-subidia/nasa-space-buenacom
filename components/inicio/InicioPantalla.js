@@ -14,6 +14,7 @@ import { tieneGrafo } from '@/lib/causas/grafos';
 import { MISION } from '@/lib/mock/mision';
 import { CHEQUEO, valoresDelDia } from '@/lib/mock/indicadores';
 import { NIVELES } from '@/lib/niveles';
+import { rutaZona } from '@/lib/content/rutaZona';
 import { lecturasParaInicio, metricasDesdeLecturas } from './metricas';
 import styles from './InicioPantalla.module.scss';
 
@@ -127,7 +128,7 @@ function AlertasObservaciones({ alertas }) {
                   <OrigenUmbral basis={alerta.basis} className={styles.fuente} />
                   <div className={styles.accionesAlerta}>
                     {tieneGrafo(alerta.ruleId) && <Link href={`/causas?alerta=${alerta.ruleId}`}>¿Por qué pasó? →</Link>}
-                    <Link href={`/mapa?zona=${alerta.zone || 'immune'}`}>Ver guía →</Link>
+                    <Link href={rutaZona(alerta.zone)}>Ver guía →</Link>
                     <Link href="/enlace">Avisar al oficial médico →</Link>
                     <Link href="/junta">Convocar junta médica →</Link>
                   </div>

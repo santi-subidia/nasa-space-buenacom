@@ -6,6 +6,17 @@
 //   await vega.preguntarPorVoz();          // botón del micrófono
 //   await vega.preguntar('¿Puedo hacer la EVA de mañana?');   // sugerencia rápida o texto escrito
 import { detectarUrgencia } from './urgencia.js';
+import {
+  cierreSegunEnlace,
+  esAfirmacion,
+  esMalestarVago,
+  mensajeAvisoEnviado,
+  mensajeDeProtocolo,
+  pideAviso,
+  PREGUNTA_TRIAJE,
+  RETRASO_TIERRA_POR_DEFECTO_MIN,
+  triar,
+} from './protocolos.js';
 import { normalizar, textoParaVoz } from './texto.js';
 
 export const SUGERENCIAS = ['¿Puedo hacer la EVA de mañana?', 'Explicame mi sueño', '¿Por qué me salió herpes?', '¿Cómo sé si estoy deshidratado?'];
@@ -27,6 +38,8 @@ export function crearSesionVega({
   alAvisarOficial = () => {},
   obtenerDatosDelDia = () => undefined,
   obtenerContextoPantalla = () => undefined,
+  /** Demora de un tramo con Tierra (min). Hacia Marte no se puede esperar a Houston en una emergencia. */
+  obtenerRetrasoTierraMin = () => RETRASO_TIERRA_POR_DEFECTO_MIN,
   fetchFn = globalThis.fetch?.bind(globalThis),
   url = '/api/claude',
 } = {}) {
@@ -38,6 +51,7 @@ export function crearSesionVega({
   let modoContinuo = false;
   let cancelarMonitor = null;
   let historial = [];
+  let triajePendiente = false; // VYTA preguntó por señales rojas y espera la respuesta
   const oyentes = new Set();
 
   const emitir = (cambios) => {
@@ -115,21 +129,69 @@ export function crearSesionVega({
     let lectura = Promise.resolve(false); // la lectura del aviso local, si la hay, para no pisarla con la respuesta
     let interrumpidoPorUsuario = false;
     const marcarInterrumpido = () => { interrumpidoPorUsuario = true; };
+    const recordar = (texto) => {
+      historial = [...historialPrevio, { role: 'user', text: pregunta }, { role: 'assistant', text: texto }].slice(-20);
+    };
+    /** Respuesta 100 % local (sin IA): se muestra, se recuerda y se lee. */
+    async function responderLocal(texto, extra = {}) {
+      recordar(texto);
+      agregar({ rol: 'vega', texto, origen: 'local', ...extra });
+      if (hablar) await leerEnVoz(texto, vigente, marcarInterrumpido);
+      if (vigente() && !interrumpidoPorUsuario) emitir({ fase: 'inactivo' });
+    }
+
+    const retrasoMin = obtenerRetrasoTierraMin();
+    const esperabaTriaje = triajePendiente;
+    triajePendiente = false;
+
+    // El tripulante pide el aviso con palabras ("avisá al oficial médico"): no hace falta la IA.
+    if (pideAviso(pregunta)) {
+      avisarOficial(motivoDelHilo(pregunta), { anunciar: false });
+      await responderLocal(mensajeAvisoEnviado(retrasoMin));
+      return;
+    }
 
     // Red de seguridad local: no depende de la IA ni de la red.
-    const urgencia = detectarUrgencia(pregunta);
+    let urgencia = detectarUrgencia(pregunta, { retrasoMin });
+    if (!urgencia && esperabaTriaje && esAfirmacion(pregunta)) {
+      // Contestó "sí" a la pregunta por señales rojas sin decir cuál: se trata como urgente.
+      urgencia = {
+        nivel: 'alta',
+        triaje: 'urgente',
+        categoria: 'senal-roja',
+        protocolo: 'triaje',
+        titulo: 'Señal roja sin detallar',
+        mensaje: `Entonces lo tratamos como urgente: quedate quieto, sin esfuerzo, y que el oficial médico te tome presión, pulso y saturación ya. ${cierreSegunEnlace('urgente', retrasoMin)} Mientras tanto, contame qué sentís.`,
+        citas: [],
+      };
+    }
     if (urgencia) {
-      alAvisarOficial({ nivel: urgencia.nivel, categoria: urgencia.categoria, motivo: pregunta, origen: 'vega', ts: new Date().toISOString() });
-      agregar({ rol: 'vega', texto: urgencia.mensaje, origen: 'local', urgente: true });
+      alAvisarOficial({
+        nivel: urgencia.nivel,
+        categoria: urgencia.categoria,
+        protocolo: urgencia.protocolo,
+        motivo: `${urgencia.titulo}: «${pregunta}»`,
+        origen: 'vega',
+        ts: new Date().toISOString(),
+      });
+      const local = { urgente: true, triaje: urgencia.triaje, citas: urgencia.citas };
       emitir({ sugerirAviso: false });
       if (urgencia.nivel === 'critica') {
-        if (hablar) await leerEnVoz(urgencia.mensaje, vigente, marcarInterrumpido);
-        if (vigente() && !interrumpidoPorUsuario) emitir({ fase: 'inactivo' });
+        // Emergencia: los pasos salen de a bordo y no se espera a nadie.
+        await responderLocal(urgencia.mensaje, local);
         return;
       }
-      // Señal alta: se lee el aviso Y se consulta a la IA a la vez (no se espera a que termine de hablar).
+      // Urgencia: se leen los primeros pasos Y se consulta a la IA a la vez (no se espera a que termine de hablar).
+      agregar({ rol: 'vega', texto: urgencia.mensaje, origen: 'local', ...local });
       if (hablar) lectura = leerEnVoz(urgencia.mensaje, vigente, marcarInterrumpido);
+    } else if (esMalestarVago(pregunta)) {
+      // "Me siento mal" sin detalles: primero se descartan las señales rojas, como en un triaje.
+      triajePendiente = true;
+      await responderLocal(PREGUNTA_TRIAJE, { triaje: 'pregunta' });
+      return;
     }
+
+    const leve = urgencia ? null : triar(pregunta); // nivel "aviso": molestia esperable en vuelo
 
     consultando = true;
     emitir({ fase: 'pensando' });
@@ -138,15 +200,18 @@ export function crearSesionVega({
     if (!vigente()) return; // llegó otra pregunta mientras tanto
 
     if (!cuerpo) {
-      agregar({ rol: 'vega', texto: MENSAJE_SIN_CONEXION, origen: 'local' });
+      // Sin red, el protocolo local sigue sirviendo.
+      const texto = leve ? mensajeDeProtocolo(leve.protocolo, { retrasoMin }) : MENSAJE_SIN_CONEXION;
+      agregar({ rol: 'vega', texto, origen: 'local', citas: leve?.protocolo.fuentes ?? [] });
       emitir({ fase: 'inactivo', sugerirAviso: true });
+      if (hablar && leve && !(await lectura) && !interrumpidoPorUsuario && vigente()) await leerEnVoz(texto, vigente, marcarInterrumpido);
       return;
     }
 
     const textoVoz = cuerpo.textoVoz ?? textoParaVoz(cuerpo.texto);
-    historial = [...historialPrevio, { role: 'user', text: pregunta }, { role: 'assistant', text: textoVoz }].slice(-20);
+    recordar(textoVoz);
     agregar({ rol: 'vega', texto: textoVoz, citas: cuerpo.citasUsadas ?? [], origen: cuerpo.origen, motivo: cuerpo.motivo });
-    emitir({ fase: 'inactivo', sugerirAviso: normalizar(textoVoz).includes('oficial medico') || Boolean(urgencia) });
+    emitir({ fase: 'inactivo', sugerirAviso: normalizar(textoVoz).includes('oficial medico') || Boolean(urgencia) || Boolean(leve) });
     if (hablar) {
       const cortadoEnAviso = await lectura; // primero termina el aviso, después la respuesta
       if (!cortadoEnAviso && !interrumpidoPorUsuario && vigente()) {
@@ -178,10 +243,20 @@ export function crearSesionVega({
     }
   }
 
-  /** Acción "avisar al oficial médico" desde la conversación. */
-  function avisarOficial(motivo = 'Pedido por el tripulante desde la conversación con VYTA') {
+  /** Lo que contó el tripulante en los últimos turnos, para que el aviso diga de qué se trata. */
+  function motivoDelHilo(pedido) {
+    const contado = estado.mensajes
+      .filter((m) => m.rol === 'usuario' && m.texto !== pedido && !pideAviso(m.texto))
+      .slice(-3)
+      .map((m) => m.texto)
+      .join(' · ');
+    return contado ? `Pedido por el tripulante. Contó: «${contado}»` : 'Pedido por el tripulante desde la conversación con VYTA';
+  }
+
+  /** Acción "avisar al oficial médico" desde la conversación (botón o pedido por voz). */
+  function avisarOficial(motivo = motivoDelHilo(), { anunciar = true } = {}) {
     alAvisarOficial({ nivel: 'alta', categoria: 'manual', motivo, origen: 'vega', ts: new Date().toISOString() });
-    agregar({ rol: 'vega', texto: 'Listo, avisé al oficial médico.', origen: 'local' });
+    if (anunciar) agregar({ rol: 'vega', texto: 'Listo, avisé al oficial médico.', origen: 'local' });
     emitir({ sugerirAviso: false });
   }
 

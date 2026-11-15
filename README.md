@@ -78,7 +78,7 @@ Definidas en [`lib/rutas.js`](lib/rutas.js):
 |---|---|---|
 | `/` | **Inicio** | Semáforo general, alerta activa, sincronización simulada del Watch, chequeo del día y resumen de racha. |
 | `/jornada` | **Jornada** | Reloj marciano de 24 h 37 min (con modo acelerado), tareas del sol y descanso protegido (22:00–06:30). |
-| `/mapa` | **Mapa corporal** | Silueta SVG con 9 zonas clicables, función fisiológica, riesgos, indicadores del día y fuentes de la NASA. |
+| `/mapa` | **Mapa corporal** | Redirige a Salud, donde vive la silueta SVG con las 9 zonas: Física (corazón, pulmones, músculos, huesos, inmune, riñones, ojos y oído interno), Mental (cerebro y mente) y Riesgos (todas, con filtro por peligro R·I·D·G·E). `?zona=` abre la zona pedida. |
 | `/registrar` | **Registrar** | Formulario del chequeo matutino, escala de ánimo, foto de piel, test de reacción y dictado por voz. |
 | `/tendencias` | **Tendencias** | Gráficos de sueño, estrés, temperatura y ánimo con bandas de referencia y línea base personal. |
 | `/cabina` | **Cabina y radiación** | Dosímetro personal contra el límite de carrera de 600 mSv (NASA-STD-3001), simulación de tormenta solar con checklist de refugio, y CO₂, O₂, presión y ruido del hábitat (sensores simulados). |
