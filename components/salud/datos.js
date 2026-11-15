@@ -55,13 +55,19 @@ export function datosSalud({ lecturas = [], sintomas = [], evaluacion = {}, base
   const aislamiento = dato('isolation_score', '/10');
 
   let radiacion = dato('radiation_msv', 'mSv');
-  if (radiacion.valorNumerico == null && Array.isArray(cabina) && cabina.length) {
-    const cabSol = [...cabina].filter((c) => c && c.sol <= sol && Number.isFinite(c.radiationTotalMsv)).sort((a, b) => a.sol - b.sol).at(-1);
+  const listaCabina = Array.isArray(cabina) ? cabina : cabina ? [cabina] : [];
+  if (radiacion.valorNumerico == null && listaCabina.length) {
+    const radDeCabina = (c) => c?.radiationTotalMsv ?? c?.dosis?.total;
+    const cabSol = [...listaCabina]
+      .filter((c) => c && c.sol <= sol && Number.isFinite(radDeCabina(c)))
+      .sort((a, b) => a.sol - b.sol)
+      .at(-1);
     if (cabSol) {
-      const nivelCab = evaluarIndicador('radiation_msv', cabSol.radiationTotalMsv, baseline).level;
+      const dosisCab = radDeCabina(cabSol);
+      const nivelCab = evaluarIndicador('radiation_msv', dosisCab, baseline).level;
       radiacion = {
-        valor: numero(cabSol.radiationTotalMsv),
-        valorNumerico: cabSol.radiationTotalMsv,
+        valor: numero(dosisCab),
+        valorNumerico: dosisCab,
         unidad: 'mSv',
         nivel: nivelCab,
         estado: ETIQUETAS_NIVEL[nivelCab] || 'Registrada',

@@ -96,4 +96,15 @@ test('Salud muestra respiración, músculo, hueso, microgravedad, aislamiento y 
   assert.equal(datos.mental.indicadores[3].valor, '4');
   assert.equal(datos.mental.indicadores[3].nivel, 'yellow');
   assert.equal(datos.riesgos.filas[4].nivel, 'yellow');
+
+  // También funciona cuando useEstadoMision entrega cabina como objeto único del sol actual.
+  const conObjetoUnico = datosSalud({
+    lecturas,
+    sintomas: [],
+    sol: 42,
+    cabina: { sol: 42, radiationTotalMsv: 354.7 },
+    evaluacion: evaluate(lecturas, {}, 'mars_base', { sol: 42 }),
+  });
+  assert.equal(conObjetoUnico.fisica.indicadores[3].valor, '354,7');
+  assert.equal(conObjetoUnico.riesgos.filas[0].nivel, 'yellow');
 });
