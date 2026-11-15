@@ -10,7 +10,7 @@ import { LINEA_BASE, valoresDelDia } from '@/lib/mock/indicadores';
 import { evaluate } from '@/lib/motor/evaluar';
 import { INDICADORES } from '@/lib/tipos';
 
-const INICIAL = { fase: 'inactivo', mensajes: [], parcial: '', error: '', sugerirAviso: false };
+const INICIAL = { fase: 'inactivo', mensajes: [], parcial: '', error: '', sugerirAviso: false, continuo: false };
 const sinSuscripcion = () => () => {};
 const estadoInicial = () => INICIAL;
 
@@ -42,6 +42,7 @@ export function useVega({ seccion, resumen } = {}) {
   const { astronauta, lecturas, sintomas } = useEstadoMision(null, SOL_ACTUAL);
   const datosRef = useRef(null);
   const contextoRef = useRef('');
+  const nivelRef = useRef(0);
   const [motor, setMotor] = useState(null);
 
   useEffect(() => {
@@ -65,6 +66,8 @@ export function useVega({ seccion, resumen } = {}) {
     const voz = crearVoz({
       alOirParcial: (texto) => sesion?.ponerParcial(texto),
       alCambiar: (faseVoz) => sesion?.ponerFaseVoz(faseVoz),
+      alNivel: (n) => { nivelRef.current = n; },
+      alPulso: (n) => { nivelRef.current = n; },
     });
     sesion = crearSesionVega({
       voz,
@@ -74,12 +77,12 @@ export function useVega({ seccion, resumen } = {}) {
     });
     setMotor({ sesion, voz });
     const alOcultar = () => {
-      if (document.hidden) sesion.cancelar();
+      if (document.hidden) sesion.detenerConversacionContinua?.();
     };
     document.addEventListener('visibilitychange', alOcultar);
     return () => {
       document.removeEventListener('visibilitychange', alOcultar);
-      sesion.cancelar();
+      sesion.detenerConversacionContinua?.();
     };
   }, []);
 
@@ -92,13 +95,17 @@ export function useVega({ seccion, resumen } = {}) {
   return {
     ...estado,
     listo: Boolean(motor),
+    nivelRef,
     voz: motor?.voz ?? null,
     soportaVoz: motor ? motor.voz.soportaReconocimiento : true,
     soportaLectura: motor ? motor.voz.soportaSintesis : true,
     preguntar: (texto) => motor?.sesion.preguntar(texto),
     preguntarPorVoz: () => motor?.sesion.preguntarPorVoz(),
+    iniciarConversacionContinua: () => motor?.sesion.iniciarConversacionContinua(),
+    detenerConversacionContinua: () => motor?.sesion.detenerConversacionContinua(),
     terminarEscucha: () => motor?.sesion.terminarEscucha(),
     tocar: () => motor?.sesion.tocar(),
+    tocarContinuo: () => motor?.sesion.tocarContinuo(),
     avisarOficial: () => motor?.sesion.avisarOficial(),
     cancelar: () => motor?.sesion.cancelar(),
   };

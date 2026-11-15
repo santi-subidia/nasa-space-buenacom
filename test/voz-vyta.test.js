@@ -17,6 +17,7 @@ function navegadorDePrueba({
   let reloj = 0;
   let rms = 0;
   let intervalo;
+  let accesosMicrofono = 0;
   let tracksDetenidos = 0;
   let contextosCerrados = 0;
   let cancelacionesVoz = 0;
@@ -43,7 +44,7 @@ function navegadorDePrueba({
 
   const ventana = {
     isSecureContext: true,
-    navigator: { mediaDevices: { getUserMedia: pedirMicrofono || (async () => stream) } },
+    navigator: { mediaDevices: { getUserMedia: pedirMicrofono || (async () => { accesosMicrofono++; return stream; }) } },
     MediaRecorder: Recorder,
     AudioContext: Contexto,
     SpeechSynthesisUtterance: class { constructor(text) { this.text = text; } },
@@ -90,7 +91,7 @@ function navegadorDePrueba({
   return {
     sesion, solicitudes, discursos, stream,
     tick(ms, nivel = 0) { reloj += ms; rms = nivel; intervalo?.(); },
-    contadores: () => ({ tracksDetenidos, contextosCerrados, cancelacionesVoz }),
+    contadores: () => ({ accesosMicrofono, tracksDetenidos, contextosCerrados, cancelacionesVoz }),
   };
 }
 
@@ -249,4 +250,90 @@ test('sin clave Gemini la transcripción devuelve un error claro y no llama al p
   const respuesta = await rutas.transcribir(new Request('http://localhost', { method: 'POST', headers: { 'Content-Type': 'audio/webm' }, body: 'audio' }));
   assert.equal(respuesta.status, 503);
   assert.match((await respuesta.json()).error, /GEMINI_API_KEY/);
+});
+
+test('modo continuo (Jarvis local): encadena dos turnos sin volver a tocar y cierra con frase de pausa', async () => {
+  const frases = ['¿Cómo dormí?', '¿Puedo salir hoy?', 'Chau VYTA'];
+  const prueba = navegadorDePrueba({
+    transcripcion: () => frases.shift(),
+    respuestaClaude: ({ pregunta }) => `Respuesta a: ${pregunta}`,
+  });
+
+  const charla = prueba.sesion.tocarContinuo();
+  await pausa();
+  assert.equal(prueba.sesion.obtener().continuo, true);
+  assert.equal(prueba.sesion.obtener().fase, 'escuchando');
+
+  // Turno 1: habla y calla 1.4s
+  prueba.tick(100, 0.2);
+  prueba.tick(100, 0.2);
+  prueba.tick(1500, 0);
+  await pausa();
+  assert.equal(prueba.sesion.obtener().fase, 'hablando');
+  assert.equal(prueba.discursos[0].text, 'Respuesta a: ¿Cómo dormí?');
+  prueba.discursos[0].onend?.();
+  await pausa();
+
+  // Turno 2 automático sin volver a tocar la esfera y sin reabrir micrófono
+  assert.equal(prueba.sesion.obtener().continuo, true);
+  assert.equal(prueba.sesion.obtener().fase, 'escuchando');
+  assert.equal(prueba.contadores().accesosMicrofono, 1);
+  assert.equal(prueba.contadores().tracksDetenidos, 0);
+
+  prueba.tick(100, 0.2);
+  prueba.tick(100, 0.2);
+  prueba.tick(1500, 0);
+  await pausa();
+  assert.equal(prueba.discursos[1].text, 'Respuesta a: ¿Puedo salir hoy?');
+  prueba.discursos[1].onend?.();
+  await pausa();
+
+  // Turno 3: frase de cierre
+  prueba.tick(100, 0.2);
+  prueba.tick(100, 0.2);
+  prueba.tick(1500, 0);
+  await pausa();
+  assert.match(prueba.discursos[2].text, /pauso la charla/i);
+  prueba.discursos[2].onend?.();
+  await charla;
+
+  assert.equal(prueba.sesion.obtener().continuo, false);
+  assert.equal(prueba.sesion.obtener().fase, 'inactivo');
+  assert.deepEqual(prueba.contadores(), {
+    accesosMicrofono: 1,
+    tracksDetenidos: 1,
+    contextosCerrados: 1,
+    cancelacionesVoz: 0,
+  });
+});
+
+test('barge-in en modo continuo: interrumpir hablando corta TTS y vuelve a escuchar en el mismo canal', async () => {
+  const prueba = navegadorDePrueba({ transcripcion: 'Explicame mi estrés' });
+  const charla = prueba.sesion.tocarContinuo();
+  await pausa();
+
+  prueba.tick(100, 0.2);
+  prueba.tick(100, 0.2);
+  prueba.tick(1500, 0);
+  await pausa();
+  assert.equal(prueba.sesion.obtener().fase, 'hablando');
+
+  // Pasa período de gracia (350ms) y habla por encima del umbral (0.055) durante > 220ms
+  prueba.tick(200, 0);
+  prueba.tick(200, 0);
+  prueba.tick(100, 0.12);
+  prueba.tick(100, 0.12);
+  prueba.tick(50, 0.12);
+  await pausa();
+
+  assert.equal(prueba.contadores().cancelacionesVoz, 1);
+  assert.equal(prueba.contadores().tracksDetenidos, 0);
+  assert.equal(prueba.sesion.obtener().continuo, true);
+  assert.equal(prueba.sesion.obtener().fase, 'escuchando');
+
+  prueba.sesion.tocarContinuo();
+  await charla;
+  assert.equal(prueba.sesion.obtener().continuo, false);
+  assert.equal(prueba.contadores().tracksDetenidos, 1);
+  assert.equal(prueba.contadores().contextosCerrados, 1);
 });

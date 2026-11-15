@@ -3,8 +3,11 @@
 //   - Respaldo: SpeechRecognition cuando el entorno no ofrece MediaRecorder + AudioContext.
 //   - Síntesis: speechSynthesis con selección de voz es-AR y fragmentación segura de frases.
 import {
+  abrirCanalAudio,
+  cerrarCanalAudio,
   elegirVozVyta,
   grabarAudio,
+  iniciarMonitorBargeIn,
   reproducirFragmentosVoz,
   soportaGrabacionAudio,
   transcribirAudio,
@@ -35,6 +38,8 @@ export function crearVoz({
   ventana = globalThis,
   alCambiar = () => {},
   alOirParcial = () => {},
+  alNivel = () => {},
+  alPulso = () => {},
   pausaSilencioMs = 1800,
   fetchFn = globalThis.fetch?.bind(globalThis),
   urlTranscribir = '/api/voz/transcribir',
@@ -48,12 +53,13 @@ export function crearVoz({
 
   let escuchaActiva = null; // { cancelar, finalizar }
   let hablando = null; // { cancelado, terminarEnunciado, resolver }
+  let canalPersistente = null;
 
   const soportaGrabacion = soportaGrabacionAudio(ventana);
   const soportaReconocimiento = Boolean(soportaGrabacion || Reconocimiento);
   const soportaSintesis = Boolean(sintesis && Enunciado);
 
-  function escucharConGrabacion() {
+  function escucharConGrabacion(opciones = {}) {
     const controller = new AbortController();
     let controlGrabacion = null;
     const sesionEscucha = {
@@ -63,6 +69,7 @@ export function crearVoz({
         escuchaActiva = null;
         controller.abort();
         controlGrabacion?.cancelar?.();
+        alNivel(0);
         alCambiar('inactivo');
       },
     };
@@ -72,6 +79,7 @@ export function crearVoz({
       try {
         const audio = await grabarAudio({
           entorno: ventana,
+          canal: canalPersistente,
           signal: controller.signal,
           alEstado: (estado) => {
             if (escuchaActiva === sesionEscucha) alCambiar(estado);
@@ -79,10 +87,16 @@ export function crearVoz({
           registrarControl: (control) => {
             controlGrabacion = control;
           },
+          onNivel: (nivel) => {
+            if (escuchaActiva === sesionEscucha) alNivel(nivel);
+          },
           ahora,
           cada,
           limpiar,
-          detectorOpciones: { silencioMs: pausaSilencioMs },
+          detectorOpciones: {
+            silencioMs: opciones.pausaSilencioMs ?? (canalPersistente ? 1500 : pausaSilencioMs),
+            ...(opciones.esperaMs ? { esperaMs: opciones.esperaMs } : {}),
+          },
         });
         if (controller.signal.aborted || escuchaActiva !== sesionEscucha) {
           throw { codigo: 'aborted', mensaje: '' };
@@ -240,7 +254,7 @@ export function crearVoz({
   }
 
   /** Escucha una frase. Resuelve con el texto final; rechaza con { codigo, mensaje }. */
-  function escuchar() {
+  function escuchar(opciones = {}) {
     if (!soportaReconocimiento) {
       return Promise.reject({ codigo: 'no-soportado', mensaje: 'Este navegador no reconoce voz. Probá con Safari o Chrome, o escribí la pregunta.' });
     }
@@ -248,7 +262,42 @@ export function crearVoz({
     detenerEscucha();
     // Dispara la carga de voces durante el gesto del toque (clave en Safari).
     sintesis?.getVoices?.();
-    return soportaGrabacion ? escucharConGrabacion() : escucharConWebSpeech();
+    return soportaGrabacion ? escucharConGrabacion(opciones) : escucharConWebSpeech();
+  }
+
+  async function abrirCanalContinuo() {
+    if (!soportaGrabacion) return false;
+    if (canalPersistente && !canalPersistente.cerrado) return true;
+    alCambiar('solicitando');
+    try {
+      canalPersistente = await abrirCanalAudio({ entorno: ventana });
+      return true;
+    } catch (error) {
+      alCambiar('inactivo');
+      throw {
+        codigo: error?.codigo || 'audio-capture',
+        mensaje: error?.message || error?.mensaje || 'No pude usar el micrófono.',
+      };
+    }
+  }
+
+  function cerrarCanalContinuo() {
+    if (!canalPersistente) return;
+    cerrarCanalAudio(canalPersistente);
+    canalPersistente = null;
+    alNivel(0);
+  }
+
+  function vigilarInterrupcion(alInterrumpir, opciones = {}) {
+    if (!canalPersistente || canalPersistente.cerrado) return () => {};
+    return iniciarMonitorBargeIn({
+      canal: canalPersistente,
+      ahora,
+      cada,
+      limpiar,
+      alInterrumpir,
+      ...opciones,
+    });
   }
 
   function detenerEscucha() {
@@ -265,6 +314,7 @@ export function crearVoz({
       const actual = { cancelado: false, terminarEnunciado: null, resolver };
       hablando = actual;
       const finalizar = () => {
+        alPulso(0);
         if (hablando === actual) {
           hablando = null;
           alCambiar('inactivo');
@@ -281,6 +331,9 @@ export function crearVoz({
         alIniciar: () => {
           if (!actual.cancelado && hablando === actual) alCambiar('hablando');
         },
+        alPulso: (nivel) => {
+          if (!actual.cancelado && hablando === actual) alPulso(nivel);
+        },
         verificarVigente: () => !actual.cancelado && hablando === actual,
         registrarEnunciado: (_speech, cancelar) => {
           actual.terminarEnunciado = cancelar;
@@ -295,6 +348,7 @@ export function crearVoz({
     const actual = hablando;
     actual.cancelado = true;
     hablando = null;
+    alPulso(0);
     sintesis?.cancel?.();
     actual.terminarEnunciado?.(new Error('Voz detenida'));
     alCambiar('inactivo');
@@ -307,6 +361,9 @@ export function crearVoz({
     escuchar,
     finalizarEscucha: () => escuchaActiva?.finalizar?.(),
     pararDeEscuchar: detenerEscucha,
+    abrirCanalContinuo,
+    cerrarCanalContinuo,
+    vigilarInterrupcion,
     hablar,
     callar,
   };

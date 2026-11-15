@@ -65,48 +65,133 @@ export function crearDetectorFinDeFrase(inicio, { silencioMs = 1800, esperaMs = 
   };
 }
 
-function liberarCaptura(captura, limpiar) {
+function liberarCaptura(captura, limpiar, mantenerCanal = false) {
   if (!captura || captura.liberada) return;
   captura.liberada = true;
   limpiar(captura.intervalo);
+  if (mantenerCanal) return;
   captura.stream?.getTracks?.().forEach((track) => track.stop());
   try { captura.source?.disconnect(); } catch { /* ya desconectado */ }
   try { captura.contexto?.close?.()?.catch?.(() => {}); } catch { /* ya cerrado */ }
 }
 
+/** Abre un canal de micrófono persistente para modo conversación continua (evita reabrir getUserMedia en Safari). */
+export async function abrirCanalAudio({ entorno = globalThis } = {}) {
+  let stream;
+  try {
+    stream = await entorno.navigator.mediaDevices.getUserMedia({
+      audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true },
+    });
+  } catch (error) {
+    const conocido = ERRORES_MICROFONO[error?.name];
+    if (conocido) throw errorConCodigo(conocido.mensaje, conocido.codigo);
+    throw errorConCodigo(error?.message || 'No se pudo acceder al micrófono.', 'audio-capture');
+  }
+  try {
+    const Contexto = entorno.AudioContext || entorno.webkitAudioContext;
+    const contexto = new Contexto();
+    await contexto.resume();
+    const analizador = contexto.createAnalyser();
+    analizador.fftSize = 2048;
+    const source = contexto.createMediaStreamSource(stream);
+    source.connect(analizador);
+    return { stream, contexto, analizador, source, muestras: new Float32Array(analizador.fftSize), cerrado: false };
+  } catch (error) {
+    stream.getTracks?.().forEach((t) => t.stop());
+    throw error;
+  }
+}
+
+export function cerrarCanalAudio(canal) {
+  if (!canal || canal.cerrado) return;
+  canal.cerrado = true;
+  canal.stream?.getTracks?.().forEach((track) => track.stop());
+  try { canal.source?.disconnect(); } catch { /* ya desconectado */ }
+  try { canal.contexto?.close?.()?.catch?.(() => {}); } catch { /* ya cerrado */ }
+}
+
+export function medirRmsCanal(canal) {
+  if (!canal || canal.cerrado) return 0;
+  canal.analizador.getFloatTimeDomainData(canal.muestras);
+  let cuadrados = 0;
+  for (const muestra of canal.muestras) cuadrados += muestra * muestra;
+  return Math.sqrt(cuadrados / canal.muestras.length);
+}
+
+/** Vigila el micrófono mientras VYTA habla para detectar interrupción (barge-in) con eco cancelado. */
+export function iniciarMonitorBargeIn({
+  canal,
+  umbral = 0.055,
+  confirmacionMs = 220,
+  graciaMs = 350,
+  ahora = Date.now,
+  cada = setInterval,
+  limpiar = clearInterval,
+  alInterrumpir = () => {},
+  onNivel = () => {},
+} = {}) {
+  if (!canal || canal.cerrado) return () => {};
+  const inicio = ahora();
+  let anterior = inicio;
+  let vozAcumulada = 0;
+  let disparado = false;
+  const id = cada(() => {
+    if (disparado || canal.cerrado) return;
+    const t = ahora();
+    const paso = Math.min(100, Math.max(0, t - anterior));
+    anterior = t;
+    const rms = medirRmsCanal(canal);
+    onNivel(Math.min(1, rms * 10));
+    if (t - inicio < graciaMs) return;
+    if (rms >= umbral) {
+      vozAcumulada += paso;
+      if (vozAcumulada >= confirmacionMs) {
+        disparado = true;
+        limpiar(id);
+        alInterrumpir();
+      }
+    } else {
+      vozAcumulada = Math.max(0, vozAcumulada - paso * 0.5);
+    }
+  }, 50);
+  return () => {
+    disparado = true;
+    limpiar(id);
+  };
+}
+
 /** Graba una frase con MediaRecorder + AudioContext (compatible con Safari/Chrome) y corta tras el silencio. */
 export async function grabarAudio({
   entorno = globalThis,
+  canal: canalExterno = null,
   signal,
   alEstado = () => {},
   registrarControl = () => {},
+  onNivel = () => {},
   ahora = Date.now,
   cada = setInterval,
   limpiar = clearInterval,
   detectorOpciones = {},
 } = {}) {
   if (signal?.aborted) throw abortado();
-  alEstado('solicitando');
-  let stream;
-  try {
-    stream = await entorno.navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true } });
-  } catch (error) {
-    const conocido = ERRORES_MICROFONO[error?.name];
-    if (conocido) throw errorConCodigo(conocido.mensaje, conocido.codigo);
-    throw errorConCodigo(error?.message || 'No se pudo acceder al micrófono.', 'audio-capture');
+  const esPersistente = Boolean(canalExterno && !canalExterno.cerrado);
+  let canal = esPersistente ? canalExterno : null;
+  if (!canal) {
+    alEstado('solicitando');
+    canal = await abrirCanalAudio({ entorno });
   }
   if (signal?.aborted) {
-    stream.getTracks?.().forEach((t) => t.stop());
+    if (!esPersistente) cerrarCanalAudio(canal);
     throw abortado();
   }
 
-  const captura = { stream, enviar: true, liberada: false };
+  const captura = { ...canal, enviar: true, liberada: false };
   const terminar = (enviar = true) => {
     if (captura.recorder?.state !== 'recording') return;
     captura.enviar = enviar;
     limpiar(captura.intervalo);
     captura.recorder.stop();
-    liberarCaptura(captura, limpiar);
+    liberarCaptura(captura, limpiar, esPersistente);
   };
   const cancelar = () => {
     captura.enviar = false;
@@ -114,31 +199,23 @@ export async function grabarAudio({
     if (captura.recorder?.state === 'recording') {
       try { captura.recorder.stop(); } catch { /* ya detenido */ }
     }
-    liberarCaptura(captura, limpiar);
+    liberarCaptura(captura, limpiar, esPersistente);
   };
   registrarControl({ terminar, cancelar });
   signal?.addEventListener?.('abort', cancelar, { once: true });
 
   try {
-    const Contexto = entorno.AudioContext || entorno.webkitAudioContext;
-    captura.contexto = new Contexto();
-    await captura.contexto.resume();
+    await canal.contexto.resume?.();
     if (signal?.aborted) throw abortado();
-
-    const analizador = captura.contexto.createAnalyser();
-    analizador.fftSize = 2048;
-    captura.source = captura.contexto.createMediaStreamSource(stream);
-    captura.source.connect(analizador);
 
     const mimeType = FORMATOS_GRABACION.find((tipo) => entorno.MediaRecorder.isTypeSupported(tipo));
     if (!mimeType) throw errorConCodigo('El navegador no permite grabar un formato compatible. Probá con Safari, Chrome, Edge o Brave.', 'no-soportado');
 
-    const recorder = new entorno.MediaRecorder(stream, { mimeType });
+    const recorder = new entorno.MediaRecorder(canal.stream, { mimeType });
     captura.recorder = recorder;
     const partes = [];
     let bytes = 0;
     const detector = crearDetectorFinDeFrase(ahora(), detectorOpciones);
-    const muestras = new Float32Array(analizador.fftSize);
 
     return await new Promise((resolve, reject) => {
       captura.rechazar = reject;
@@ -155,10 +232,11 @@ export async function grabarAudio({
       };
       recorder.onerror = () => {
         reject(errorConCodigo('No se pudo grabar el audio. Revisá el micrófono y volvé a intentar.', 'audio-capture'));
-        liberarCaptura(captura, limpiar);
+        liberarCaptura(captura, limpiar, esPersistente);
       };
       recorder.onstop = () => {
-        liberarCaptura(captura, limpiar);
+        liberarCaptura(captura, limpiar, esPersistente);
+        onNivel(0);
         if (signal?.aborted) return reject(abortado());
         if (!captura.enviar) return reject(errorConCodigo('No se escuchó una frase. Tocá para volver a intentar.', 'no-speech'));
         const audio = new Blob(partes, { type: recorder.mimeType || mimeType });
@@ -169,10 +247,9 @@ export async function grabarAudio({
       alEstado('escuchando');
       captura.intervalo = cada(() => {
         if (signal?.aborted) return;
-        analizador.getFloatTimeDomainData(muestras);
-        let cuadrados = 0;
-        for (const muestra of muestras) cuadrados += muestra * muestra;
-        const fin = detector(Math.sqrt(cuadrados / muestras.length), ahora());
+        const rms = medirRmsCanal(canal);
+        onNivel(Math.min(1, rms * 11));
+        const fin = detector(rms, ahora());
         if (fin.terminar) terminar(fin.enviar);
       }, 50);
     });
@@ -184,7 +261,7 @@ export async function grabarAudio({
   } finally {
     signal?.removeEventListener?.('abort', cancelar);
     registrarControl(null);
-    liberarCaptura(captura, limpiar);
+    liberarCaptura(captura, limpiar, esPersistente);
   }
 }
 
@@ -233,6 +310,7 @@ export async function reproducirFragmentosVoz({
   rate = 0.95,
   alPreparar = () => {},
   alIniciar = () => {},
+  alPulso = () => {},
   verificarVigente = () => true,
   registrarEnunciado = () => {},
 } = {}) {
@@ -256,12 +334,15 @@ export async function reproducirFragmentosVoz({
       speech.pitch = 1;
       if (voz) speech.voice = voz;
       speech.onstart = () => { if (verificarVigente()) alIniciar(); };
+      speech.onboundary = () => { if (verificarVigente()) alPulso(0.72); };
       speech.onend = () => {
         registrarEnunciado(null, null);
+        alPulso(0);
         resolve();
       };
       speech.onerror = () => {
         registrarEnunciado(null, null);
+        alPulso(0);
         reject(errorConCodigo('No se pudo reproducir la voz. Revisá el audio del navegador y volvé a intentar.', 'tts'));
       };
       alPreparar();
