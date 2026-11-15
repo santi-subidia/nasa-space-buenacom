@@ -42,6 +42,8 @@ const ETIQUETA_RUTA = {
   '/cara': 'Abrir cámara',
   '/entrenador': 'Entrenador',
   '/enlace': 'Enlace Tierra',
+  '/actividad/cognitivos': 'Tests',
+  '/actividad/cognitivos#vision': 'Test visual',
   '/registrar#vision': 'Test visual',
 };
 

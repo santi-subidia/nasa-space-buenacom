@@ -1,6 +1,18 @@
+import 'fake-indexeddb/auto';
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 
+import { esChequeoFacialCompletado } from '../lib/checkin.js';
+import {
+  getCheckinPorSol,
+  getDb,
+  getReadings,
+  getSymptoms,
+  guardarCheckinPorSol,
+  guardarChequeoFacial,
+  listAiResults,
+  resetDb,
+} from '../lib/db.js';
 import {
   DURACION_SOL_MIN,
   avanzarTiempoMision,
@@ -39,12 +51,13 @@ test('esSuenoProtegido marca la ventana 22:00–06:30 incluyendo 24:00–24:36',
   assert.equal(esSuenoProtegido(parsearHoraMision('13:30')), false);
 });
 
-test('generarTareasJornada genera las 11 tareas diarias y las semanales según el día', () => {
+test('generarTareasJornada genera las 12 tareas diarias y las semanales según el día', () => {
   const jueves = generarTareasJornada({ astronautId: 'ana', sol: 42, diaSemana: 'jueves' });
   const diarias = jueves.filter((t) => t.recurrence === 'daily');
-  assert.equal(diarias.length, 11);
+  assert.equal(diarias.length, 12);
   assert.equal(diarias[0].missionTime, '06:45');
   assert.equal(diarias[0].ruta, '/registrar');
+  assert.ok(diarias.some((t) => t.missionTime === '09:30' && t.ruta === '/actividad/cognitivos'));
   assert.equal(diarias[diarias.length - 1].missionTime, '21:30');
   assert.equal(jueves.filter((t) => t.recurrence === 'weekly').length, 0);
 
@@ -64,7 +77,7 @@ test('generarTareasJornada genera las 11 tareas diarias y las semanales según e
       (t) =>
         t.recurrence === 'weekly' &&
         t.title === 'Test visual SANS' &&
-        t.ruta === '/registrar#vision',
+        t.ruta === '/actividad/cognitivos#vision',
     ),
   );
 
@@ -194,4 +207,146 @@ test('autocompleta tareas con lecturasHoy y calcula estado respecto a la hora', 
   assert.equal(estadoTareaRespectoAHora(completo[1], parsearHoraMision('07:05')), 'ahora');
   assert.equal(estadoTareaRespectoAHora(completo[1], parsearHoraMision('06:30')), 'pendiente');
   assert.equal(estadoTareaRespectoAHora(completo[1], parsearHoraMision('09:00')), 'pasada');
+});
+
+test('sincroniza check-in parcial/foto, tests cognitivos/visuales, cara, agua, ejercicio, voz, enlace y tareas guardadas sin doble checkeo', () => {
+  const tareas = generarTareasJornada({
+    astronautId: 'ana',
+    sol: 42,
+    diaSemana: 'miercoles',
+    checkinCompletado: true,
+    caraCompletada: true,
+    enlaceCompletado: true,
+    lecturasHoy: [
+      { id: 'demo-ana-42-glucose', sol: 42, source: 'manual', indicator: 'glucose', value: 91 },
+      { sol: 42, source: 'manual', indicator: 'water_ml', value: 1200 },
+      { sol: 42, source: 'manual', indicator: 'reaction_ms', value: 265, ts: '2026-11-15T10:00:00.000Z' },
+      { sol: 42, source: 'manual', indicator: 'visual_acuity', value: 2, ts: '2026-11-15T10:05:00.000Z' },
+      { sol: 42, source: 'camera', indicator: 'exercise_min', value: 45, ts: '2026-11-15T14:00:00.000Z' },
+      { sol: 42, source: 'manual', indicator: 'bp_sys', value: 118, ts: '2026-11-15T15:10:00.000Z' },
+      { sol: 42, source: 'voice', indicator: 'mood', value: 4, ts: '2026-11-15T20:30:00.000Z' },
+    ],
+    tareasGuardadas: [
+      { id: 'demo-task-bp', astronautId: 'ana', kind: 'measure', title: 'Medir presión arterial matutina', missionTime: '08:00', recurrence: 'daily', done: false },
+      { id: 'demo-task-watch', astronautId: 'ana', kind: 'measure', title: 'Sincronizar Watch nocturno', missionTime: '07:00', recurrence: 'daily', done: false },
+      { id: 'demo-task-exercise', astronautId: 'ana', kind: 'exercise', title: 'Completar rutina de fuerza y aeróbico (90 min)', missionTime: '17:00', recurrence: 'daily', done: false },
+      { id: 'db-ejercicio-suave', astronautId: 'ana', kind: 'exercise', title: 'Ejercicio suave de recuperación', missionTime: '17:30', recurrence: 'event', done: false },
+      { id: 'db-hisopado', astronautId: 'ana', kind: 'measure', title: 'Hisopado nasal de control (Sol 44)', missionTime: '19:15', recurrence: 'event', done: false },
+    ],
+  });
+
+  const porHora = (h) => tareas.find((t) => t.missionTime === h);
+  assert.equal(porHora('06:30'), undefined);
+  assert.equal(porHora('06:45').done, true);
+  assert.equal(porHora('07:00').done, true);
+  assert.equal(porHora('07:30').done, true);
+  assert.equal(porHora('09:00').done, true);
+  assert.equal(porHora('09:30').done, true);
+  assert.equal(porHora('10:00').done, true);
+  assert.equal(porHora('13:30').done, true);
+  assert.equal(porHora('15:00').done, true);
+  assert.equal(porHora('16:40').done, true);
+  assert.equal(porHora('20:30').done, true);
+
+  assert.equal(tareas.find((t) => t.id === 'demo-task-bp').done, true);
+  assert.equal(tareas.find((t) => t.id === 'demo-task-watch'), undefined);
+  assert.equal(tareas.find((t) => t.id === 'demo-task-exercise'), undefined);
+  assert.equal(tareas.find((t) => t.id === 'db-ejercicio-suave').done, true);
+  assert.equal(tareas.find((t) => t.id === 'db-hisopado').done, false);
+
+  const lunesSoloDemo = generarTareasJornada({
+    astronautId: 'ana',
+    sol: 42,
+    diaSemana: 'lunes',
+    lecturasHoy: [
+      { id: 'demo-ana-42-glucose', sol: 42, source: 'manual', indicator: 'glucose', value: 91 },
+      { id: 'demo-ana-42-reaction_ms', sol: 42, source: 'manual', indicator: 'reaction_ms', value: 260 },
+    ],
+  });
+  assert.equal(lunesSoloDemo.find((t) => t.missionTime === '09:30').done, false);
+  assert.equal(lunesSoloDemo.find((t) => t.title === 'Glucosa en ayunas').done, false);
+});
+
+test('controles de temperatura por evento no se marcan con la fiebre inicial y sí con mediciones posteriores', () => {
+  const evaluacionFiebre = { indicators: { temp: { value: 37.8 } }, alerts: [] };
+
+  const trasFiebreInicial = generarTareasJornada({
+    sol: 42,
+    evaluacion: evaluacionFiebre,
+    lecturasHoy: [{ sol: 42, indicator: 'temp', value: 37.8 }],
+  });
+  assert.equal(trasFiebreInicial.find((t) => t.missionTime === '14:45').done, false);
+  assert.equal(trasFiebreInicial.find((t) => t.missionTime === '22:00').done, false);
+
+  const trasControlTarde = generarTareasJornada({
+    sol: 42,
+    evaluacion: evaluacionFiebre,
+    lecturasHoy: [
+      { sol: 42, indicator: 'temp', value: 37.8 },
+      { sol: 42, indicator: 'temp', value: 37.4 },
+    ],
+  });
+  assert.equal(trasControlTarde.find((t) => t.missionTime === '14:45').done, true);
+  assert.equal(trasControlTarde.find((t) => t.missionTime === '22:00').done, false);
+
+  const trasControlNoche = generarTareasJornada({
+    sol: 42,
+    evaluacion: evaluacionFiebre,
+    lecturasHoy: [
+      { sol: 42, indicator: 'temp', value: 37.8 },
+      { sol: 42, indicator: 'temp', value: 37.4 },
+      { sol: 42, indicator: 'temp', value: 36.9 },
+    ],
+  });
+  assert.equal(trasControlNoche.find((t) => t.missionTime === '14:45').done, true);
+  assert.equal(trasControlNoche.find((t) => t.missionTime === '22:00').done, true);
+});
+
+test('integración IndexedDB: check-in por sol, chequeo facial y transmisión Enlace sincronizan Jornada', async () => {
+  await resetDb();
+  const ahora = new Date('2026-11-15T09:00:00.000Z');
+  await guardarChequeoFacial({
+    astronautId: 'ana',
+    sol: 42,
+    resultado: { ok: true, fatiga: { nivel: 'baja' }, resumen: 'Sin cambios llamativos' },
+  });
+  await guardarCheckinPorSol(
+    {
+      astronautId: 'ana',
+      sol: 42,
+      lecturas: [],
+      sintoma: { bodyZone: 'skin', code: 'rash', note: 'Foto solo de check-in' },
+    },
+    ahora,
+  );
+  await getDb().transmisionesEnlace.put({
+    id: 'tx-sol42-test',
+    astronaut_id: 'ana',
+    sol: 42,
+    enviado_en: ahora.toISOString(),
+  });
+
+  const [checkin, lecturas, sintomas, resultadosCara, transmisiones] = await Promise.all([
+    getCheckinPorSol('ana', 42),
+    getReadings('ana'),
+    getSymptoms('ana'),
+    listAiResults('face'),
+    getDb().transmisionesEnlace.where('astronaut_id').equals('ana').toArray(),
+  ]);
+
+  const tareas = generarTareasJornada({
+    astronautId: 'ana',
+    sol: 42,
+    diaSemana: 'jueves',
+    lecturasHoy: lecturas,
+    sintomasHoy: sintomas,
+    checkinCompletado: Boolean(checkin),
+    caraCompletada: resultadosCara.some((r) => esChequeoFacialCompletado(r, 'ana', 42)),
+    enlaceCompletado: transmisiones.some((t) => t.sol === 42),
+  });
+
+  assert.equal(tareas.find((t) => t.missionTime === '06:45').done, true);
+  assert.equal(tareas.find((t) => t.missionTime === '07:00').done, true);
+  assert.equal(tareas.find((t) => t.missionTime === '16:40').done, true);
+  await resetDb();
 });
