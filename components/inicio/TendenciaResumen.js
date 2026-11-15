@@ -7,13 +7,13 @@ import { SOL_ACTUAL } from '@/lib/datos/demo';
 import { lecturasParaInicio, METRICAS_FIGMA } from './metricas';
 import styles from './InicioPantalla.module.scss';
 
-export default function TendenciaResumen({ lecturas }) {
+export default function TendenciaResumen({ lecturas, solActual = SOL_ACTUAL }) {
   const [indicador, setIndicador] = useState('hr_rest');
   const tarjeta = METRICAS_FIGMA.find((t) => t.claves[0] === indicador);
   // Sólo presentación: agrupa las lecturas existentes, sin generar ni guardar datos.
   const porSol = new Map();
-  for (const lectura of lecturasParaInicio(lecturas, SOL_ACTUAL)) {
-    if (lectura.indicator !== indicador || !Number.isInteger(lectura.sol) || lectura.sol < SOL_ACTUAL - 6 || lectura.sol > SOL_ACTUAL) continue;
+  for (const lectura of lecturasParaInicio(lecturas, solActual)) {
+    if (lectura.indicator !== indicador || !Number.isInteger(lectura.sol) || lectura.sol < solActual - 6 || lectura.sol > solActual) continue;
     if (!Number.isFinite(lectura.value)) continue;
     porSol.set(lectura.sol, { sol: lectura.sol, valor: lectura.value });
   }

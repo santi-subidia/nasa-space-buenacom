@@ -8,15 +8,15 @@ import Card from '@/components/Card';
 import CabeceraMision from '@/components/layout/CabeceraMision';
 import EjerciciosPendientes from '@/components/actividad/EjerciciosPendientes';
 import { useJornada } from '@/lib/datos/jornada';
+import { TARJETAS_RESUMEN, nivelDeTarjetaDb, valoresDelDia } from '@/lib/datos/indicadores';
 import { EJERCICIOS, crearEntrenamiento } from '@/lib/entrenador/ejercicios';
+import { rachaEjercicio } from '@/lib/entrenador/racha';
 import { armarPayloadSerie } from '@/lib/entrenador/resumen';
 import { guardarLecturas, leerLecturas, useLecturas } from '@/lib/datos/lecturas';
 import { leerSintomas } from '@/lib/datos/sintomas';
 import { silenciarLogsMediaPipe } from '@/lib/mediapipe/silenciarLogs';
 import { evaluate } from '@/lib/motor/evaluar';
 import { maxNivel } from '@/lib/niveles';
-import { LINEA_BASE, TARJETAS, nivelDeTarjeta, valoresDelDia } from '@/lib/mock/indicadores';
-import { MISION, SOL_ACTUAL } from '@/lib/mock/mision';
 import styles from './Entrenador.module.scss';
 
 // WASM: lo copia `npm install` a public/mediapipe/wasm. Modelo: por defecto del CDN de Google;
@@ -59,9 +59,13 @@ export default function Entrenador() {
   const comentarioIdRef = useRef(0);
 
   const lecturas = useLecturas();
-  const { astronauta, tareas, cargando: cargandoMision } = useJornada(null, SOL_ACTUAL);
+  const { astronauta, sol: solActual, tareas, cargando: cargandoMision } = useJornada();
   const lecturasRef = useRef(lecturas);
   lecturasRef.current = lecturas;
+  const solActivoRef = useRef(solActual);
+  solActivoRef.current = solActual;
+  const astronautaRef = useRef(astronauta);
+  astronautaRef.current = astronauta;
 
   const [pantalla, setPantalla] = useState('reposo'); // reposo | cargando | activo | resumen | error
   const [error, setError] = useState(null);
@@ -258,21 +262,18 @@ export default function Entrenador() {
     const anguloMin = r.anguloMin ?? null;
     apagar();
 
+    const solObjetivo = solActivoRef.current ?? 42;
+    const baselineActual = astronautaRef.current?.baseline || {};
     const nota = series
       .map((s) => `${s.ejercicio === 'plancha' ? `${s.segundos} s de plancha` : `${s.reps} ${EJERCICIOS[s.ejercicio].nombre.toLowerCase()}`}`)
       .join(', ');
-    const racha = MISION.rachaEjercicio + 1; // hoy ya cuenta (la racha de la misión llega hasta ayer)
     let guardado = true;
     try {
-      await guardarLecturas([{ indicator: 'exercise_min', value: minutos, sol: SOL_ACTUAL, source: 'camera', note: nota || 'sin repeticiones' }]);
+      await guardarLecturas([{ indicator: 'exercise_min', value: minutos, sol: solObjetivo, source: 'camera', note: nota || 'sin repeticiones' }]);
     } catch (err) {
       console.error(err);
       guardado = false;
     }
-    setResumen({ series, minutos, racha, fotos, guardado });
-    setComentarioVega(null);
-    setComentarioEstado('cargando');
-    setPantalla('resumen');
 
     const idPedido = ++comentarioIdRef.current;
     let lecturasActuales = lecturasRef.current;
@@ -282,9 +283,14 @@ export default function Entrenador() {
     } catch {
       /* si IndexedDB falla, seguimos con las lecturas ya cargadas */
     }
-    const vals = valoresDelDia(lecturasActuales, SOL_ACTUAL);
-    const ev = evaluate(lecturasActuales, LINEA_BASE, 'mars_base', { symptoms: sintomasActuales, sol: SOL_ACTUAL });
-    const nivelMotor = maxNivel(TARJETAS.map((t) => nivelDeTarjeta(t, vals)), ev.globalLevel);
+    const racha = rachaEjercicio(lecturasActuales, solObjetivo);
+    setResumen({ series, minutos, racha, fotos, guardado });
+    setComentarioVega(null);
+    setComentarioEstado('cargando');
+    setPantalla('resumen');
+    const vals = valoresDelDia(lecturasActuales, solObjetivo);
+    const ev = evaluate(lecturasActuales, baselineActual, 'mars_base', { symptoms: sintomasActuales, sol: solObjetivo });
+    const nivelMotor = maxNivel(TARJETAS_RESUMEN.map((t) => nivelDeTarjetaDb(t, vals, baselineActual)), ev.globalLevel);
     const payload = armarPayloadSerie({
       series,
       ejercicioActual: ejercicio,
@@ -324,7 +330,7 @@ export default function Entrenador() {
 
   return (
     <div className={styles.pantalla} data-dashboard>
-      <CabeceraMision nombre={astronauta?.name || MISION.astronauta.nombre} titulo={astronauta?.titulo || 'Tripulante de misión'} />
+      <CabeceraMision nombre={astronauta?.name} titulo={astronauta?.titulo} sol={solActual} />
       <h1 className={styles.oculto}>Actividad / Ejercicios físicos</h1>
 
       {pantalla !== 'resumen' && (

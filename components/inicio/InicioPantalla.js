@@ -9,37 +9,36 @@ import TendenciaResumen from './TendenciaResumen';
 import VytaVoz from './VytaVoz';
 import CabeceraMision from '@/components/layout/CabeceraMision';
 import OrigenUmbral from '@/components/OrigenUmbral';
-import { SOL_ACTUAL, useEstadoMision } from '@/lib/datos/demo';
+import { useEstadoMision } from '@/lib/datos/demo';
 import { useCheckinDiario } from '@/lib/datos/checkin';
-import { MISION } from '@/lib/mock/mision';
 import { NIVELES } from '@/lib/niveles';
 import { rutaZona } from '@/lib/content/rutaZona';
 import { calcularPuntajeSalud, lecturasParaInicio, metricasDesdeLecturas } from './metricas';
 import styles from './InicioPantalla.module.scss';
 
 export default function InicioPantalla() {
-  const { astronauta, lecturas, evaluacion } = useEstadoMision(null, SOL_ACTUAL);
+  const { astronauta, solActual, mision, lecturas, evaluacion } = useEstadoMision();
   const checkin = useCheckinDiario();
   const nivelGeneral = evaluacion.globalLevel || 'green';
   const puntajeSalud = calcularPuntajeSalud(evaluacion);
-  const tarjetas = metricasDesdeLecturas(lecturas, evaluacion, astronauta?.baseline || {}, SOL_ACTUAL);
-  const ultimaLectura = lecturasParaInicio(lecturas, SOL_ACTUAL).at(-1);
+  const tarjetas = metricasDesdeLecturas(lecturas, evaluacion, astronauta?.baseline || {}, solActual);
+  const ultimaLectura = lecturasParaInicio(lecturas, solActual).at(-1);
 
   return (
     <div className={styles.pantalla} data-dashboard>
-      <CabeceraMision nombre={astronauta?.name || MISION.astronauta.nombre} titulo={astronauta?.titulo || 'Tripulante de misión'} />
-      <h1 className={styles.oculto}>Vista general · {astronauta?.name || MISION.astronauta.nombre}</h1>
+      <CabeceraMision nombre={astronauta?.name} titulo={astronauta?.titulo} sol={solActual} entorno={mision?.entorno} />
+      <h1 className={styles.oculto}>Vista general · {astronauta?.name || 'Tripulante'}</h1>
       <div className={styles.paneles}>
         <div className={styles.columnaPrincipal}>
           <EstadoGeneral nivel={nivelGeneral} puntaje={puntajeSalud} alertas={evaluacion.alerts || []} checkin={checkin} ultimaLectura={ultimaLectura} />
           <section aria-label="Métricas de salud" className={styles.indicadores}>
             {tarjetas.map((tarjeta) => <TarjetaIndicador key={tarjeta.id} tarjeta={tarjeta} />)}
           </section>
-          <TendenciaResumen lecturas={lecturas} />
+          <TendenciaResumen lecturas={lecturas} solActual={solActual} />
         </div>
         <div className={styles.columnaLateral}>
           <VytaVoz />
-          <AlertasObservaciones alertas={evaluacion.alerts || []} />
+          <AlertasObservaciones alertas={evaluacion.alerts || []} solActual={solActual} />
         </div>
       </div>
     </div>
@@ -112,7 +111,7 @@ function TarjetaIndicador({ tarjeta }) {
   );
 }
 
-function AlertasObservaciones({ alertas }) {
+function AlertasObservaciones({ alertas, solActual }) {
   const [verTodas, setVerTodas] = useState(false);
   const visibles = verTodas ? alertas : alertas.slice(0, 3);
   return (
@@ -131,7 +130,7 @@ function AlertasObservaciones({ alertas }) {
                 <summary>
                   <TrafficLight nivel={alerta.level} conTexto={false} />
                   <span className={styles.alertaTexto}><strong>{alerta.title}</strong><span>{alerta.why}</span></span>
-                  <small>Sol {Number.isInteger(alerta.sol) ? alerta.sol : SOL_ACTUAL}</small>
+                  <small>Sol {Number.isInteger(alerta.sol) ? alerta.sol : solActual}</small>
                 </summary>
                 <div className={styles.detalleAlerta}>
                   <p>{alerta.why}</p>

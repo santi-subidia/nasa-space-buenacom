@@ -6,12 +6,11 @@ import { useRouter } from 'next/navigation';
 import Card from '@/components/Card';
 import PantallaVyta from '@/components/layout/PantallaVyta';
 import { INFO, CARAS } from '@/lib/content/indicadores';
-import { useLecturas } from '@/lib/datos/lecturas';
 import { eliminarFoto, guardarFoto } from '@/lib/datos/sintomas';
 import { useCheckinDiario } from '@/lib/datos/checkin';
 import { guardarCheckinDiario } from '@/lib/db';
-import { SOL_ACTUAL } from '@/lib/mock/mision';
-import { WATCH, valoresDelDia } from '@/lib/mock/indicadores';
+import { useEstadoMision } from '@/lib/datos/demo';
+import { valoresDelDia } from '@/lib/datos/indicadores';
 import FotoPiel from './FotoPiel';
 import styles from './Registrar.module.scss';
 
@@ -20,6 +19,7 @@ const LIMITES = {
   bp_sys: [60, 260],
   bp_dia: [30, 160],
   hr_rest: [30, 220],
+  spo2: [70, 100],
   glucose: [30, 500],
   temp: [33, 43],
   sleep_h: [0, 16],
@@ -32,8 +32,8 @@ const num = (s) => Number(String(s).replace(',', '.'));
 
 export default function Registrar() {
   const router = useRouter();
-  const lecturas = useLecturas();
-  const base = valoresDelDia(lecturas, SOL_ACTUAL);
+  const { lecturas, solActual } = useEstadoMision();
+  const base = valoresDelDia(lecturas, solActual);
   const checkin = useCheckinDiario();
   const guardandoRef = useRef(false);
 
@@ -66,7 +66,7 @@ export default function Registrar() {
     setGuardando(true);
     setErrorGuardado(null);
 
-    const nuevas = cambios.map((k) => ({ indicator: k, value: num(edit[k]), sol: SOL_ACTUAL }));
+    const nuevas = cambios.map((k) => ({ indicator: k, value: num(edit[k]), sol: solActual }));
 
     let photoBlobId = null;
     let conservarFoto = false;
@@ -76,7 +76,7 @@ export default function Registrar() {
       }
       const resultado = await guardarCheckinDiario({
         astronautId: checkin.astronautId,
-        sol: SOL_ACTUAL,
+        sol: solActual,
         lecturas: nuevas,
         sintoma: foto ? { bodyZone: 'immune', code: foto.code, severity: foto.severity, photoBlobId } : null,
       });
@@ -95,7 +95,7 @@ export default function Registrar() {
   return (
     <PantallaVyta
       titulo="Check-in diario"
-      subtitulo={`Chequeo matutino · Sol ${SOL_ACTUAL}`}
+      subtitulo={`Chequeo matutino · Sol ${solActual}`}
       icono="/figma/nav-registrar.svg"
     >
       {checkin.cargando ? <p role="status" className={styles.texto}>Consultando el check-in de hoy…</p> : checkin.completado ? (
@@ -153,9 +153,9 @@ export default function Registrar() {
               <strong className={styles.valorRango}>{String(valor('sleep_h') || '—').replace('.', ',')} h</strong>
             </Fila>
 
-            <Fila id="spo2" etiqueta="SpO₂" watch>
-              <span className={styles.watch}>⌚ Watch</span>
-              <input className={styles.campo} value={WATCH.spo2} readOnly aria-label="SpO₂ (del Watch)" />
+            <Fila id="spo2" etiqueta="SpO₂" watch={base.spo2?.source === 'watch_sim'}>
+              {base.spo2?.source === 'watch_sim' && <span className={styles.watch}>⌚ Watch</span>}
+              <Numero k="spo2" label="SpO₂" valor={valor('spo2') || (base.spo2 ? String(base.spo2.valor) : '')} onChange={cambiar} error={error('spo2')} />
               <span className={styles.unidad}>%</span>
             </Fila>
 

@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import CabeceraMision from '@/components/layout/CabeceraMision';
-import { SOL_ACTUAL, useEstadoMision } from '@/lib/datos/demo';
+import { useEstadoMision } from '@/lib/datos/demo';
 import { useCanalInformes } from '@/lib/datos/canalInformes';
 import { alternarAutoAvance, avanzarTransmision, reiniciarEnlace, useEnlace } from '@/lib/datos/enlace';
 import { guardarEnvioCanal, sincronizarCanal } from '@/lib/enlace/canal';
@@ -25,8 +25,9 @@ function Icono({ tipo }) {
 }
 
 export default function EnlacePantalla() {
-  const { activoId, astronauta, lecturas, evaluacion, cargando } = useEstadoMision(null, SOL_ACTUAL);
-  const { junta, transmisiones, conectado } = useCanalInformes(activoId, SOL_ACTUAL);
+  const { activoId, astronauta, solActual, mision, lecturas, evaluacion, cargando: cargandoEstado } = useEstadoMision();
+  const cargando = cargandoEstado || !astronauta;
+  const { junta, transmisiones, conectado } = useCanalInformes(activoId, solActual);
   const enlace = useEnlace();
   const [simulacion, setSimulacion] = useState(null);
   const [borrador, setBorrador] = useState({ astronautId: null, texto: '' });
@@ -35,7 +36,7 @@ export default function EnlacePantalla() {
   const bloqueoEnvio = useRef(false);
   const conversacionRef = useRef(null);
   const texto = borrador.astronautId === activoId ? borrador.texto : '';
-  const informe = useMemo(() => informeDesdeRegistros({ astronauta, lecturas, evaluacion, sol: SOL_ACTUAL, junta }), [astronauta, lecturas, evaluacion, junta]);
+  const informe = useMemo(() => informeDesdeRegistros({ astronauta, lecturas, evaluacion, sol: solActual, junta }), [astronauta, lecturas, evaluacion, solActual, junta]);
   const simulacionActual = simulacion?.astronautId === activoId ? simulacion : null;
   const envioSimulado = calcularEstadoEnvio(simulacionActual && enlace.iniciado ? enlace.minutosTranscurridos : null);
   const mensajes = useMemo(() => {
@@ -61,7 +62,7 @@ export default function EnlacePantalla() {
         texto: simulacionActual.respuesta.resumenTecnico,
         indicaciones: simulacionActual.respuesta.indicaciones || [],
         ts: simulacionActual.recibidaEn,
-        sol: simulacionActual.respuesta.sol ?? SOL_ACTUAL,
+        sol: simulacionActual.respuesta.sol ?? simulacionActual.sol,
         entrega: 'recibido',
         enviado: true,
         recibidoEnDestino: true,
@@ -92,7 +93,7 @@ export default function EnlacePantalla() {
     setEnviando(true);
     setError(null);
     try {
-      const transmision = crearTransmisionCanal({ texto, informe: esInforme ? informe : null, astronauta, sol: SOL_ACTUAL });
+      const transmision = crearTransmisionCanal({ texto, informe: esInforme ? informe : null, astronauta, sol: solActual });
       await guardarEnvioCanal(transmision);
       if (!esInforme) setBorrador({ astronautId: activoId, texto: '' });
       sincronizarCanal(activoId).catch(() => {});
@@ -110,7 +111,7 @@ export default function EnlacePantalla() {
   }
 
   function prepararSimulacion() {
-    if (simulacionActual) return;
+    if (simulacionActual || cargando) return;
     const ultimaRespuesta = [...transmisiones]
       .filter((transmision) => transmision.respuesta_medica?.resumenTecnico)
       .sort((a, b) => String(b.actualizado_en || '').localeCompare(String(a.actualizado_en || '')))[0];
@@ -143,7 +144,7 @@ export default function EnlacePantalla() {
 
   return (
     <div className={styles.pantalla} data-dashboard>
-      <CabeceraMision nombre={astronauta.name} titulo={astronauta.titulo || 'Tripulante de misión'} mostrarNotificaciones={false} />
+      <CabeceraMision nombre={astronauta?.name} titulo={astronauta?.titulo} sol={solActual} entorno={mision?.entorno} mostrarNotificaciones={false} />
       <h1 className={styles.oculto}>Informes</h1>
       <section className={styles.simulacion} aria-labelledby="titulo-simulacion">
         <div className={styles.cabeceraSimulacion}>

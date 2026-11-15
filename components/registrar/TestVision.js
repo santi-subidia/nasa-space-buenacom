@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import Card from '@/components/Card';
 import TrafficLight from '@/components/TrafficLight';
-import { EVALUAR } from '@/lib/mock/indicadores';
+import { evaluarConMotor } from '@/lib/datos/indicadores';
 import styles from './Registrar.module.scss';
 
 // Minitest de agudeza visual con "E direccional" (tumbling E), para seguir SANS en el tiempo.
@@ -118,7 +118,7 @@ export default function TestVision({ resultado, onTerminar, className }) {
           {resultado && (
             <p className={styles.resultado}>
               Agudeza: <strong>{resultado.puntos} puntos</strong> ({resultado.niveles} de {TAMANOS_PX.length} niveles){' '}
-              <TrafficLight nivel={EVALUAR.visual_acuity(resultado.puntos)} /> · se guarda al confirmar
+              <TrafficLight nivel={evaluarConMotor('visual_acuity', resultado.puntos)} /> · se guarda al confirmar
             </p>
           )}
           <p className={styles.nota}>Orienta, no diagnostica. Si la visión empeora o ves borroso, avisá al oficial médico.</p>

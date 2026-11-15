@@ -5,8 +5,7 @@ import { crearVoz } from '@/ai/vega/voz.js';
 import { crearSesionVega } from '@/ai/vega/sesion.js';
 import { guardarAviso } from '@/lib/datos/avisos';
 import { useEstadoMision } from '@/lib/datos/demo';
-import { SOL_ACTUAL, MISION } from '@/lib/mock/mision';
-import { LINEA_BASE, valoresDelDia } from '@/lib/mock/indicadores';
+import { valoresDelDia } from '@/lib/datos/indicadores';
 import { evaluate } from '@/lib/motor/evaluar';
 import { parsearNotaPvt } from '@/lib/pvt/metricas';
 import { INDICADORES } from '@/lib/tipos';
@@ -17,9 +16,9 @@ const sinSuscripcion = () => () => {};
 const estadoInicial = () => INICIAL;
 
 /** Los datos del día que Vega ve junto a la pregunta (poco texto: el servidor los manda al modelo). */
-export function datosDelDia(lecturas, sintomas = [], baseline = LINEA_BASE, nombre = MISION.astronauta.nombre) {
-  const vals = valoresDelDia(lecturas, SOL_ACTUAL);
-  const ev = evaluate(lecturas, baseline, 'mars_base', { symptoms: sintomas, sol: SOL_ACTUAL });
+export function datosDelDia(lecturas, sintomas = [], baseline = {}, nombre = 'Tripulante', solActual = 42, entorno = 'mars_base') {
+  const vals = valoresDelDia(lecturas, solActual);
+  const ev = evaluate(lecturas, baseline, entorno, { symptoms: sintomas, sol: solActual });
   const alerta = ev.alerts[0];
   const indicadores = {};
   for (const [id, { valor, hoy, note }] of Object.entries(vals)) {
@@ -32,7 +31,7 @@ export function datosDelDia(lecturas, sintomas = [], baseline = LINEA_BASE, nomb
   }
   return {
     tripulante: nombre,
-    sol: SOL_ACTUAL,
+    sol: solActual,
     alerta_activa: alerta
       ? { nivel: alerta.level, titulo: alerta.title, por_que: alerta.why }
       : { nivel: ev.globalLevel, titulo: 'Sin alertas activas', por_que: 'Valores dentro de rango.' },
@@ -45,7 +44,7 @@ export function datosDelDia(lecturas, sintomas = [], baseline = LINEA_BASE, nomb
  * consulta a /api/claude con datos del día e historial, lectura en voz alta.
  */
 export function useVega({ seccion, resumen } = {}) {
-  const { astronauta, lecturas, sintomas } = useEstadoMision(null, SOL_ACTUAL);
+  const { astronauta, solActual, mision, lecturas, sintomas } = useEstadoMision();
   const datosRef = useRef(null);
   const contextoRef = useRef('');
   const nivelRef = useRef(0);
@@ -55,10 +54,12 @@ export function useVega({ seccion, resumen } = {}) {
     datosRef.current = datosDelDia(
       lecturas,
       sintomas,
-      astronauta?.baseline || LINEA_BASE,
-      astronauta?.name || MISION.astronauta.nombre,
+      astronauta?.baseline || {},
+      astronauta?.name || 'Tripulante',
+      solActual,
+      mision?.entorno || 'mars_base',
     );
-  }, [astronauta, lecturas, sintomas]);
+  }, [astronauta, solActual, mision, lecturas, sintomas]);
 
   useEffect(() => {
     const partes = [];

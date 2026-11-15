@@ -5,7 +5,6 @@ import Link from 'next/link';
 import { PELIGROS } from '@/lib/content/zones';
 import { ZONAS_POR_SECCION, evaluarZonas, zonaMasDelicada } from '@/lib/content/zonasSalud';
 import { esZonaValida } from '@/lib/content/rutaZona';
-import { SOL_ACTUAL } from '@/lib/datos/demo';
 import { ETIQUETAS_NIVEL } from './datos';
 import CuerpoAnatomico, { CAPAS, SISTEMA } from './CuerpoAnatomico';
 import styles from './MapaZonas.module.scss';
@@ -29,8 +28,11 @@ export default function MapaZonas({ zona, ...props }) {
   return <MapaZonasPanel key={parametro || 'sin-zona'} parametro={parametro} {...props} />;
 }
 
-function MapaZonasPanel({ seccion, lecturas, sintomas, evaluacion, parametro }) {
-  const todas = useMemo(() => evaluarZonas({ lecturas, sintomas, evaluacion, sol: SOL_ACTUAL }), [lecturas, sintomas, evaluacion]);
+function MapaZonasPanel({ seccion, lecturas, sintomas, evaluacion, solActual = 42, baseline = {}, cabinaDb = null, parametro }) {
+  const todas = useMemo(
+    () => evaluarZonas({ lecturas, sintomas, evaluacion, sol: solActual, baseline, cabinaDb }),
+    [lecturas, sintomas, evaluacion, solActual, baseline, cabinaDb],
+  );
   const ids = ZONAS_POR_SECCION[seccion];
   const propias = ids ? todas.filter((z) => ids.includes(z.id)) : todas;
   const [elegida, setElegida] = useState(propias.some((z) => z.id === parametro) ? parametro : null);

@@ -11,6 +11,14 @@ const ana = { id: 'ana', name: 'Ana Ríos' };
 const marcos = { id: 'marcos', name: 'Marcos Silva' };
 beforeEach(async () => { await resetDb(); });
 
+test('Informes tolera el estado inicial sin tripulante mientras la base de datos se carga', () => {
+  const informe = informeDesdeRegistros({ astronauta: null, sol: 43 });
+  assert.equal(informe.disponible, false);
+  assert.equal(informe.sol, 43);
+  assert.deepEqual(informe.hallazgos, []);
+  assert.deepEqual(informe.plan, []);
+});
+
 test('Informes usa las mediciones guardadas del tripulante y las indicaciones del motor', async () => {
   await addReading({ astronautId: 'ana', indicator: 'temp', value: 37.8, sol: 42 });
   await addReading({ astronautId: 'ana', indicator: 'stress', value: 8, sol: 42 });

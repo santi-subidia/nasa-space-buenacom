@@ -3,14 +3,13 @@
 import Link from 'next/link';
 import CabeceraMision from '@/components/layout/CabeceraMision';
 import { useJornada } from '@/lib/datos/jornada';
-import { MISION, SOL_ACTUAL } from '@/lib/mock/mision';
 import EjerciciosPendientes from './EjerciciosPendientes';
 import styles from './Actividad.module.scss';
 
 export default function ActividadPantalla() {
-  const { astronauta, tareas, cargando } = useJornada(null, SOL_ACTUAL);
+  const { astronauta, sol, tareas, cargando } = useJornada();
   return <div className={styles.pantalla} data-dashboard>
-    <CabeceraMision nombre={astronauta?.name || MISION.astronauta.nombre} titulo={astronauta?.titulo || 'Tripulante de misión'} />
+    <CabeceraMision nombre={astronauta?.name} titulo={astronauta?.titulo} sol={sol} />
     <h1 className={styles.oculto}>Actividad</h1>
     <div className={styles.seleccion}>
       <Link href="/actividad/fisicos" className={styles.opcion}>

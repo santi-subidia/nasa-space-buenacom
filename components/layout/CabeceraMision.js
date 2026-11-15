@@ -2,15 +2,23 @@
 
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
-import { MISION, SOL_ACTUAL } from '@/lib/mock/mision';
+import { useEstadoMision } from '@/lib/datos/demo';
 import { alternarPanelNotificaciones, useNotificaciones } from '@/lib/datos/notificaciones';
 import styles from '@/components/inicio/InicioPantalla.module.scss';
 
-export default function CabeceraMision({ nombre, titulo, mostrarNotificaciones = true }) {
+const ETIQUETA_ENTORNO = {
+  mars_base: 'Base Marte',
+  transit: 'Tránsito',
+  mars_orbit: 'Órbita Marte',
+};
+
+export default function CabeceraMision({ nombre, titulo, sol, entorno, mostrarNotificaciones = true }) {
+  const { astronauta, mision, solActual } = useEstadoMision();
   const [ahora, setAhora] = useState(null);
   const [enLinea, setEnLinea] = useState(true);
   const { items: notificaciones } = useNotificaciones();
   const hayCritica = notificaciones.some((n) => n.color === 'red');
+
   useEffect(() => {
     const actualizar = () => { setAhora(new Date()); setEnLinea(navigator.onLine); };
     actualizar();
@@ -24,16 +32,22 @@ export default function CabeceraMision({ nombre, titulo, mostrarNotificaciones =
     };
   }, []);
 
+  const nombreMostrar = nombre || astronauta?.name || 'Cargando…';
+  const tituloMostrar = titulo || astronauta?.titulo || 'Tripulante de misión';
+  const solMostrar = sol ?? solActual ?? mision?.solActual ?? 42;
+  const entornoRaw = entorno ?? mision?.entorno ?? 'mars_base';
+  const entornoMostrar = ETIQUETA_ENTORNO[entornoRaw] ?? entornoRaw;
+
   return (
     <header className={styles.encabezado}>
       <div className={styles.perfil}>
         <Image src="/figma/tripulante.png" width={88} height={88} sizes="88px" alt="" className={styles.retrato} />
-        <span><strong>{nombre}</strong><small>{titulo}</small></span>
+        <span><strong>{nombreMostrar}</strong><small>{tituloMostrar}</small></span>
       </div>
       <div className={styles.conexion}>
         <span>Conexión</span>
         <strong><i className={enLinea ? styles.enLinea : styles.sinConexion} aria-hidden="true" /> {enLinea ? 'En línea' : 'Sin conexión'}</strong>
-        <small>{MISION.entorno} · Sol {SOL_ACTUAL}</small>
+        <small>{entornoMostrar} · Sol {solMostrar}</small>
       </div>
       <div className={styles.tierra} aria-hidden="true" />
       {mostrarNotificaciones && <button

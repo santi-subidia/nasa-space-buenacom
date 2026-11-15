@@ -9,7 +9,6 @@ import { useEstadoMision } from '@/lib/datos/demo';
 import { guardarLecturas } from '@/lib/datos/lecturas';
 import { guardarSintoma } from '@/lib/datos/sintomas';
 import { formatearNotaPvt } from '@/lib/pvt/metricas';
-import { SOL_ACTUAL } from '@/lib/mock/mision';
 import styles from './Cognitivos.module.scss';
 
 const TESTS = [
@@ -33,7 +32,7 @@ const TESTS = [
 
 // Ejercicios cognitivos: test Go/No-Go + VOR y test visual SANS, con guardado propio.
 export default function Cognitivos() {
-  const { astronauta } = useEstadoMision();
+  const { astronauta, solActual } = useEstadoMision();
   const baselineReaccion = astronauta?.baseline?.reaction_ms ?? null;
 
   const [reaccion, setReaccion] = useState(null);
@@ -51,20 +50,20 @@ export default function Cognitivos() {
       nuevas.push({
         indicator: 'reaction_ms',
         value: reaccion.ms,
-        sol: SOL_ACTUAL,
+        sol: solActual,
         source: reaccion.modoEntrada === 'camara' ? 'camera' : 'manual',
         note: formatearNotaPvt(reaccion),
       });
     }
-    if (vision) nuevas.push({ indicator: 'visual_acuity', value: vision.puntos, sol: SOL_ACTUAL });
+    if (vision) nuevas.push({ indicator: 'visual_acuity', value: vision.puntos, sol: solActual });
 
     try {
       if (nuevas.length) await guardarLecturas(nuevas);
       if (reaccion && mareo > 0) {
-        await guardarSintoma({ bodyZone: 'inner_ear', code: 'dizzy_standing', severity: mareo, sol: SOL_ACTUAL });
+        await guardarSintoma({ bodyZone: 'inner_ear', code: 'dizzy_standing', severity: mareo, sol: solActual });
       }
       if (vision?.borrosa) {
-        await guardarSintoma({ bodyZone: 'eyes', code: 'blurred_vision', severity: 2, sol: SOL_ACTUAL });
+        await guardarSintoma({ bodyZone: 'eyes', code: 'blurred_vision', severity: 2, sol: solActual });
       }
       setReaccion(null);
       setVision(null);
@@ -81,7 +80,7 @@ export default function Cognitivos() {
   return (
     <PantallaVyta
       titulo="Ejercicios cognitivos"
-      subtitulo={`Atención, equilibrio y visión · Sol ${SOL_ACTUAL}`}
+      subtitulo={`Atención, equilibrio y visión · Sol ${solActual}`}
       icono="/figma/nav-actividad.svg"
       acciones={
         <Link href="/actividad" className={styles.volver}>
