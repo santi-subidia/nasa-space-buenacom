@@ -20,6 +20,7 @@ import styles from './Registrar.module.scss';
 const LIMITES = {
   bp_sys: [60, 260],
   bp_dia: [30, 160],
+  hr_rest: [30, 220],
   glucose: [30, 500],
   temp: [33, 43],
   sleep_h: [0, 16],
@@ -125,10 +126,15 @@ export default function Registrar() {
               </div>
             </Fila>
 
-            <Fila id="hr_rest" etiqueta="Frecuencia cardíaca" watch>
-              <span className={styles.watch}>⌚ Watch</span>
-              <input className={styles.campo} value={WATCH.hr_rest} readOnly aria-label="Frecuencia cardíaca (del Watch)" />
+            <Fila id="hr_rest" etiqueta="Frecuencia cardíaca">
+              <Numero k="hr_rest" label="Frecuencia cardíaca" valor={valor('hr_rest')} onChange={cambiar} error={error('hr_rest')} />
               <span className={styles.unidad}>lpm</span>
+              {base.hr_rest?.hoy && base.hr_rest?.source === 'camera' && (
+                <span className={styles.camaraBadge}>📷 Cámara</span>
+              )}
+              <Link href="/cara" className={styles.boton}>
+                Medir con cámara
+              </Link>
             </Fila>
 
             <Fila id="glucose" etiqueta="Glucosa">

@@ -5,8 +5,11 @@ import { crearComoMeVes } from '@/ai/cara/cliente.js';
 import { analizarParpadeos } from '@/ai/cara/parpadeo.js';
 import { crearVoz } from '@/ai/vega/voz.js';
 import { extraerCierreBlendshapes } from '@/lib/cara/blendshapes';
+import { estimarPulsoRppg, extraerMuestraRppg } from '@/lib/cara/rppg';
 import { guardarAviso } from '@/lib/datos/avisos';
 import { cargarFotoBase, capturarImagenJpeg, guardarFotoBase } from '@/lib/datos/cara';
+import { guardarLecturas } from '@/lib/datos/lecturas';
+import { SOL_ACTUAL } from '@/lib/demo/generador';
 import { silenciarLogsMediaPipe } from '@/lib/mediapipe/silenciarLogs';
 
 const WASM = '/mediapipe/wasm';
@@ -51,6 +54,9 @@ export function useCara() {
   const [rostroDetectado, setRostroDetectado] = useState(false);
   const [segundosMedidos, setSegundosMedidos] = useState(0);
   const [parpadeoEnVivo, setParpadeoEnVivo] = useState(null);
+  const [pulsoEnVivo, setPulsoEnVivo] = useState(null);
+  const [guardandoPulso, setGuardandoPulso] = useState(false);
+  const [pulsoGuardado, setPulsoGuardado] = useState(false);
 
   const [fotoBase, setFotoBase] = useState(null); // { id, foto: {media_type, data}, url }
   const [fotoHoy, setFotoHoy] = useState(null); // { foto: {media_type, data}, url }
@@ -110,14 +116,29 @@ export function useCara() {
         r.muestras.push({ t: ahora, cierre });
         if (r.muestras.length > 3600) r.muestras.shift();
       }
+      const landmarks = deteccion.faceLandmarks?.[0];
+      if (landmarks && r.canvasRppg) {
+        const muestra = extraerMuestraRppg(landmarks, video, r.canvasRppg, r.centroRppg);
+        if (muestra) {
+          r.centroRppg = muestra.centro;
+          r.muestrasRppg.push({ t: ahora, r: muestra.r, g: muestra.g, b: muestra.b, motion: muestra.motion });
+          if (r.muestrasRppg.length > 600) r.muestrasRppg.shift();
+        }
+      } else {
+        r.centroRppg = null;
+      }
       if (ahora - (r.ultimaUiMs ?? 0) >= 250) {
         r.ultimaUiMs = ahora;
-        setRostroDetectado(cierre !== null);
+        setRostroDetectado(cierre !== null || Boolean(landmarks));
         if (r.muestras.length >= 2) {
           const seg = Math.floor((r.muestras.at(-1).t - r.muestras[0].t) / 1000);
           setSegundosMedidos(seg);
           if (seg >= 10) setParpadeoEnVivo(analizarParpadeos(r.muestras));
         }
+      }
+      if (ahora - (r.ultimoCalcRppgMs ?? 0) >= 500 && r.muestrasRppg.length >= 2) {
+        r.ultimoCalcRppgMs = ahora;
+        setPulsoEnVivo(estimarPulsoRppg(r.muestrasRppg));
       }
     }
     r.raf = requestAnimationFrame(bucle);
@@ -152,10 +173,16 @@ export function useCara() {
       await videoRef.current.play();
 
       r.muestras = [];
+      r.muestrasRppg = [];
+      r.centroRppg = null;
+      r.canvasRppg = r.canvasRppg || document.createElement('canvas');
       r.ultimoTiempo = -1;
       r.ultimaUiMs = 0;
+      r.ultimoCalcRppgMs = 0;
       setSegundosMedidos(0);
       setParpadeoEnVivo(null);
+      setPulsoEnVivo(null);
+      setPulsoGuardado(false);
       bucle();
     } catch (e) {
       apagarCamara();
@@ -172,8 +199,35 @@ export function useCara() {
 
   function reiniciarParpadeo() {
     r.muestras = [];
+    r.muestrasRppg = [];
+    r.centroRppg = null;
+    r.ultimoCalcRppgMs = 0;
     setSegundosMedidos(0);
     setParpadeoEnVivo(null);
+    setPulsoEnVivo(null);
+    setPulsoGuardado(false);
+  }
+
+  async function guardarPulso() {
+    if (!pulsoEnVivo?.bpm || pulsoEnVivo.confianza === 'baja') return;
+    setErrorAccion('');
+    setGuardandoPulso(true);
+    try {
+      await guardarLecturas([
+        {
+          indicator: 'hr_rest',
+          value: pulsoEnVivo.bpm,
+          sol: SOL_ACTUAL,
+          source: 'camera',
+          note: `Estimación óptica rPPG (confianza ${pulsoEnVivo.confianza}, SQI ${Math.round(pulsoEnVivo.sqi * 100)} %)`,
+        },
+      ]);
+      setPulsoGuardado(true);
+    } catch (e) {
+      setErrorAccion(e?.message ?? 'No se pudo guardar el pulso en el chequeo.');
+    } finally {
+      setGuardandoPulso(false);
+    }
   }
 
   async function guardarComoBase(captura) {
@@ -274,6 +328,9 @@ export function useCara() {
     rostroDetectado,
     segundosMedidos,
     parpadeoEnVivo,
+    pulsoEnVivo,
+    guardandoPulso,
+    pulsoGuardado,
     fotoBase,
     fotoHoy,
     consentimiento,
@@ -287,6 +344,7 @@ export function useCara() {
     iniciarCamara,
     apagarCamara,
     reiniciarParpadeo,
+    guardarPulso,
     capturarBase,
     capturarHoy,
     subirArchivo,

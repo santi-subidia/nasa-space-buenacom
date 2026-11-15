@@ -19,6 +19,7 @@
   font: inherit;
   font-size: 14px;
   font-weight: 600;
+  text-decoration: none;
   cursor: pointer;
   &:hover:not(:disabled) { background: $color-superficie-2; }
   &:disabled { opacity: 0.45; cursor: not-allowed; }
@@ -45,6 +46,7 @@ select.campo { width: auto; text-align: left; }
 .par { display: flex; align-items: center; gap: $espacio-2; }
 .unidad { color: $color-texto-suave; font-size: 13px; min-width: 44px; }
 .watch { font-size: 12px; background: rgba($color-acento, 0.15); color: $color-acento; border-radius: 999px; padding: 2px 10px; }
+.camaraBadge { font-size: 12px; background: rgba($color-verde, 0.15); color: $color-verde; border-radius: 999px; padding: 2px 10px; }
 
 // ── Filas del formulario ───────────────────────────────
 .fila { padding: $espacio-3 0; border-bottom: 1px solid $color-borde; &:last-child { border-bottom: 0; } }

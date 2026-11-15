@@ -129,6 +129,82 @@
   strong { color: $color-texto; }
 }
 
+.rppgBox {
+  display: flex;
+  flex-direction: column;
+  gap: $espacio-2;
+  padding: $espacio-3;
+  background: $color-superficie-2;
+  border: 1px solid $color-borde;
+  border-radius: $radio-s;
+}
+
+.rppgTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: $espacio-3;
+  flex-wrap: wrap;
+}
+
+.rppgTitulo {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  color: $color-texto-suave;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.rppgEstado {
+  margin: 4px 0 0;
+  font-size: 13px;
+  color: $color-texto-suave;
+}
+
+.rppgValorFila {
+  display: flex;
+  align-items: center;
+  gap: $espacio-2;
+  margin-top: 4px;
+  flex-wrap: wrap;
+}
+
+.rppgBpm {
+  font-size: 22px;
+  color: $color-texto;
+}
+
+.rppgBadge {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 999px;
+  border: 1px solid $color-borde;
+}
+
+.conf_alta { color: $color-verde; border-color: rgba($color-verde, 0.5); }
+.conf_media { color: $color-amarillo; border-color: rgba($color-amarillo, 0.5); }
+.conf_baja { color: $color-naranja; border-color: rgba($color-naranja, 0.5); }
+
+.ondaPulso {
+  color: $color-acento;
+  flex-shrink: 0;
+}
+
+.rppgPie {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: $espacio-3;
+  flex-wrap: wrap;
+}
+
+.rppgNota {
+  font-size: 12px;
+  color: $color-texto-suave;
+}
+
 .lateral {
   display: flex;
   flex-direction: column;

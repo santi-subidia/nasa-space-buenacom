@@ -20,6 +20,36 @@ const ORIGEN_TEXTO = {
   local: 'Lectura local de parpadeo sin conexión con la IA.',
 };
 
+const MOTIVO_RPPG = {
+  luz_extrema: 'Luz insuficiente o saturada; probá iluminación frontal pareja.',
+  mucho_movimiento: 'Demasiado movimiento; quedate quieto frente a la cámara.',
+  baja_calidad: 'Señal inestable; mirá de frente con luz uniforme.',
+};
+
+const CONFIANZA_ETIQUETA = {
+  alta: 'Confianza alta',
+  media: 'Confianza media',
+  baja: 'Señal baja',
+};
+
+function OndaPulso({ puntos }) {
+  if (!puntos || puntos.length < 3) return null;
+  const w = 160;
+  const h = 34;
+  const d = puntos
+    .map((v, i) => {
+      const x = ((i / (puntos.length - 1)) * w).toFixed(1);
+      const y = (h / 2 - v * (h * 0.4)).toFixed(1);
+      return `${i === 0 ? 'M' : 'L'}${x},${y}`;
+    })
+    .join(' ');
+  return (
+    <svg className={styles.ondaPulso} viewBox={`0 0 ${w} ${h}`} width={w} height={h} aria-hidden="true">
+      <path d={d} fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
 export default function CaraPantalla() {
   const activoId = useTripulanteActivo();
   const nombreTripulante = TRIPULANTES.find((t) => t.id === activoId)?.name || 'Ana Ríos';
@@ -30,6 +60,9 @@ export default function CaraPantalla() {
     rostroDetectado,
     segundosMedidos,
     parpadeoEnVivo,
+    pulsoEnVivo,
+    guardandoPulso,
+    pulsoGuardado,
     fotoBase,
     fotoHoy,
     consentimiento,
@@ -43,6 +76,7 @@ export default function CaraPantalla() {
     iniciarCamara,
     apagarCamara,
     reiniciarParpadeo,
+    guardarPulso,
     capturarBase,
     capturarHoy,
     subirArchivo,
@@ -79,7 +113,7 @@ export default function CaraPantalla() {
             {!camaraActiva && (
               <div className={styles.portada}>
                 <p className={styles.guia}>
-                  Mirá de frente a la cámara con buena luz. Si esperás al menos 10 segundos, MediaPipe mide tu parpadeo y tiempo con ojos cerrados.
+                  Mirá de frente a la cámara con buena luz. En 10 segundos MediaPipe mide tu parpadeo (PERCLOS) y estima tu pulso óptico sin contacto (rPPG).
                 </p>
                 <button
                   type="button"
@@ -136,6 +170,54 @@ export default function CaraPantalla() {
               <span><strong>{parpadeoEnVivo.parpadeosPorMin}</strong> parpadeos/min</span>
               <span><strong>{parpadeoEnVivo.pctOjosCerrados} %</strong> ojos cerrados (PERCLOS)</span>
               <span><strong>{parpadeoEnVivo.cierresLargos}</strong> cierres largos</span>
+            </div>
+          )}
+
+          {(camaraActiva || pulsoEnVivo) && (
+            <div className={styles.rppgBox} aria-label="Estimación de pulso sin contacto (rPPG)">
+              <div className={styles.rppgTop}>
+                <div>
+                  <span className={styles.rppgTitulo}>Pulso óptico sin contacto (rPPG)</span>
+                  {!pulsoEnVivo?.listo ? (
+                    <p className={styles.rppgEstado}>
+                      Calibrando señal de piel… {pulsoEnVivo?.duracionSeg ?? 0} s (mín. 8 s quieto con luz frontal)
+                    </p>
+                  ) : pulsoEnVivo.bpm != null ? (
+                    <div className={styles.rppgValorFila}>
+                      <strong className={styles.rppgBpm}>{pulsoEnVivo.bpm} lpm</strong>
+                      <span className={`${styles.rppgBadge} ${styles[`conf_${pulsoEnVivo.confianza}`]}`}>
+                        {CONFIANZA_ETIQUETA[pulsoEnVivo.confianza]} · {Math.round(pulsoEnVivo.sqi * 100)} %
+                      </span>
+                    </div>
+                  ) : (
+                    <p className={styles.rppgEstado}>
+                      {MOTIVO_RPPG[pulsoEnVivo.motivo] ?? 'Esperando señal estable…'}
+                      {pulsoEnVivo.sqi > 0 ? ` (SQI ${Math.round(pulsoEnVivo.sqi * 100)} %)` : ''}
+                    </p>
+                  )}
+                </div>
+                <OndaPulso puntos={pulsoEnVivo?.onda} />
+              </div>
+
+              <div className={styles.rppgPie}>
+                <small className={styles.rppgNota}>
+                  Estimación óptica 100 % en tu navegador; no reemplaza un oxímetro médico.
+                </small>
+                {pulsoEnVivo?.bpm != null && pulsoEnVivo.confianza !== 'baja' && (
+                  <button
+                    type="button"
+                    className={`${styles.boton} ${pulsoGuardado ? styles.botonHecho : styles.primario}`}
+                    onClick={guardarPulso}
+                    disabled={guardandoPulso || pulsoGuardado}
+                  >
+                    {pulsoGuardado
+                      ? `✓ Pulso guardado en Sol ${SOL_ACTUAL}`
+                      : guardandoPulso
+                        ? 'Guardando…'
+                        : `Guardar pulso en chequeo (Sol ${SOL_ACTUAL})`}
+                  </button>
+                )}
+              </div>
             </div>
           )}
         </Card>
