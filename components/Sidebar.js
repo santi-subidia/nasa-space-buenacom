@@ -8,7 +8,7 @@ import { estaSupabaseConfigurado } from '@/lib/supabase/cliente';
 import { RUTAS } from '@/lib/rutas';
 import styles from './Sidebar.module.scss';
 
-const RUTAS_VYTA = ['/salud', '/actividad', '/entrenador', '/tendencias', '/registrar', '/enlace', '/jornada', '/mapa'];
+const RUTAS_VYTA = ['/salud', '/actividad', '/entrenador', '/tendencias', '/registrar', '/cara', '/enlace', '/jornada', '/mapa'];
 
 export default function Sidebar() {
   const pathname = usePathname();
@@ -36,7 +36,7 @@ export default function Sidebar() {
           { href: '/jornada', nombre: 'Jornada' },
         ],
       },
-      { href: '/registrar', etiqueta: 'Registrar', icono: 'registrar', activa: pathname.startsWith('/registrar') },
+      { href: '/registrar', etiqueta: 'Registrar', icono: 'registrar', activa: pathname.startsWith('/registrar') || pathname.startsWith('/cara') },
       { href: '/tendencias', etiqueta: 'Analítica', icono: 'analitica', activa: pathname.startsWith('/tendencias') },
       { href: '/enlace', etiqueta: 'Informes', icono: 'informes', activa: pathname.startsWith('/enlace') },
     ];

@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { AVISO_NO_DIAGNOSTICO } from '@/ai/cara/aviso.js';
 import Card from '@/components/Card';
+import PantallaVyta from '@/components/layout/PantallaVyta';
 import { ASPECTOS_CARAS, INTENSIDAD_ETIQUETA, ZONAS_CARA } from '@/lib/cara/blendshapes';
 import { useTripulanteActivo } from '@/lib/datos/tripulante';
 import { rutaZona } from '@/lib/content/rutaZona';
@@ -90,18 +91,22 @@ export default function CaraPantalla() {
   const puedeAnalizar = Boolean(consentimiento && fotoBase?.foto && fotoHoy?.foto && !analizando);
 
   return (
-    <div className={styles.pantalla}>
-      <header className={styles.encabezado}>
-        <div>
-          <h1>¿Cómo me ves hoy?</h1>
-          <p className={styles.sub}>
-            Compara tu cara de hoy con tu foto base e identifica signos de fatiga por parpadeo · Sol {SOL_ACTUAL} · {nombreTripulante}
-          </p>
-        </div>
-        <label className={styles.vozToggle}>
-          <input type="checkbox" checked={vozActiva} onChange={(e) => setVozActiva(e.target.checked)} /> Voz
-        </label>
-      </header>
+    <PantallaVyta
+      className={styles.pantalla}
+      titulo="¿Cómo me veo hoy?"
+      subtitulo={`Tu cara de hoy contra tu foto base: fatiga por parpadeo y pulso · Sol ${SOL_ACTUAL} · ${nombreTripulante}`}
+      icono="/figma/nav-registrar.svg"
+      acciones={
+        <>
+          <Link href="/registrar" className={styles.boton}>
+            ← Check-in diario
+          </Link>
+          <label className={styles.vozToggle}>
+            <input type="checkbox" checked={vozActiva} onChange={(e) => setVozActiva(e.target.checked)} /> Voz
+          </label>
+        </>
+      }
+    >
 
       <p className={styles.avisoFijo} role="note">
         <strong>Aviso:</strong> {AVISO_NO_DIAGNOSTICO}
@@ -359,6 +364,6 @@ export default function CaraPantalla() {
           </div>
         </Card>
       )}
-    </div>
+    </PantallaVyta>
   );
 }

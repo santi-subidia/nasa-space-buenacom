@@ -68,7 +68,8 @@ function generarPosicionBaliza(rx, ry) {
 // Chequeo Sensoriomotor y Cognitivo (30 s) en modal adaptable a pantalla:
 // - Bloque 1 (0-15 s): Pilotaje con mano en el aire (HandLandmarker) o puntero + Go/No-Go.
 // - Bloque 2 (15-30 s): Estabilidad vestibular VOR (giro de cabeza + ojos con FaceLandmarker) o seguimiento suave.
-export default function TestReaccion({ resultado, baselineMs = null, mareo = 0, onMareo, onTerminar }) {
+// Se usa en Actividad · Ejercicios cognitivos; `className` ajusta la tarjeta a esa pantalla.
+export default function TestReaccion({ resultado, baselineMs = null, mareo = 0, onMareo, onTerminar, className }) {
   const [fase, setFase] = useState('inactivo'); // inactivo | cargando | bloque1 | bloque2
   const [modoCamara, setModoCamara] = useState(false);
   const [restante, setRestante] = useState(DURACION_PVT_S);
@@ -561,7 +562,7 @@ export default function TestReaccion({ resultado, baselineMs = null, mareo = 0, 
 
   return (
     <>
-      <Card titulo="Test Cognitivo & Vestibular · 30 s">
+      <Card titulo="Test Cognitivo & Vestibular · 30 s" className={className}>
         <video ref={videoRef} playsInline muted className={styles.videoOculto} aria-hidden="true" />
 
         <p className={styles.texto}>
