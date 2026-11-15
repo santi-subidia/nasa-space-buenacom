@@ -2,6 +2,12 @@ import assert from 'node:assert/strict';
 import { test } from 'node:test';
 
 import {
+  CUENTA_REGRESIVA_MS,
+  GRACIA_DEDO_PERDIDO_MS,
+  avanzarCalibracionDedo,
+  crearEstadoCalibracion,
+} from '../lib/pvt/calibracion.js';
+import {
   UMBRAL_LAPSO_MS,
   calcularMetricasPvt,
   formatearNotaPvt,
@@ -147,4 +153,55 @@ test('evaluate dispara pvt_cognitive_fatigue y vestibular_instability según mé
   assert.ok(vorAlerta);
   assert.equal(vorAlerta.zone, 'inner_ear');
   assert.equal(vorAlerta.level, 'yellow');
+});
+
+test('avanzarCalibracionDedo espera a detectar el dedo antes de iniciar la cuenta regresiva', () => {
+  let est = crearEstadoCalibracion();
+  assert.equal(est.fase, 'esperando_dedo');
+
+  // Sin dedo detectado no arranca la cuenta regresiva ni el test.
+  let paso = avanzarCalibracionDedo(est, { dedoDetectado: false, ahoraMs: 500 });
+  assert.equal(paso.estado.fase, 'esperando_dedo');
+  assert.equal(paso.iniciarTest, false);
+  assert.equal(paso.segundosRestantes, null);
+
+  // Al detectar el dedo comienza la cuenta regresiva (3 -> 2 -> 1 -> iniciarTest).
+  paso = avanzarCalibracionDedo(paso.estado, { dedoDetectado: true, ahoraMs: 1000 });
+  assert.equal(paso.estado.fase, 'cuenta_regresiva');
+  assert.equal(paso.iniciarTest, false);
+  assert.equal(paso.segundosRestantes, 3);
+
+  // Un parpadeo breve (< gracia) mantiene la cuenta regresiva.
+  paso = avanzarCalibracionDedo(paso.estado, { dedoDetectado: false, ahoraMs: 1400 });
+  assert.equal(paso.estado.fase, 'cuenta_regresiva');
+  assert.equal(paso.segundosRestantes, 3);
+
+  paso = avanzarCalibracionDedo(paso.estado, { dedoDetectado: true, ahoraMs: 2200 });
+  assert.equal(paso.estado.fase, 'cuenta_regresiva');
+  assert.equal(paso.segundosRestantes, 2);
+
+  paso = avanzarCalibracionDedo(paso.estado, { dedoDetectado: true, ahoraMs: 3200 });
+  assert.equal(paso.estado.fase, 'cuenta_regresiva');
+  assert.equal(paso.segundosRestantes, 1);
+
+  paso = avanzarCalibracionDedo(paso.estado, {
+    dedoDetectado: true,
+    ahoraMs: 1000 + CUENTA_REGRESIVA_MS,
+  });
+  assert.equal(paso.estado.fase, 'listo');
+  assert.equal(paso.iniciarTest, true);
+  assert.equal(paso.segundosRestantes, 0);
+});
+
+test('avanzarCalibracionDedo vuelve a esperar si se pierde el dedo más allá de la gracia', () => {
+  let paso = avanzarCalibracionDedo(crearEstadoCalibracion(), { dedoDetectado: true, ahoraMs: 1000 });
+  assert.equal(paso.estado.fase, 'cuenta_regresiva');
+
+  paso = avanzarCalibracionDedo(paso.estado, {
+    dedoDetectado: false,
+    ahoraMs: 1000 + GRACIA_DEDO_PERDIDO_MS + 10,
+  });
+  assert.equal(paso.estado.fase, 'esperando_dedo');
+  assert.equal(paso.estado.dedoPerdido, true);
+  assert.equal(paso.iniciarTest, false);
 });

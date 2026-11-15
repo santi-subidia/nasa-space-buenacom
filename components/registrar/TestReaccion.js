@@ -16,6 +16,11 @@ import Card from '@/components/Card';
 import { silenciarLogsMediaPipe } from '@/lib/mediapipe/silenciarLogs';
 import { evaluarIndicador } from '@/lib/motor/evaluar';
 import {
+  CUENTA_REGRESIVA_S,
+  avanzarCalibracionDedo,
+  crearEstadoCalibracion,
+} from '@/lib/pvt/calibracion';
+import {
   DURACION_BLOQUE1_S,
   DURACION_PVT_S,
   ISI_MAX_MS,
@@ -46,6 +51,14 @@ const ETIQUETA_NIVEL = {
   red: '■ Crítico',
 };
 
+const TITULO_FASE = {
+  cargando: 'Preparando sensores',
+  esperando_dedo: 'Calibración · Mostrá tu dedo',
+  cuenta_regresiva: 'Dedo detectado · Preparate',
+  bloque1: 'Bloque 1 · Pilotaje Go/No-Go',
+  bloque2: 'Bloque 2 · Estabilidad Vestibular VOR',
+};
+
 const CANVAS_W = 800;
 const CANVAS_H = 500;
 const RADIO_BALIZA = 34;
@@ -65,14 +78,154 @@ function generarPosicionBaliza(rx, ry) {
   };
 }
 
+function dibujarReticle(ctx, reticle, color = '#5bc8f5') {
+  const { x, y } = reticle;
+  ctx.save();
+  ctx.strokeStyle = color;
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.arc(x, y, 18, 0, Math.PI * 2);
+  ctx.moveTo(x - 28, y);
+  ctx.lineTo(x - 10, y);
+  ctx.moveTo(x + 10, y);
+  ctx.lineTo(x + 28, y);
+  ctx.moveTo(x, y - 28);
+  ctx.lineTo(x, y - 10);
+  ctx.moveTo(x, y + 10);
+  ctx.lineTo(x, y + 28);
+  ctx.stroke();
+  ctx.restore();
+}
+
+function dibujarPanelTexto(ctx, x, y, w, h) {
+  const r = 16;
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + w - r, y);
+  ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+  ctx.lineTo(x + w, y + h - r);
+  ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+  ctx.lineTo(x + r, y + h);
+  ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+  ctx.lineTo(x, y + r);
+  ctx.quadraticCurveTo(x, y, x + r, y);
+  ctx.closePath();
+}
+
+function dibujarCalibracion(ctx, m, ahora) {
+  const cx = CANVAS_W / 2;
+  const cy = CANVAS_H / 2;
+
+  if (m.fase === 'esperando_dedo') {
+    const pulso = 1 + Math.sin(ahora / 350) * 0.06;
+    ctx.save();
+    ctx.strokeStyle = 'rgba(91, 200, 245, 0.35)';
+    ctx.setLineDash([8, 8]);
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.arc(cx, cy - 34, 72 * pulso, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    dibujarPanelTexto(ctx, cx - 270, cy + 56, 540, 88);
+    ctx.fillStyle = 'rgba(7, 11, 20, 0.82)';
+    ctx.fill();
+    ctx.strokeStyle = m.calibracion.dedoPerdido ? 'rgba(250, 204, 21, 0.5)' : 'rgba(91, 200, 245, 0.35)';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillStyle = '#e8edf7';
+    ctx.font = '700 21px sans-serif';
+    ctx.fillText('Mostrá tu dedo índice frente a la cámara', cx, cy + 84);
+
+    ctx.fillStyle = m.calibracion.dedoPerdido ? '#facc15' : '#9aa6c4';
+    ctx.font = '500 15px sans-serif';
+    ctx.fillText(
+      m.calibracion.dedoPerdido
+        ? 'Se perdió el dedo · Volvé a ubicarlo para iniciar la cuenta regresiva'
+        : 'El test de 30 s comenzará tras una cuenta regresiva al detectarlo',
+      cx,
+      cy + 116,
+    );
+    ctx.restore();
+    return;
+  }
+
+  // Fase cuenta_regresiva
+  if (m.reticle.detectada) {
+    dibujarReticle(ctx, m.reticle, '#4ade80');
+  }
+
+  const restanteS = m.cuentaUi ?? CUENTA_REGRESIVA_S;
+  const progreso = clamp(m.progresoCuenta ?? 0, 0, 1);
+  const color = m.reticle.detectada ? '#4ade80' : '#facc15';
+
+  ctx.save();
+  ctx.beginPath();
+  ctx.arc(cx, cy - 22, 74, 0, Math.PI * 2);
+  ctx.fillStyle = 'rgba(7, 11, 20, 0.84)';
+  ctx.fill();
+  ctx.strokeStyle = 'rgba(91, 200, 245, 0.22)';
+  ctx.lineWidth = 8;
+  ctx.stroke();
+
+  ctx.beginPath();
+  ctx.arc(cx, cy - 22, 74, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * progreso);
+  ctx.strokeStyle = color;
+  ctx.lineWidth = 8;
+  ctx.lineCap = 'round';
+  ctx.stroke();
+
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillStyle = color;
+  ctx.font = '700 68px monospace';
+  ctx.fillText(String(restanteS), cx, cy - 20);
+
+  dibujarPanelTexto(ctx, cx - 230, cy + 78, 460, 48);
+  ctx.fillStyle = 'rgba(7, 11, 20, 0.82)';
+  ctx.fill();
+  ctx.fillStyle = '#e8edf7';
+  ctx.font = '600 17px sans-serif';
+  ctx.fillText(
+    m.reticle.detectada ? '¡Dedo detectado! Mantené la mano firme…' : 'Mantené el dedo frente a la cámara',
+    cx,
+    cy + 102,
+  );
+  ctx.restore();
+}
+
+function actualizarManoDesdeVideo(m, video, ahora) {
+  const resMano = m.handLandmarker.detectForVideo(video, ahora);
+  const punta = resMano?.landmarks?.[0]?.[8];
+  if (punta) {
+    const targetX = clamp((1 - punta.x - 0.15) / 0.7, 0, 1) * CANVAS_W;
+    const targetY = clamp((punta.y - 0.15) / 0.7, 0, 1) * CANVAS_H;
+    if (!m.reticle.detectada) {
+      m.reticle.x = targetX;
+      m.reticle.y = targetY;
+    } else {
+      m.reticle.x += (targetX - m.reticle.x) * 0.45;
+      m.reticle.y += (targetY - m.reticle.y) * 0.45;
+    }
+    m.reticle.detectada = true;
+  } else {
+    m.reticle.detectada = false;
+  }
+}
+
 // Chequeo Sensoriomotor y Cognitivo (30 s) en modal adaptable a pantalla:
+// - Calibración (solo cámara): espera detección del dedo índice + cuenta regresiva de 3 s.
 // - Bloque 1 (0-15 s): Pilotaje con mano en el aire (HandLandmarker) o puntero + Go/No-Go.
 // - Bloque 2 (15-30 s): Estabilidad vestibular VOR (giro de cabeza + ojos con FaceLandmarker) o seguimiento suave.
 // Se usa en Actividad · Ejercicios cognitivos; `className` ajusta la tarjeta a esa pantalla.
 export default function TestReaccion({ resultado, baselineMs = null, mareo = 0, onMareo, onTerminar, className }) {
-  const [fase, setFase] = useState('inactivo'); // inactivo | cargando | bloque1 | bloque2
+  const [fase, setFase] = useState('inactivo'); // inactivo | cargando | esperando_dedo | cuenta_regresiva | bloque1 | bloque2
   const [modoCamara, setModoCamara] = useState(false);
   const [restante, setRestante] = useState(DURACION_PVT_S);
+  const [cuentaRegresiva, setCuentaRegresiva] = useState(CUENTA_REGRESIVA_S);
   const [errorCamara, setErrorCamara] = useState('');
   const [aviso, setAviso] = useState('');
   const [pistaVivo, setPistaVivo] = useState('');
@@ -88,6 +241,9 @@ export default function TestReaccion({ resultado, baselineMs = null, mareo = 0, 
     raf: 0,
     ultimoVideoT: -1,
     inicioMs: 0,
+    calibracion: crearEstadoCalibracion(),
+    cuentaUi: null,
+    progresoCuenta: 0,
     reticle: { x: CANVAS_W / 2, y: CANVAS_H / 2, detectada: false },
     baliza: null,
     proximoSpawnMs: 0,
@@ -169,7 +325,7 @@ export default function TestReaccion({ resultado, baselineMs = null, mareo = 0, 
 
     if (m.modoCamara && video && video.readyState >= 2) {
       ctx.save();
-      ctx.globalAlpha = 0.28;
+      ctx.globalAlpha = m.fase === 'esperando_dedo' || m.fase === 'cuenta_regresiva' ? 0.42 : 0.28;
       ctx.translate(CANVAS_W, 0);
       ctx.scale(-1, 1);
       ctx.drawImage(video, 0, 0, CANVAS_W, CANVAS_H);
@@ -185,6 +341,11 @@ export default function TestReaccion({ resultado, baselineMs = null, mareo = 0, 
     ctx.moveTo(0, CANVAS_H / 2);
     ctx.lineTo(CANVAS_W, CANVAS_H / 2);
     ctx.stroke();
+
+    if (m.fase === 'esperando_dedo' || m.fase === 'cuenta_regresiva') {
+      dibujarCalibracion(ctx, m, ahora);
+      return;
+    }
 
     if (m.fase === 'bloque1') {
       if (m.baliza) {
@@ -213,22 +374,7 @@ export default function TestReaccion({ resultado, baselineMs = null, mareo = 0, 
         ctx.restore();
       }
 
-      const { x, y } = m.reticle;
-      ctx.save();
-      ctx.strokeStyle = '#5bc8f5';
-      ctx.lineWidth = 3;
-      ctx.beginPath();
-      ctx.arc(x, y, 18, 0, Math.PI * 2);
-      ctx.moveTo(x - 28, y);
-      ctx.lineTo(x - 10, y);
-      ctx.moveTo(x + 10, y);
-      ctx.lineTo(x + 28, y);
-      ctx.moveTo(x, y - 28);
-      ctx.lineTo(x, y - 10);
-      ctx.moveTo(x, y + 10);
-      ctx.lineTo(x, y + 28);
-      ctx.stroke();
-      ctx.restore();
+      dibujarReticle(ctx, m.reticle);
     } else if (m.fase === 'bloque2') {
       const tB2 = Math.max(0, transcurridoMs - DURACION_BLOQUE1_S * 1000);
       const objetivoYaw = 22 * Math.sin((tB2 / 2200) * Math.PI * 2);
@@ -315,6 +461,77 @@ export default function TestReaccion({ resultado, baselineMs = null, mareo = 0, 
       const m = motorRef.current;
       if (m.fase === 'inactivo' || m.fase === 'cargando') return;
 
+      const video = videoRef.current;
+      if (m.modoCamara && video && video.readyState >= 2 && video.currentTime !== m.ultimoVideoT) {
+        m.ultimoVideoT = video.currentTime;
+        if (
+          (m.fase === 'esperando_dedo' || m.fase === 'cuenta_regresiva' || m.fase === 'bloque1') &&
+          m.handLandmarker
+        ) {
+          actualizarManoDesdeVideo(m, video, ahora);
+        } else if (m.fase === 'bloque2' && m.faceLandmarker) {
+          const resCara = m.faceLandmarker.detectForVideo(video, ahora);
+          const ori = calcularOrientacionCabeza(resCara?.faceLandmarks?.[0]);
+          const ojo = extraerEstadoOcular(resCara?.faceBlendshapes);
+          if (ori) {
+            m.cabezaVivo = {
+              yawDeg: ori.yawDeg,
+              ojosAbiertos: ojo ? ojo.ojosAbiertos : true,
+            };
+          }
+        }
+      }
+
+      if (m.fase === 'esperando_dedo' || m.fase === 'cuenta_regresiva') {
+        const paso = avanzarCalibracionDedo(m.calibracion, {
+          dedoDetectado: m.reticle.detectada,
+          ahoraMs: ahora,
+        });
+        m.calibracion = paso.estado;
+        m.progresoCuenta = paso.progreso;
+
+        if (paso.iniciarTest) {
+          m.fase = 'bloque1';
+          m.inicioMs = ahora;
+          m.proximoSpawnMs = ahora + 600;
+          m.ultimoVorSampleMs = 0;
+          m.ultimaUiMs = ahora;
+          m.cuentaUi = null;
+          setRestante(DURACION_PVT_S);
+          setFase('bloque1');
+          setPistaVivo('Dedo detectado · interceptá GO, evitá NO-GO');
+        } else {
+          const cambioFase = m.fase !== paso.estado.fase;
+          if (cambioFase) {
+            m.fase = paso.estado.fase;
+            setFase(paso.estado.fase);
+          }
+          if (paso.segundosRestantes !== m.cuentaUi) {
+            m.cuentaUi = paso.segundosRestantes;
+            if (paso.segundosRestantes != null) setCuentaRegresiva(paso.segundosRestantes);
+          }
+          if (cambioFase || ahora - m.ultimaUiMs >= 200) {
+            m.ultimaUiMs = ahora;
+            if (m.fase === 'esperando_dedo') {
+              setPistaVivo(
+                m.calibracion.dedoPerdido
+                  ? 'Se perdió el dedo · volvé a mostrar tu índice frente a la cámara'
+                  : 'Mostrá tu dedo índice frente a la cámara para iniciar la cuenta regresiva',
+              );
+            } else {
+              setPistaVivo(`Dedo detectado · el test comienza en ${paso.segundosRestantes} s`);
+            }
+          }
+
+          const canvas = canvasRef.current;
+          const ctx = canvas?.getContext('2d');
+          if (ctx) dibujarEscena(ctx, ahora);
+
+          m.raf = requestAnimationFrame(ejecutarCiclo);
+          return;
+        }
+      }
+
       const transcurridoMs = ahora - m.inicioMs;
       const quedanS = Math.max(0, Math.ceil((DURACION_PVT_S * 1000 - transcurridoMs) / 1000));
 
@@ -327,34 +544,6 @@ export default function TestReaccion({ resultado, baselineMs = null, mareo = 0, 
         m.fase = 'bloque2';
         m.baliza = null;
         setFase('bloque2');
-      }
-
-      const video = videoRef.current;
-      if (m.modoCamara && video && video.readyState >= 2 && video.currentTime !== m.ultimoVideoT) {
-        m.ultimoVideoT = video.currentTime;
-        if (m.fase === 'bloque1' && m.handLandmarker) {
-          const resMano = m.handLandmarker.detectForVideo(video, ahora);
-          const punta = resMano?.landmarks?.[0]?.[8];
-          if (punta) {
-            const normX = clamp((1 - punta.x - 0.15) / 0.7, 0, 1);
-            const normY = clamp((punta.y - 0.15) / 0.7, 0, 1);
-            m.reticle.x += (normX * CANVAS_W - m.reticle.x) * 0.45;
-            m.reticle.y += (normY * CANVAS_H - m.reticle.y) * 0.45;
-            m.reticle.detectada = true;
-          } else {
-            m.reticle.detectada = false;
-          }
-        } else if (m.fase === 'bloque2' && m.faceLandmarker) {
-          const resCara = m.faceLandmarker.detectForVideo(video, ahora);
-          const ori = calcularOrientacionCabeza(resCara?.faceLandmarks?.[0]);
-          const ojo = extraerEstadoOcular(resCara?.faceBlendshapes);
-          if (ori) {
-            m.cabezaVivo = {
-              yawDeg: ori.yawDeg,
-              ojosAbiertos: ojo ? ojo.ojosAbiertos : true,
-            };
-          }
-        }
       }
 
       if (m.fase === 'bloque1') {
@@ -475,6 +664,9 @@ export default function TestReaccion({ resultado, baselineMs = null, mareo = 0, 
     m.baliza = null;
     m.flash = null;
     m.ultimoVideoT = -1;
+    m.calibracion = crearEstadoCalibracion();
+    m.cuentaUi = null;
+    m.progresoCuenta = 0;
     m.reticle = { x: CANVAS_W / 2, y: CANVAS_H / 2, detectada: false };
     m.cabezaVivo = { yawDeg: 0, ojosAbiertos: true };
 
@@ -525,31 +717,47 @@ export default function TestReaccion({ resultado, baselineMs = null, mareo = 0, 
         setErrorCamara('No se pudo abrir la cámara o cargar MediaPipe. Podés usar el modo sin cámara.');
         return;
       }
+
+      m.modoCamara = true;
+      m.fase = 'esperando_dedo';
+      m.inicioMs = 0;
+      m.ultimoVorSampleMs = 0;
+      m.ultimaUiMs = 0;
+
+      setModoCamara(true);
+      setRestante(DURACION_PVT_S);
+      setCuentaRegresiva(CUENTA_REGRESIVA_S);
+      setFase('esperando_dedo');
+      setPistaVivo('Mostrá tu dedo índice frente a la cámara para iniciar la cuenta regresiva');
+      m.raf = requestAnimationFrame(ejecutarCiclo);
+      return;
     }
 
     const ahora = performance.now();
-    m.modoCamara = conCamara;
+    m.modoCamara = false;
     m.fase = 'bloque1';
     m.inicioMs = ahora;
     m.proximoSpawnMs = ahora + 600;
     m.ultimoVorSampleMs = 0;
     m.ultimaUiMs = 0;
 
-    setModoCamara(conCamara);
+    setModoCamara(false);
     setRestante(DURACION_PVT_S);
     setFase('bloque1');
     m.raf = requestAnimationFrame(ejecutarCiclo);
   }
 
   function moverPuntero(e) {
+    const m = motorRef.current;
+    if (m.modoCamara && (m.fase === 'esperando_dedo' || m.fase === 'cuenta_regresiva')) return;
     const canvas = canvasRef.current;
     if (!canvas) return;
     const rect = canvas.getBoundingClientRect();
     if (!rect.width || !rect.height) return;
     const x = clamp(((e.clientX - rect.left) / rect.width) * CANVAS_W, 0, CANVAS_W);
     const y = clamp(((e.clientY - rect.top) / rect.height) * CANVAS_H, 0, CANVAS_H);
-    motorRef.current.reticle.x = x;
-    motorRef.current.reticle.y = y;
+    m.reticle.x = x;
+    m.reticle.y = y;
   }
 
   const evalResultado =
@@ -557,6 +765,13 @@ export default function TestReaccion({ resultado, baselineMs = null, mareo = 0, 
       ? evaluarIndicador('reaction_ms', resultado.medianaMs, baselineMs != null ? { reaction_ms: baselineMs } : {})
       : null;
   const ensayosValidos = (resultado?.ensayos || []).filter((e) => e.rtMs != null);
+
+  const etiquetaReloj =
+    fase === 'esperando_dedo'
+      ? 'Esperando dedo'
+      : fase === 'cuenta_regresiva'
+        ? `Inicio en ${cuentaRegresiva} s`
+        : `${restante} s`;
 
   const modalAbierto = fase !== 'inactivo' && typeof document !== 'undefined';
 
@@ -683,14 +898,8 @@ export default function TestReaccion({ resultado, baselineMs = null, mareo = 0, 
             <div className={styles.pvtModal}>
               <div className={styles.pvtModalHeader}>
                 <div className={styles.pvtModalTitulo}>
-                  <span className={styles.pvtFaseTag}>
-                    {fase === 'cargando'
-                      ? 'Preparando sensores'
-                      : fase === 'bloque1'
-                        ? 'Bloque 1 · Pilotaje Go/No-Go'
-                        : 'Bloque 2 · Estabilidad Vestibular VOR'}
-                  </span>
-                  {fase !== 'cargando' && <strong className={styles.pvtReloj}>{restante} s</strong>}
+                  <span className={styles.pvtFaseTag}>{TITULO_FASE[fase] ?? ''}</span>
+                  {fase !== 'cargando' && <strong className={styles.pvtReloj}>{etiquetaReloj}</strong>}
                 </div>
                 <button type="button" className={styles.boton} onClick={cancelar}>
                   ✕ Cerrar (Esc)
